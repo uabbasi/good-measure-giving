@@ -1385,7 +1385,11 @@ def extract_financials(
 
 
 class EmptyParsedJsonError(Exception):
-    """Raised when parsed_json is empty but success=true (crawl bug)."""
+    """Raised when a successfully fetched row has no parsed_json.
+
+    Means extract has not run for that row -- not that the fetch is bad. The
+    raw content is usually intact and reparses with no network call.
+    """
 
     pass
 
@@ -1534,19 +1538,19 @@ def synthesize_charity(
         result["error"] = "No raw data found"
         return result
 
-    # S-005: Check for empty parsed_json (pipeline bug - should abort)
-    # Use falsy check to catch None, {}, and other empty values
+    # S-005: a fetched row with no parsed_json means extract has not run for
+    # it. Abort rather than synthesize around the hole -- but do not touch the
+    # row. It is the fetch's success flag, and the fetch is not what failed.
+    # Marking it FALSE (as this guard used to) is fatal: extract selects
+    # WHERE success = TRUE in both get_unparsed() and get_all(), so the write
+    # locked extract out of the one row it was meant to repair, --force
+    # included, and synthesize aborted on the same charity every run. Left
+    # alone the row is simply unparsed, and `extract.py --ein <EIN>` fixes it
+    # with no network call.
+    # Falsy check catches None, {}, and other empty values.
     for rd in raw_data:
         if rd.get("success") and not rd.get("parsed_json"):
             source = rd.get("source")
-            # Mark as failed in database
-            from src.db.client import execute_query
-
-            execute_query(
-                "UPDATE raw_scraped_data SET success = %s, error_message = %s WHERE charity_ein = %s AND source = %s",
-                (False, "Empty parsed_json detected - crawl bug", ein, source),
-                fetch="none",
-            )
             raise EmptyParsedJsonError(f"Empty parsed_json for {ein}/{source}")
 
     # Organize by source and collect timestamps
@@ -2341,7 +2345,8 @@ def main():
             print("CRITICAL: EMPTY PARSED_JSON DETECTED - ABORTING")
             print(f"{'=' * 60}")
             print(f"Error: {e}")
-            print("\nThis indicates a crawl phase bug. Debug and fix before continuing.")
+            print(f"\nThat row was fetched but never parsed. Repair it with:\n  uv run python extract.py --ein {ein}")
+            print("Nothing was written for this charity. Re-run synthesize after.")
             sys.exit(1)
         except LLMUnavailableError as e:
             # The model was unreachable, so nothing was learned about this

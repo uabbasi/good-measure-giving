@@ -841,3 +841,59 @@ class TestProgramRatioBulletproofFallback:
             charity_id=0, ein="12-3456789", cn_profile={"name": "Test"}
         )
         assert metrics.program_expense_ratio is None
+
+
+class TestUnparsedRowStaysRepairable:
+    """S-005 aborts on an unparsed row, but must not make it unrepairable.
+
+    A raw row with success=1 and parsed_json=NULL means EXTRACT has not run
+    yet. It says nothing about the fetch. Real incident (EIN 47-1675693,
+    2026-07-26): the guard responded by writing
+    ``success=FALSE, error="Empty parsed_json detected - crawl bug"`` onto a
+    row holding 77,700 bytes of perfectly good IRS 990 XML — content that
+    parses cleanly into a valid grants profile with no network call at all.
+
+    That write is fatal, not merely inaccurate. Both
+    ``RawDataRepository.get_unparsed()`` and ``.get_all()`` select
+    ``WHERE success = TRUE``, so marking the row failed locks extract out of
+    the one row it was supposed to fix — including under ``--force``. The
+    guard's own remediation removed the only cheap path to recovery and left
+    synthesize aborting on the same charity every run.
+    """
+
+    def _run_guard(self, mock_execute):
+        from unittest.mock import Mock
+        from synthesize import EmptyParsedJsonError, synthesize_charity
+
+        charity_repo = Mock()
+        charity_repo.get.return_value = {"ein": "47-1675693", "name": "Support Life Foundation"}
+        raw_repo = Mock()
+        raw_repo.get_for_charity.return_value = [
+            {"source": "form990_grants", "success": 1, "parsed_json": None, "raw_content": "<xml/>"}
+        ]
+
+        with pytest.raises(EmptyParsedJsonError) as exc:
+            synthesize_charity("47-1675693", raw_repo, charity_repo)
+        return exc.value
+
+    def test_aborts_naming_the_ein_and_source(self):
+        from unittest.mock import patch
+
+        with patch("src.db.client.execute_query") as mock_execute:
+            err = self._run_guard(mock_execute)
+        assert "47-1675693" in str(err)
+        assert "form990_grants" in str(err)
+
+    def test_does_not_mark_the_fetch_failed(self):
+        from unittest.mock import patch
+
+        with patch("src.db.client.execute_query") as mock_execute:
+            self._run_guard(mock_execute)
+
+        writes = [c.args[0] for c in mock_execute.call_args_list if c.args]
+        offending = [sql for sql in writes if "raw_scraped_data" in sql and "success" in sql]
+        assert not offending, (
+            "S-005 wrote to raw_scraped_data.success. extract.py selects "
+            "WHERE success = TRUE, so this makes the flagged row permanently "
+            f"unrepairable: {offending}"
+        )
