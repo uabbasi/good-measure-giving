@@ -96,12 +96,25 @@ class TestVerifiedState:
 
 
 class TestFailClosed:
-    def test_llm_raise_returns_unverified_other_with_error(self):
-        result, _ = _verify("", client=_RaisingClient())
-        assert result["category"] == "other"
-        assert result["confident"] is False
-        assert result["verified"] is False
-        assert "error" in result
+    def test_unreachable_llm_raises_rather_than_stamping_a_verdict(self):
+        """REVERSAL: this previously asserted an outage produced an
+        `unverified/other` stamp — "fail closed, never crash synthesize".
+
+        Fail-closed is right for an ANSWER and stays that way in every other
+        test here. It was wrong for the absence of one. On 2026-07-26 a Gemini
+        DNS failure ran through synthesize for all 166 charities; each outage
+        was stamped as a verdict, and because upsert writes every field
+        including None, that erased real data — program_focus_tags went from 0
+        NULL to 119 NULL and 35 charities flipped to excluded-from-scoring, none
+        of it because anything was learned about those charities.
+
+        An unreachable model now stops the request instead.
+        """
+        import pytest
+        from src.llm.errors import LLMUnavailableError
+
+        with pytest.raises(LLMUnavailableError):
+            _verify("", client=_RaisingClient())
 
     def test_unparseable_response_fails_closed(self):
         result, _ = _verify("this is not json at all")

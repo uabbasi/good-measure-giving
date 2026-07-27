@@ -33,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from src.db import CharityData, CharityDataRepository, CharityRepository, PhaseCacheRepository, RawDataRepository
 from src.db.dolt_client import dolt, tables_for_phases
 from src.llm.category_classifier import get_category_info, get_charity_category
+from src.llm.errors import LLMUnavailableError
 from src.llm.llm_client import LLMClient, LLMTask
 from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
 from src.scorers.strategic_classifier import classification_to_dict, classify_charity
@@ -1173,6 +1174,12 @@ STRICT RULES:
 Return ONLY a JSON array of tag names, e.g.: ["advocacy-legal", "research-policy"]
 Return an empty array [] if no tags clearly apply."""
 
+    # Reaching the model and understanding its reply are separate failures.
+    # An empty tag list is read downstream as "this charity has no program
+    # focus", and because upsert writes every field including None, an outage
+    # here ERASES good tags — that is how a Gemini DNS failure took
+    # program_focus_tags from 0 NULL to 119 NULL across 169 charities. Stop
+    # instead of reporting an absence nobody established.
     try:
         client = LLMClient(task=LLMTask.WEBSITE_EXTRACTION, logger=logger)
         response = client.generate(
@@ -1180,7 +1187,12 @@ Return an empty array [] if no tags clearly apply."""
             json_mode=True,
             temperature=0.0,  # Deterministic
         )
+    except Exception as e:  # noqa: BLE001 - no answer was obtained; do not invent one
+        if logger:
+            logger.error(f"Program focus tag extraction unreachable: {e}")
+        raise LLMUnavailableError(f"program focus tag extractor unreachable: {e}") from e
 
+    try:
         # Parse response
         import json
 
@@ -2330,6 +2342,21 @@ def main():
             print(f"{'=' * 60}")
             print(f"Error: {e}")
             print("\nThis indicates a crawl phase bug. Debug and fix before continuing.")
+            sys.exit(1)
+        except LLMUnavailableError as e:
+            # The model was unreachable, so nothing was learned about this
+            # charity. Continuing would write enrichment absences that no
+            # classifier actually concluded, and upsert would persist them over
+            # good data — that is how one Gemini DNS failure nulled
+            # program_focus_tags on 119 charities. Stop instead: charities
+            # already written this run keep their real values, and the rest are
+            # untouched.
+            print(f"\n{'=' * 60}")
+            print("LLM UNREACHABLE - ABORTING")
+            print(f"{'=' * 60}")
+            print(f"Error: {e}")
+            print(f"Charity: {ein}")
+            print("\nNo data was degraded. Re-run once the provider is reachable.")
             sys.exit(1)
 
         all_regressions.extend(result.get("regressions") or [])
