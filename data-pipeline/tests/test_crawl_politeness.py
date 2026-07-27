@@ -86,7 +86,6 @@ class TestSingleRetryIncrementPerWebsiteFailure:
         orch.logger = MagicMock()
         # Skip every non-website source so only the website block runs
         orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
-        orch.frozen_sources = set()  # H12: not testing the freeze label here
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()
@@ -1276,7 +1275,6 @@ class TestForceSourcesOverride:
         orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
         orch.logger = MagicMock()
         orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
-        orch.frozen_sources = set()
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()
@@ -1374,7 +1372,6 @@ class TestTransientPreservesLastGoodWebsite:
         orch = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
         orch.logger = MagicMock()
         orch.skip_sources = {"propublica", "charity_navigator", "candid", "form990_grants", "bbb"}
-        orch.frozen_sources = set()
         orch.blocked_sites = []
         orch._blocked_sites_lock = threading.Lock()
         orch.raw_data_repo = MagicMock()

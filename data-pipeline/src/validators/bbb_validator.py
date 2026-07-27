@@ -30,6 +30,13 @@ class BBBProfile(BaseModel):
     ein: str = Field(..., pattern=r"^\d{2}-\d{7}$")
     name: str = Field(..., min_length=1)
 
+    # BBB WGA reviews only a subset of US charities. True means the lookup
+    # succeeded and found no review — a verified negative, distinct both from
+    # "we never checked" (no row at all) and from "reviewed and failed"
+    # (meets_standards=False). Every other field stays None/empty so absence
+    # can never be read as a failed review.
+    not_reviewed: bool = False
+
     # Overall status (per spec)
     meets_standards: Optional[bool] = None
     standards_met: List[str] = Field(default_factory=list)  # List of standard names that passed

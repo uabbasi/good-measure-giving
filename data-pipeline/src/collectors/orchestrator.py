@@ -243,18 +243,6 @@ def is_content_downgrade(
     return parsed_json_is_meaningful(prior_parsed_json) and not parsed_json_is_meaningful(new_parsed_json)
 
 
-# H12: sources frozen out of the default crawl. Existing DB rows are kept as-is;
-# re-enable per-run with crawl.py --sources bbb.
-FROZEN_SOURCES = {"bbb"}
-
-
-def resolve_skip_sources(
-    skip_sources: Optional[List[str]], include_sources: Optional[List[str]] = None
-) -> Set[str]:
-    """Effective skip set: explicit skips + frozen sources not explicitly included."""
-    return set(skip_sources or []) | (FROZEN_SOURCES - set(include_sources or []))
-
-
 class DataCollectionOrchestrator:
     """
     Orchestrate data collection from all 6 sources.
@@ -277,7 +265,6 @@ class DataCollectionOrchestrator:
         logger: Optional[PipelineLogger] = None,
         max_pdf_downloads: int = 0,
         skip_sources: Optional[List[str]] = None,
-        include_sources: Optional[List[str]] = None,
     ):
         """
         Initialize orchestrator.
@@ -288,11 +275,9 @@ class DataCollectionOrchestrator:
             logger: Logger instance
             max_pdf_downloads: Max PDFs to download per charity (default 0 = disabled)
             skip_sources: List of source names to skip (e.g., ['causeiq', 'website'])
-            include_sources: Frozen sources to re-enable for this run (e.g. ['bbb'])
         """
         self.logger = logger or PipelineLogger(name="orchestrator")
-        self.skip_sources = resolve_skip_sources(skip_sources, include_sources)
-        self.frozen_sources = FROZEN_SOURCES - set(include_sources or [])
+        self.skip_sources = set(skip_sources or [])
 
         # H5: CAPTCHA/anti-bot blocked sites collected for the run-end report
         self.blocked_sites: List[Dict[str, Any]] = []
@@ -890,8 +875,7 @@ class DataCollectionOrchestrator:
         for source_name, fetch_func in sources:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
-                label = "frozen" if source_name in self.frozen_sources else "--skip flag"
-                self.logger.info(f"Skipping {source_name} ({label})")
+                self.logger.info(f"Skipping {source_name} (--skip flag)")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
@@ -1241,8 +1225,7 @@ class DataCollectionOrchestrator:
             # Skip if source is in skip list
             if source_name in self.skip_sources:
                 if self.logger:
-                    label = "frozen" if source_name in self.frozen_sources else "--skip flag"
-                    self.logger.info(f"Skipping {source_name} ({label})")
+                    self.logger.info(f"Skipping {source_name} (--skip flag)")
                 report["sources_skipped"] = report.get("sources_skipped", [])
                 report["sources_skipped"].append(source_name)
                 continue
@@ -1676,7 +1659,21 @@ class DataCollectionOrchestrator:
         return "organization not found for ein" in error.lower()
 
     def _is_bbb_not_found(self, ein: str, report: Dict[str, Any]) -> bool:
-        """Return True when BBB explicitly reports charity not found."""
+        """Return True when BBB explicitly reports charity not found.
+
+        TRANSITIONAL. BBBCollector.fetch() now reports "not in the registry" as
+        a SUCCESS carrying a not_reviewed profile, so this can no longer fire on
+        a freshly-crawled charity — the `sources_failed` branch below is already
+        dead for them.
+
+        It still matters for the 119 rows stored before that fix, which persist
+        `success=0` with "Charity not found on BBB WGA". The backoff/permanent-
+        failure paths can decline to re-attempt those, leaving bbb absent from a
+        run while still required — the exact failure that got the source frozen.
+        Deleting this before every row has been re-crawled would break precisely
+        the charities that need re-crawling. Remove once no row matches
+        `last_failure_reason LIKE '%not found on BBB%'`.
+        """
         error = (report.get("sources_failed", {}) or {}).get("bbb")
         candidates: list[str] = []
         if isinstance(error, str):
