@@ -1,30 +1,40 @@
 """
-Form 990 Grants collector using ProPublica XML downloads.
+Form 990 Grants collector, sourced from the IRS.
 
-Fetches IRS Form 990 XML files from ProPublica and extracts Schedule I (domestic grants)
-and Schedule F (foreign grants) data. This replaces CauseIQ for grants data.
+Fetches IRS Form 990 e-file XML and extracts Schedule I (domestic grants) and
+Schedule F (foreign grants).
+
+This used to read ProPublica's mirror at /nonprofits/download-xml. In July 2026
+ProPublica put a Cloudflare managed challenge in front of that endpoint, so we
+go to the IRS directly -- see src/collectors/irs_990_source.py for the details
+and for why circumventing the challenge was not the answer. The XML is
+byte-identical (ProPublica was mirroring these same releases), so only the
+fetch path changed; every parse method below is untouched.
 
 Data flow:
-1. Fetch organization page from ProPublica to get latest filing object_id
-2. Download 990 XML file using object_id (with aggressive caching - 990s never change)
+1. Look the EIN up in the IRS index_YYYY.csv to get OBJECT_IDs and their bundles
+2. Read each filing's XML out of its bundle by HTTP range request, cached on
+   disk by object_id (990s never change once filed)
 3. Parse Schedule I (grants to domestic organizations)
 4. Parse Schedule F (grants to foreign organizations)
 """
 
-import re
-import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-from bs4 import BeautifulSoup
 
 from ..utils.logger import PipelineLogger
-from ..utils.rate_limiter import global_rate_limiter
 from ..validators.form990_grants_validator import Form990GrantsProfile
 from .base import BaseCollector, FetchResult, ParseResult
+from .irs_990_source import (
+    IRS_INDEX_URL_TEMPLATE,
+    FilingRef,
+    build_index_map,
+    fetch_filing_xml,
+)
 
 # Default cache directory for 990 XML files
 DEFAULT_CACHE_DIR = Path.home() / ".amal-metric-data" / "990_xml_cache"
@@ -32,9 +42,9 @@ DEFAULT_CACHE_DIR = Path.home() / ".amal-metric-data" / "990_xml_cache"
 
 class Form990GrantsCollector(BaseCollector):
     """
-    Collect grants data from IRS Form 990 XML files via ProPublica.
+    Collect grants data from IRS Form 990 e-file XML.
 
-    ProPublica provides free XML downloads of electronically filed 990s.
+    The IRS publishes electronically filed 990s in annual bundles.
     This collector extracts:
     - Schedule I: Grants to domestic organizations/governments
     - Schedule F: Grants to foreign organizations
@@ -48,8 +58,6 @@ class Form990GrantsCollector(BaseCollector):
     def schema_key(self) -> str:
         return "grants_profile"
 
-    PROPUBLICA_ORG_URL = "https://projects.propublica.org/nonprofits/organizations"
-    PROPUBLICA_XML_URL = "https://projects.propublica.org/nonprofits/download-xml"
     NO_XML_SENTINEL = "<!-- FORM990_NO_XML -->"
 
     # XML namespace for IRS e-file
@@ -58,7 +66,6 @@ class Form990GrantsCollector(BaseCollector):
     def __init__(
         self,
         logger: Optional[PipelineLogger] = None,
-        rate_limit_delay: float = 2.0,
         timeout: int = 60,
         cache_dir: Optional[Path] = None,
     ):
@@ -67,79 +74,70 @@ class Form990GrantsCollector(BaseCollector):
 
         Args:
             logger: Logger instance
-            rate_limit_delay: Seconds between requests (default 2.0 - shares ProPublica rate limit)
             timeout: Request timeout in seconds (default 60 for large XML files)
             cache_dir: Directory for caching 990 XML files (default: ~/.amal-metric-data/990_xml_cache)
         """
         self.logger = logger
-        self.rate_limit_delay = rate_limit_delay
         self.timeout = timeout
-        self.last_request_time = 0
 
         # Setup cache directory - 990s never change so cache indefinitely
         self.cache_dir = cache_dir or DEFAULT_CACHE_DIR
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        }
 
-    def _rate_limit(self):
-        """Enforce rate limiting (global, thread-safe, shared with propublica collector)."""
-        # Use same domain as propublica collector since both hit ProPublica servers
-        global_rate_limiter.wait("propublica", self.rate_limit_delay)
+    # How many submission years of the IRS index to consult. A return for tax
+    # period 202512 lands in index_2026, so "recent filings" means recent
+    # SUBMISSION years; three covers the three most recent filings for an
+    # organisation that files annually, plus late filers.
+    INDEX_YEARS_BACK = 3
 
-    def _get_filing_object_ids(self, ein: str, max_filings: int = 3) -> List[Tuple[str, Optional[int]]]:
+    def _index_cache_path(self, year: int) -> Path:
+        return self.cache_dir.parent / "irs_990_index" / f"index_{year}.csv"
+
+    def _load_index_year(self, year: int) -> dict[str, List[FilingRef]]:
+        """EIN -> filings for one submission year, cached on disk.
+
+        Each index is ~43-93 MB and changes only when the IRS publishes a new
+        batch, so it is fetched once and reused.
         """
-        Get object_ids for up to `max_filings` most recent 990 XML filings.
-
-        FIX #22: Support multi-year grant processing by returning multiple filings.
-
-        Args:
-            ein: EIN without dashes
-            max_filings: Maximum number of filings to return (default 3)
-
-        Returns:
-            List of (object_id, tax_year) tuples, most recent first.
-            tax_year may be None - extracted from XML during parse() instead.
-        """
-        url = f"{self.PROPUBLICA_ORG_URL}/{ein}"
-
-        self._rate_limit()
-
+        cached = self._index_cache_path(year)
         try:
-            response = requests.get(url, headers=self.headers, timeout=self.timeout)
-            if response.status_code == 404:
-                return []
-            response.raise_for_status()
-
-            # Parse HTML to find XML download links
-            soup = BeautifulSoup(response.text, "html.parser")
-
-            # Find all XML download links - they contain object_id
-            xml_links = soup.find_all("a", href=re.compile(r"download-xml\?object_id="))
-
-            if not xml_links:
+            text = cached.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            url = IRS_INDEX_URL_TEMPLATE.format(year=year)
+            try:
+                resp = requests.get(url, timeout=self.timeout * 5)
+                resp.raise_for_status()
+                text = resp.text
+            except requests.RequestException as e:
                 if self.logger:
-                    self.logger.debug(f"No XML filings found for EIN {ein}")
-                return []
-
-            results = []
-            for link in xml_links[:max_filings]:
-                href = link.get("href", "")
-                match = re.search(r"object_id=(\d+)", href)
-                if match:
-                    object_id = match.group(1)
-                    # Tax year will be extracted from XML content during parse()
-                    results.append((object_id, None))
-
-            return results
-
-        except requests.RequestException as e:
+                    self.logger.warning(f"Could not fetch IRS index for {year}: {e}")
+                return {}
+            try:
+                cached.parent.mkdir(parents=True, exist_ok=True)
+                cached.write_text(text, encoding="utf-8")
+            except OSError as e:
+                if self.logger:
+                    self.logger.warning(f"Could not cache IRS index {year}: {e}")
+        except OSError as e:
             if self.logger:
-                self.logger.error(f"Error fetching ProPublica page: {e}")
-            return []
+                self.logger.warning(f"Could not read cached IRS index {year}: {e}")
+            return {}
+
+        return build_index_map(text.splitlines())
+
+    def _irs_filings(self, ein_clean: str, max_filings: int = 3) -> List[FilingRef]:
+        """The organisation's most recent filings, newest tax period first."""
+        current_year = datetime.now(timezone.utc).year
+        found: dict[str, FilingRef] = {}
+        for year in range(current_year, current_year - self.INDEX_YEARS_BACK, -1):
+            for ref in self._load_index_year(year).get(ein_clean, []):
+                # An amended or re-released filing can appear in more than one
+                # submission year; keep one entry per tax period.
+                found.setdefault(ref.tax_period, ref)
+
+        ordered = sorted(found.values(), key=lambda r: r.tax_period, reverse=True)
+        return ordered[:max_filings]
 
     def _get_cache_path(self, object_id: str) -> Path:
         """Get cache file path for an object_id."""
@@ -187,76 +185,6 @@ class Form990GrantsCollector(BaseCollector):
         except OSError as e:
             if self.logger:
                 self.logger.warning(f"Failed to cache XML for object_id {object_id}: {e}")
-
-    def _download_990_xml(self, object_id: str) -> Optional[str]:
-        """
-        Download 990 XML file from ProPublica with caching.
-
-        990 filings never change once filed, so we cache indefinitely.
-        ProPublica returns a 302 redirect to S3. Rate limit is 1 download per minute.
-
-        Args:
-            object_id: ProPublica object_id for the filing
-
-        Returns:
-            XML content as string, or None on error
-        """
-        # Check cache first
-        cached = self._get_cached_xml(object_id)
-        if cached:
-            return cached
-
-        url = f"{self.PROPUBLICA_XML_URL}?object_id={object_id}"
-
-        self._rate_limit()
-
-        try:
-            # Follow redirects to S3
-            response = requests.get(
-                url,
-                headers=self.headers,
-                timeout=self.timeout,
-                allow_redirects=True,
-            )
-
-            # Handle rate limiting
-            if response.status_code == 429:
-                if self.logger:
-                    self.logger.warning("Rate limited by ProPublica (429). Waiting 65s...")
-                time.sleep(65)
-                # Retry once
-                response = requests.get(
-                    url,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                    allow_redirects=True,
-                )
-
-            response.raise_for_status()
-
-            # Verify we got XML
-            content = response.text
-            # Strip UTF-8 BOM if present (common in IRS XML files)
-            # BOM can appear as \ufeff (proper decode) or ï»¿ (latin-1 decode of EF BB BF)
-            if content.startswith("\ufeff"):
-                content = content[1:]
-            elif content.startswith("ï»¿"):
-                content = content[3:]
-            if not content.strip().startswith("<?xml"):
-                if self.logger:
-                    self.logger.warning(f"Response doesn't appear to be XML for object_id {object_id}")
-                    self.logger.debug(f"Response content (first 200 chars): {content[:200]}")
-                return None
-
-            # Cache the XML - 990s never change
-            self._cache_xml(object_id, content)
-
-            return content
-
-        except requests.RequestException as e:
-            if self.logger:
-                self.logger.error(f"Error downloading XML: {e}")
-            return None
 
     def _parse_domestic_grants(self, root: ET.Element) -> List[Dict[str, Any]]:
         """
@@ -483,9 +411,11 @@ class Form990GrantsCollector(BaseCollector):
         if self.logger:
             self.logger.info(f"Fetching 990 grants for EIN {ein}")
 
-        # Step 1: Get filing object_ids (up to 3)
-        filings = self._get_filing_object_ids(ein_clean, max_filings=3)
+        # Step 1: locate the filings in the IRS index (up to 3, newest first)
+        filings = self._irs_filings(ein_clean, max_filings=3)
         if not filings:
+            # The IRS has no e-filed return for this EIN. That is a fact about
+            # the charity, not a fetch failure.
             return FetchResult(
                 success=True,
                 raw_data=self.NO_XML_SENTINEL,
@@ -496,17 +426,25 @@ class Form990GrantsCollector(BaseCollector):
         if self.logger:
             self.logger.debug(f"Found {len(filings)} filing(s) for EIN {ein}")
 
-        # Step 2: Download XMLs
+        # Step 2: read each filing's XML out of its IRS bundle. The on-disk
+        # cache is keyed by object_id and predates this change -- filings
+        # cached from ProPublica are the same bytes and stay valid.
         import json
 
         downloaded = []
-        for object_id, tax_year in filings:
-            xml_content = self._download_990_xml(object_id)
+        for ref in filings:
+            xml_content = self._get_cached_xml(ref.object_id)
+            if not xml_content:
+                xml_content = fetch_filing_xml(ref)
+                if xml_content:
+                    self._cache_xml(ref.object_id, xml_content)
             if xml_content:
-                downloaded.append({"object_id": object_id, "tax_year": tax_year, "xml": xml_content})
+                # tax_year stays None: parse() reads <TaxYr> from the XML,
+                # which is more reliable than the index's TAX_PERIOD.
+                downloaded.append({"object_id": ref.object_id, "tax_year": None, "xml": xml_content})
             else:
                 if self.logger:
-                    self.logger.warning(f"Failed to download XML for object_id {object_id}, skipping")
+                    self.logger.warning(f"Could not read XML for object_id {ref.object_id}, skipping")
 
         if not downloaded:
             return FetchResult(

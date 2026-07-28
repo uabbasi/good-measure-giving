@@ -19,7 +19,9 @@ def test_parse_no_xml_sentinel_returns_empty_profile():
 def test_fetch_treats_no_xml_filings_as_success(monkeypatch):
     collector = Form990GrantsCollector()
 
-    monkeypatch.setattr(collector, "_get_filing_object_ids", lambda _ein, max_filings=3: [])
+    # Filings are located via the IRS index now, not ProPublica's org page.
+    # Patching the old seam left this reaching the network for a 43MB index.
+    monkeypatch.setattr(collector, "_irs_filings", lambda _ein, max_filings=3: [])
 
     result = collector.fetch("85-3964369")
 
