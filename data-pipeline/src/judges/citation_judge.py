@@ -30,6 +30,15 @@ class CitationIssue(BaseModel):
     message: str = Field(description="Description of the issue")
     claim: Optional[str] = Field(None, description="The specific claim with the issue")
     evidence: Optional[str] = Field(None, description="Why this is an issue")
+    contradicted: bool = Field(
+        False,
+        description=(
+            "True ONLY if the fetched content actually states something that "
+            "conflicts with the claim. False if the content merely fails to "
+            "confirm it -- missing, partial, unparseable, or off-topic content "
+            "is NOT a contradiction."
+        ),
+    )
 
 
 class CitationVerificationResult(BaseModel):
@@ -114,6 +123,7 @@ class CitationJudge(BaseJudge):
 
         # Step 2: Fetch and verify URLs
         url_content = {}
+        trusted_skipped: list[int] = []
         verifier = self.get_url_verifier()
 
         for i, citation in enumerate(citations):
@@ -127,10 +137,16 @@ class CitationJudge(BaseJudge):
                 )
                 continue
 
-            # Check if URL should be skipped (trusted source)
+            # Trusted source: we deliberately do not fetch it, so we have no
+            # evidence about it and must not judge it. This used to drop a
+            # "[Trusted source - ...]" placeholder into url_content, which the
+            # LLM then dutifully reported as not supporting the claim -- an
+            # error, blocking publication. 57% of citations point at these
+            # three domains, so "trust it, don't check it" became "check it
+            # against a 50-character placeholder and fail it."
             should_skip, skip_reason = verifier.should_skip(url)
             if should_skip:
-                url_content[i+1] = f"[Trusted source - {skip_reason}]"
+                trusted_skipped.append(i + 1)
                 continue
 
             # Fetch URL
@@ -148,7 +164,8 @@ class CitationJudge(BaseJudge):
                 )
 
         metadata["urls_fetched"] = len(url_content)
-        metadata["urls_failed"] = len(citations) - len(url_content)
+        metadata["urls_skipped_trusted"] = len(trusted_skipped)
+        metadata["urls_failed"] = len(citations) - len(url_content) - len(trusted_skipped)
 
         # Step 3: LLM verification of claims against content
         if url_content and self.config.verify_all_citations:
@@ -253,9 +270,14 @@ class CitationJudge(BaseJudge):
             prompt = self.format_prompt(output, context)
 
             # Add URL content section
+            # Pass the whole fetched page. URLVerifier already caps it at
+            # config.max_content_chars (10k); the extra [:2000] slice that
+            # used to be here handed the model a charity profile's nav and
+            # boilerplate and cut off the financial data it was being asked
+            # to confirm.
             url_section = "\n## Fetched URL Content\n"
             for idx, content in url_content.items():
-                url_section += f"\n### Citation {idx}\n{content[:2000]}...\n"
+                url_section += f"\n### Citation {idx}\n{content}\n"
 
             prompt = prompt.replace("{url_content}", url_section)
 
@@ -275,6 +297,15 @@ class CitationJudge(BaseJudge):
             issues = []
             for issue in result.issues:
                 severity = Severity(issue.severity.lower())
+                # Only an observed contradiction may block publication. The
+                # model reaches for "error" whenever it cannot confirm a
+                # claim, which conflates "the source says otherwise" with "I
+                # could not find it here" -- and the second is a statement
+                # about our evidence, not about the charity. Enumerate what
+                # may block (a closed set of one) rather than trying to
+                # enumerate the open-ended ways a model phrases uncertainty.
+                if severity == Severity.ERROR and not issue.contradicted:
+                    severity = Severity.WARNING
                 issues.append(
                     ValidationIssue(
                         severity=severity,

@@ -32,6 +32,7 @@ Respond with a JSON object:
       "citation_index": 1,
       "field": "citation_1",
       "severity": "error|warning|info",
+      "contradicted": false,
       "message": "Description of the issue",
       "claim": "The specific claim that has an issue",
       "evidence": "Why this is an issue"
@@ -44,8 +45,25 @@ Respond with a JSON object:
 ```
 
 ## Severity Guidelines
-- **error**: Citation doesn't support the claim OR URL content contradicts the claim
-- **warning**: URL unreachable but claim is plausible from other context
-- **info**: Minor discrepancy or formatting issue
+
+Distinguish what the content *says* from what you could not *find* in it.
+Failing to confirm a claim is a fact about our evidence, not about the charity.
+
+- **error** (blocks publication) — requires `"contradicted": true`. The fetched
+  content positively states something that conflicts with the claim: a
+  different number, a different rating, a contradicting fact. You must be able
+  to quote the conflicting text in `evidence`.
+- **warning** — you could not confirm the claim from what you were given. Use
+  this for content that is missing, partial, truncated, unparseable or
+  corrupted (e.g. PDFs), off-topic, or that simply does not mention the claim.
+  Set `"contradicted": false`.
+- **info**: minor discrepancy or formatting issue.
+
+Rounding is not a discrepancy: 28.9% and 28.94%, or 1.3 and 1.32 months, agree.
+A figure that matches a different fiscal year than the one cited is a warning,
+not an error — say which years you compared.
+
+Only judge citations that appear under "Fetched URL Content". Citations absent
+from that section were intentionally not fetched; say nothing about them.
 
 Only report actual issues. If all citations check out, return empty issues array.
