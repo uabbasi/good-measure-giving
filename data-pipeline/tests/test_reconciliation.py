@@ -293,6 +293,31 @@ class TestCompleteness:
         assert m.cash_adjusted_program_ratio is None
         assert any("cash_adjusted_program_ratio" in g for g in gaps)
 
+    def test_domestic_burn_rate_not_rederived_for_direct_implementer(self):
+        """87-2410117 shape: token Schedule F grants against real program
+        spend abroad. patch_completeness must honor the same regranter-only
+        gate as the primary aggregator path, or it silently reintroduces the
+        bug the aggregator was just fixed not to produce."""
+        m = _make_metrics(
+            total_expenses=25_000_000,
+            grants_made=[{"country": "Palestine", "amount": 50_000}],
+        )
+        patched, gaps = patch_completeness(m)
+        assert "domestic_burn_rate" not in patched
+        assert m.domestic_burn_rate is None
+
+    def test_domestic_burn_rate_rederived_for_genuine_regranter(self):
+        m = _make_metrics(
+            total_expenses=10_000_000,
+            grants_made=[
+                {"country": "Yemen", "amount": 3_000_000},
+                {"country": "US", "amount": 6_000_000},
+            ],
+        )
+        patched, gaps = patch_completeness(m)
+        assert "domestic_burn_rate" in patched
+        assert abs(m.domestic_burn_rate - 0.70) < 0.01
+
     def test_reserves_months_rederived(self):
         m = _make_metrics(net_assets=2_000_000, total_expenses=1_000_000)
         patched, gaps = patch_completeness(m)

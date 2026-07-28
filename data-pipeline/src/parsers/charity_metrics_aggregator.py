@@ -1887,10 +1887,24 @@ class CharityMetricsAggregator:
         # ====================================================================
         # Domestic burn rate (Fix 2)
         # ====================================================================
+        # This only sees Schedule F GRANTS TO FOREIGN ORGANIZATIONS, so it
+        # only means "share of expenses staying in the US" for a charity
+        # whose spending model IS regranting. A direct implementer -- its
+        # own staff and logistics delivering aid abroad -- makes no foreign
+        # grants either, so this would report the same ~100% "domestic" a
+        # genuinely US-only charity gets. 87-2410117 (delivers aid directly
+        # in Gaza) was published at 98% domestic on this basis. Require
+        # grants (domestic + foreign) to be a real share of total expenses
+        # -- i.e. this charity actually operates by regranting -- before the
+        # figure means anything; otherwise withhold it rather than publish a
+        # geographic claim the data cannot support.
         total_foreign = grants_profile.get("total_foreign_grants") if grants_profile else None
+        total_domestic_grants = (grants_profile.get("total_domestic_grants") or 0) if grants_profile else 0
         total_exp = metrics_data.get("total_expenses")
         if total_foreign is not None and total_foreign > 0 and total_exp and total_exp > 0:
-            metrics_data["domestic_burn_rate"] = max(0.0, min(1.0, 1.0 - (total_foreign / total_exp)))
+            total_grants = total_foreign + total_domestic_grants
+            if total_grants / total_exp >= 0.50:
+                metrics_data["domestic_burn_rate"] = max(0.0, min(1.0, 1.0 - (total_foreign / total_exp)))
 
         # ====================================================================
         # Reserves months (Fix 3) — net_assets / monthly expenses

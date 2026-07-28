@@ -62,13 +62,20 @@ def patch_completeness(metrics: CharityMetrics) -> tuple[list[str], list[str]]:
                 )
 
     # --- domestic_burn_rate ---
+    # Only meaningful for a charity that actually operates by regranting --
+    # see the same gate and its rationale in charity_metrics_aggregator.py's
+    # primary computation. Re-deriving it here without the gate would
+    # silently reintroduce the bug for a direct implementer (its own foreign
+    # grants are token/absent, so the ratio reads as ~100% "domestic" no
+    # matter how much it spends abroad through its own staff and programs).
     if metrics.domestic_burn_rate is None:
-        # Check if we have grants_made with foreign grants
         total_exp = metrics.total_expenses
-        foreign_grants = [g for g in (metrics.grants_made or []) if g.get("country") and g["country"] != "US"]
+        grants_made = metrics.grants_made or []
+        foreign_grants = [g for g in grants_made if g.get("country") and g["country"] != "US"]
         if foreign_grants and total_exp and total_exp > 0:
             total_foreign = sum(g.get("amount", 0) or 0 for g in foreign_grants)
-            if total_foreign > 0:
+            total_grants = sum(g.get("amount", 0) or 0 for g in grants_made)
+            if total_foreign > 0 and total_grants / total_exp >= 0.50:
                 metrics.domestic_burn_rate = max(0.0, min(1.0, 1.0 - (total_foreign / total_exp)))
                 patched.append("domestic_burn_rate")
                 logger.debug(f"Re-derived domestic_burn_rate={metrics.domestic_burn_rate:.3f}")

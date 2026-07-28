@@ -137,10 +137,11 @@ class TestMethodologyDivergentMetricsDoNotBlock:
     """
 
     def test_fundraising_efficiency_disagreement_does_not_block(self):
+        from unittest.mock import Mock, patch
+
         from src.judges.factual_judge import FactualJudge, FactualVerificationResult
         from src.judges.schemas.config import JudgeConfig
         from src.judges.schemas.verdict import Severity
-        from unittest.mock import Mock, patch
 
         payload = FactualVerificationResult(
             issues=[
@@ -169,10 +170,11 @@ class TestMethodologyDivergentMetricsDoNotBlock:
         )
 
     def test_working_capital_disagreement_does_not_block(self):
+        from unittest.mock import Mock, patch
+
         from src.judges.factual_judge import FactualJudge, FactualVerificationResult
         from src.judges.schemas.config import JudgeConfig
         from src.judges.schemas.verdict import Severity
-        from unittest.mock import Mock, patch
 
         payload = FactualVerificationResult(
             issues=[
@@ -203,10 +205,11 @@ class TestMethodologyDivergentMetricsDoNotBlock:
     def test_unrelated_revenue_contradiction_still_blocks(self):
         """Regression guard: the methodology-divergent carve-out must be
         narrow, not a general amnesty for any 'contradiction'."""
+        from unittest.mock import Mock, patch
+
         from src.judges.factual_judge import FactualJudge, FactualVerificationResult
         from src.judges.schemas.config import JudgeConfig
         from src.judges.schemas.verdict import Severity
-        from unittest.mock import Mock, patch
 
         payload = FactualVerificationResult(
             issues=[
