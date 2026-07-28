@@ -845,6 +845,10 @@ def generate_baseline_narrative(
         # Stamp correct metrics before returning
         narrative = sanitize_narrative_metrics(narrative, metrics, scores)
 
+        # Financial-health content (cash reserves, working capital) belongs
+        # under impact, not alignment.
+        narrative = strip_financial_reserves_from_alignment(narrative)
+
         # Drop markers whose own claim contradicts the sentence they sit on.
         # Runs after the metric sanitizer so it judges the corrected numbers.
         narrative = prune_unsupported_citation_markers(
@@ -886,6 +890,10 @@ Generate the corrected narrative JSON:"""
 
         # Stamp correct metrics before returning
         narrative = sanitize_narrative_metrics(narrative, metrics, scores)
+
+        # Financial-health content (cash reserves, working capital) belongs
+        # under impact, not alignment.
+        narrative = strip_financial_reserves_from_alignment(narrative)
 
         # Drop markers whose own claim contradicts the sentence they sit on.
         # Runs after the metric sanitizer so it judges the corrected numbers.
@@ -1487,6 +1495,72 @@ def _repair_removal_artifacts(text: str, joints: list[int] | None = None) -> str
 #     known sentence-ending abbreviation ("Inc.", "U.S.", "et al."), so
 #     ordinary correctly-punctuated English isn't mistaken for removal
 #     debris.
+_RESERVES_MENTION_RE = re.compile(
+    r"cash\s+reserves|financial\s+reserves|working\s+capital", re.IGNORECASE
+)
+_RESERVES_ASIDE_RE = re.compile(
+    # `[^.]` alone would stop at a decimal point ("25.6 months") and mistake
+    # it for the sentence boundary -- same defect shape `_decimal_safe`
+    # elsewhere in this file exists for. `(?<=\d)\.(?=\d)` lets the run
+    # cross a period sandwiched between two digits without crossing a real
+    # sentence-ending one.
+    r"\s*,\s*(?:though|while|but)\b(?:[^.]|(?<=\d)\.(?=\d))*?"
+    r"(?:cash\s+reserves|financial\s+reserves|working\s+capital)(?:[^.]|(?<=\d)\.(?=\d))*",
+    re.IGNORECASE,
+)
+
+
+def strip_financial_reserves_from_alignment(narrative: dict) -> dict:
+    """Cash reserves / working capital describe Financial Health, not
+    Alignment. The baseline prompt's own output schema says
+    dimension_explanations.impact covers "program effectiveness, financial
+    health, and evidence quality" and .alignment covers "donor fit, cause
+    urgency, and track record" -- but the model sometimes tucks a reserves
+    aside into the alignment text anyway.
+
+    Observed on EIN 27-3625796: dimension_explanations.alignment read "...
+    It has a established track record in domestic advocacy, though its
+    high level of cash reserves--25.6 months of working capital--is a
+    notable factor for donors to consider [1]." The concern itself is
+    never lost by removing it here: working-capital risk is already
+    stated separately in areas_for_improvement, so this drops a duplicate
+    sitting under the wrong rubric heading, not information.
+
+    Only touches dimension_explanations.alignment -- a mention under
+    impact, where it belongs, or anywhere else in the narrative (e.g. a
+    correctly-scoped areas_for_improvement bullet) is left untouched.
+    """
+    dim = narrative.get("dimension_explanations")
+    if not isinstance(dim, dict):
+        return narrative
+    text = dim.get("alignment")
+    if not isinstance(text, str) or not _RESERVES_MENTION_RE.search(text):
+        return narrative
+
+    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
+    kept = []
+    for sentence in sentences:
+        if not _RESERVES_MENTION_RE.search(sentence):
+            kept.append(sentence)
+            continue
+        # First try to drop just the though/while/but aside that carries
+        # the reserves mention, keeping the rest of the sentence intact.
+        stripped = _RESERVES_ASIDE_RE.sub("", sentence)
+        if _RESERVES_MENTION_RE.search(stripped):
+            # The reserves mention wasn't inside such an aside -- the
+            # sentence is fundamentally about reserves. Drop it whole
+            # rather than leave a fragment that still makes the claim.
+            continue
+        stripped = stripped.rstrip()
+        if stripped and not stripped.endswith((".", "!", "?")):
+            stripped += "."
+        if stripped:
+            kept.append(stripped)
+
+    dim["alignment"] = " ".join(kept).strip()
+    return narrative
+
+
 def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", scores: Any) -> dict:
     """Deterministically stamp correct metric values into LLM-generated narrative.
 
