@@ -273,3 +273,91 @@ class TestMalformedSeverityIsNotTheCharitysFault:
 
         assert res is not None, "One bad severity string discarded every finding"
         assert res.issues[0].severity == Severity.WARNING
+
+
+class TestTheMethodologyToleranceIsBounded:
+    """Tolerating a basis gap must not tolerate a materially different story.
+
+    205b206 downgraded every fundraising-efficiency and working-capital
+    disagreement to a warning, keyed only on the field/message text. That is
+    right for the gap it was built for -- ours vs Charity Navigator's, computed
+    on different bases (10.7 vs 12.84 months; $0.09 vs $0.04 per $1 raised) --
+    where a donor reads both numbers as the same story.
+
+    It was not bounded by magnitude, so it also swallowed cases where the two
+    numbers tell OPPOSITE stories. 4.3 months of working capital versus -6.1
+    means solvent versus burning through reserves; 1.2 versus 14.0 is a
+    tenfold error. Those are exactly what a donor would want flagged, and
+    "be looser about inevitable discrepancies" was never meant to cover them.
+    """
+
+    def _severity(self, field, message, claim, source):
+        from unittest.mock import Mock, patch
+
+        from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+        from src.judges.schemas.config import JudgeConfig
+
+        payload = FactualVerificationResult(
+            issues=[{
+                "field": field, "severity": "error", "discrepancy_kind": "contradiction",
+                "message": message, "claim_value": claim, "source_value": source,
+            }],
+            claims_checked=1, claims_verified=0,
+        )
+        judge = FactualJudge(JudgeConfig())
+        client = Mock()
+        client.generate.return_value = Mock(text=payload.model_dump_json(), cost_usd=0.0)
+        with patch.object(judge, "get_llm_client", return_value=client):
+            return judge._verify_claims_with_llm({"narrative": {"content": "x"}}, {}).issues[0].severity
+
+    def test_a_sign_flip_on_working_capital_still_blocks(self):
+        from src.judges.schemas.verdict import Severity
+
+        sev = self._severity(
+            "working_capital_ratio",
+            "narrative says 4.3 months of working capital, source shows -6.1",
+            "4.3", "-6.1",
+        )
+        assert sev == Severity.ERROR, "solvent vs. burning reserves is not a basis gap"
+
+    def test_an_order_of_magnitude_gap_still_blocks(self):
+        from src.judges.schemas.verdict import Severity
+
+        sev = self._severity(
+            "working_capital_ratio",
+            "narrative says 1.2 months working capital, source shows 14.0",
+            "1.2", "14.0",
+        )
+        assert sev == Severity.ERROR
+
+    def test_the_real_working_capital_basis_gap_is_still_tolerated(self):
+        from src.judges.schemas.verdict import Severity
+
+        sev = self._severity(
+            "working_capital_ratio",
+            "narrative says 10.7 months, CN reports 12.84",
+            "10.7", "12.84",
+        )
+        assert sev != Severity.ERROR
+
+    def test_the_real_fundraising_basis_gaps_are_still_tolerated(self):
+        from src.judges.schemas.verdict import Severity
+
+        for claim, source in (("0.09", "0.04"), ("0.18", "0.15"), ("0.31", "0.25")):
+            sev = self._severity(
+                "fundraising_efficiency",
+                f"narrative says ${claim} per $1 raised, CN reports ${source}",
+                claim, source,
+            )
+            assert sev != Severity.ERROR, f"${claim} vs ${source} should be tolerated"
+
+    def test_a_qualitative_disagreement_is_still_tolerated(self):
+        """No parseable numbers: fall back to the field-scoped judgement."""
+        from src.judges.schemas.verdict import Severity
+
+        sev = self._severity(
+            "fundraising_efficiency",
+            "narrative characterises fundraising efficiency differently than CN",
+            None, None,
+        )
+        assert sev != Severity.ERROR

@@ -46,6 +46,19 @@ _ABSOLUTE_TOLERANCE = 0.5
 _ABSOLUTE_TOLERANCE_MAX_MAGNITUDE = 100
 
 
+def _parse_number(v: Any) -> Optional[float]:
+    """First numeric token in a value, commas and currency stripped."""
+    if v is None:
+        return None
+    m = _NUMERIC_RE.search(str(v).replace(",", ""))
+    if not m:
+        return None
+    try:
+        return float(m.group(0).replace(",", ""))
+    except ValueError:
+        return None
+
+
 def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
     """Do two reported values agree once rounding is allowed?
 
@@ -56,18 +69,7 @@ def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
     "50.3% vs 50.29%" and even "$205,225 vs $205,225" came back as blocking
     errors. A deterministic check does not have moods.
     """
-    def _parse(v: Any) -> Optional[float]:
-        if v is None:
-            return None
-        m = _NUMERIC_RE.search(str(v).replace(",", ""))
-        if not m:
-            return None
-        try:
-            return float(m.group(0).replace(",", ""))
-        except ValueError:
-            return None
-
-    a, b = _parse(claim_value), _parse(source_value)
+    a, b = _parse_number(claim_value), _parse_number(source_value)
     if a is None or b is None:
         return None
     if a == b:
@@ -80,6 +82,37 @@ def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
     if max(abs(a), abs(b)) <= _ABSOLUTE_TOLERANCE_MAX_MAGNITUDE and diff <= _ABSOLUTE_TOLERANCE:
         return True
     return False
+
+
+# How far two same-concept figures may diverge and still be "the same story".
+# Sized to the real basis gaps: $0.09 vs $0.04 per $1 raised is the widest
+# observed (0.56), and 10.7 vs 12.84 months is 0.17.
+_SAME_STORY_MAX_DIVERGENCE = 0.6
+
+
+def _same_story(claim_value: Any, source_value: Any) -> bool:
+    """Would a donor read these two figures as saying the same thing?
+
+    Bounds the methodology tolerance below. Two sources computing the same
+    concept on different bases land near each other; they do not land on
+    opposite sides of zero or an order of magnitude apart. 4.3 months of
+    working capital versus -6.1 is solvent versus burning reserves, and 1.2
+    versus 14.0 is a tenfold error -- neither is a basis gap, and a donor
+    would want both flagged.
+
+    Unparseable values fall back to True: with no numbers to compare, the
+    field-scoped judgement is all we have.
+    """
+    a = _parse_number(claim_value)
+    b = _parse_number(source_value)
+    if a is None or b is None:
+        return True
+    if (a < 0) != (b < 0):
+        return False
+    widest = max(abs(a), abs(b))
+    if widest == 0:
+        return True
+    return abs(a - b) / widest <= _SAME_STORY_MAX_DIVERGENCE
 
 
 class FactualIssue(BaseModel):
@@ -340,7 +373,9 @@ class FactualJudge(BaseJudge):
                         severity = Severity.INFO
                     elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
                         severity = Severity.WARNING
-                    elif _METHODOLOGY_DIVERGENT_FIELD_RE.search(f"{issue.field} {issue.message}"):
+                    elif _METHODOLOGY_DIVERGENT_FIELD_RE.search(
+                        f"{issue.field} {issue.message}"
+                    ) and _same_story(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
