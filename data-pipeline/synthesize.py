@@ -1253,13 +1253,30 @@ def realign_income_statement_attribution(
     -- they are overwritten from `metrics` further down -- but its decision
     never reached the attribution, so the loser supplied the citations.
 
-    Only the charity_navigator outcome is rewritten. "propublica" and "mixed"
-    describe the same PP-first-then-gap-fill policy extract_financials already
-    applied, so its per-field attribution is right for those.
+    "propublica" describes the same PP-first policy extract_financials
+    already applied, so its per-field attribution is right there and is left
+    alone. "charity_navigator" always gets every field rewritten -- CN won
+    the whole income statement, so extract_financials' PP-first attribution
+    is wrong for all of it.
+
+    "mixed" is riskier than its name suggests: extract_financials() runs its
+    own PP-first-then-CN-fallback election per field with no fiscal-year
+    awareness, while the aggregator's gap-fill is fiscal-year aware and its
+    "is this field missing from PP" test is not the same test (e.g. a
+    genuine $0 PP value reads as "missing" to extract_financials' truthy
+    check but as "present" to the aggregator's `is None` check). The two
+    elections usually agree field-by-field but are not guaranteed to -- EIN
+    20-8540050 published Charity Navigator's FY2024 total_revenue while
+    still citing "Form 990 (2023)" for a different figure. Under "mixed",
+    only rewrite a field whose attributed value has actually drifted from
+    what got published (or has no attribution at all); leave every field
+    where the two elections already agree, since most fields in a "mixed"
+    charity genuinely did come from PP.
 
     Mutates source_attribution in place.
     """
-    if getattr(metrics, "financial_data_source", None) != "charity_navigator":
+    financial_data_source = getattr(metrics, "financial_data_source", None)
+    if financial_data_source not in {"charity_navigator", "mixed"}:
         return
 
     for field in INCOME_STATEMENT_COLUMNS:
@@ -1267,6 +1284,10 @@ def realign_income_statement_attribution(
         if value is None:
             # The aggregator has nothing here; do not mint provenance for it.
             continue
+        if financial_data_source == "mixed":
+            existing = source_attribution.get(field)
+            if existing is not None and existing.get("value") == value:
+                continue
         source_attribution[field] = create_attribution(
             field,
             value,
