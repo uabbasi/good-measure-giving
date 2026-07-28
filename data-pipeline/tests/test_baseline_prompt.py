@@ -119,6 +119,7 @@ class TestCnScoreSanitizationIsIdempotent:
             cn_accountability_score=None,
             cn_financial_score=None,
             fundraising_expenses=1000,
+            total_contributions=100000,
             total_revenue=100000,
             program_expense_ratio=None,
             working_capital_ratio=None,
@@ -167,7 +168,7 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
         # null ratio that clause is itself an unsupported fabrication (task
         # G7) — the fixture disagreed with what these tests' own docstrings
         # already claimed about it.
-        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
+        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759, total_contributions=604759,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=0.911,
                                   working_capital_ratio=None)
@@ -197,7 +198,7 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
         assert not re.search(r"\d+\.\s*$", out), f"truncated mid-number: {out!r}"
 
     def test_strengths_array_entries_are_stripped_too(self):
-        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759,
+        metrics = SimpleNamespace(fundraising_expenses=None, total_revenue=604759, total_contributions=604759,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=None,
                                   working_capital_ratio=None)
@@ -210,7 +211,7 @@ class TestFundraisingClaimIsStrippedWhenDataIsMissing:
         """When fundraising_expenses is known and the claim already matches it,
         the correction-path rule should leave the text as-is (not the removal
         path — that only fires when the metric is null/undetermined)."""
-        metrics = SimpleNamespace(fundraising_expenses=30000, total_revenue=600000,
+        metrics = SimpleNamespace(fundraising_expenses=30000, total_revenue=600000, total_contributions=600000,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=None,
                                   working_capital_ratio=None)
@@ -250,6 +251,7 @@ class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
         reimplement the raw :.2f formatting that caused the bug."""
         sample_charity_metrics.fundraising_expenses = 241666
         sample_charity_metrics.total_revenue = 79_600_000
+        sample_charity_metrics.total_contributions = 79_600_000
         kwargs = _baseline_prompt_kwargs(sample_charity_metrics, _fake_scores(), 3, "[1] Charity Navigator")
         assert kwargs["fundraising_efficiency"] == "<$0.01 per $1 raised"
 
@@ -258,7 +260,7 @@ class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
         null-fundraising removal rules in sanitize_narrative_metrics, and must
         not be clobbered back to "$0.00" by the sanitizer's own correction path
         (a second, independent reimplementation of this same ratio)."""
-        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000, total_contributions=79_600_000,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=None,
                                   working_capital_ratio=None)
@@ -271,7 +273,7 @@ class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
         """If the LLM writes a plausible-but-wrong dollar figure, the
         sanitizer's own correction (not just the prompt kwargs) must replace it
         with the tiny-but-real rendering, not silently round it to $0.00."""
-        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000, total_contributions=79_600_000,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=None,
                                   working_capital_ratio=None)
@@ -286,7 +288,7 @@ class TestTinyRealFundraisingRatioIsNotRenderedAsZero:
         for pattern 1 isn't anchored past a leading "<", so re-running it on
         already-correct "<$0.01 per $1 raised" text must not duplicate the
         "<" into "<<$0.01"."""
-        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000,
+        metrics = SimpleNamespace(fundraising_expenses=241666, total_revenue=79_600_000, total_contributions=79_600_000,
                                   cn_overall_score=None, cn_accountability_score=None,
                                   cn_financial_score=None, program_expense_ratio=None,
                                   working_capital_ratio=None)
@@ -312,10 +314,14 @@ def _metrics(**overrides):
         cn_accountability_score=90,
         cn_financial_score=85,
         fundraising_expenses=10_000,
+        total_contributions=100000,
         total_revenue=100_000,
         founded_year=None,
     )
     base.update(overrides)
+    # Same as above: these fixtures use revenue as 'the denominator'.
+    if "total_revenue" in overrides and "total_contributions" not in overrides:
+        base["total_contributions"] = overrides["total_revenue"]
     return SimpleNamespace(**base)
 
 

@@ -564,18 +564,27 @@ _ZAKAT_CONSTRAINT_ZAKAT = (
 )
 
 
-def _fundraising_ratio_str(fundraising_expenses, total_revenue) -> str | None:
+def _fundraising_ratio_str(fundraising_expenses, total_contributions) -> str | None:
     """Just the dollar-figure prefix (e.g. "$0.00", "<$0.01", "$0.10") for the
     cost to raise $1, or None if it can't be computed.
 
+    The denominator is CONTRIBUTIONS, not total revenue. Total revenue also
+    carries program service revenue, government grants and investment income —
+    money fundraising did not raise — and dividing by it flattered every
+    charity with substantial non-donation income. EIN 27-4155655 was published
+    at "$0.30" while actually spending $1.32 per donated dollar, i.e. more on
+    fundraising than it raised; 31 of 143 charities understated the true cost
+    by more than half.
+
     A real-but-tiny ratio must not render as "$0.00": $241,666 against $79.6M
-    revenue is $0.003 per $1 — a real cost, and telling a donor it was zero is
-    wrong. Only a genuine 0 gets "$0.00". Shared by the prompt-construction
-    call site and the narrative sanitizer's correction path so both agree.
+    of contributions is $0.003 per $1 — a real cost, and telling a donor it was
+    zero is wrong. Only a genuine 0 gets "$0.00". Shared by the
+    prompt-construction call site and the narrative sanitizer's correction path
+    so both agree.
     """
-    if fundraising_expenses is None or not total_revenue or total_revenue <= 0:
+    if fundraising_expenses is None or not total_contributions or total_contributions <= 0:
         return None
-    efficiency = fundraising_expenses / total_revenue
+    efficiency = fundraising_expenses / total_contributions
     if efficiency == 0:
         return "$0.00"
     if efficiency < 0.01:
@@ -583,9 +592,9 @@ def _fundraising_ratio_str(fundraising_expenses, total_revenue) -> str | None:
     return f"${efficiency:.2f}"
 
 
-def _format_fundraising_efficiency(fundraising_expenses, total_revenue) -> str:
+def _format_fundraising_efficiency(fundraising_expenses, total_contributions) -> str:
     """Cost to raise $1, as prose. "N/A" when unknowable."""
-    ratio = _fundraising_ratio_str(fundraising_expenses, total_revenue)
+    ratio = _fundraising_ratio_str(fundraising_expenses, total_contributions)
     return f"{ratio} per $1 raised" if ratio else "N/A"
 
 
@@ -602,7 +611,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
 
     fundraising_efficiency_str = _format_fundraising_efficiency(
-        metrics.fundraising_expenses, metrics.total_revenue
+        metrics.fundraising_expenses, metrics.total_contributions
     )
 
     zakat_constraint_text = (
@@ -2687,8 +2696,12 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # (Task G18) — it needed to exist before the CN section builds its own
     # rules, so the fundraising family could be included in what "another
     # metric's claim" means there too.
-    if metrics.fundraising_expenses is not None and metrics.total_revenue and metrics.total_revenue > 0:
-        correct_fr = _fundraising_ratio_str(metrics.fundraising_expenses, metrics.total_revenue)
+    if (
+        metrics.fundraising_expenses is not None
+        and metrics.total_contributions
+        and metrics.total_contributions > 0
+    ):
+        correct_fr = _fundraising_ratio_str(metrics.fundraising_expenses, metrics.total_contributions)
         # Pattern 1: $X.XX per $1 raised / to raise $1 / per dollar raised
         # Leading `<?` (no whitespace before it) also swallows a prior
         # "<$0.01" correction so re-sanitizing already-correct tiny-ratio text

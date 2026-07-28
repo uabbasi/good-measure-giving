@@ -23,6 +23,10 @@ def _financials(total_revenue=149_888_609, fundraising_expenses=None, program_ex
         total_revenue=total_revenue,
         program_expense_ratio=program_expense_ratio,
         fundraising_expenses=fundraising_expenses,
+        # These tests predate the denominator change and use revenue as
+        # 'the denominator'; mirroring it keeps their intent (formatting
+        # of tiny/zero ratios) independent of which field is divided by.
+        total_contributions=total_revenue,
     )
 
 

@@ -870,7 +870,9 @@ class RichNarrativeGenerator:
                 if hasattr(fin, "fundraising_expenses"):
                     from baseline import _fundraising_ratio_str
 
-                    ratio_str = _fundraising_ratio_str(fin.fundraising_expenses, fin.total_revenue)
+                    ratio_str = _fundraising_ratio_str(
+                        fin.fundraising_expenses, getattr(fin, "total_contributions", None)
+                    )
                     if ratio_str:
                         lines.append(
                             f"- Fundraising Efficiency: {ratio_str} per $1 raised (use this exact value)"
