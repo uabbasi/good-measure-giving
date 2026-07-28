@@ -1932,26 +1932,31 @@ class CharityMetricsAggregator:
         # ====================================================================
         metrics_data["candid_seal"] = candid_profile.get("candid_seal") if candid_profile else None
 
-        # Board size: take max across sources (parsing bugs can undercount)
-        # Website stores leadership as a list of people, derive board_size from it
-        website_board = None
-        if website_profile:
-            website_board = website_profile.get("board_size")
-            if not website_board:
-                leadership = website_profile.get("leadership") or []
-                if isinstance(leadership, list) and len(leadership) > 0:
-                    website_board = len(leadership)
-        board_candidates = [
-            candid_profile.get("board_size") if candid_profile else None,
-            propublica_990.get("board_size") if propublica_990 else None,
-            website_board,
-        ]
-        valid_boards = [b for b in board_candidates if b and b > 0]
-        metrics_data["board_size"] = max(valid_boards) if valid_boards else None
+        # Board size: take max across sources that actually report one
+        # (parsing bugs can undercount). Charity Navigator belongs here -- it
+        # reviews governance and is often the only source carrying the number.
+        #
+        # There is deliberately NO fallback to len(website_profile["leadership"]).
+        # That list is an executive roster, not a board: for EIN 87-2410117 it
+        # held [Chief Executive Officer, Deputy CEO] and produced a published
+        # "two-member board" while CN reported 6 with 100% independence. A
+        # charity no governance source covers gets board_size = None, per the
+        # rule that missing fields stay NULL -- "nobody reports this" is not
+        # evidence of a small board.
+        board_candidates = {
+            "candid": candid_profile.get("board_size") if candid_profile else None,
+            "propublica": propublica_990.get("board_size") if propublica_990 else None,
+            "charity_navigator": cn_profile.get("board_size") if cn_profile else None,
+            "website": website_profile.get("board_size") if website_profile else None,
+        }
+        valid_boards = {s: b for s, b in board_candidates.items() if b and b > 0}
         if valid_boards:
-            max_board = max(valid_boards)
-            board_src = "candid" if candid_profile and candid_profile.get("board_size") == max_board else "propublica" if propublica_990 and propublica_990.get("board_size") == max_board else "website"
+            board_src = max(valid_boards, key=lambda s: valid_boards[s])
+            max_board = valid_boards[board_src]
+            metrics_data["board_size"] = max_board
             _track("board_size", board_src, max_board, "max_across_sources")
+        else:
+            metrics_data["board_size"] = None
 
         metrics_data["independent_board_members"] = (
             candid_profile.get("independent_board_members") if candid_profile else None
