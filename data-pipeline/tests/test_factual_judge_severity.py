@@ -119,6 +119,119 @@ class TestOnlyContradictionsAndFabricationsBlock:
         )
 
 
+class TestMethodologyDivergentMetricsDoNotBlock:
+    """fundraising_efficiency and working_capital have two legitimate values:
+    OUR figure (Form 990 expenses / IRS-reported contributions) and Charity
+    Navigator's own published figure, which uses a different basis and often
+    a different fiscal year. A donor reads "$0.09 per $1 raised" and "$0.04
+    per $1 raised" as the same story -- efficient fundraising -- so a real
+    numeric gap here is not a fact anyone got wrong. Withholding a charity's
+    page over it is the actual defect.
+
+    Observed: 13-3626299 ours $0.09 vs CN $0.04; 01-0548371 ours $0.18 vs CN
+    $0.15; 87-2410117 ours $0.31 vs CN $0.25 fundraising efficiency, and 10.7
+    vs CN's 12.84 months working capital.
+
+    This must NOT become a blanket "contradiction never blocks" rule --
+    test_contradiction_blocks (a real revenue mismatch) must keep blocking.
+    """
+
+    def test_fundraising_efficiency_disagreement_does_not_block(self):
+        from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+        from src.judges.schemas.config import JudgeConfig
+        from src.judges.schemas.verdict import Severity
+        from unittest.mock import Mock, patch
+
+        payload = FactualVerificationResult(
+            issues=[
+                {
+                    "field": "fundraising_efficiency",
+                    "severity": "error",
+                    "discrepancy_kind": "contradiction",
+                    "message": "Narrative states $0.09 per $1 raised, but Charity "
+                    "Navigator reports $0.04.",
+                    "claim_value": "$0.09",
+                    "source_value": "$0.04",
+                }
+            ],
+            claims_checked=1,
+            claims_verified=0,
+        )
+        judge = FactualJudge(JudgeConfig())
+        client = Mock()
+        client.generate.return_value = Mock(text=payload.model_dump_json(), cost_usd=0.0)
+        with patch.object(judge, "get_llm_client", return_value=client):
+            res = judge._verify_claims_with_llm({"narrative": {"content": "x"}}, {})
+
+        assert res.issues[0].severity != Severity.ERROR, (
+            "A real but immaterial fundraising-efficiency basis gap (ours vs "
+            "CN's own figure) blocked publication"
+        )
+
+    def test_working_capital_disagreement_does_not_block(self):
+        from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+        from src.judges.schemas.config import JudgeConfig
+        from src.judges.schemas.verdict import Severity
+        from unittest.mock import Mock, patch
+
+        payload = FactualVerificationResult(
+            issues=[
+                {
+                    "field": "working_capital",
+                    "severity": "error",
+                    "discrepancy_kind": "contradiction",
+                    "message": "Narrative states 10.7 months of working capital, but "
+                    "Charity Navigator reports 12.84 months.",
+                    "claim_value": "10.7",
+                    "source_value": "12.84",
+                }
+            ],
+            claims_checked=1,
+            claims_verified=0,
+        )
+        judge = FactualJudge(JudgeConfig())
+        client = Mock()
+        client.generate.return_value = Mock(text=payload.model_dump_json(), cost_usd=0.0)
+        with patch.object(judge, "get_llm_client", return_value=client):
+            res = judge._verify_claims_with_llm({"narrative": {"content": "x"}}, {})
+
+        assert res.issues[0].severity != Severity.ERROR, (
+            "A real but immaterial working-capital basis gap (10.7 vs CN's "
+            "12.84 months) blocked publication"
+        )
+
+    def test_unrelated_revenue_contradiction_still_blocks(self):
+        """Regression guard: the methodology-divergent carve-out must be
+        narrow, not a general amnesty for any 'contradiction'."""
+        from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+        from src.judges.schemas.config import JudgeConfig
+        from src.judges.schemas.verdict import Severity
+        from unittest.mock import Mock, patch
+
+        payload = FactualVerificationResult(
+            issues=[
+                {
+                    "field": "total_revenue",
+                    "severity": "error",
+                    "discrepancy_kind": "contradiction",
+                    "message": "Narrative states $35,399,389 in revenue, but the "
+                    "source data shows $10,889,699.",
+                    "claim_value": "35399389",
+                    "source_value": "10889699",
+                }
+            ],
+            claims_checked=1,
+            claims_verified=0,
+        )
+        judge = FactualJudge(JudgeConfig())
+        client = Mock()
+        client.generate.return_value = Mock(text=payload.model_dump_json(), cost_usd=0.0)
+        with patch.object(judge, "get_llm_client", return_value=client):
+            res = judge._verify_claims_with_llm({"narrative": {"content": "x"}}, {})
+
+        assert res.issues[0].severity == Severity.ERROR
+
+
 class TestMalformedSeverityIsNotTheCharitysFault:
     """A model typo in OUR schema must not block a charity's publication.
 

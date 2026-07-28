@@ -24,6 +24,19 @@ logger = logging.getLogger(__name__)
 # and must not block its publication.
 BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
 
+# fundraising_efficiency and working_capital each have two legitimate values:
+# ours (Form 990 expenses / IRS-reported contributions) and Charity
+# Navigator's own published figure, computed on a different basis and often
+# a different fiscal year. A donor reads "$0.09 per $1 raised" and "$0.04
+# per $1 raised" as the same story -- efficient fundraising -- so a real
+# numeric gap on these two fields is not a fact anyone got wrong, and a
+# "contradiction" verdict here must not block. Observed: 13-3626299 ours
+# $0.09 vs CN $0.04; 01-0548371 $0.18 vs $0.15; 87-2410117 $0.31 vs $0.25
+# fundraising efficiency and 10.7 vs 12.84 months working capital.
+_METHODOLOGY_DIVERGENT_FIELD_RE = re.compile(
+    r"fundraising.{0,3}efficienc|cost.{0,20}raise|working.{0,3}capital", re.IGNORECASE
+)
+
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
 # Matches the prompt's stated tolerances: 1% relative for money, half a unit
@@ -313,16 +326,21 @@ class FactualJudge(BaseJudge):
                         issue.field,
                     )
                     severity = Severity.WARNING
-                # Two gates, both because prompt guidance alone did not hold.
+                # Three gates, all because prompt guidance alone did not hold.
                 # First: numbers that agree once rounding is allowed are never
-                # a defect, whatever the model concluded. Then: only a
+                # a defect, whatever the model concluded. Second: only a
                 # contradiction or a fabrication describes a fault in the
                 # narrative -- "the source data does not cover this" is a
                 # statement about our evidence and must not block publication.
+                # Third: a real disagreement on a field where we and Charity
+                # Navigator compute the same concept on different bases is
+                # not a fault either -- see _METHODOLOGY_DIVERGENT_FIELD_RE.
                 if severity == Severity.ERROR:
                     if numeric_agreement(issue.claim_value, issue.source_value) is True:
                         severity = Severity.INFO
                     elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
+                        severity = Severity.WARNING
+                    elif _METHODOLOGY_DIVERGENT_FIELD_RE.search(f"{issue.field} {issue.message}"):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
