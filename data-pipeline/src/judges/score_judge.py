@@ -11,6 +11,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 from .base_judge import BaseJudge, JudgeType
+from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
 logger = logging.getLogger(__name__)
@@ -274,7 +275,27 @@ class ScoreJudge(BaseJudge):
             # Convert to ValidationIssues
             issues = []
             for issue in result.issues:
-                severity = Severity(issue.severity.lower())
+                try:
+                    severity = Severity(issue.severity.lower())
+                except ValueError:
+                    logger.warning(
+                        "score judge returned an unrecognised severity %r for field %r; "
+                        "treating as warning",
+                        issue.severity,
+                        issue.field,
+                    )
+                    severity = Severity.WARNING
+                # Numeric adjudication belongs to the factual judge, which has
+                # claim_value/source_value and a bounded tolerance. This judge
+                # sees only prose and cannot recover the operands reliably, so
+                # on metrics that legitimately carry two values it defers
+                # rather than blocking blind. Its own job -- rationale-vs-score
+                # coherence, dimension attribution, miscited claims -- is
+                # untouched.
+                if severity == Severity.ERROR and is_methodology_divergent(
+                    f"{issue.field} {issue.message} {issue.evidence or ''}"
+                ):
+                    severity = Severity.WARNING
                 details = {}
                 if issue.score_name:
                     details["score_name"] = issue.score_name

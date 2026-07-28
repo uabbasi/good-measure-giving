@@ -14,6 +14,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from .base_judge import BaseJudge, JudgeType
+from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
 logger = logging.getLogger(__name__)
@@ -23,19 +24,6 @@ logger = logging.getLogger(__name__)
 # others describe the state of our evidence, which is not the charity's fault
 # and must not block its publication.
 BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
-
-# fundraising_efficiency and working_capital each have two legitimate values:
-# ours (Form 990 expenses / IRS-reported contributions) and Charity
-# Navigator's own published figure, computed on a different basis and often
-# a different fiscal year. A donor reads "$0.09 per $1 raised" and "$0.04
-# per $1 raised" as the same story -- efficient fundraising -- so a real
-# numeric gap on these two fields is not a fact anyone got wrong, and a
-# "contradiction" verdict here must not block. Observed: 13-3626299 ours
-# $0.09 vs CN $0.04; 01-0548371 $0.18 vs $0.15; 87-2410117 $0.31 vs $0.25
-# fundraising efficiency and 10.7 vs 12.84 months working capital.
-_METHODOLOGY_DIVERGENT_FIELD_RE = re.compile(
-    r"fundraising.{0,3}efficienc|cost.{0,20}raise|working.{0,3}capital", re.IGNORECASE
-)
 
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
@@ -373,7 +361,7 @@ class FactualJudge(BaseJudge):
                         severity = Severity.INFO
                     elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
                         severity = Severity.WARNING
-                    elif _METHODOLOGY_DIVERGENT_FIELD_RE.search(
+                    elif is_methodology_divergent(
                         f"{issue.field} {issue.message}"
                     ) and _same_story(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
