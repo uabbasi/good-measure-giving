@@ -117,3 +117,43 @@ class TestOnlyContradictionsAndFabricationsBlock:
             "A 0.01pp difference blocked publication despite the model calling "
             "it a contradiction"
         )
+
+
+class TestMalformedSeverityIsNotTheCharitysFault:
+    """A model typo in OUR schema must not block a charity's publication.
+
+    Real occurrence: after `discrepancy_kind` was added, the model began
+    putting kind values into the severity field. `Severity("unverifiable")`
+    raised, the whole verification was abandoned, and the judge recorded
+    "Could not complete LLM verification" as a blocking error -- our tooling
+    failing, charged to the charity. Same shape as every other bug in this
+    class.
+    """
+
+    def test_unknown_severity_string_does_not_abandon_the_verification(self):
+        from unittest.mock import Mock, patch
+
+        from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+        from src.judges.schemas.config import JudgeConfig
+        from src.judges.schemas.verdict import Severity
+
+        payload = FactualVerificationResult(
+            issues=[
+                {
+                    "field": "domestic_burn_rate",
+                    "severity": "unverifiable",  # a kind, not a severity
+                    "discrepancy_kind": "unverifiable",
+                    "message": "source data does not cover this",
+                }
+            ],
+            claims_checked=1,
+            claims_verified=0,
+        )
+        judge = FactualJudge(JudgeConfig())
+        client = Mock()
+        client.generate.return_value = Mock(text=payload.model_dump_json(), cost_usd=0.0)
+        with patch.object(judge, "get_llm_client", return_value=client):
+            res = judge._verify_claims_with_llm({"narrative": {"content": "x"}}, {})
+
+        assert res is not None, "One bad severity string discarded every finding"
+        assert res.issues[0].severity == Severity.WARNING

@@ -299,7 +299,20 @@ class FactualJudge(BaseJudge):
             # Convert to ValidationIssues
             issues = []
             for issue in result.issues:
-                severity = Severity(issue.severity.lower())
+                try:
+                    severity = Severity(issue.severity.lower())
+                except ValueError:
+                    # The model put something else in the field -- it has been
+                    # seen echoing a discrepancy_kind here. Do not let a typo
+                    # in OUR schema abandon the whole verification and surface
+                    # as a blocking "could not complete" against the charity.
+                    logger.warning(
+                        "factual judge returned an unrecognised severity %r for field %r; "
+                        "treating as warning",
+                        issue.severity,
+                        issue.field,
+                    )
+                    severity = Severity.WARNING
                 # Two gates, both because prompt guidance alone did not hold.
                 # First: numbers that agree once rounding is allowed are never
                 # a defect, whatever the model concluded. Then: only a

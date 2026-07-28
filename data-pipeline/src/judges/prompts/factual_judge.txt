@@ -71,10 +71,20 @@ narrative; the others describe the state of our data.
 - **rounding** — the two values agree once rounding is allowed.
 
 ## Severity Guidelines
-- **error**: only for `contradiction` or `fabrication`
-- **warning**: `unverifiable`, or a minor discrepancy (1-5%)
-- **info**: `rounding` — a difference that doesn't change meaning
-  Examples: 75.2% vs 75.21%, $816K vs $816,038, 50.3% vs 50.29%
+
+`severity` and `discrepancy_kind` are SEPARATE fields with separate
+vocabularies. `severity` is ALWAYS exactly one of "error", "warning", "info" —
+never a discrepancy_kind value. Pick severity from the kind you chose:
+
+| discrepancy_kind | severity |
+|------------------|----------|
+| contradiction    | error    |
+| fabrication      | error    |
+| unverifiable     | warning  |
+| rounding         | info     |
+
+A minor discrepancy (1-5%) is `contradiction` with severity "warning".
+Rounding examples: 75.2% vs 75.21%, $816K vs $816,038, 50.3% vs 50.29%.
 
 If `claim_value` and `source_value` are the same number, do not report an
 issue at all.
