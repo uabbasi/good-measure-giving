@@ -1229,6 +1229,55 @@ def compute_transparency_score(candid_data: dict | None) -> float | None:
     return None
 
 
+INCOME_STATEMENT_COLUMNS = (
+    "total_revenue",
+    "total_expenses",
+    "program_expenses",
+    "admin_expenses",
+    "fundraising_expenses",
+)
+
+
+def realign_income_statement_attribution(
+    source_attribution: dict[str, dict],
+    metrics: Any,
+    ein: str,
+    scraped_at: str | None = None,
+) -> None:
+    """Point income-statement citations at whichever source actually won.
+
+    Two elections run over the same charity. extract_financials() is PP-first
+    with CN as a per-field fallback; CharityMetricsAggregator.aggregate() is
+    fiscal-year aware and hands CN *all* income-statement fields when PP and
+    CN report different years and PP is thin. The aggregator wins the columns
+    -- they are overwritten from `metrics` further down -- but its decision
+    never reached the attribution, so the loser supplied the citations.
+
+    Only the charity_navigator outcome is rewritten. "propublica" and "mixed"
+    describe the same PP-first-then-gap-fill policy extract_financials already
+    applied, so its per-field attribution is right for those.
+
+    Mutates source_attribution in place.
+    """
+    if getattr(metrics, "financial_data_source", None) != "charity_navigator":
+        return
+
+    for field in INCOME_STATEMENT_COLUMNS:
+        value = getattr(metrics, field, None)
+        if value is None:
+            # The aggregator has nothing here; do not mint provenance for it.
+            continue
+        source_attribution[field] = create_attribution(
+            field,
+            value,
+            "charity_navigator",
+            ein,
+            scraped_at,
+            section="financials",
+            display_name="Charity Navigator",
+        )
+
+
 def extract_financials(
     cn_data: dict | None,
     pp_data: dict | None,
@@ -2129,6 +2178,15 @@ def synthesize_charity(
     metrics.primary_category = synthesized.primary_category
     metrics.cause_tags = synthesized.cause_tags or []
     metrics.program_focus_tags = synthesized.program_focus_tags or []
+
+    # The income-statement columns below are about to be overwritten with the
+    # aggregator's fiscal-year-aware values. Move their provenance with them --
+    # otherwise the citation names the source that LOST the election, and the
+    # narrative ends up citing "Form 990 (2023)" for a Charity Navigator FY2024
+    # figure. Must run before the merge below, so metrics_json carries it too.
+    realign_income_statement_attribution(
+        source_attribution, metrics, ein, source_timestamps.get("charity_navigator")
+    )
 
     # Keep source provenance aligned between metrics_json and top-level charity_data.source_attribution.
     metrics.source_attribution = {**(metrics.source_attribution or {}), **source_attribution}
