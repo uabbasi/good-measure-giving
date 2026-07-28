@@ -2018,6 +2018,18 @@ class CharityMetricsAggregator:
             ro_src = "candid" if candid_profile and candid_profile.get("reports_outcomes") is not None else "website"
             _track("reports_outcomes", ro_src, metrics_data["reports_outcomes"])
 
+        # pdf_outcomes (set above from website_profile["outcomes_data"]) is
+        # only non-empty when web_collector's LLM extraction actually found
+        # an outcomes_summary in one of the charity's own PDFs -- real
+        # evidence, not a placeholder. A page-crawl flag saying "no" (or
+        # simply absent) must not outrank it: 87-2410117 has an Impact
+        # Report and an Annual Report we hold, both with detailed outcome
+        # metrics, but no page-crawl reports_outcomes flag was ever set, so
+        # the narrative called it a charity that "lacks outcome metrics".
+        if not metrics_data.get("reports_outcomes") and metrics_data.get("pdf_outcomes"):
+            metrics_data["reports_outcomes"] = True
+            _track("reports_outcomes", "pdf_extraction", True)
+
         metrics_data["publishes_impact_stories"] = _first_non_none(
             candid_profile.get("publishes_impact_stories") if candid_profile else None,
             website_profile.get("has_impact_stories") if website_profile else None,
