@@ -35,6 +35,7 @@ Respond with a JSON object:
     {
       "field": "revenue",
       "severity": "error|warning|info",
+      "discrepancy_kind": "contradiction|fabrication|unverifiable|rounding",
       "message": "Description of the discrepancy",
       "claim_text": "The narrative says X",
       "claim_value": "X",
@@ -48,17 +49,35 @@ Respond with a JSON object:
 }
 ```
 
+## Classify every issue with `discrepancy_kind`
+
+Say which of these you mean. Only the first two describe a fault in the
+narrative; the others describe the state of our data.
+
+- **contradiction** — the source reports a value, and it differs materially
+  from the narrative's (>5% for percentages, >10% for dollar amounts).
+  You must fill in both `claim_value` and `source_value`.
+  Example: narrative says 82.7%, source shows 75.2%.
+- **fabrication** — the narrative states a specific number for a field, and
+  the SOURCE HAS NO VALUE for it at all. A number no source reported must
+  never appear in donor-facing prose. Use this only when the field is
+  genuinely absent or null in the source data.
+- **unverifiable** — the source data does not address this claim, so you
+  cannot judge it either way. This is different from fabrication: the claim
+  is qualitative, or derived, or about something we simply did not collect.
+  If the narrative describes something the source data has no notion of
+  (e.g. a domestic/international expense split we never computed), that is
+  unverifiable, NOT a contradiction and NOT a fabrication.
+- **rounding** — the two values agree once rounding is allowed.
+
 ## Severity Guidelines
-- **error**: Claim significantly contradicts source data (>5% difference for percentages, >10% for dollar amounts)
-  Examples: Narrative says 82.7% but source shows 75.2% (ERROR - 10% difference)
-- **error**: The narrative states a specific numeric value for a field that is
-  null or absent in the source data. This is fabrication, not an
-  unverifiable claim — a number that no source reported must never appear
-  in donor-facing prose, and a citation attributing it to a source that
-  did not report it is a compounding error.
-- **warning**: Claim can't be verified (no corresponding source data) OR minor discrepancy (1-5%)
-- **info**: Minor formatting/rounding difference (<1%) that doesn't change meaning
-  Examples: 75.2% vs 75.21% (INFO - just rounding), $816K vs $816,038 (INFO)
+- **error**: only for `contradiction` or `fabrication`
+- **warning**: `unverifiable`, or a minor discrepancy (1-5%)
+- **info**: `rounding` — a difference that doesn't change meaning
+  Examples: 75.2% vs 75.21%, $816K vs $816,038, 50.3% vs 50.29%
+
+If `claim_value` and `source_value` are the same number, do not report an
+issue at all.
 
 ## Acceptable Tolerances (use "info" severity)
 - Percentages: ±0.5 percentage points (e.g., 75.2% vs 75.7% is acceptable)

@@ -7,6 +7,7 @@ Uses span-level verification approach to:
 """
 
 import logging
+import re
 import time
 from typing import Any, Optional
 
@@ -18,11 +19,70 @@ from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 logger = logging.getLogger(__name__)
 
 
+# Only these two kinds of finding describe a defect in the narrative. The
+# others describe the state of our evidence, which is not the charity's fault
+# and must not block its publication.
+BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
+
+_NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
+
+# Matches the prompt's stated tolerances: 1% relative for money, half a unit
+# absolute for percentages and month counts.
+_RELATIVE_TOLERANCE = 0.01
+_ABSOLUTE_TOLERANCE = 0.5
+_ABSOLUTE_TOLERANCE_MAX_MAGNITUDE = 100
+
+
+def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
+    """Do two reported values agree once rounding is allowed?
+
+    Returns True/False when both parse as numbers, None when either does not
+    (a prose claim -- the model's judgement is all we have).
+
+    This exists because the prompt's tolerance rules were routinely ignored:
+    "50.3% vs 50.29%" and even "$205,225 vs $205,225" came back as blocking
+    errors. A deterministic check does not have moods.
+    """
+    def _parse(v: Any) -> Optional[float]:
+        if v is None:
+            return None
+        m = _NUMERIC_RE.search(str(v).replace(",", ""))
+        if not m:
+            return None
+        try:
+            return float(m.group(0).replace(",", ""))
+        except ValueError:
+            return None
+
+    a, b = _parse(claim_value), _parse(source_value)
+    if a is None or b is None:
+        return None
+    if a == b:
+        return True
+    diff = abs(a - b)
+    if diff <= _RELATIVE_TOLERANCE * max(abs(a), abs(b)):
+        return True
+    # Percentages and month counts live on a small scale where a relative test
+    # is too strict: 1.3 vs 1.32 months is rounding, not a discrepancy.
+    if max(abs(a), abs(b)) <= _ABSOLUTE_TOLERANCE_MAX_MAGNITUDE and diff <= _ABSOLUTE_TOLERANCE:
+        return True
+    return False
+
+
 class FactualIssue(BaseModel):
     """Schema for a factual discrepancy from LLM."""
 
     field: str = Field(description="The field with the discrepancy")
     severity: str = Field(description="error, warning, or info")
+    discrepancy_kind: str = Field(
+        "unverifiable",
+        description=(
+            "contradiction = the source reports a different value; "
+            "fabrication = the narrative states a number no source reports; "
+            "unverifiable = the source data does not cover this claim; "
+            "rounding = the values agree once rounding is allowed"
+        ),
+    )
     message: str = Field(description="Description of the discrepancy")
     claim_text: Optional[str] = Field(None, description="The narrative claim")
     claim_value: Optional[str] = Field(None, description="Value stated in claim")
@@ -240,6 +300,17 @@ class FactualJudge(BaseJudge):
             issues = []
             for issue in result.issues:
                 severity = Severity(issue.severity.lower())
+                # Two gates, both because prompt guidance alone did not hold.
+                # First: numbers that agree once rounding is allowed are never
+                # a defect, whatever the model concluded. Then: only a
+                # contradiction or a fabrication describes a fault in the
+                # narrative -- "the source data does not cover this" is a
+                # statement about our evidence and must not block publication.
+                if severity == Severity.ERROR:
+                    if numeric_agreement(issue.claim_value, issue.source_value) is True:
+                        severity = Severity.INFO
+                    elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
+                        severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
                     details["claim_value"] = issue.claim_value
