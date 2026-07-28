@@ -564,6 +564,86 @@ _ZAKAT_CONSTRAINT_ZAKAT = (
 )
 
 
+_MARKER_RUN_RE = re.compile(r"(?:\[\d+\])+")
+_NUMBER_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
+
+
+def _numbers_in(text: str) -> set[float]:
+    """Numeric tokens in a string, commas and currency stripped."""
+    out: set[float] = set()
+    for raw in _NUMBER_RE.findall(text or ""):
+        try:
+            out.add(float(raw.replace(",", "")))
+        except ValueError:
+            continue
+    return out
+
+
+def prune_unsupported_citation_markers(narrative: Any, citations: list[dict] | None) -> Any:
+    """Drop citation markers that assert different numbers than their claim.
+
+    The baseline prompt's Citation Rules only ever constrained numbering --
+    which numbers exist, that each has an all_citations entry, the [N] format.
+    Nothing required a marker to support the sentence it sits on, and the
+    output template modelled scattering them ("citations like [1] and [2]"),
+    so claims arrived decorated with sources that do not back them:
+
+        "the organization managed $7,254,154 in total revenue ... [1][6]"
+        [6] Form 990      "reported $7,254,154 in total revenue"    supports
+        [1] Charity Nav   "90.0/100 score, 81.2% program ratio"     does not
+
+    Deliberately narrow. A marker is dropped only when the sentence asserts
+    numbers, the marker's own declared claim asserts numbers, and the two sets
+    are disjoint. A claim carrying no numbers is always allowed, since
+    qualitative sources legitimately support numeric prose. And a marker is
+    never dropped unless another on the same run survives -- an uncited claim
+    is worse than an imperfectly cited one.
+    """
+    if not citations:
+        return narrative
+
+    claim_numbers: dict[str, set[float]] = {}
+    for c in citations:
+        cid = str((c or {}).get("id") or "")
+        if cid:
+            claim_numbers[cid] = _numbers_in(str((c or {}).get("claim") or ""))
+
+    def _prune_text(text: str) -> str:
+        def replace(match: re.Match) -> str:
+            run = match.group(0)
+            markers = re.findall(r"\[\d+\]", run)
+            # Numbers asserted by the sentence this run terminates.
+            preceding = text[: match.start()]
+            sentence = re.split(r"(?<=[.!?])\s+", preceding)[-1]
+            sentence_numbers = _numbers_in(sentence)
+            if not sentence_numbers:
+                return run
+
+            kept = []
+            for m in markers:
+                nums = claim_numbers.get(m)
+                # Unknown marker: the structural validator's business, not ours.
+                # Numberless claim: a qualitative source, always allowed.
+                if nums is None or not nums or (nums & sentence_numbers):
+                    kept.append(m)
+            if not kept:
+                return run  # never strand the claim
+            return "".join(dict.fromkeys(kept))
+
+        return _MARKER_RUN_RE.sub(replace, text)
+
+    def _walk(node: Any) -> Any:
+        if isinstance(node, str):
+            return _prune_text(node)
+        if isinstance(node, list):
+            return [_walk(v) for v in node]
+        if isinstance(node, dict):
+            return {k: _walk(v) for k, v in node.items()}
+        return node
+
+    return _walk(narrative)
+
+
 def _fundraising_ratio_str(fundraising_expenses, total_contributions) -> str | None:
     """Just the dollar-figure prefix (e.g. "$0.00", "<$0.01", "$0.10") for the
     cost to raise $1, or None if it can't be computed.
@@ -765,6 +845,12 @@ def generate_baseline_narrative(
         # Stamp correct metrics before returning
         narrative = sanitize_narrative_metrics(narrative, metrics, scores)
 
+        # Drop markers whose own claim contradicts the sentence they sit on.
+        # Runs after the metric sanitizer so it judges the corrected numbers.
+        narrative = prune_unsupported_citation_markers(
+            narrative, narrative.get("all_citations") or []
+        )
+
         # Validate citations
         is_valid, errors = validate_citations(narrative, valid_source_names)
         if is_valid:
@@ -800,6 +886,12 @@ Generate the corrected narrative JSON:"""
 
         # Stamp correct metrics before returning
         narrative = sanitize_narrative_metrics(narrative, metrics, scores)
+
+        # Drop markers whose own claim contradicts the sentence they sit on.
+        # Runs after the metric sanitizer so it judges the corrected numbers.
+        narrative = prune_unsupported_citation_markers(
+            narrative, narrative.get("all_citations") or []
+        )
 
         # Validate again
         is_valid, errors = validate_citations(narrative, valid_source_names)

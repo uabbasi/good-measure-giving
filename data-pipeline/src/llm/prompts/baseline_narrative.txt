@@ -138,13 +138,21 @@ factors present in the data provided:
 3. For EVERY [N] citation you use in text, you MUST include a matching entry in all_citations
 4. Format: [N] where N is the source number (e.g., [1], [2])
 5. Example: "The charity maintains strong financial accountability [1]."
+6. A marker must SUPPORT the claim it is attached to. Attach the source that
+   actually reports that fact — not every source that happens to be relevant
+   to the charity. Prefer ONE marker per claim; use two only when two sources
+   each support a distinct part of the sentence.
+7. Never attach a source reporting one figure to a sentence stating a
+   different figure. WRONG: "managed $7,254,154 in total revenue [1][6]"
+   when [1] reports a Charity Navigator score and only [6] reports revenue —
+   that sentence takes [6] alone.
 
 ## Output Format
 Return ONLY a valid JSON object (no markdown code blocks):
 
 {{
   "headline": "One compelling sentence about the charity",
-  "summary": "2-3 sentences with citations like [1] and [2]",
+  "summary": "2-3 sentences, each claim carrying the marker for the source that reports it",
   "strengths": ["strength 1", "strength 2"],
   "areas_for_improvement": ["area 1"],
   "amal_score_rationale": "1-2 sentences explaining the assessment without revealing numeric scores",
