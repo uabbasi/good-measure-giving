@@ -178,6 +178,11 @@ def fetch_filing_xml(ref: FilingRef, session: Any = None) -> Optional[str]:
     except KeyError:
         logger.warning("IRS bundle %s has no member %s", ref.batch_id, member)
         return None
-    except (OSError, zipfile.BadZipFile) as e:
+    except (OSError, zipfile.BadZipFile, NotImplementedError) as e:
+        # NotImplementedError is zipfile's "That compression method is not
+        # supported" -- some IRS bundles carry members compressed outside the
+        # set it handles. Without it here the error escaped this function's
+        # contract, failed form990_grants as a required source, and aborted the
+        # entire crawl for the charity rather than costing it its grants data.
         logger.warning("Could not read %s from %s: %s", member, url, e)
         return None

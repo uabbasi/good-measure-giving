@@ -142,3 +142,59 @@ class TestHttpRangeReader:
         r = self._reader()
         r.seek(-4, io.SEEK_END)
         assert len(r.read(4)) == 4
+
+
+class TestAnUnreadableMemberDegradesInsteadOfFailingTheRun:
+    """fetch_filing_xml promises to return None when a filing cannot be read,
+    so one unavailable filing costs that charity its grants data and nothing
+    more. NotImplementedError escaped that promise.
+
+    Python's zipfile raises NotImplementedError("That compression method is
+    not supported") for members compressed with anything outside its
+    supported set. Some IRS bundles carry such members, and because the
+    except clause listed only OSError and BadZipFile, the error propagated
+    out of the collector, failed form990_grants as a required source, and
+    aborted the whole crawl for that charity. Observed on the 2026-07-28
+    cohort run: 26-3342933, 36-4476244 and one other lost their entire crawl
+    to it -- the same shape as every other bug this pass, a limit on what we
+    could read reported as something worse.
+    """
+
+    def _ref(self):
+        return FilingRef(
+            ein="831794093",
+            object_id="202600939349201205",
+            batch_id="2026_TEOS_XML_04A",
+            tax_period="202512",
+            return_type="990EZ",
+        )
+
+    def _fetch_raising(self, exc):
+        from unittest.mock import patch
+
+        from src.collectors import irs_990_source
+
+        with patch.object(irs_990_source, "HttpRangeReader", side_effect=exc):
+            return irs_990_source.fetch_filing_xml(self._ref(), session=object())
+
+    def test_unsupported_compression_returns_none(self):
+        assert (
+            self._fetch_raising(
+                NotImplementedError("That compression method is not supported")
+            )
+            is None
+        )
+
+    def test_a_bad_archive_still_returns_none(self):
+        assert self._fetch_raising(zipfile.BadZipFile("File is not a zip file")) is None
+
+    def test_a_network_error_still_returns_none(self):
+        assert self._fetch_raising(OSError("connection reset")) is None
+
+    def test_an_unexpected_error_still_propagates(self):
+        """Narrowness guard: this widens the contract for unreadable archives,
+        not into a bare except that hides real defects."""
+        import pytest
+
+        with pytest.raises(ValueError):
+            self._fetch_raising(ValueError("a genuine bug"))
