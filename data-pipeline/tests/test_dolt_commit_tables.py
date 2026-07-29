@@ -151,6 +151,13 @@ class TestExportCommitsExclusionsBeforeStamp:
         )
         monkeypatch.setattr(export_module, "_mirror_export_to_public_data", lambda outdir: None)
         monkeypatch.setattr(export_module, "_build_calibration_report", lambda **kw: {})
+        # write_editorial_queue defaults to the real REPORTS_DIR, which --output
+        # does not redirect. Unneutralized, this test wrote its empty mocked
+        # queue over data-pipeline/reports/editorial-queue.json -- so running
+        # the suite silently destroyed the standing record of judge warnings
+        # for all 167 charities. Warnings never gate publication, so that file
+        # is the only place they are kept.
+        monkeypatch.setattr(export_module, "write_editorial_queue", lambda queue: None)
         monkeypatch.setattr(
             sys, "argv", ["export.py", "--ein", "11-1111111", "--output", str(tmp_path)]
         )
