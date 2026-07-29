@@ -262,10 +262,17 @@ class ScoreJudge(BaseJudge):
             prompt = self.format_prompt(output, context)
 
             client = self.get_llm_client()
+            # temperature=0 for reproducibility: a publication gate must not
+            # change its mind on identical input. Measured at the client
+            # default of 0.1, the same stored narrative judged three times
+            # returned [1, 1, 0] errors -- the charity published or not on
+            # a dice roll. Long structured outputs amplify this: one
+            # divergent token early re-rolls the whole issue list.
             response = client.generate(
                 prompt=prompt,
                 json_mode=True,
                 json_schema=ScoreVerificationResult.model_json_schema(),
+                temperature=0.0,
             )
 
             # Strip markdown if present
