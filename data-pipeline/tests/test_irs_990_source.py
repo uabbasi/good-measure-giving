@@ -32,7 +32,34 @@ from src.collectors.irs_990_source import (
     zip_member_url,
 )
 
-FIXTURE_ZIP = Path(__file__).parent / "fixtures" / "irs_test_batch.zip"
+
+def _build_test_batch() -> bytes:
+    """A miniature stand-in for an IRS bundle, built here rather than stored.
+
+    This was a checked-in fixture, tests/fixtures/irs_test_batch.zip, and
+    .gitignore's blanket `*.zip` silently kept it out of every commit. It
+    existed only in the worktree that wrote it, so the five tests below passed
+    there and failed with FileNotFoundError for everyone else -- the suite
+    reported green on a fixture no clone had. Generating it removes both the
+    binary and the need for a gitignore exception, and the archive is small
+    enough that building it costs nothing.
+
+    Two members on purpose: one deflated (the shape real bundles use) and one
+    stored, so a reader that only handles compressed entries still fails.
+    """
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr(
+            "202600939349201205_public.xml",
+            '<?xml version="1.0"?><Return xmlns="http://www.irs.gov/efile">'
+            "<ReturnHeader><TaxYr>2025</TaxYr></ReturnHeader></Return>",
+            compress_type=zipfile.ZIP_DEFLATED,
+        )
+        zf.writestr("999_public.xml", "stub\n", compress_type=zipfile.ZIP_STORED)
+    return buf.getvalue()
+
+
+TEST_BATCH_ZIP = _build_test_batch()
 
 INDEX_CSV = """RETURN_ID,FILING_TYPE,EIN,TAX_PERIOD,SUB_DATE,TAXPAYER_NAME,RETURN_TYPE,DLN,OBJECT_ID,XML_BATCH_ID
 24007824,EFILE,831794093,202412,2026,HIKMA HEALTH INC,990,93493044016096,202640449349301609,2026_TEOS_XML_02A
@@ -113,7 +140,7 @@ class TestHttpRangeReader:
             return R()
 
     def _reader(self):
-        return HttpRangeReader("http://x/test.zip", session=self._FakeSession(FIXTURE_ZIP.read_bytes()))
+        return HttpRangeReader("http://x/test.zip", session=self._FakeSession(TEST_BATCH_ZIP))
 
     def test_zipfile_can_list_members_through_it(self):
         zf = zipfile.ZipFile(self._reader())
@@ -125,7 +152,7 @@ class TestHttpRangeReader:
         assert "<TaxYr>2025</TaxYr>" in xml
 
     def test_it_does_not_download_the_whole_archive(self):
-        raw = FIXTURE_ZIP.read_bytes()
+        raw = TEST_BATCH_ZIP
         session = self._FakeSession(raw)
         zf = zipfile.ZipFile(HttpRangeReader("http://x/test.zip", session=session))
         zf.read("202600939349201205_public.xml")
@@ -135,7 +162,7 @@ class TestHttpRangeReader:
 
     def test_reports_its_size_without_reading_the_body(self):
         r = self._reader()
-        assert r.size == len(FIXTURE_ZIP.read_bytes())
+        assert r.size == len(TEST_BATCH_ZIP)
         assert r.seekable() and r.readable()
 
     def test_seek_from_end_works(self):
