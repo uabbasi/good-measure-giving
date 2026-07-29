@@ -116,9 +116,9 @@ class TestTruncatedResponseIsRetried:
             Mock(text='{"issues": [{"field": "revenue", "messa', cost_usd=0.0),
             Mock(text=good, cost_usd=0.0),
         ]
-        with patch.object(judge, "get_llm_client", return_value=client), patch(
-            "src.judges.factual_judge.time.sleep"
-        ):
+        with patch.object(judge, "get_llm_client", return_value=client), patch.object(
+            judge, "_escalated_client", return_value=client
+        ), patch("src.judges.factual_judge.time.sleep"):
             verdict = judge.validate({"narrative": {"content": "x"}}, {})
 
         assert client.generate.call_count == 2
@@ -129,15 +129,48 @@ class TestTruncatedResponseIsRetried:
         ], "a truncated response still cost the charity its page"
         assert verdict.passed
 
+    def test_an_unparseable_response_escalates_to_the_stronger_model(self):
+        """Retrying the same model is useless when the failure is deterministic.
+
+        On 01-0548371 the factual judge's response was 67,719 chars, 64,000+ of
+        them a literal '0' repeated inside one JSON string -- byte-identical
+        across three attempts at temperature 0, from a prompt containing no
+        such run. flash-lite degenerates into a repetition loop on this
+        charity, so the same model cannot produce a different answer.
+        score_judge.py already escalates to gemini-2.5-flash for the same
+        class of flash-lite failure.
+        """
+        good = FactualVerificationResult(
+            issues=[], claims_checked=3, claims_verified=3
+        ).model_dump_json()
+        judge = FactualJudge(JudgeConfig())
+        weak = Mock()
+        weak.generate.return_value = Mock(text='{"issues": [{"f' + "0" * 500, cost_usd=0.0)
+        strong = Mock()
+        strong.generate.return_value = Mock(text=good, cost_usd=0.0)
+
+        with patch.object(judge, "get_llm_client", return_value=weak), patch.object(
+            judge, "_escalated_client", return_value=strong
+        ), patch("src.judges.factual_judge.time.sleep"):
+            verdict = judge.validate({"narrative": {"content": "x"}}, {})
+
+        assert strong.generate.called, "never escalated off the degenerating model"
+        assert verdict.passed
+        assert not [
+            i
+            for i in verdict.issues
+            if i.severity == Severity.ERROR and i.field == "llm_verification"
+        ]
+
     def test_persistent_truncation_still_fails_closed(self):
         """Retrying is not the same as ignoring. An unverified narrative
         must not publish -- exhausting the retries still blocks."""
         judge = FactualJudge(JudgeConfig())
         client = Mock()
         client.generate.return_value = Mock(text='{"issues": [{"fiel', cost_usd=0.0)
-        with patch.object(judge, "get_llm_client", return_value=client), patch(
-            "src.judges.factual_judge.time.sleep"
-        ):
+        with patch.object(judge, "get_llm_client", return_value=client), patch.object(
+            judge, "_escalated_client", return_value=client
+        ), patch("src.judges.factual_judge.time.sleep"):
             verdict = judge.validate({"narrative": {"content": "x"}}, {})
 
         assert not verdict.passed

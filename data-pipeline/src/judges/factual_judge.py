@@ -12,6 +12,7 @@ import time
 from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
+from src.llm.llm_client import TASK_MODELS, LLMClient, LLMTask
 
 from .base_judge import BaseJudge, JudgeType
 from .materiality import is_methodology_divergent
@@ -43,12 +44,22 @@ def _is_wallet_tag_agreement(field: str, message: str) -> bool:
     return bool(_WALLET_TAG_AGREEMENT_RE.search(text)) and "zakat" in text.lower()
 
 
-# A response the model cut off mid-token is a transient generation failure, the
-# same class as a 429 -- retrying gets a clean one. Before this, a clipped
-# response fell through to "Could not complete LLM verification", which fails
-# closed and withheld the charity (01-0548371, "Invalid JSON: EOF while parsing
-# a string"). Retrying is not ignoring: exhausting the retries still blocks.
+# A response that will not parse fell through to "Could not complete LLM
+# verification", which fails closed and withheld the charity (01-0548371).
+# Two distinct causes, so two responses:
+#   - a genuinely clipped generation is transient, the same class as a 429,
+#     and a retry gets a clean one;
+#   - a degeneration loop is not. On 01-0548371 the model emitted 64,000+
+#     literal '0' characters inside one JSON string -- 67,719 chars,
+#     byte-identical across three attempts at temperature 0, from a prompt
+#     containing no such run. The same model cannot answer differently, so
+#     the retry escalates to the stronger tier. score_judge.py already
+#     escalates for the same class of flash-lite failure (see its
+#     judge_model_override).
+# Retrying is not ignoring: exhausting the retries still blocks.
 _TRUNCATED_RESPONSE_MARKERS = ("invalid json", "json_invalid", "eof while parsing")
+
+_ESCALATION_MODEL = "gemini-2.5-flash"
 
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
@@ -210,9 +221,10 @@ class FactualJudge(BaseJudge):
 
         # Step 2: LLM-based claim extraction and verification (with retry for rate limits)
         max_retries = 3
+        escalated: Optional[LLMClient] = None
         for attempt in range(max_retries):
             try:
-                llm_result = self._verify_claims_with_llm(output, context)
+                llm_result = self._verify_claims_with_llm(output, context, client=escalated)
                 if llm_result:
                     issues.extend(llm_result.issues)
                     cost_usd = llm_result.cost
@@ -226,7 +238,14 @@ class FactualJudge(BaseJudge):
 
                 if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
                     wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
-                    cause = "Truncated response" if is_truncated else "Rate limit hit"
+                    if is_truncated and escalated is None:
+                        # The same model at temperature 0 will return the same
+                        # unparseable bytes, so change the model, not just the
+                        # timing.
+                        escalated = self._escalated_client()
+                        cause = f"Unparseable response, escalating to {_ESCALATION_MODEL}"
+                    else:
+                        cause = "Truncated response" if is_truncated else "Rate limit hit"
                     logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
                     time.sleep(wait_time)
                     continue
@@ -336,8 +355,26 @@ class FactualJudge(BaseJudge):
 
         return issues
 
+    def _escalated_client(self) -> "LLMClient":
+        """A client on the stronger tier, for when the default judge model
+        cannot produce a parseable response at all.
+
+        Built fresh rather than replacing self._llm_client: judges are reused
+        across charities, and one charity's degeneration must not silently
+        move every later charity onto the more expensive model.
+        """
+        default_primary, default_fallbacks = TASK_MODELS[LLMTask.LLM_JUDGE]
+        client = LLMClient(task=LLMTask.LLM_JUDGE, model=_ESCALATION_MODEL)
+        client.fallback_models = [
+            m for m in [default_primary, *default_fallbacks] if m != _ESCALATION_MODEL
+        ]
+        return client
+
     def _verify_claims_with_llm(
-        self, output: dict[str, Any], context: dict[str, Any]
+        self,
+        output: dict[str, Any],
+        context: dict[str, Any],
+        client: Optional["LLMClient"] = None,
     ) -> Optional["LLMFactualResult"]:
         """Use LLM to extract and verify factual claims.
 
@@ -346,7 +383,7 @@ class FactualJudge(BaseJudge):
         try:
             prompt = self.format_prompt(output, context)
 
-            client = self.get_llm_client()
+            client = client or self.get_llm_client()
             # temperature=0 for reproducibility: a publication gate must not
             # change its mind on identical input. Measured at the client
             # default of 0.1, the same stored narrative judged three times
