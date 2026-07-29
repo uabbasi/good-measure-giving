@@ -80,7 +80,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 23:27:38",
+  "lastUpdated": "2026-07-28 17:55:51",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -136,11 +136,17 @@
       "timestamp": "2026-07-23T22:39:32",
       "value": 12515037
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/364167433#financials",
+      "timestamp": "2026-07-23T22:39:32",
+      "value": 18915530
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/364167433",
-      "timestamp": "2026-07-18T19:15:05",
-      "value": 15923414
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/364167433#financials",
+      "timestamp": "2026-07-23T22:39:32",
+      "value": 18475567
     },
     "working_capital_months": {
       "derived_from": [
@@ -170,7 +176,10 @@
     "shelter",
     "vocational"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "economic-empowerment",
+    "healthcare-direct"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "IMAN models an integrative approach that employs holistic interventions to address a spectrum of structural and systemic injustices impeding a dignified quality of life for people in marginalized communities.",
   "grantsData": null,
@@ -201,14 +210,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://imancentral.org/donate (Source: https://imancentral.org/donate)"
   ],
-  "archetype": null,
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "COMMUNITY",
-    "archetype_label": "Community Hub",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -383,6 +392,48 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The Charity Navigator rating and working capital information could not be verified from the provided content.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The content confirms the charity is zakat-eligible and accepts donations, but does not explicitly state it accepts donations 'to help those in need' as a direct quote, though it is implied by the context of donations.",
+          "severity": "info"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "The FY2024 total revenue and program spending percentage could not be verified from the provided content.",
+          "severity": "warning"
+        },
+        {
+          "field": "rating",
+          "judge": "factual",
+          "message": "The Charity Navigator rating is 94.0, which rounds to 94.",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The working capital is 9.9 months, which is consistent with the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "total_revenue",
+          "judge": "factual",
+          "message": "The total revenue of $18,475,567 is consistent with the source data, allowing for minor rounding differences.",
+          "severity": "info"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The program spending ratio of 65.9% is consistent with the source data.",
+          "severity": "info"
+        },
+        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -434,40 +485,39 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 94.0/100 rating, 9.9 months of working capital, and a 65.9% program expense ratio.",
+          "claim": "The charity maintains a 94.0/100 rating and has 9.9 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/364167433#financials"
         },
         {
-          "claim": "The organization is zakat-eligible.",
+          "claim": "The charity is zakat-eligible and accepts donations to help those in need.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://imancentral.org/donate"
         },
         {
-          "claim": "Total revenue in FY2024 was $18,475,567.",
+          "claim": "In FY2024, the organization managed $18,475,567 in total revenue and spent 65.9% on programs.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364167433"
         }
       ],
-      "amal_score_rationale": "The charity is in a healthy financial position with high external ratings, though its program spending ratio is moderate and it lacks public outcome tracking.",
+      "amal_score_rationale": "The organization shows positive financial health and a clear mission, though its program spending ratio is moderate and it lacks specific outcome tracking. It is a reliable choice for donors interested in domestic poverty and reentry services.",
       "areas_for_improvement": [
-        "Moderate program spending ratio compared to top-tier charities",
-        "Lack of public outcome metrics or tracking for program results"
+        "Moderate program spending ratio of 65.9%",
+        "Lack of public outcome measurement or metrics tracking"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a high-need area by helping people in domestic poverty find housing and work [1]. It is a good fit for Muslim donors as it accepts zakat and has a long track record of service in urban communities [2][5].",
-        "impact": "The organization spends 65.9% of its budget on its actual programs, which is a moderate level of spending [1][5]. While it has strong governance and a clear plan for its work, it does not currently track or report specific outcome metrics to show the long-term results of its services [1]."
+        "alignment": "This group serves a high-need area by helping formerly incarcerated people find housing and work [1]. It is zakat-eligible, making it a good fit for Muslim donors looking to support domestic poverty relief [2].",
+        "impact": "The charity focuses on direct services like the Green ReEntry program and health centers [1]. In FY2024, it spent 65.9% of its budget on these programs [5]. While it has a clear theory of change, it does not currently track or report specific outcome metrics for its beneficiaries [1]."
       },
       "headline": "The Inner-City Muslim Action Network provides housing and job training for people returning from prison in Chicago and Atlanta.",
       "strengths": [
-        "holds 9.9 months of working capital to ensure stable operations [1]",
-        "High fundraising efficiency, spending only $0.02 to raise every $1 [1]",
-        "Strong evidence of program success and a clear theory of change [1]"
+        "High financial accountability with a 94.0/100 from Charity Navigator score",
+        "Strong fundraising efficiency, spending only $0.04 to raise every $1"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $18,475,567 to support its health and reentry programs [5]. The charity is zakat-eligible and maintains a 94.0/100 rating from Charity Navigator [1][2]."
+      "summary": "In FY2024, the organization managed $18,475,567 in total revenue to support its community health and reentry programs [5]. The charity is zakat-eligible and accepts donations to help those in need [2]. It maintains a 94.0/100 rating from Charity Navigator for its accountability and financial health [1]."
     },
     "rich_narrative": {
       "all_citations": [

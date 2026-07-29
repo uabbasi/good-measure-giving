@@ -100,11 +100,11 @@
     "beneficiaries_served_annually": {
       "method": "pattern_match",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:44.529966+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:31:54.912896+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.impact_metrics.metrics.people_served_weekly",
@@ -193,7 +193,10 @@
     "psychosocial",
     "youth"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "religious-services",
+    "community-services"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
@@ -204,10 +207,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://islamiccenter.com/donate/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 400,
+  "beneficiariesSource": {
+    "method": "pattern_match",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:31:54.912896+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.impact_metrics.metrics.people_served_weekly",
+    "source_url": "https://islamiccenter.com/wp-content/uploads/2025/02/Zakat-Form.pdf",
+    "timestamp": "2026-07-23T23:46:58",
+    "value": 400
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -221,14 +238,14 @@
   "zakatClaimEvidence": [
     "The Islamic Center's Zakat Program provides financial assistance to those in need on the first three Fridays of each month. The Zakat Committee was created to provide limited financial aid to assist community members who need temporary support. On their 'Donate' page, they list 'Zakat & Sadaqah \u2013 Fulfill your religious obligations and assist those in need within our community.' They also provide detailed information on 'Understanding Zakat al-Fitr, Zakat al-Maal, and Fidya' with instructions on how to pay online, in person, or by mail, specifying 'Zakat al-Fitr,' 'Zakat al-Mal,' or 'Fidya' in the memo. (Source: https://islamiccenter.com/support/)"
   ],
-  "archetype": null,
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Well Documented Low Score",
-    "archetype_code": "COMMUNITY",
-    "archetype_label": "Community Hub",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",

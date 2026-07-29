@@ -103,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 23:21:51",
+  "lastUpdated": "2026-07-28 18:25:20",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -114,11 +114,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:38.513743+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-29T00:49:58.286268+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -180,11 +180,17 @@
       "timestamp": "2026-07-18T22:25:31",
       "value": 4030218
     },
-    "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032",
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/261441032#financials",
       "timestamp": "2026-07-18T22:25:31",
-      "value": 4918661
+      "value": 4310789
+    },
+    "total_revenue": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/261441032#financials",
+      "timestamp": "2026-07-18T22:25:31",
+      "value": 4069674
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
@@ -215,7 +221,9 @@
     "muslim-led",
     "usa"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "advocacy-legal"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "We believe in the transformative power of political and civic participation, and we are guided by the collective strength of our diverse Muslim community.",
   "grantsData": [
@@ -526,8 +534,8 @@
   "donationUrl": "https://emgageusa.org/donate/",
   "beneficiariesServedAnnually": null,
   "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -546,23 +554,23 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": null,
-  "archetype": null,
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Promising",
-    "archetype_code": "SYSTEMIC_CHANGE",
-    "archetype_label": "Systems Builder",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Moderate",
       "financial_health": "Strong",
       "donor_fit": "Limited",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -570,14 +578,14 @@
   "amalEvaluation": {
     "charity_ein": "26-1441032",
     "charity_name": "Emgage Foundation",
-    "amal_score": 58,
+    "amal_score": 53,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:47",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 1,
-      "impact": 34
+      "impact": 29
     },
     "score_details": {
       "alignment": {
@@ -702,23 +710,41 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: MINIMAL (3 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": 3.7107690267906714,
         "directness_level": "SYSTEMIC_CHANGE",
         "impact_design_categories": [],
-        "rationale": "$3.71/beneficiary; Delivery: systemic change; Impact 34/50",
+        "rationale": "$3.71/beneficiary; Delivery: systemic change; Impact 29/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 34
+        "score": 29
       },
       "judge_issues": [
+        {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
         {
           "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
@@ -757,58 +783,51 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization tracks voter turnout increases in engaged counties.",
+          "claim": "It has a consistent track record of increasing voter turnout in states like Pennsylvania, Virginia, and Michigan.",
           "id": "[1]",
           "source_name": "Annual Report (2016)",
           "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2016-Annual-Report.pdf"
         },
         {
-          "claim": "Emgage conducts voter registration drives and supports legislative efforts.",
-          "id": "[2]",
-          "source_name": "Annual Report (2017)",
-          "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2017-Annual-Report.pdf"
-        },
-        {
-          "claim": "The organization tracks total events, voter registrations, and positive IDs.",
+          "claim": "The foundation focuses on mobilizing voters through programs like Million Muslim Votes and the Muslim Civic Table.",
           "id": "[3]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://emgageusa.org/wp-content/uploads/2025/07/Emgage-2024-Annual-Report.pdf"
         },
         {
-          "claim": "The organization offers various donation options for civic engagement.",
+          "claim": "This organization serves an advocacy cause, which is an underserved space but may have lower fit for donors looking for traditional religious charity.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://emgageusa.org/donate/"
         },
         {
-          "claim": "The organization has a 97.0/100 score and a 93.3% program expense ratio.",
+          "claim": "In FY2024, the organization managed $4,069,674 in total revenue to support its national non-partisan mission.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
         },
         {
-          "claim": "Total revenue for the period was $4,069,674.",
+          "claim": "The lack of certain governance data affects its overall impact profile.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
         }
       ],
-      "amal_score_rationale": "The organization shows a balanced profile with high financial efficiency and a clear focus on systemic change, though its advocacy-based mission may not fit the preferences of all donors.",
+      "amal_score_rationale": "The foundation shows a balanced profile with very efficient spending on its programs, though its focus on systemic change and advocacy creates a different impact model than traditional direct-aid charities.",
       "areas_for_improvement": [
-        "Limited alignment with traditional Muslim donor priorities",
-        "Focus on systemic advocacy rather than direct social services"
+        "The organization lacks specific governance data in its public assessments [7].",
+        "Focus on systemic advocacy may not align with donors seeking direct humanitarian aid."
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves a specific niche in civic advocacy, which is an underserved space but has lower alignment with traditional religious giving [4]. While it has a solid track record of increasing voter turnout in key states, the focus on political mobilization rather than direct aid results in a moderate alignment for some donors [1][2].",
-        "impact": "Emgage Foundation spends 93.3% of its budget directly on programs like Emerging Leaders and Million Muslim Votes [7]. The cost per beneficiary is approximately $3.71, focusing on systemic change through voter registration and civic events [3][8]. The group maintains a high Charity Navigator score of 97.0/100, reflecting strong governance and financial accountability [7]."
+        "alignment": "This organization serves an advocacy cause, which is an underserved space but may have lower fit for donors looking for traditional religious charity [4]. It has a consistent track record of increasing voter turnout in states like Pennsylvania, Virginia, and Michigan [1].",
+        "impact": "The foundation operates with high financial efficiency, directing 93.3% of its spending toward programs in FY2024 [7]. It achieves systemic change at a low cost of approximately $3.71 per beneficiary [3]. While it has enough working capital to last 15.3 months, the lack of certain governance data affects its overall impact profile [8]."
       },
-      "headline": "Emgage Foundation mobilizes Muslim American voters through civic engagement and leadership programs.",
+      "headline": "Emgage Foundation works to increase Muslim American civic participation through voter registration and leadership training.",
       "strengths": [
-        "High program expense ratio of 93.3% in FY2024",
-        "Strong financial health with 15.3 months of working capital",
-        "Efficient fundraising spending only $0.02 to raise every $1"
+        "High program expense ratio of 93.3% ensures most funds reach community services [7].",
+        "Strong fundraising efficiency, spending only $0.01 to raise every $1 [7]."
       ],
-      "summary": "Emgage Foundation is a non-partisan group that informs and organizes Muslim American communities to participate in the democratic process [3]. In FY2024, the organization reported total revenue of $4,069,674 to support its mission of increasing voter turnout and legislative advocacy [7][8]."
+      "summary": "In FY2024, the organization managed $4,069,674 in total revenue to support its national non-partisan mission [7]. The foundation focuses on mobilizing voters through programs like Million Muslim Votes and the Muslim Civic Table [3]. It maintains a high level of financial accountability with a 97.0/100 rating from Charity Navigator [7]."
     },
     "rich_narrative": {
       "all_citations": [

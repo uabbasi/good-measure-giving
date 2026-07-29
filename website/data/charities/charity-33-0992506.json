@@ -87,7 +87,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-07-23 19:29:13",
+  "lastUpdated": "2026-07-28 18:28:09",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -143,6 +143,12 @@
       "timestamp": "2026-07-23T19:07:30",
       "value": 1808711
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/330992506#financials",
+      "timestamp": "2026-07-23T19:07:30",
+      "value": 2170356
+    },
     "total_revenue": {
       "source_name": "Form 990 (2022)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506",
@@ -178,7 +184,10 @@
     "masakin",
     "muslim-led"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "religious-services",
+    "community-services"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": [
@@ -274,14 +283,14 @@
   "zakatClaimEvidence": [
     "ICOI's Community Assistance Program is dedicated to supporting those in need through a variety of essential services, including food distribution, clothing, tuition aid, and financial assistance. Your generosity helps us continue this vital work. If you'd like to make a difference and support our community, please click the button below to donate. Click here to donate Zakat Ul Maal. ... If you would like to contribute funds to help needy families you can do so by either donating your Zakat ul-Maal or your Sadaqah. ... 100% of the Islamic Center Of Irvine's Zakat fund goes towards providing zakat eligible members in the community. ICOI's fund helps needy individuals by providing a rent and utilities assistance program, food and other basic needs, assistance for stranded travelers, as well as covering the costs of mental health services and other healthcare for needy individuals. (Source: https://www.icoi.net/community-assistance/)"
   ],
-  "archetype": null,
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "COMMUNITY",
-    "archetype_label": "Community Hub",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -479,9 +488,27 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The claimed 'muallaf' (new Muslims) asnaf category is not explicitly supported by the charity's described programs. While the charity serves 'vulnerable local community members' and provides 'religious and community support', there is no specific mention of programs directly aimed at supporting new Muslims or those whose hearts need to be won over.",
+          "message": "The claimed asnaf category 'muallaf' is not explicitly supported by the provided program descriptions. While the charity serves the poor and needy (fuqara, masakin) and potentially 'in Allah's cause' (fi sabilillah) through its educational programs, there is no direct mention of programs specifically targeting new Muslims or those whose hearts need to be won over.",
+          "severity": "warning"
+        },
+        {
+          "field": "wallet_tag",
+          "judge": "zakat",
+          "message": "The wallet tag 'ZAKAT-ELIGIBLE' is appropriate given the charity's programs that clearly serve the 'fuqara', 'masakin', and potentially 'fi sabilillah' asnaf categories. However, the claimed 'muallaf' classification is not well-supported, which could lead to donor confusion if they specifically wish to support new Muslims.",
           "severity": "warning"
         },
         {
@@ -569,59 +596,41 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a program expense ratio of 89.9%, 26.3 months of working capital, and $0.00 fundraising efficiency.",
-          "id": "[1]",
-          "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/330992506#financials"
-        },
-        {
-          "claim": "The charity is zakat-eligible and provides community assistance based on Islamic categories.",
+          "claim": "The charity is zakat-eligible for its community assistance programs.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.icoi.net/community-assistance/"
         },
         {
-          "claim": "Total revenue was $2,209,994 in the 2022 fiscal year, which is the latest available filing.",
+          "claim": "The organization reported $2,209,994 in revenue, an 89.9% program ratio, and 26.3 months of working capital in its FY2022 filing.",
           "id": "[3]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330992506"
         },
         {
-          "claim": "The organization provides access to its past financial documents and Form 990s.",
-          "id": "[4]",
-          "source_name": "Charity Website - Financials",
-          "source_url": "https://www.icoi.net/financials"
-        },
-        {
-          "claim": "The center offers various giving methods for religious and community support.",
-          "id": "[5]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://www.icoi.net/donate"
-        },
-        {
-          "claim": "The organization highlights program activities but lacks specific outcome measurement metrics.",
+          "claim": "The charity highlights program activities but lacks specific outcome metrics or a theory of change.",
           "id": "[7]",
           "source_name": "Annual Report",
           "source_url": "https://www.icoi.net/financials"
         }
       ],
-      "amal_score_rationale": "The organization earns an average rating because its high spending on programs is offset by a lack of recent financial data and missing impact metrics. While it serves a clear need for Muslim donors, the four-year gap in public filings and large cash reserves raise questions about current accountability.",
+      "amal_score_rationale": "The center shows a balanced profile with high spending efficiency on programs, but its outdated financial data and lack of impact tracking lower its overall standing.",
       "areas_for_improvement": [
-        "Public financial transparency is outdated, with the latest available Form 990 dating back to 2022 [3].",
-        "The organization holds 26.3 months of working capital, which is unusually high for a group collecting zakat that should be distributed promptly [1][2].",
+        "Financial transparency is limited as the latest public records are from 2022 [3].",
+        "The organization holds 26.3 months of working capital, which is high for a group collecting zakat that should be distributed promptly [3].",
         "Lack of a documented theory of change or specific outcome metrics to track long-term impact [7]."
       ],
       "dimension_explanations": {
-        "alignment": "ICOI is a strong fit for Muslim donors as it is zakat-eligible and serves religious and cultural needs in the Irvine area [2][5]. However, its large reserves of 26.3 months of working capital may concern donors who prefer zakat funds to be used quickly for the poor rather than held in savings [1][2].",
-        "impact": "The center focuses on capacity building through education and direct aid, spending 89.9% of its $2,209,994 revenue on programs [1][3]. It shows strong governance and evidence of activity through its annual reports, but it does not currently track specific outcome metrics to prove the long-term effectiveness of its work [7]."
+        "alignment": "This organization is a strong fit for Muslim donors as it is zakat-eligible and focuses on religious and cultural needs [2]. It has a solid track record of serving the Irvine community through its assistance programs [7]. However, the four-year gap in financial filings creates a lack of current information for donors to assess [3].",
+        "impact": "The charity directs 89.9% of its spending toward programs like the Quran Institute and community aid [3]. While it maintains strong governance and evidence of activity, it does not publicly track specific outcome metrics or follow a formal theory of change [7]. Financial health is stable with 26.3 months of working capital, though this may delay the use of charitable funds [3]."
       },
-      "headline": "The Islamic Center of Irvine provides essential community services but faces significant delays in public financial reporting.",
+      "headline": "The Islamic Center of Irvine provides essential community services but faces significant delays in financial reporting.",
       "strengths": [
-        "High program expense ratio of 89.9%, showing most funds go toward community services [1][3].",
-        "Zero fundraising costs, with $0.00 spent to raise every $1 in revenue [1].",
-        "Strong track record of providing zakat-eligible assistance to those in need [2][5]."
+        "High program expense ratio of 89.9% ensures most funds reach community services [3].",
+        "Efficient fundraising operations with a cost of $0.00 per $1 raised [3].",
+        "Verified zakat eligibility for community assistance programs [2]."
       ],
-      "summary": "The Islamic Center of Irvine (ICOI) operates as a religious and community hub, offering programs like the Quran Institute and a Community Assistance Program [1][3]. While the organization maintains high spending on its programs, no financial filings newer than FY2022 are available, meaning donors should treat this four-year-old financial picture with caution [3][4]."
+      "summary": "The organization operates a Quran Institute and a Community Assistance Program to serve local needs [3]. It reported total revenue of $2,209,994 in its most recent filing [3]. However, no financial filings newer than FY2022 are available, meaning donors should treat this four-year-old financial picture with caution [3]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -101,11 +101,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:40.348548+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:30:43.293807+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -208,7 +208,10 @@
     "scalable-model",
     "youth"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "community-services",
+    "religious-services"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
@@ -219,10 +222,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://muhsen.org/donor-dashboard/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 1800,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:30:43.293807+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://muhsen.org/wp-content/uploads/2024/08/MUHSEN_MediaKit_091224.pdf",
+    "timestamp": "2026-07-21T15:32:25",
+    "value": 1800
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -237,14 +254,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://muhsen.org/zakat (Source: https://muhsen.org/zakat)"
   ],
-  "archetype": null,
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "COMMUNITY",
-    "archetype_label": "Community Hub",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",

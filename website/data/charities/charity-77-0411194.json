@@ -94,7 +94,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 19:27:04",
+  "lastUpdated": "2026-07-28 17:56:28",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -150,11 +150,17 @@
       "timestamp": "2026-07-23T19:07:32",
       "value": 14886498
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/770411194#financials",
+      "timestamp": "2026-07-23T19:07:32",
+      "value": 17627261
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194",
-      "timestamp": "2026-07-23T19:07:29",
-      "value": 17442755
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/770411194#financials",
+      "timestamp": "2026-07-23T19:07:32",
+      "value": 18938214
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
@@ -191,7 +197,9 @@
     "systemic-change",
     "youth"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "advocacy-legal"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": [
@@ -580,14 +588,14 @@
   "zakatClaimEvidence": [
     "CAIR-SFBA explicitly states on its website and donation pages, \"Zakat-Eligible Giving. Your zakat and sadaqah ensure that our community has somewhere to turn when harm happens close to home.\" It also provides an option for donors to designate their contribution as Zakat, stating, \"My Donation is Intended as Zakat.\" Furthermore, CAIR-SFBA promotes, \"This Ramadan, Give Your Zakat For Justice. By giving your Zakat to CAIR, you ensure that more Muslims facing oppression get the representation they deserve.\" The organization is also listed as \"Zakat eligible\" on the Feeling Blessed platform. (Source: https://ca.cair.com/sfba/give-online/)"
   ],
-  "archetype": null,
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "SYSTEMIC_CHANGE",
-    "archetype_label": "Systems Builder",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Moderate",
@@ -762,9 +770,15 @@
       },
       "judge_issues": [
         {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The fetched content for citation 2 (Form 990 (2023)) does not contain the claimed total revenue for FY2024.",
+          "severity": "warning"
+        },
+        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs focus on civil rights advocacy, legal aid, and policy work. While these activities can indirectly benefit individuals who fall into zakat categories like 'fuqara' (poor) and 'masakin' (needy) by protecting their rights, the direct provision of aid to these specific categories is not explicitly detailed. The 'fisabilillah' category is broad and could encompass advocacy, but it's not explicitly stated as the primary focus for zakat distribution.",
+          "message": "The claimed zakat classification is 'amil', but the charity's programs primarily focus on civil rights advocacy and legal services, not direct zakat administration.",
           "severity": "warning"
         },
         {
@@ -819,52 +833,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported $18,938,214 in revenue, an 83.7% program expense ratio, and 14.5 months of working capital.",
+          "claim": "The organization directs 83.7% of its spending toward programs.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
         },
         {
-          "claim": "The organization spent $0.07 to raise every $1 in FY2024.",
+          "claim": "In FY2024, the organization managed $18,938,214 in total revenue.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific zakat policies.",
+          "claim": "The organization is a zakat-eligible charity.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://ca.cair.com/sfba/give-online/"
         },
         {
-          "claim": "Core programs include civil rights, policy advocacy, and media relations.",
+          "claim": "The group operates programs focused on civil rights, policy advocacy, and media relations.",
           "id": "[4]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://ca.cair.com/programs-education"
         },
         {
-          "claim": "The organization offers multiple ways for donors to support its advocacy work.",
+          "claim": "The organization provides clear options for zakat-eligible giving.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://ca.cair.com/ways-to-give"
         }
       ],
-      "amal_score_rationale": "The charity maintains a balanced profile with efficient spending and strong financial health, though it lacks a formal framework to measure long-term program results.",
+      "amal_score_rationale": "The charity maintains efficient spending and solid financial health, though it lacks a formal framework to measure its long-term social impact.",
       "areas_for_improvement": [
         "Lack of a documented theory of change to explain long-term impact goals",
-        "Limited data on specific outcomes and cost per beneficiary"
+        "Limited public data regarding specific measurable outcomes for beneficiaries"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves an underserved space by defending the rights of American Muslims and is considered zakat-eligible [3][4]. It has a long track record in advocacy, though its fit for donors depends on their interest in policy-heavy work [4][5].",
-        "impact": "The organization spends 83.7% of its budget directly on programs like legal services and advocacy [1]. While financial health is strong with 14.5 months of capital, there is no formal theory of change to track how these activities lead to specific social shifts [1][4]."
+        "alignment": "This group serves an urgent need by defending civil rights in underserved communities [4]. It offers a medium fit for Muslim donors and provides clear options for zakat-eligible giving [3][5].",
+        "impact": "The organization directs 83.7% of its spending toward programs like legal services and advocacy [1]. While it shows strong financial health and governance, it does not currently provide a documented theory of change to track specific outcomes [2]."
       },
-      "headline": "The Council on American-Islamic Relations California defends civil rights through legal advocacy and public education.",
+      "headline": "The Council on American-Islamic Relations California defends civil liberties through legal advocacy and public education.",
       "strengths": [
-        "High program expense ratio of 83.7% ensures most funds reach core services [1]",
-        "Efficient fundraising costs of only $0.07 for every $1 raised [2]",
-        "Strong liquidity with 14.5 months of working capital available [1]"
+        "High program expense ratio of 83.7% ensures most funds reach core services",
+        "Strong financial stability with 14.5 months of working capital available",
+        "Efficient fundraising operations costing only $0.07 per $1 raised"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $18,938,214 to support its mission of protecting constitutional rights [1][2]. The charity is zakat-eligible and focuses on civil rights, policy advocacy, and media relations for the Muslim community [3][4]."
+      "summary": "In FY2024, the organization managed $18,938,214 in total revenue to support its mission of protecting constitutional rights [2]. The group operates programs focused on civil rights, policy advocacy, and media relations to serve the Muslim community [4]. It is a zakat-eligible charity that accepts donations to help those facing discrimination [3]."
     },
     "rich_narrative": {
       "all_citations": [

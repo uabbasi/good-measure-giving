@@ -86,7 +86,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 23:22:41",
+  "lastUpdated": "2026-07-28 18:26:30",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -142,11 +142,17 @@
       "timestamp": "2026-07-23T22:39:31",
       "value": 731655
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/204097808#financials",
+      "timestamp": "2026-07-23T22:39:31",
+      "value": 856282
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/204097808",
-      "timestamp": "2026-07-18T19:15:04",
-      "value": 850837
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/204097808#financials",
+      "timestamp": "2026-07-23T22:39:31",
+      "value": 497120
     },
     "working_capital_months": {
       "derived_from": [
@@ -175,13 +181,16 @@
     "research",
     "youth"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "community-services",
+    "research-policy"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "The Family & Youth Institute (thefyi.org) explicitly mentions 'the fyi's theory of change' on their Research page. They describe their approach as a community-based participatory research model that ensures projects are grounded in community spirit and collaboration. This involves partnering with communities to identify priorities and needs, engaging and integrating community voices throughout the research process, incorporating community perspectives on data, identifying practical solutions, and sharing the benefits. This outlines how their activities lead to impact.",
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2006,
-  "scoreSummary": "THE FAMILY AND YOUTH INSTITUTE shows strong impact and strong alignment, with zakat compliance (significant risk deductions applied).",
+  "scoreSummary": "THE FAMILY AND YOUTH INSTITUTE shows strong impact and strong alignment, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -203,14 +212,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://thefyi.org/zakat (Source: https://thefyi.org/zakat)"
   ],
-  "archetype": null,
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "SYSTEMIC_CHANGE",
-    "archetype_label": "Systems Builder",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -232,19 +241,12 @@
       "data_points": {
         "reserves_months": 28.3
       }
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Board too small: 2 members",
-      "detail": "Source: Candid profile",
-      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "20-4097808",
     "charity_name": "The Family & Youth Institute",
-    "amal_score": 67,
+    "amal_score": 72,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:23:15",
     "rubric_version": "5.3.0",
@@ -376,7 +378,7 @@
             "status": "full"
           },
           {
-            "evidence": "Board governance: baseline (2 members, emerging org)",
+            "evidence": "Board governance: baseline (unknown members, emerging org)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -394,16 +396,28 @@
       },
       "judge_issues": [
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity's programs focus on research and education in mental health, which aligns with the 'Fi Sabilillah' (in Allah's cause) category for religious/educational causes. However, the classification is 'amil' (zakat workers), which is not directly supported by the program descriptions.",
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
           "severity": "warning"
+        },
+        {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations.alignment",
+          "judge": "score",
+          "message": "Citation [6] for 'research-based lens' is a misattribution. Citation [5] would be more appropriate.",
+          "severity": "info"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "While the charity's programs align with 'Fi Sabilillah' for educational causes, there is no explicit mention of serving other asnaf categories like the poor, needy, debtors, etc. Further clarification on how their work directly benefits these specific groups would strengthen the zakat eligibility claim beyond 'Fi Sabilillah'.",
-          "severity": "info"
+          "message": "The charity claims 'amil' as its zakat classification, but its programs primarily focus on research and education (fisabilillah). There is no evidence that the charity directly employs or supports individuals involved in the collection or distribution of zakat.",
+          "severity": "warning"
         },
         {
           "field": "propublica.expense_ratio",
@@ -448,18 +462,11 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -7,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: Board too small: 2 members",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
-          {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 2 members",
-            "mitigation": null,
-            "severity": "high"
-          },
           {
             "category": "financial",
             "data_source": "Form 990 / Balance Sheet",
@@ -468,9 +475,9 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -7
+        "total_deduction": -2
       },
-      "score_summary": "THE FAMILY AND YOUTH INSTITUTE shows strong impact and strong alignment, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "THE FAMILY AND YOUTH INSTITUTE shows strong impact and strong alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -482,46 +489,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 90.0/100 rating, an 84.0% program expense ratio, and 23.6 months of working capital.",
+          "claim": "The charity maintains a 90.0/100 score from Charity Navigator and spends 84.0% of its budget on programs.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/204097808#financials"
         },
         {
-          "claim": "Total revenue in FY2024 was $497,120 and the board consists of two members.",
+          "claim": "In FY2024, the organization managed $497,120 in total revenue and held 23.6 months of working capital.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/204097808"
         },
         {
-          "claim": "The organization uses research-based programs and a theory of change to drive community outcomes.",
+          "claim": "The charity focuses on capacity building and research to strengthen families and has a solid track record of advocacy.",
           "id": "[5]",
           "source_name": "Annual Report",
           "source_url": "https://thefyi.org/annual-reports/"
         },
         {
-          "claim": "The Family and Youth Institute is a zakat-eligible organization.",
+          "claim": "It is recognized as zakat-eligible, allowing donors to fulfill their religious obligations.",
           "id": "[6]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://thefyi.org/zakat"
         }
       ],
-      "amal_score_rationale": "This charity shows above-average performance due to its high spending on programs and strong evidence of impact, though its small board and high cash reserves are notable concerns.",
+      "amal_score_rationale": "The organization shows above-average performance due to its high spending efficiency and strong alignment with Muslim donor needs. While its financial health is solid, the large amount of cash held in reserve is a point for donors to consider regarding the speed of zakat distribution.",
       "areas_for_improvement": [
-        "The board of directors is small, consisting of only two members [2].",
-        "The organization holds 23.6 months of working capital, which may delay the distribution of zakat funds [1][6]."
+        "High cash reserves of 23.6 months may delay the immediate use of zakat funds",
+        "Limited direct service delivery as the focus is on capacity building and research"
       ],
       "dimension_explanations": {
-        "alignment": "This group is a strong fit for Muslim donors as a zakat-eligible organization addressing underserved mental health needs [6]. While it has a solid track record, the small board size of two members presents a governance risk [2].",
-        "impact": "The organization focuses on capacity building through mental health research and community education [5]. It maintains an efficient 84.0% program expense ratio and demonstrates high-quality evidence and outcomes in its reporting [1][5]."
+        "alignment": "This organization is a high fit for Muslim donors because it addresses specific community needs through a research-based lens [6]. It has a solid track record of advocacy and education [5].",
+        "impact": "The charity focuses on capacity building and research to strengthen families [5]. It spends 84.0% of its budget on programs, which is a high level of efficiency [1]. While it has a strong theory of change and clear evidence of its outcomes, it does not provide direct one-on-one services, which affects its cost-per-beneficiary metrics [5]."
       },
-      "headline": "The Family and Youth Institute provides research-based mental health education and youth development for the Muslim community.",
+      "headline": "The Family and Youth Institute provides research-backed mental health education and youth development for the Muslim community.",
       "strengths": [
-        "High program expense ratio of 84.0%, ensuring most funds go directly to services [1].",
-        "Efficient fundraising operations, spending only $0.14 to raise every $1 [1].",
-        "Strong evidence-based approach with clear outcomes and a defined theory of change [5]."
+        "High spending efficiency with 84.0% of funds going directly to programs",
+        "Low fundraising costs of only $0.09 per $1 raised",
+        "Strong evidence and outcomes reporting for its research-based model"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $497,120 to support its mission of strengthening families through research and community education [2]. The charity is zakat-eligible and maintains a 90.0/100 rating from Charity Navigator for its financial health and transparency [1][6]."
+      "summary": "In FY2024, the organization managed $497,120 in total revenue to support community education and mental health research [2]. The charity maintains a 90.0/100 score from Charity Navigator for its financial health and transparency [1]. It is also recognized as zakat-eligible, allowing donors to fulfill their religious obligations through its programs [6]."
     },
     "rich_narrative": {
       "all_citations": [

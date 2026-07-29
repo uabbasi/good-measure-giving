@@ -14,7 +14,7 @@
     "Emergency Response"
   ],
   "geographicCoverage": [],
-  "category": "International Education",
+  "category": "K-12 Education",
   "website": "https://obathelpers.org",
   "location": {
     "address": "1660 INTERNATIONAL DR STE 600",
@@ -93,11 +93,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:34.312009+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:28:59.240358+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.ummah_gap_data.beneficiary_count",
@@ -183,9 +183,9 @@
       "value": 5.7
     }
   },
-  "primaryCategory": "EDUCATION_INTERNATIONAL",
+  "primaryCategory": "EDUCATION_K12_RELIGIOUS",
   "categoryMetadata": {
-    "importance": "MEDIUM",
+    "importance": "LOW",
     "neglectedness": "MEDIUM"
   },
   "causeTags": [
@@ -197,7 +197,10 @@
     "medical",
     "muslim-led"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "education-k12",
+    "economic-empowerment"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "Equip underserved communities with tools to break free from poverty by providing access to quality education and economic empowerment programs.",
   "grantsData": [
@@ -218,10 +221,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.obathelpers.org/donate",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 300000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:28:59.240358+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.ummah_gap_data.beneficiary_count",
+    "source_url": "https://obathelpers.org/s/2014-OBAT-HELPERS-Audit-Letter-1.pdf",
+    "timestamp": "2026-07-23T16:27:46",
+    "value": 300000
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -237,14 +254,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://obathelpers.org/donate (Source: https://obathelpers.org/donate)"
   ],
-  "archetype": null,
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "DIRECT_SERVICE",
-    "archetype_label": "Frontline Relief",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",

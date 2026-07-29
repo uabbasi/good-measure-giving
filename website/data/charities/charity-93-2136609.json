@@ -73,11 +73,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:33.994460+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:28:53.334348+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -122,7 +122,9 @@
     "scalable-model",
     "usa"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "healthcare-direct"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
@@ -133,20 +135,34 @@
   "form990ExemptReason": "Exempt from Form 990 filing",
   "noFilings": true,
   "donationUrl": "https://naomcc.org/Donations",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 1500000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:28:53.334348+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://naomcc.org/AboutUs",
+    "timestamp": "2026-07-21T15:31:11",
+    "value": 1500000
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
-  "archetype": null,
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Limited Basis",
-    "archetype_code": "DIRECT_SERVICE",
-    "archetype_label": "Frontline Relief",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
       "evidence": "Moderate",

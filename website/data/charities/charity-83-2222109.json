@@ -100,11 +100,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:35.589842+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:29:20.969219+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -206,7 +206,9 @@
     "pakistan",
     "water-sanitation"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "water-sanitation"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "Paani Project's 'Economic Impact' page details their 'Economic Development Process' and 'Sustainable Development Outcomes'. This framework describes how global investment leads to local employment, business expansion, and economic multiplication, ultimately creating long-term economic transformation, skills transfer, business creation, vendor ecosystem development, women's economic participation, and healthcare economic reinvestment. It outlines a structured approach to how their activities drive measurable economic development and impact across rural Pakistan.",
   "grantsData": null,
@@ -217,10 +219,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://paaniproject.org/donate/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 1600000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:29:20.969219+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://paaniproject.org/blog/18000-lives-changed-july-2025-clean-water-impact-sindh/",
+    "timestamp": "2026-07-23T20:26:05",
+    "value": 1600000
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -236,14 +252,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://Paaniproject.org/zakaat (Source: https://Paaniproject.org/zakaat)"
   ],
-  "archetype": null,
+  "archetype": "ASSET_CREATION",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "DIRECT_SERVICE",
-    "archetype_label": "Frontline Relief",
+    "archetype_code": "ASSET_CREATION",
+    "archetype_label": "Asset Creator",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",

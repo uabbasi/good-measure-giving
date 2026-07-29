@@ -86,11 +86,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:37.527378+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:29:57.338415+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -158,8 +158,11 @@
       "value": 24.2
     }
   },
-  "primaryCategory": null,
-  "categoryMetadata": null,
+  "primaryCategory": "RELIGIOUS_OUTREACH",
+  "categoryMetadata": {
+    "importance": "LOW",
+    "neglectedness": "MEDIUM"
+  },
   "causeTags": [
     "faith-based",
     "fisabilillah",
@@ -167,7 +170,10 @@
     "scalable-model",
     "usa"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "religious-services",
+    "education-higher"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "To make learning Islam easy and accessible for Muslims like you\u2026 The busy mom, the active student, the working professional who wants to confidently worship Allah, and own their Islamic identity, but feels like there isn\u2019t enough time\u2026",
   "grantsData": null,
@@ -178,10 +184,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.almaghrib.org/policies",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 300000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:29:57.338415+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://almaghrib.org/about-us",
+    "timestamp": "2026-07-19T21:38:43",
+    "value": 300000
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -197,14 +217,14 @@
   "zakatClaimEvidence": [
     "AlMaghrib Institute is listed as \"Zakat eligible\" on the Feeling Blessed donation platform, which also features a Zakat Calculator and information on ensuring donations are used as Zakat. (Source: https://www.feelingblessed.org/almaghrib)"
   ],
-  "archetype": null,
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "DIRECT_SERVICE",
-    "archetype_label": "Frontline Relief",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",

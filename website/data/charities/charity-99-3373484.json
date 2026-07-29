@@ -76,11 +76,11 @@
     "beneficiaries_served_annually": {
       "method": "pattern_match",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:32.591537+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:28:30.403584+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.impact_metrics.metrics.orphans_and_mothers_turkiye",
@@ -157,7 +157,10 @@
     "syria",
     "turkey"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "orphan-care",
+    "humanitarian-relief"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "Focus on holistic development and long-term sustainability to ensure that orphans and widows can lead fulfilling lives.",
   "grantsData": null,
@@ -168,15 +171,29 @@
   "form990ExemptReason": "",
   "noFilings": true,
   "donationUrl": "https://yateemfoundationusa.org/our-support/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 105,
+  "beneficiariesSource": {
+    "method": "pattern_match",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:28:30.403584+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.impact_metrics.metrics.orphans_and_mothers_turkiye",
+    "source_url": "https://yateemfoundationusa.org/our-support/",
+    "timestamp": "2026-07-23T16:22:34",
+    "value": 105
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": [
     "Yateem Foundation USA lists \"Zekat Relief\" under its \"Donation and Campaigns\" section."
   ],
-  "archetype": null,
+  "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",

@@ -68,7 +68,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-24 00:48:30",
+  "lastUpdated": "2026-07-28 18:28:41",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -79,11 +79,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:45.384977+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-29T00:50:01.152501+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -133,6 +133,12 @@
       "timestamp": "2026-07-24T00:19:50",
       "value": 271263
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
+      "timestamp": "2026-07-24T00:19:50",
+      "value": 1434218
+    },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
@@ -154,7 +160,10 @@
     "muallaf",
     "muslim-led"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "religious-services",
+    "community-services"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
@@ -165,10 +174,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.taleefcollective.org/donate",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 125,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-29T00:50:01.152501+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://taleefcollective.org/s/Annual-Report-for-Website.pdf",
+    "timestamp": "2026-07-23T23:48:26",
+    "value": 125
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -185,14 +208,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://taleefcollective.org/donate/zakat (Source: https://taleefcollective.org/donate/zakat)"
   ],
-  "archetype": null,
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "COMMUNITY",
-    "archetype_label": "Community Hub",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Early",
     "signal_states": {
       "evidence": "Strong",
@@ -374,15 +397,21 @@
       },
       "judge_issues": [
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity's programs primarily focus on supporting converts and providing general Islamic education and community building. While 'Muallaf' (reconciling hearts) is a valid zakat category, the evidence primarily supports this through general outreach and support for new Muslims, rather than direct financial aid or specific programs explicitly targeting the 'Muallaf' asnaf in a way that would justify the classification without further clarification.",
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
           "severity": "warning"
         },
         {
-          "field": "wallet_tag",
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The wallet tag 'ZAKAT-ELIGIBLE' is claimed by the charity and supported by their website. However, the primary focus of the charity's programs appears to be broader community building and education for Muslims, including converts. While 'Muallaf' is a valid zakat category, the extent to which the charity's activities directly and exclusively serve this category, or other zakat-eligible categories, needs clearer evidence to fully justify the 'ZAKAT-ELIGIBLE' tag. The low program expense ratio also raises concerns about the efficiency of zakat funds.",
+          "message": "The charity's programs primarily focus on religious education, community building, and support for converts. While 'muallaf' is listed as a served asnaf category, the direct evidence linking program activities to this specific category is not explicit in the provided descriptions. The 'Convert Care' program and general support for new Muslims align with the 'muallaf' category, but more detailed information on how these programs specifically address the needs of 'muallaf' would strengthen the classification.",
           "severity": "warning"
         },
         {
@@ -444,47 +473,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories.",
+          "claim": "Ta'leef Collective is zakat-eligible and accepts these funds to support its mission.",
           "id": "[1]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://taleefcollective.org/donate/zakat"
         },
         {
-          "claim": "The charity has a 40.0/100 score, an 11.7% program expense ratio, 5.2 months of working capital, and $0.01 fundraising efficiency.",
+          "claim": "The charity maintains 5.2 months of working capital and shows high marks for governance.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/721528691#financials"
         },
         {
-          "claim": "Total revenue for the organization was $1,371,252 in FY2024.",
+          "claim": "In fiscal year 2024, the charity reported total revenue of $1,371,252 and a program expense ratio of 11.7%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/721528691"
         },
         {
-          "claim": "The charity operates programs including Convert Care and Inheritors and provides outcome data.",
+          "claim": "The organization offers programs like Convert Care and Inheritors to help people understand and practice Islam.",
           "id": "[5]",
           "source_name": "Annual Report",
           "source_url": "https://www.taleefcollective.org/about"
         }
       ],
-      "amal_score_rationale": "The charity receives an average rating because its strong financial stability and fundraising efficiency are offset by a very low percentage of funds reaching its actual programs.",
+      "amal_score_rationale": "Ta'leef Collective shows a balanced profile with strong governance and clear program outcomes, but its overall rating is limited by a very low percentage of spending on direct programs. While the organization is financially stable, only a small portion of its total revenue reached its core services in the most recent filings.",
       "areas_for_improvement": [
-        "Increase the program expense ratio, as only 11.7% of spending currently goes to direct services [2]",
-        "Develop and document a clear theory of change to guide long-term impact",
-        "Reduce the high cost per beneficiary, which currently stands at $2170.10"
+        "Increase the program expense ratio, which was 11.7% in FY2024 [3]",
+        "Develop and document a formal theory of change to guide long-term impact",
+        "Lower the cost per beneficiary to improve spending efficiency"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves an important role in a niche space by supporting converts and providing religious education [5]. While it is zakat-eligible, its overall fit for some donors is moderate due to the high cost of $2170.10 per beneficiary [1][2].",
-        "impact": "Ta'leef Collective shows strong governance and provides clear evidence of its program outcomes [2][5]. However, its impact is limited by a program expense ratio of 11.7% in FY2024, meaning a large portion of its $1,371,252 revenue goes toward administrative costs rather than direct services [2][3]."
+        "alignment": "Ta'leef Collective serves a specific need in the Muslim community by focusing on converts and religious education [5]. It has a solid track record and fills a unique gap in social services [2]. Donors can contribute via zakat, which the organization processes according to specific religious guidelines [1].",
+        "impact": "The charity spends $2,170.10 per beneficiary, which is a high cost for its capacity-building work [2]. While it has earned high marks for governance and outcome evidence, its program expense ratio was only 11.7% in FY2024 [3]. This means a large portion of funds went toward administrative or other non-program costs [2]."
       },
-      "headline": "Ta'leef Collective provides a welcoming space for Muslims but faces challenges with high overhead costs.",
+      "headline": "Ta'leef Collective provides a space for people to learn about and embrace Islam through community support and education.",
       "strengths": [
-        "holds 5.2 months of working capital to cover ongoing operations [2]",
-        "High fundraising efficiency, spending only $0.01 to raise every $1 [2]",
-        "Strong track record of providing evidence and outcomes for its programs [5]"
+        "Maintains 5.2 months of working capital to cover operations [2]",
+        "Strong governance and documented evidence of program outcomes [2]",
+        "Provides specialized support for converts and youth through dedicated programs [5]"
       ],
-      "summary": "Ta'leef Collective offers programs like Convert Care and Inheritors to help people understand and practice Islam [5]. In FY2024, the organization reported total revenue of $1,371,252 and is recognized as zakat-eligible [1][3]."
+      "summary": "The organization offers programs like Convert Care and Inheritors to help people understand and practice Islam [5]. In fiscal year 2024, the charity reported total revenue of $1,371,252 [3]. Ta'leef Collective is zakat-eligible and accepts these funds to support its mission [1]."
     },
     "rich_narrative": {
       "all_citations": [

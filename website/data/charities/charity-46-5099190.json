@@ -93,11 +93,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:46.265179+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:32:24.456810+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -196,7 +196,9 @@
     "scalable-model",
     "usa"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "religious-services"
+  ],
   "hideFromCurated": null,
   "theoryOfChange": "The Ghamidi Center of Islamic Learning, an initiative of Al-Mawrid US, has a published \"Strategic Plan for Al-Mawrid United States Inc.\" available through GuideStar, current as of September 13, 2022. This document outlines the organization's vision, mission, high-level objectives, and action steps. The mission is to teach people to explore, understand, discuss, and practice Islam based on reason, rationality, and objective thinking. Objectives include providing a research and educational environment for the evolution of Islamic thought and establishing an institute where Islam is taught as knowledge based on reason and logic. Action steps detail how these objectives will be achieved, such as translating and supporting research, educating through various courses, creating and disseminating audio/visual content, and engaging with local communities. This strategic plan serves as a documented approach explaining how their programs are intended to create impact.",
   "grantsData": [
@@ -217,10 +219,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://ghamidicenter.com/donate/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 300,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:32:24.456810+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://ghamidicenter.com/wp-content/uploads/2026/06/Ext-Arabic-Language-Program-Calendar-2026.pdf",
+    "timestamp": "2026-07-23T23:51:02",
+    "value": 300
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -237,14 +253,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://ghamidicenter.com/donate (Source: https://ghamidicenter.com/donate)"
   ],
-  "archetype": null,
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "EDUCATION",
-    "archetype_label": "Education & Training",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",

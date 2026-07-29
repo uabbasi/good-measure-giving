@@ -106,11 +106,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "other",
-        "confident": false,
-        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
-        "timestamp": "2026-07-27T02:19:49.816090+00:00",
-        "verified": false
+        "category": "annual_people_served",
+        "confident": true,
+        "model": "gemini-2.5-flash-lite",
+        "timestamp": "2026-07-27T23:33:18.475551+00:00",
+        "verified": true
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -229,7 +229,10 @@
     "water-sanitation",
     "yemen"
   ],
-  "programFocusTags": null,
+  "programFocusTags": [
+    "humanitarian-relief",
+    "water-sanitation"
+  ],
   "hideFromCurated": true,
   "theoryOfChange": "Action Against Hunger USA has a published 'International Strategic Plan (2021-2025)' which serves as a strategic framework. This document provides a shared direction and framework for their work over five years, outlining how they will achieve their vision of a world without hunger. It details their goals and the targets they aim to achieve, focusing on long-term change through mitigating key drivers of hunger, including climate change, gender inequality, conflict, and poverty. The plan describes a multisectoral approach to address the immediate, underlying, and root causes of undernutrition and its effects. Action Against Hunger USA, as part of the global network, explicitly refers to and links this International Strategic Plan on its website.",
   "grantsData": [
@@ -1510,10 +1513,24 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.actionagainsthunger.org/take-action/donate/impact-emergency-relief/",
-  "beneficiariesServedAnnually": null,
-  "beneficiariesSource": null,
-  "beneficiariesConfidence": "needs_review",
-  "beneficiariesExcludedFromScoring": true,
+  "beneficiariesServedAnnually": 26500000,
+  "beneficiariesSource": {
+    "method": "direct",
+    "semantics": {
+      "category": "annual_people_served",
+      "confident": true,
+      "model": "gemini-2.5-flash-lite",
+      "timestamp": "2026-07-27T23:33:18.475551+00:00",
+      "verified": true
+    },
+    "source_name": "Charity Website",
+    "source_path": "website_profile.beneficiaries_served",
+    "source_url": "https://actionagainsthunger.org/app/uploads/2022/09/ActionAgainstHungerUSA-990-2019-1.pdf",
+    "timestamp": "2026-07-23T23:56:46",
+    "value": 26500000
+  },
+  "beneficiariesConfidence": "cited",
+  "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
@@ -1526,14 +1543,14 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": null,
-  "archetype": null,
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "DIRECT_SERVICE",
-    "archetype_label": "Frontline Relief",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
