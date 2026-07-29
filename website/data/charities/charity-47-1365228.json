@@ -72,7 +72,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-24 00:42:13",
+  "lastUpdated": "2026-07-28 18:27:25",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -128,11 +128,17 @@
       "timestamp": "2026-07-23T14:58:20",
       "value": 281685
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
+      "timestamp": "2026-07-23T14:58:20",
+      "value": 1556552
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228",
-      "timestamp": "2026-07-23T14:58:18",
-      "value": 2799757
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
+      "timestamp": "2026-07-23T14:58:20",
+      "value": 3647357
     },
     "working_capital_months": {
       "derived_from": [
@@ -234,14 +240,14 @@
   "amalEvaluation": {
     "charity_ein": "47-1365228",
     "charity_name": "Sachse Muslim Society",
-    "amal_score": 20,
+    "amal_score": 15,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-07-23 14:58:41",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 20,
       "data_confidence": 0.6,
-      "impact": 10
+      "impact": 5
     },
     "score_details": {
       "alignment": {
@@ -366,33 +372,93 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: MINIMAL (3 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 10/50",
+        "rationale": "Delivery: direct service; Impact 5/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 10
+        "score": 5
       },
       "judge_issues": [
         {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "revenue",
+          "judge": "factual",
+          "message": "The narrative revenue of $3,647,357 matches the source value of $3,647,357.",
+          "severity": "info"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative program expense ratio of 13.6% is a close match to the source value of 13.64%.",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative states 63.0 months of working capital, but the source data indicates 31.85 months.",
+          "severity": "warning"
+        },
+        {
+          "field": "fundraising_efficiency",
+          "judge": "factual",
+          "message": "The narrative fundraising efficiency of $0.11 per $1 raised is a close match to the source value of $0.08 per $1 raised.",
+          "severity": "info"
+        },
+        {
+          "field": "founding_date",
+          "judge": "factual",
+          "message": "The narrative states the organization was founded in 2014, which matches the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "mission",
+          "judge": "factual",
+          "message": "The narrative's description of the organization's purpose (religious education and community service) aligns with the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "zakat_eligibility",
+          "judge": "factual",
+          "message": "The narrative states the organization is zakat-eligible, which is supported by the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "programs",
+          "judge": "factual",
+          "message": "The narrative mentions Hifdh programs, which are listed in the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "strengths",
+          "judge": "score",
+          "message": "The narrative states a fundraising efficiency of $0.11 to raise every $1, but the source data indicates a higher efficiency of $0.08 to raise every $1.",
+          "severity": "warning"
+        },
+        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs primarily focus on religious education (Hifz programs, Sunday School) and community services. While 'Fi Sabilillah' can encompass religious education, the charity's extensive cash reserves and low program expense ratio raise concerns about the timely distribution of zakat funds for their intended purpose.",
+          "message": "The charity's programs primarily focus on religious education (Hifdh programs, Sunday School) and community service. While 'Fi Sabilillah' can encompass religious education, the evidence provided does not explicitly detail how these programs directly serve the 'Fi Sabilillah' asnaf (in Allah's cause) beyond general religious education. There is a lack of specific information on how the funds are allocated to beneficiaries within this category.",
           "severity": "warning"
         },
         {
           "field": "wallet_tag",
           "judge": "zakat",
-          "message": "While the charity claims to accept zakat and offers religious education programs that could fall under 'fi_sabilillah', the low program expense ratio and high cash reserves suggest that zakat funds may not be distributed promptly or effectively for their intended purpose. This raises questions about its 'ZAKAT-ELIGIBLE' status if the funds are not being actively utilized.",
+          "message": "The wallet tag is ZAKAT-ELIGIBLE, but the evidence for direct service to specific zakat beneficiaries (asnaf) is weak. While the charity claims to be zakat-eligible and offers religious education, the primary concern is the low program expense ratio (13.6%) and high cash reserves, which suggests funds are not being actively distributed to those in need, including those who would qualify under 'Fi Sabilillah'.",
           "severity": "warning"
         },
         {
@@ -456,7 +522,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the charity had $3,647,357 in revenue, a 13.6% program expense ratio, 63.0 months of working capital, and spent $0.08 per $1 raised.",
+          "claim": "The charity reported $3,647,357 in revenue, a 13.6% program expense ratio, 63.0 months of working capital, and a fundraising efficiency of $0.11 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471365228#financials"
@@ -468,28 +534,28 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228"
         },
         {
-          "claim": "The organization offers full-time and part-time Hifz programs and accepts zakat donations.",
+          "claim": "The organization is zakat-eligible and offers Hifdh programs.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://sachsemasjid.org/donate/"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and the lack of formal metrics to track community impact. While the group is financially stable, the high amount of saved cash suggests that funds are not being used quickly for charitable activities.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and a lack of documented results. Additionally, the large amount of saved cash is a concern for an organization that collects zakat.",
       "areas_for_improvement": [
-        "Only 13.6% of total spending goes directly to programs, which is significantly below standard benchmarks [1].",
-        "The charity holds 63.0 months of working capital in reserve, which may delay the distribution of zakat funds [1].",
-        "There is no public data regarding outcome measurements or a documented theory of change to track program success [1]."
+        "Only 13.6% of total expenses are spent directly on programs and services [1].",
+        "The organization holds over five years of cash reserves, which delays the distribution of zakat funds to those in need [1].",
+        "There is no public data available regarding outcome measurements or the specific impact of its educational programs [1]."
       ],
       "dimension_explanations": {
-        "alignment": "The charity serves a specific religious and cultural need for Muslims in the Sachse area [3]. However, its track record is balanced by the fact that it holds over five years of expenses in reserve rather than applying those funds to immediate community needs [1].",
-        "impact": "The organization provides direct religious services, but financial health is a concern because only 13.6% of expenses support its programs [1]. There is currently no evidence or third-party data available to measure the actual outcomes of its educational work [1]."
+        "alignment": "This organization serves a specific religious and cultural need for Muslim donors in the Sachse area [2].",
+        "impact": "The charity faces challenges in financial health because only 13.6% of its spending goes toward its actual programs [1]. It also lacks a clear framework for measuring success or showing evidence of its outcomes [1]."
       },
-      "headline": "Sachse Muslim Society provides religious education in Texas but maintains high cash reserves and low program spending.",
+      "headline": "The Sachse Muslim Society provides religious education in Texas but maintains high cash reserves and low program spending.",
       "strengths": [
-        "The organization operates with high fundraising efficiency, spending only $0.08 to raise every $1 [1].",
-        "Donors can contribute through various methods, and the organization is classified as zakat-eligible [3]."
+        "The charity operates with high fundraising efficiency, spending only $0.11 to raise every $1 [1].",
+        "The organization has a ten-year track record of serving the Sachse community since its founding in 2014 [2]."
       ],
-      "summary": "founded in 2014, this organization focuses on religious education and community service through full-time and part-time Hifz programs [2][3]. In FY2024, the charity reported total revenue of $3,647,357 [1]."
+      "summary": "Founded in 2014, this organization focuses on religious education and community service through full-time and part-time Hifdh programs [2][3]. In fiscal year 2024, the charity reported total revenue of $3,647,357 [1]. While the group is zakat-eligible, it holds 63.0 months of working capital in reserve [1][3]."
     },
     "rich_narrative": {
       "all_citations": [

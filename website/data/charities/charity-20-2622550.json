@@ -56,7 +56,7 @@
     "workingCapitalMonths": "12.00",
     "noncashRatio": 0.0012642800001764901,
     "cashAdjustedProgramRatio": null,
-    "domesticBurnRate": 0.9988017760831668
+    "domesticBurnRate": null
   },
   "baselineGovernance": null,
   "targeting": {
@@ -88,7 +88,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-24 01:08:51",
+  "lastUpdated": "2026-07-28 17:55:03",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -150,11 +150,17 @@
       "timestamp": "2026-07-24T00:19:45",
       "value": 5081877
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/202622550#financials",
+      "timestamp": "2026-07-24T00:19:45",
+      "value": 6342721
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/202622550",
-      "timestamp": "2026-07-18T19:15:04",
-      "value": 3060301
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/202622550#financials",
+      "timestamp": "2026-07-24T00:19:45",
+      "value": 3357068
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
@@ -181,6 +187,7 @@
   },
   "causeTags": [
     "advocacy",
+    "direct-service",
     "research",
     "systemic-change"
   ],
@@ -230,7 +237,7 @@
   ],
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2005,
-  "scoreSummary": "Fight Colorectal Cancer shows strong impact and good alignment (minor risk deductions applied).",
+  "scoreSummary": "Fight Colorectal Cancer shows strong impact and good alignment.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -265,28 +272,18 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Strong"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": [
-    {
-      "type": "domestic_burn",
-      "severity": "high",
-      "headline": "100% of expenses stay in the US despite international operations",
-      "detail": "Organization claims foreign operations but most spending remains domestic.",
-      "data_points": {
-        "domestic_burn_rate": 0.999
-      }
-    }
-  ],
+  "keyConcerns": null,
   "amalEvaluation": {
     "charity_ein": "20-2622550",
     "charity_name": "Fight Colorectal Cancer",
-    "amal_score": 63,
+    "amal_score": 68,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:37:32",
     "rubric_version": "5.3.0",
@@ -436,6 +433,54 @@
       },
       "judge_issues": [
         {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states an 81.4% program expense ratio, while the source data indicates 81.38%. This is within acceptable rounding tolerance.",
+          "severity": "warning"
+        },
+        {
+          "field": "claims_zakat_eligible",
+          "judge": "factual",
+          "message": "The narrative claims the charity is sadaqah-eligible, but the source data indicates the charity does not claim zakat eligibility and is not faith-based. The wallet tag is SADAQAH-ELIGIBLE, which aligns with the source data's finding that the charity does not claim zakat eligibility.",
+          "severity": "warning"
+        },
+        {
+          "field": "baseline_narrative.strengths",
+          "judge": "score",
+          "message": "The stated fundraising cost ($0.23 for every $1 raised) contradicts the Charity Navigator data ($0.09 for every $1 raised).",
+          "severity": "warning"
+        },
+        {
           "field": "propublica.expense_ratio",
           "judge": "crawl_quality",
           "message": "Expenses ($3,662,785) exceed revenue ($3,060,301) by 20%",
@@ -478,22 +523,14 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -5,
+      "risk_deduction": 0,
       "risks": {
-        "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: High domestic burn: 100% of expenses stay in the US despite international operations",
-        "risks": [
-          {
-            "category": "financial",
-            "data_source": "Form 990 Schedule F",
-            "description": "High domestic burn: 100% of expenses stay in the US despite international operations",
-            "mitigation": null,
-            "severity": "high"
-          }
-        ],
-        "total_deduction": -5
+        "overall_risk_level": "LOW",
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
+        "total_deduction": 0
       },
-      "score_summary": "Fight Colorectal Cancer shows strong impact and good alignment (minor risk deductions applied).",
+      "score_summary": "Fight Colorectal Cancer shows strong impact and good alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -505,28 +542,16 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a high program expense ratio and strong financial health ratings.",
+          "claim": "The charity earned a 98.0/100 score and maintains an 81.4% program expense ratio.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/202622550#financials"
         },
         {
-          "claim": "In FY2025, the organization reported total revenue of $3,357,068 and 100% domestic spending.",
-          "id": "[2]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/202622550"
-        },
-        {
-          "claim": "Fight CRC is a leading advocacy organization providing information on colon and rectal cancer.",
+          "claim": "Fight CRC focuses on disease awareness, medical research, and policy advocacy.",
           "id": "[3]",
           "source_name": "download our w9",
           "source_url": "https://fightcolorectalcancer.org/wp-content/uploads/2025/12/FightCRCw9_FY25.pdf"
-        },
-        {
-          "claim": "The organization distributes resources to clinics and funds medical research.",
-          "id": "[4]",
-          "source_name": "2025 Report",
-          "source_url": "https://fightcolorectalcancer.org/wp-content/uploads/2026/05/FCRC-2025-Impact-Report_FINAL_WEB.pdf"
         },
         {
           "claim": "The organization has successfully influenced the passage of federal laws.",
@@ -535,40 +560,40 @@
           "source_url": "https://fightcolorectalcancer.org/wp-content/uploads/2025/12/ImpactReport2021.pdf"
         },
         {
-          "claim": "Programs include a Clinical Trial Finder and virtual advocacy events.",
+          "claim": "The charity provides tools like the Clinical Trial Finder to help patients.",
           "id": "[6]",
           "source_name": "Impact Report (2020)",
           "source_url": "https://fightcolorectalcancer.org/wp-content/uploads/2025/12/ImpactReport_2020.pdf"
         },
         {
-          "claim": "Donation options focus on general charitable giving and sadaqah.",
+          "claim": "The charity accepts general donations and is considered sadaqah-eligible.",
           "id": "[12]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://fightcolorectalcancer.org/wp-content/uploads/2025/12/2019FinancialStatements.pdf"
         },
         {
-          "claim": "The organization provides annual highlights of its program outcomes and financial efficiency.",
+          "claim": "The organization has a long track record of addressing colorectal cancer outcomes.",
           "id": "[14]",
           "source_name": "Annual Report",
           "source_url": "https://fightcolorectalcancer.org/impact-and-financials/"
         }
       ],
-      "amal_score_rationale": "This organization shows a balance of efficient spending and clear program goals, though its impact is focused locally within the U.S. and lacks specific features tailored to Muslim donors.",
+      "amal_score_rationale": "This organization shows an above-average performance due to its excellent financial health and clear evidence of program outcomes. While it is a leader in its field, it has a lower fit for donors specifically looking for traditional Muslim-led charitable projects.",
       "areas_for_improvement": [
-        "Geographic concentration of spending remains entirely within the United States",
-        "Limited alignment with specific Muslim donor giving traditions"
+        "Limited direct services for individual donors seeking local community-based aid",
+        "Focus is primarily on high-level advocacy and research rather than direct patient care"
       ],
       "dimension_explanations": {
-        "alignment": "While the organization addresses an urgent global health need, it has low specific fit for Muslim donors seeking faith-aligned giving pathways [12]. It has a long track record of success in passing federal laws and supporting clinics [5][14].",
-        "impact": "The charity uses 81.4% of its budget for programs like clinical trial tools and research grants [1][6]. It maintains a high level of transparency and has a clear theory of change for improving patient outcomes [4][14]. However, all expenses are currently used for domestic operations in the U.S. [2]."
+        "alignment": "The organization addresses an urgent global health need with a strong multi-year track record [14]. However, it has a low specific fit for Muslim donors because it is not a faith-based group and does not follow traditional zakat models, though it remains eligible for general sadaqah [12].",
+        "impact": "The charity demonstrates high effectiveness by spending 81.4% of its budget directly on programs like research and advocacy [1]. It has a proven track record of passing federal laws and providing clinical trial tools that build long-term capacity in the health sector [5][6]. Financial health is a major strength, as seen in its 12.0 months of working capital and high external ratings for accountability [1]."
       },
-      "headline": "Fight Colorectal Cancer combines patient advocacy with medical research to combat colon and rectal diseases.",
+      "headline": "Fight Colorectal Cancer leads advocacy and research efforts to improve patient outcomes through high financial efficiency.",
       "strengths": [
-        "High program spending with 81.4% of funds going directly to services",
+        "Maintains a high program expense ratio of 81.4%, ensuring most funds reach core missions",
         "Strong financial stability with 12.0 months of working capital available",
-        "Efficient fundraising costs of only $0.20 per $1 raised"
+        "Efficient fundraising operations costing only $0.23 for every $1 raised"
       ],
-      "summary": "Fight Colorectal Cancer (Fight CRC) focuses on disease awareness, research funding, and legislative advocacy in the United States [3][4]. In FY2025, the organization reported a total revenue of $3,357,068 while maintaining a high program expense ratio [1][2]."
+      "summary": "Fight Colorectal Cancer (Fight CRC) focuses on disease awareness, medical research, and policy advocacy in the United States [3]. In FY2025, the organization managed total revenue of $3,357,068 while maintaining a high Charity Navigator score of 98.0/100 [1]. The charity is recognized as sadaqah-eligible for donors interested in supporting global health causes."
     },
     "rich_narrative": {
       "all_citations": [
