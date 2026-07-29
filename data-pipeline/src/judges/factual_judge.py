@@ -25,6 +25,31 @@ logger = logging.getLogger(__name__)
 # and must not block its publication.
 BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
 
+# Whether the wallet tag agrees with the zakat claim is settled in code:
+# _quick_checks compares evaluation.wallet_tag against a tag derived
+# independently from claims_zakat_eligible (judge_phase._wallet_tag_from_zakat_claim).
+# The model is handed both values anyway and sometimes rules on them a second
+# time -- on 99-3032347 it read SADAQAH-ELIGIBLE (the tag meaning "does NOT
+# claim zakat") as "zakat-eligible" and reported the agreeing pair as a
+# contradiction, costing the charity its page. factual_judge.txt already names
+# that exact pair as CORRECT, so the answer is not more prompt text. Where a
+# deterministic check owns the question, the model's copy does not get to block.
+_WALLET_TAG_AGREEMENT_RE = re.compile(r"wallet.{0,3}tag", re.IGNORECASE)
+
+
+def _is_wallet_tag_agreement(field: str, message: str) -> bool:
+    """Is this finding the wallet-tag/zakat-claim comparison _quick_checks owns?"""
+    text = f"{field} {message}"
+    return bool(_WALLET_TAG_AGREEMENT_RE.search(text)) and "zakat" in text.lower()
+
+
+# A response the model cut off mid-token is a transient generation failure, the
+# same class as a 429 -- retrying gets a clean one. Before this, a clipped
+# response fell through to "Could not complete LLM verification", which fails
+# closed and withheld the charity (01-0548371, "Invalid JSON: EOF while parsing
+# a string"). Retrying is not ignoring: exhausting the retries still blocks.
+_TRUNCATED_RESPONSE_MARKERS = ("invalid json", "json_invalid", "eof while parsing")
+
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
 # Matches the prompt's stated tolerances: 1% relative for money, half a unit
@@ -197,10 +222,12 @@ class FactualJudge(BaseJudge):
             except Exception as e:
                 error_str = str(e).lower()
                 is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
+                is_truncated = any(m in error_str for m in _TRUNCATED_RESPONSE_MARKERS)
 
-                if is_rate_limit and attempt < max_retries - 1:
+                if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
                     wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
-                    logger.warning(f"Rate limit hit, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    cause = "Truncated response" if is_truncated else "Rate limit hit"
+                    logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
                     time.sleep(wait_time)
                     continue
 
@@ -363,6 +390,9 @@ class FactualJudge(BaseJudge):
                 # Third: a real disagreement on a field where we and Charity
                 # Navigator compute the same concept on different bases is
                 # not a fault either -- see _METHODOLOGY_DIVERGENT_FIELD_RE.
+                # Fourth: the wallet-tag/zakat-claim comparison is already
+                # settled deterministically above, so the model's second
+                # opinion on it never blocks -- see _is_wallet_tag_agreement.
                 if severity == Severity.ERROR:
                     if numeric_agreement(issue.claim_value, issue.source_value) is True:
                         severity = Severity.INFO
@@ -371,6 +401,8 @@ class FactualJudge(BaseJudge):
                     elif is_methodology_divergent(
                         f"{issue.field} {issue.message}"
                     ) and _same_story(issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    elif _is_wallet_tag_agreement(issue.field, issue.message):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
