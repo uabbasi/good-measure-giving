@@ -41,9 +41,9 @@
     "programExpenseRatio": "0.1171",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
-    "totalAssets": null,
-    "totalLiabilities": null,
-    "netAssets": null,
+    "totalAssets": 0,
+    "totalLiabilities": 0,
+    "netAssets": 0,
     "workingCapitalMonths": null,
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
@@ -79,11 +79,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "annual_people_served",
-        "confident": true,
-        "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-24T07:20:25.219369+00:00",
-        "verified": true
+        "category": "other",
+        "confident": false,
+        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
+        "timestamp": "2026-07-27T02:19:45.384977+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -154,10 +154,7 @@
     "muallaf",
     "muslim-led"
   ],
-  "programFocusTags": [
-    "religious-services",
-    "community-services"
-  ],
+  "programFocusTags": null,
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
@@ -168,24 +165,10 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.taleefcollective.org/donate",
-  "beneficiariesServedAnnually": 125,
-  "beneficiariesSource": {
-    "method": "direct",
-    "semantics": {
-      "category": "annual_people_served",
-      "confident": true,
-      "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-24T07:20:25.219369+00:00",
-      "verified": true
-    },
-    "source_name": "Charity Website",
-    "source_path": "website_profile.beneficiaries_served",
-    "source_url": "https://taleefcollective.org/s/Annual-Report-for-Website.pdf",
-    "timestamp": "2026-07-23T23:48:26",
-    "value": 125
-  },
-  "beneficiariesConfidence": "cited",
-  "beneficiariesExcludedFromScoring": false,
+  "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": "needs_review",
+  "beneficiariesExcludedFromScoring": true,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -202,14 +185,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://taleefcollective.org/donate/zakat (Source: https://taleefcollective.org/donate/zakat)"
   ],
-  "archetype": "RESILIENCE",
+  "archetype": null,
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "archetype_code": "COMMUNITY",
+    "archetype_label": "Community Hub",
     "evidence_stage": "Early",
     "signal_states": {
       "evidence": "Strong",

@@ -47,7 +47,7 @@
     "totalExpenses": 590662,
     "programExpenses": 495267,
     "adminExpenses": 95395,
-    "fundraisingExpenses": null,
+    "fundraisingExpenses": 0,
     "programExpenseRatio": "0.8785",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
@@ -89,11 +89,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "annual_people_served",
-        "confident": true,
-        "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-24T00:30:51.843527+00:00",
-        "verified": true
+        "category": "other",
+        "confident": false,
+        "error": "litellm.APIConnectionError: GeminiException - [Errno 8] nodename nor servname provided, or not known",
+        "timestamp": "2026-07-27T02:19:32.081007+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -200,10 +200,7 @@
     "syria",
     "turkey"
   ],
-  "programFocusTags": [
-    "humanitarian-relief",
-    "orphan-care"
-  ],
+  "programFocusTags": null,
   "hideFromCurated": null,
   "theoryOfChange": "By investing in sustainable solutions that empower individuals and strengthen communities, your support extends far beyond immediate relief. Whether providing clean water, education, healthcare, livelihoods, or essential infrastructure, every project is designed to create dignity, self-reliance, and hope for generations to come.",
   "grantsData": [
@@ -233,24 +230,10 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://iacharity.org/donate",
-  "beneficiariesServedAnnually": 10000,
-  "beneficiariesSource": {
-    "method": "direct",
-    "semantics": {
-      "category": "annual_people_served",
-      "confident": true,
-      "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-24T00:30:51.843527+00:00",
-      "verified": true
-    },
-    "source_name": "Charity Website",
-    "source_path": "website_profile.beneficiaries_served",
-    "source_url": "https://iacharity.org/elementor-hf/footer",
-    "timestamp": "2026-07-21T14:35:22",
-    "value": 10000
-  },
-  "beneficiariesConfidence": "cited",
-  "beneficiariesExcludedFromScoring": false,
+  "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": "needs_review",
+  "beneficiariesExcludedFromScoring": true,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -266,14 +249,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://iacharity.org/zakat (Source: https://iacharity.org/zakat)"
   ],
-  "archetype": "RESILIENCE",
+  "archetype": null,
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "High Conviction",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
