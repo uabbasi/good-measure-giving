@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.4.0
+# VERSION: 2.5.0
 # LAST_UPDATED: 2026-07-29
-# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule; 2.4.0 makes the program-ratio label a placeholder so a gifts-in-kind-adjusted figure is named as such instead of passing for the filed ratio
+# DESCRIPTION: Baseline narrative with inline citations; 2.5.0 forbids citing the overall Charity Navigator score as a transparency/accountability/efficiency measure - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule; 2.4.0 makes the program-ratio label a placeholder so a gifts-in-kind-adjusted figure is named as such instead of passing for the filed ratio
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -95,6 +95,14 @@ Financial characterizations must follow the data, not goodwill:
   (e.g., "only 40% of spending reaches programs").
 Do NOT pair "good financial transparency" with a low program ratio as if they
 offset each other; transparency and spending efficiency are different things.
+
+The Charity Navigator score is an OVERALL rating. It is not a transparency score,
+not an accountability score, and not an efficiency score. Never cite it as evidence
+for one of those specific qualities — writing "maintains a high level of
+transparency with an 80.0/100 score from Charity Navigator" misrepresents an
+overall rating as a transparency measure, and it can directly contradict our own
+transparency signal for the same charity. Attribute it only as what it is: an
+overall Charity Navigator rating.
 
 ## SCORER NOTES (the actual WHY behind the scores — draw your rationale from these)
 - Impact: {impact_notes}

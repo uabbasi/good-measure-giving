@@ -27,7 +27,7 @@ def _fake_scores(wallet_tag="ZAKAT-ELIGIBLE"):
 
 def test_baseline_prompt_file_is_v2():
     info = load_prompt("baseline_narrative", check_version=False)
-    assert info.version == "2.4.0"
+    assert info.version == "2.5.0"
     assert "{charity_name}" in info.content
     assert "{zakat_constraint_text}" in info.content
     # v1.1.0 style rules survived the merge
@@ -45,7 +45,7 @@ def test_template_placeholders_match_format_kwargs(sample_charity_metrics):
 
 def test_build_baseline_prompt_renders_cleanly(sample_charity_metrics):
     prompt, info = build_baseline_prompt(sample_charity_metrics, _fake_scores(), 3, "[1] Charity Navigator")
-    assert info.version == "2.4.0"
+    assert info.version == "2.5.0"
     assert "Test Charity" in prompt
     assert "{charity_name}" not in prompt          # all placeholders resolved
     assert '"headline"' in prompt                   # JSON braces rendered as literals

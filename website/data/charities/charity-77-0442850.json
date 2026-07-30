@@ -99,7 +99,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:21:12",
+  "lastUpdated": "2026-07-30 00:27:34",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -113,7 +113,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T05:42:19.098273+00:00",
+        "timestamp": "2026-07-30T07:26:33.606869+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -136,7 +136,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.rahima.org/",
+      "source_url": "https://www.rahima.org/rahimas-programs",
       "timestamp": "2026-07-23T22:35:30",
       "value": true
     },
@@ -251,7 +251,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T05:42:19.098273+00:00",
+      "timestamp": "2026-07-30T07:26:33.606869+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -268,19 +268,19 @@
     "thirdPartyEvaluated": null,
     "evaluationSources": [
       "4-Star Rating (Charity Navigator)",
-      "Certificate (United States Senate (by Barbara Boxer))",
-      "Certificate (California Legislature Assembly (by Assemblywoman Rebecca Cohn and Sally Lieber))",
-      "Certificates of Special Congressional Recognition (Members of Congress)",
-      "Grant (American Online Giving Foundation)",
-      "Grant (Good Planet Foundation)",
+      "Recognition from United States Senate (United States Senate (Barbara Boxer))",
+      "Recognition from California Legislature Assembly (California Legislature Assembly (Rebecca Cohn and Sally Lieber))",
+      "Special Congressional Recognition (Members of Congress)",
+      "Grant for General Support (Sunlight Giving)",
+      "Grant for General Support (American Online Giving Foundation)",
+      "Grant for Exempt Purposes (Fidelity Investments Charitable Gift Fund)",
       "Grant (Sana Foundation)",
-      "Grant (Bright Funds Foundation)",
-      "Grant (Fidelity Investments Charitable Gift Fund)"
+      "Grant for General Purpose (Bright Funds Foundation)"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "Rahima Foundation explicitly lists \"Zakat\" as one of its programs and donation options. For example, its website states: \"OUR PROGRAMS... Zakat.\" and \"The programs that Rahima Foundation offers: food distribution, soup kitchen, meat collection, zakat and sadaqa collection, student needs.\" Additionally, the organization is listed as \"Zakat eligible\" by Feeling Blessed."
+    "The programs that Rahima Foundation offers: food distribution, soup kitchen, meat collection, zakat and sadaqa collection, student needs. (Source: https://www.rahima.org/rahimas-programs)"
   ],
   "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
@@ -492,49 +492,25 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content from Charity Navigator was not provided, so the claim could not be verified.",
+          "message": "The content for citation 1 was not provided, so the claim could not be verified.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched content from the Charity Website - Zakat does not mention Zakat eligibility or asnaf categories for distribution.",
-          "severity": "warning"
+          "message": "The content for citation 2 confirms that the organization runs food distribution and soup kitchen programs, and is zakat-eligible. However, the specific claim about being zakat-eligible is not explicitly stated in the provided text, though it is implied by the presence of a 'Zakat' donation option.",
+          "severity": "info"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content from Form 990 (2023) was not provided, so the claim could not be verified.",
+          "message": "The content for citation 3 was not provided, so the claim could not be verified.",
           "severity": "warning"
         },
         {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The narrative states 65.0 months of working capital, but the source data indicates 45.66 months.",
-          "severity": "warning"
-        },
-        {
-          "field": "theory_of_change",
-          "judge": "factual",
-          "message": "The narrative claims the charity lacks a documented theory of change, but the source data does not explicitly confirm or deny this.",
-          "severity": "warning"
-        },
-        {
-          "field": "strengths",
+          "field": "summary",
           "judge": "score",
-          "message": "The citation for 'Operates with high fundraising efficiency of <$0.01 per $1 raised' is incorrect.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity's programs primarily focus on food distribution and financial assistance to the poor and needy, which aligns with the 'fuqara' and 'masakin' asnaf categories. However, the provided data does not explicitly detail how beneficiaries are assessed to definitively fall into the 'fuqara' (poor) category versus 'masakin' (needy) or other potential asnaf like 'gharimin' or 'ibn sabil' if their needs extend beyond basic necessities.",
-          "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "zakat",
-          "message": "While the charity claims Zakat eligibility and its programs align with serving the poor and needy, the significant cash reserves (65 months of working capital) raise concerns about the prompt distribution of Zakat funds, which is a key principle. The wallet tag 'ZAKAT-ELIGIBLE' is appropriate based on the stated programs, but the operational practice of holding large reserves warrants a warning.",
+          "message": "The summary is misleadingly positive for a 'Below Average' amal_score (37) as it omits the dominant limiting factors such as the small board size and excessive cash reserves, which are highlighted in the amal_score_rationale and areas_for_improvement.",
           "severity": "warning"
         },
         {
@@ -553,12 +529,6 @@
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
           "severity": "info"
         },
         {
@@ -609,47 +579,47 @@
         "asnaf_category": "fuqara",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "Rahima Foundation explicitly lists \"Zakat\" as one of its programs and donation options. For example, its website states: \"OUR PROGRAMS... Zakat.\" and \"The programs that Rahima Foundation offers: food distribution, soup kitchen, meat collection, zakat and sadaqa collection, student needs.\" Additionally, the organization is listed as \"Zakat eligible\" by Feeling Blessed.",
+        "claim_evidence": "The programs that Rahima Foundation offers: food distribution, soup kitchen, meat collection, zakat and sadaqa collection, student needs. (Source: https://www.rahima.org/rahimas-programs)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 95.3% program expense ratio, 65.0 months of working capital, and lacks a documented theory of change.",
+          "claim": "The charity earned a 92.0/100 from Charity Navigator score and spends approximately $5.93 per beneficiary.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and focuses on asnaf categories for distribution.",
+          "claim": "The organization is zakat-eligible and runs food distribution and soup kitchen programs.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
-          "source_url": "https://rahima.org/get-involved-with-rahima"
+          "source_url": "https://www.rahima.org/rahimas-programs"
         },
         {
-          "claim": "In FY2024, the charity reported $4,100,385 in total revenue and listed a board of two members.",
+          "claim": "In FY2024, the charity reported $4,100,385 in revenue, a 95.3% program expense ratio, and 65.0 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         }
       ],
-      "amal_score_rationale": "The foundation's assessment is limited by a very small board and a lack of clear data on program results. While spending on programs is high, the large amount of saved cash raises questions about how quickly aid reaches the community.",
+      "amal_score_rationale": "The charity is efficient with spending but lacks transparency in its governance and long-term planning. The very high cash reserves are also a concern for an organization that collects zakat, which is typically meant for prompt distribution.",
       "areas_for_improvement": [
-        "The board of directors consists of only two members, which limits oversight [3]",
-        "The charity holds 65.0 months of working capital, which is unusual for Zakat-collecting groups that should distribute funds promptly [1][2]",
-        "There is no documented theory of change or clear evidence of program outcomes [1]"
+        "The board of directors consists of only two members, which limits oversight",
+        "Holds 65.0 months of working capital, which is unusually high for a zakat-collecting group",
+        "Lacks a documented theory of change to explain its long-term impact"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves domestic poverty needs and is Zakat-eligible for Muslim donors [2].",
-        "impact": "The charity provides direct services at a cost of approximately $5.93 per beneficiary [1]. While its 95.3% program expense ratio is high, the organization lacks a formal theory of change and does not provide third-party evidence to prove its long-term effectiveness [1]."
+        "alignment": "This organization is zakat-eligible and serves domestic poverty needs, which aligns with many Muslim donor priorities [2]. However, the small board size and lack of clarity on geographic operations outside of local areas limit its overall alignment [3].",
+        "impact": "The charity provides direct services at a cost of approximately $5.93 per beneficiary [1]. While it spends 95.3% of its budget on programs, it does not provide a clear theory of change or detailed evidence of long-term outcomes [3]."
       },
-      "headline": "Rahima International Foundation provides direct food aid but faces governance and financial management concerns.",
+      "headline": "Rahima International Foundation provides direct food assistance but faces concerns regarding its small board and large cash reserves.",
       "strengths": [
-        "Maintains a high 95.3% (cash-adjusted) program expense ratio [1]",
-        "Operates with high fundraising efficiency of <$0.01 per $1 raised [3]"
+        "Maintains a high program expense ratio of 95.3% in FY2024",
+        "Operates with high fundraising efficiency of <$0.01 per $1 raised"
       ],
-      "summary": "The organization focuses on feeding the hungry and supporting students through programs like soup kitchens and meat collection [1]. In FY2024, the charity reported total revenue of $4,100,385 [3]. While it is Zakat-eligible, the foundation holds significant cash reserves that have not yet been distributed to those in need [2]."
+      "summary": "The organization focuses on feeding the hungry and supporting financially insecure families through food distribution and soup kitchens [2]. In FY2024, the charity reported total revenue of $4,100,385 while maintaining a high Charity Navigator score of 92.0/100 [1][3]."
     },
     "rich_narrative": {
       "all_citations": [
