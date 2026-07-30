@@ -103,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:17:00",
+  "lastUpdated": "2026-07-30 00:21:42",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -698,37 +698,61 @@
         {
           "field": "charity_navigator_score",
           "judge": "factual",
-          "message": "The Charity Navigator score in the narrative (94.5/100) differs from the score found in the source data (94.5).",
-          "severity": "info"
+          "message": "The Charity Navigator score of 94.5/100 is consistent with the source data.",
+          "severity": "warning"
         },
         {
-          "field": "working_capital",
+          "field": "working_capital_months",
           "judge": "factual",
-          "message": "The working capital in the narrative (0.3 months) differs from the working capital found in the source data (0.3 months).",
-          "severity": "info"
+          "message": "The working capital of 0.3 months is consistent with the source data.",
+          "severity": "warning"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The total revenue in the narrative ($149,888,609) differs from the total revenue found in the source data ($149,888,609).",
-          "severity": "info"
+          "message": "The total revenue of $149,888,609 in FY2024 is consistent with the source data.",
+          "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The cash-adjusted program expense ratio in the narrative (47.5%) differs from the ratio found in the source data (47.5%).",
-          "severity": "info"
+          "message": "The cash-adjusted program expense ratio of 47.5% is consistent with the source data.",
+          "severity": "warning"
         },
         {
           "field": "programs",
           "judge": "factual",
-          "message": "The narrative mentions the 'Jasmine' project, but this specific project name is not explicitly found in the provided source data for program descriptions.",
+          "message": "The narrative mentions the Jasmine and Adopt A Village projects, which are supported by the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "zakat_eligibility",
+          "judge": "factual",
+          "message": "The claim that the charity is zakat-eligible is supported by the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "islamic_giving_principles",
+          "judge": "factual",
+          "message": "The narrative states the charity follows Islamic giving principles, which is not directly verifiable in the provided source data.",
           "severity": "info"
         },
         {
           "field": "strengths",
           "judge": "score",
-          "message": "The stated fundraising cost of $0.05 per $1 raised contradicts the Charity Navigator data which reports a fundraising efficiency of $0.02 per $1 raised.",
+          "message": "The stated fundraising efficiency of '$0.05 per $1 raised' is factually incorrect based on the provided source data.",
+          "severity": "warning"
+        },
+        {
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "The charity's programs focus on general humanitarian aid, which aligns with serving the poor and needy (Fuqara and Masakin), but there is no specific mention of programs directly targeting other asnaf categories.",
+          "severity": "warning"
+        },
+        {
+          "field": "wallet_tag",
+          "judge": "zakat",
+          "message": "While the charity claims to be zakat-eligible and its programs align with serving the poor and needy, the lack of explicit targeting of other asnaf categories warrants a cautious approach. The wallet tag should ideally reflect a broader range of asnaf if the organization serves them.",
           "severity": "warning"
         },
         {

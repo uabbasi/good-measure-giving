@@ -99,10 +99,38 @@ class ZakatVerification:
     direct_page_verified: bool = False  # True if verified via direct HTTP check (not LLM)
     error: Optional[str] = None  # Set when service execution/parsing fails
 
+    def _established_nothing(self) -> bool:
+        """True when this verification measured nothing at all.
+
+        Zero grounding sources, zero confidence, no evidence, no URL and no direct
+        page check means the search came back empty — which says nothing about
+        whether the charity accepts zakat.
+        """
+        return (
+            self.accepts_zakat is False
+            and not self.direct_page_verified
+            and self.source_count == 0
+            and not self.confidence
+            and not self.accepts_zakat_evidence
+            and not self.accepts_zakat_url
+        )
+
     def to_dict(self) -> ZakatDict:
-        """Convert to dictionary for storage."""
+        """Convert to dictionary for storage.
+
+        A pure non-finding is stored as None, not False. `accepts_zakat: bool`
+        cannot express "unknown", so an empty search had to report a negative, and
+        the factual judge read that fabricated negative as evidence against a
+        website that explicitly accepts zakat — blocking The Noor Project
+        (45-5637293) from publication. Same principle the BBB collector already
+        follows: a non-finding must never be readable as a negative.
+
+        Logic-neutral downstream: the aggregator reads this via
+        `.get("accepts_zakat", False)` in truthiness contexts, where None and False
+        behave identically, and web_collector already uses None for this field.
+        """
         return {
-            "accepts_zakat": self.accepts_zakat,
+            "accepts_zakat": None if self._established_nothing() else self.accepts_zakat,
             "accepts_zakat_evidence": self.accepts_zakat_evidence,
             "accepts_zakat_url": self.accepts_zakat_url,
             "zakat_categories_served": self.zakat_categories_served,

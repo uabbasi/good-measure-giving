@@ -99,7 +99,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:15:39",
+  "lastUpdated": "2026-07-30 00:21:12",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -508,45 +508,33 @@
           "severity": "warning"
         },
         {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The program expense ratio in the narrative (95.3%) matches the source data (95.3%).",
-          "severity": "info"
-        },
-        {
           "field": "working_capital",
           "judge": "factual",
-          "message": "The working capital in the narrative (65.0 months) matches the source data (65 months).",
-          "severity": "info"
+          "message": "The narrative states 65.0 months of working capital, but the source data indicates 45.66 months.",
+          "severity": "warning"
         },
         {
           "field": "theory_of_change",
           "judge": "factual",
-          "message": "The narrative states the charity lacks a documented theory of change, but the source data does not explicitly confirm or deny this.",
+          "message": "The narrative claims the charity lacks a documented theory of change, but the source data does not explicitly confirm or deny this.",
           "severity": "warning"
         },
         {
-          "field": "zakat_eligibility",
-          "judge": "factual",
-          "message": "The narrative states the organization is Zakat-eligible, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The total revenue in the narrative ($4,100,385) matches the source data ($4,100,385).",
-          "severity": "info"
-        },
-        {
-          "field": "board_size",
-          "judge": "factual",
-          "message": "The narrative states the board has two members, which matches the source data.",
-          "severity": "info"
+          "field": "strengths",
+          "judge": "score",
+          "message": "The citation for 'Operates with high fundraising efficiency of <$0.01 per $1 raised' is incorrect.",
+          "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity claims to serve 'fuqara' (poor) and 'masakin' (needy), but the primary programs described (food distribution, soup kitchens, student support) align more broadly with general humanitarian aid. While these programs can benefit the poor and needy, there is no explicit evidence presented that the beneficiaries are specifically lacking basic necessities or are unable to meet their needs in a way that strictly defines them as 'fuqara' or 'masakin' as per Zakat guidelines. The charity does list 'Zakat' as a program, indicating an intent to serve these categories, but the direct evidence of beneficiary classification is lacking.",
+          "message": "The charity's programs primarily focus on food distribution and financial assistance to the poor and needy, which aligns with the 'fuqara' and 'masakin' asnaf categories. However, the provided data does not explicitly detail how beneficiaries are assessed to definitively fall into the 'fuqara' (poor) category versus 'masakin' (needy) or other potential asnaf like 'gharimin' or 'ibn sabil' if their needs extend beyond basic necessities.",
+          "severity": "warning"
+        },
+        {
+          "field": "wallet_tag",
+          "judge": "zakat",
+          "message": "While the charity claims Zakat eligibility and its programs align with serving the poor and needy, the significant cash reserves (65 months of working capital) raise concerns about the prompt distribution of Zakat funds, which is a key principle. The wallet tag 'ZAKAT-ELIGIBLE' is appropriate based on the stated programs, but the operational practice of holding large reserves warrants a warning.",
           "severity": "warning"
         },
         {

@@ -77,7 +77,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-29 23:01:59",
+  "lastUpdated": "2026-07-30 00:20:53",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -338,16 +338,40 @@
       },
       "judge_issues": [
         {
-          "field": "citation_3",
+          "field": "citation_1",
           "judge": "citation",
-          "message": "The content of the donation page does not mention how donors can contribute through sadaqah or how it helps improve the care clinics offer.",
+          "message": "The provided URL for citation [1] does not contain the claimed information. The content is a generic navigation page and does not mention financial health or program outcomes.",
           "severity": "warning"
         },
         {
-          "field": "claims_zakat_eligible",
-          "judge": "factual",
-          "message": "The narrative claims donors can contribute through sadaqah, but the source data indicates the organization does not explicitly accept zakat donations and there is no direct statement from NAOMCC itself indicating they accept zakat donations.",
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The provided URL for citation [2] does not contain the claimed information. The content is a ProPublica non-profits page, but the specific Form 990 data for the claimed year is not present or accessible.",
           "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The provided URL for citation [3] does not contain the claimed information. The content is a generic navigation page and does not mention donation options.",
+          "severity": "warning"
+        },
+        {
+          "field": "financial health and program outcomes",
+          "judge": "factual",
+          "message": "The narrative claims the organization lacks data on financial health and program outcomes, but the source data does not directly confirm this lack of data. While specific financial ratios and detailed outcome metrics are not readily available in all sources, the claim of a complete 'lack of data' is not explicitly supported.",
+          "severity": "warning"
+        },
+        {
+          "field": "financial health and program outcomes",
+          "judge": "factual",
+          "message": "The narrative states that financial data such as revenue and specific expense ratios are not available or reported. While some sources indicate a lack of specific ratios (e.g., Charity Navigator), the claim that *no* financial data is available is not definitively confirmed across all sources. For instance, Form 990 data, though not detailed in the provided snippet, is a form of financial reporting.",
+          "severity": "warning"
+        },
+        {
+          "field": "alignment",
+          "judge": "factual",
+          "message": "The narrative mentions the charity serves an urgent need in the global health space and offers a way for donors to provide sadaqah. The source data confirms the charity's mission is related to global health and mentions 'sadaqah' in relation to donations, aligning with the narrative.",
+          "severity": "info"
         },
         {
           "field": "financial.form990_exempt",
@@ -387,39 +411,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "This organization focuses on uniting healthcare groups and providing support to its member clinics.",
+          "claim": "The organization focuses on uniting healthcare groups and building networks, but lacks data on financial health and program outcomes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/932136609#financials"
         },
         {
-          "claim": "There is very little data available regarding its financial health, program expense ratios, or specific evidence of successful outcomes.",
+          "claim": "Financial data such as revenue and specific expense ratios are not currently available or reported for this entity.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609"
         },
         {
-          "claim": "Donors can contribute through sadaqah to help the association improve the care these clinics offer.",
+          "claim": "The organization accepts general charitable donations and provides options for giving.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://naomcc.org/Donations"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a significant lack of available financial and performance data. While the cause is urgent, there is not enough information to verify how efficiently funds are used or the scale of the impact.",
+      "amal_score_rationale": "The organization receives a below-average assessment due to a significant lack of available financial data and evidence of specific outcomes. While it addresses an urgent need in global health, there is not enough information to verify how effectively it uses its resources.",
       "areas_for_improvement": [
-        "Lack of public financial data regarding revenue and program spending",
-        "Limited evidence available to show specific health outcomes or impact"
+        "Lack of public data regarding financial health and spending efficiency",
+        "Limited evidence available to show specific program outcomes or long-term impact",
+        "Need for more transparency regarding governance and leadership structures"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves a critical need in global health and fits the interests of Muslim donors looking to give sadaqah [3]. Its track record is difficult to measure because there is a lack of information about its funding gap and historical results [2].",
-        "impact": "The group focuses on capacity building by supporting member organizations rather than direct patient care [1]. However, there is very little data available regarding its financial health, program expense ratios, or specific evidence of successful outcomes [2]."
+        "alignment": "This charity serves an urgent need in the global health space and offers a way for donors to provide sadaqah [3]. While it fits the interests of many Muslim donors, its track record is not well-documented, and it is unclear how much of a funding gap currently exists for its operations [1][2].",
+        "impact": "The group focuses on capacity building, which means it helps other clinics do their jobs better [1]. However, there is no data available regarding its cost per beneficiary or its program expense ratio [1][2]. Without clear evidence of outcomes or a detailed theory of change, it is difficult to measure its true effectiveness [1]."
       },
-      "headline": "The National Association of Muslim Charitable Clinics works to connect and support healthcare providers serving local communities.",
+      "headline": "The National Association of Muslim Charitable Clinics works to connect and support healthcare organizations serving local communities.",
       "strengths": [
         "Focuses on global health, which is a high-priority cause area",
         "Works on capacity building to help other clinics improve their services"
       ],
-      "summary": "This organization focuses on uniting healthcare groups and providing support to its member clinics [1]. Donors can contribute through sadaqah to help the association improve the care these clinics offer [3]."
+      "summary": "The organization focuses on uniting healthcare groups to improve the quality of care provided by Muslim charitable clinics [1]. Its primary programs include building networks between medical providers and offering support to its member organizations [1]."
     },
     "rich_narrative": {
       "all_citations": [
