@@ -91,6 +91,47 @@ class TestTheGikAdjustedRatioReachesTheNarrative:
         assert "83.0%" in kwargs["ratio"]
 
 
+class TestTheNoncashSignalNamesTheRightDenominator:
+    """noncash_ratio is noncash / total CONTRIBUTIONS, not / total revenue.
+
+    The field is defined that way ("Noncash / total contributions") and computed
+    that way (`noncash / total_contribs`, clamped to 1.0), but the GIK signal
+    described it as a share "of reported revenue". For United Muslim Relief the
+    ratio clamps to 100%, so the narrative asserted "100% of its revenue comes
+    from non-cash gifts" while noncash is $143,021,451 of $149,888,609 revenue --
+    95.4%. The factual judge flagged it twice, correctly: "the narrative states
+    noncash contributions make up '100% of reported revenue', which is an
+    overstatement."
+
+    The ratio isn't wrong; the denominator it claims is.
+    """
+
+    def _headline(self, sample_charity_metrics, noncash_ratio):
+        from src.reconciliation.checks import check_gik_inflated_ratio
+
+        m = sample_charity_metrics.model_copy(update={
+            "noncash_ratio": noncash_ratio,
+            "program_expense_ratio": 0.965,
+            "cash_adjusted_program_ratio": 0.48,
+        })
+        signals = check_gik_inflated_ratio(m)
+        assert signals, "a high noncash ratio must still raise a signal"
+        return signals[0].headline
+
+    def test_the_high_band_does_not_claim_revenue(self, sample_charity_metrics):
+        headline = self._headline(sample_charity_metrics, 1.0)
+        assert "revenue" not in headline.lower(), (
+            f"noncash_ratio is a share of contributions, not revenue: {headline!r}"
+        )
+        assert "contribution" in headline.lower()
+
+    def test_the_medium_band_does_not_claim_revenue(self, sample_charity_metrics):
+        headline = self._headline(sample_charity_metrics, 0.30)
+        assert "revenue" not in headline.lower(), (
+            f"noncash_ratio is a share of contributions, not revenue: {headline!r}"
+        )
+
+
 class TestTheSanitizerAgreesWithThePrompt:
     def test_sanitizer_does_not_rewrite_the_narrative_back_to_the_filed_ratio(
         self, sample_charity_metrics

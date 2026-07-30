@@ -94,7 +94,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-29 23:03:35",
+  "lastUpdated": "2026-07-30 00:16:46",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -560,61 +560,43 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain the claimed information about the charity's score, program expense ratio, working capital, or fundraising efficiency. The URL points to a Charity Navigator page, but the specific financial details mentioned in the claim are not present in the fetched text.",
+          "message": "The provided content for citation 1 does not contain the claimed information about Charity Navigator score or program spending.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for citation [3] does not contain the claimed total revenue for FY2024. The URL points to ProPublica's nonprofit data, but the specific financial figure for FY2024 is not found in the fetched text.",
+          "message": "The provided content for citation 3 does not contain the claimed information about total revenue for FY2024.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "The provided content for citation 5 is a corrupted PDF and could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "The provided content for citation 6 is a corrupted PDF and could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative states total revenue was $21,703,144, while the source data shows $21,703,144.",
+          "message": "The narrative states $21,703,144 in total revenue, while Charity Navigator reports $21,703,144 for FY2024. The ProPublica Form 990 for 2023 reports $18,303,365.",
           "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states the program expense ratio is 89.5%, while the source data shows 89.46%.",
+          "message": "The narrative states 89.5% of its budget is spent on programs, while Charity Navigator reports 89.46%.",
           "severity": "info"
         },
         {
-          "field": "working_capital_months",
+          "field": "charity_navigator_score",
           "judge": "factual",
-          "message": "The narrative states the charity has 4.7 months of working capital, while the source data shows 5.28 months.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative states fundraising efficiency is $0.10, while the source data shows $0.09.",
-          "severity": "info"
-        },
-        {
-          "field": "overall_score",
-          "judge": "factual",
-          "message": "The narrative states the charity earned a 99.3/100 score, while the source data shows 99.33333333333333.",
-          "severity": "info"
-        },
-        {
-          "field": "zakat_eligibility",
-          "judge": "factual",
-          "message": "The narrative states the charity is Zakat-eligible, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "focus_area",
-          "judge": "factual",
-          "message": "The narrative states the organization focuses on providing access to basic education in Pakistan, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "outcome_tracking",
-          "judge": "factual",
-          "message": "The narrative states the charity tracks outcomes such as empowered matriculates and alumni enrolled in tertiary education, which is supported by the source data.",
+          "message": "The narrative states a 99.3/100 score from Charity Navigator, while the source data shows 99.33333333333333.",
           "severity": "info"
         },
         {
@@ -667,62 +649,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity earned a 99.3/100 score, has an 89.5% program expense ratio, 4.7 months of working capital, and $0.10 fundraising efficiency.",
+          "claim": "The charity maintains a high level of trust with a 99.3/100 score from Charity Navigator and spends 89.5% of its budget on programs.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
         },
         {
-          "claim": "The charity is Zakat-eligible.",
+          "claim": "It is also Zakat-eligible, allowing Muslim donors to fulfill their religious obligations by supporting students.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.tcfusa.org/zakat/"
         },
         {
-          "claim": "Total revenue in FY2024 was $21,703,144.",
+          "claim": "In FY2024, the organization managed $21,703,144 in total revenue.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295"
         },
         {
-          "claim": "The charity provides tools for Islamic giving and Zakat calculations.",
-          "id": "[6]",
-          "source_name": "Charity Website - Zakat",
-          "source_url": "https://www.tcfusa.org/zakat-calculator"
-        },
-        {
-          "claim": "The charity has a specific policy for accepting Zakat donations.",
+          "claim": "The charity follows a clear Zakat policy to support eligible students.",
           "id": "[7]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.tcfusa.org/zakat/donate-zakat"
         },
         {
-          "claim": "The organization focuses on providing access to basic education in Pakistan.",
+          "claim": "The mission addresses an urgent global need for education in Pakistan, backed by years of consistent results.",
           "id": "[8]",
           "source_name": "Annual Report (2025)",
           "source_url": "https://www.tcfusa.org/wp-content/uploads/2026/01/TCF-Annual-Report-Zakat-Eng-25-26-1.pdf"
         },
         {
-          "claim": "The charity tracks outcomes such as empowered matriculates and alumni enrolled in tertiary education.",
+          "claim": "Its success is backed by clear evidence of alumni enrolling in higher education.",
           "id": "[15]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://tcfusa.org/annual_reports/2022_Annual_Report.pdf"
         }
       ],
-      "amal_score_rationale": "This charity earns a high rating due to its exceptional spending efficiency and direct impact on education. It shows strong financial health and a clear commitment to serving underprivileged communities with verified outcomes.",
+      "amal_score_rationale": "This charity earns a high rating due to its exceptional financial efficiency and direct impact on student outcomes. It shows strong accountability and a clear track record of empowering youth through education.",
       "areas_for_improvement": [
-        "Increasing long-term working capital beyond the current 4.7 months to enhance financial stability [1]"
+        "Expanding the donor base to address the large funding gap in global education",
+        "Increasing outreach to underserved regions beyond the current school network"
       ],
       "dimension_explanations": {
-        "alignment": "There is a high fit for Muslim donors as the charity is Zakat-eligible and follows specific Islamic giving guidelines [6][7]. The cause is considered urgent because it addresses the global education gap in underserved areas of Pakistan [8]. The organization has a proven track record of success over many years of operation [15].",
-        "impact": "The organization is highly effective, spending 89.5% of its budget directly on programs like building and supporting schools [1]. It operates with a low cost per beneficiary of approximately $55, making it a very efficient direct service provider [8]. The group also maintains strong governance and clear evidence of student success, such as alumni enrolling in higher education [15]."
+        "alignment": "There is a strong fit for Muslim donors as the charity follows a clear Zakat policy to support eligible students [7]. The mission addresses an urgent global need for education in Pakistan, backed by years of consistent results [8].",
+        "impact": "The organization is highly effective, spending $0.895 of every dollar directly on school programs [1]. It provides direct services with a low cost per student, and its success is backed by clear evidence of alumni enrolling in higher education [15]."
       },
-      "headline": "The Citizens Foundation USA provides high-quality education to underprivileged children in Pakistan through a vast network of schools.",
+      "headline": "The Citizens Foundation USA provides high-quality education to underprivileged children in Pakistan through a transparent and efficient school network.",
       "strengths": [
-        "High program expense ratio of 89.5% ensures most funds reach students [1]",
-        "Strong fundraising efficiency with only $0.10 spent to raise every $1 [1]"
+        "High spending efficiency with an 89.5% program expense ratio in FY2024",
+        "Strong financial health with 4.7 months of working capital available",
+        "Low fundraising costs of only $0.10 per $1 raised"
       ],
-      "summary": "In FY2024, the organization managed $21,703,144 in total revenue to support its mission of building civil society through education [3]. The charity maintains a high level of transparency and financial health, earning a 99.3/100 score from Charity Navigator [1]. It is also Zakat-eligible, allowing Muslim donors to fulfill their religious obligations by supporting student scholarships [2]."
+      "summary": "In FY2024, the organization managed $21,703,144 in total revenue to support its mission of building civil society through education [3]. The charity maintains a high level of trust with a 99.3/100 score from Charity Navigator [1]. It is also Zakat-eligible, allowing Muslim donors to fulfill their religious obligations by supporting students [2]."
     },
     "rich_narrative": {
       "all_citations": [

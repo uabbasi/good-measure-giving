@@ -65,7 +65,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-29 23:03:09",
+  "lastUpdated": "2026-07-30 00:16:38",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "pattern_match",
@@ -359,33 +359,39 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
+          "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched content does not mention the specific claim that the charity provides food and shelter to orphans in Syria through sponsorship and seasonal aid. While it mentions sponsorship and seasonal aid projects, it does not explicitly state that these are for orphans in Syria.",
+          "message": "The provided URL for Form 990 (2025) does not contain the cited information. The content is from ProPublica's nonprofit explorer, and the specific filing for 2025 is not present. The latest available filing appears to be for FY2023.",
           "severity": "warning"
         },
         {
-          "field": "citation_3",
+          "field": "citation_4",
           "judge": "citation",
-          "message": "The fetched content discusses zakat eligibility and its categories but does not explicitly state that Yateem Foundation is zakat-eligible or follows specific asnaf categories. The URL is for 'hyusa.org/zakat/', which is a different organization than 'yateemfoundationusa.org'.",
+          "message": "The provided URL for Charity Navigator does not contain the cited information. The page shows a summary of financials but does not explicitly state that the lack of recent financial data makes it difficult to verify its current financial health. The latest available data appears to be from 2023.",
           "severity": "warning"
+        },
+        {
+          "field": "financial_filings_newer_than_FY2023",
+          "judge": "factual",
+          "message": "The narrative claims no financial filings newer than FY2023 are available, but the source data indicates the latest filing is for FY2023 and the IRS ruling year is 2024, suggesting newer filings might exist or are in process.",
+          "severity": "info"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states a 100.0% program expense ratio, which matches the source data.",
+          "message": "The narrative states a 100.0% program expense ratio, while the source data indicates a program expense ratio of 1.0.",
           "severity": "info"
         },
         {
-          "field": "latest_financial_filings",
+          "field": "mission",
           "judge": "factual",
-          "message": "The narrative claims the latest available financial filings are from fiscal year 2023, but the source data indicates the latest known filing year is 2023, and the ProPublica Form 990 indicates no filings are available.",
-          "severity": "warning"
+          "message": "The narrative's description of the organization's focus is slightly different from the source data's mission statement.",
+          "severity": "info"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The claimed asnaf category 'masakin' is not explicitly supported by the provided program descriptions. While the charity serves orphans and displaced persons, which could fall under 'fuqara' or 'masakin', there is no direct evidence stating beneficiaries are classified as 'masakin'.",
+          "message": "The charity claims to be zakat-eligible and serves 'masakin' (needy). While their programs focus on providing food and shelter to displaced Syrian children, which aligns with the general concept of need, there is no explicit mention or evidence that these beneficiaries are specifically classified as 'masakin' in a zakat context. The provided evidence primarily focuses on humanitarian aid rather than a direct zakat distribution to a defined 'masakin' group.",
           "severity": "warning"
         },
         {
@@ -434,47 +440,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides food and shelter to orphans in Syria through sponsorship and seasonal aid.",
+          "claim": "The organization focuses on returning displaced Syrian children to their home cities by providing food and shelter.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
-          "claim": "The organization maintains a 100.0% program expense ratio based on available filings.",
+          "claim": "No financial filings newer than FY2023 are available.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories.",
+          "claim": "It is recognized as zakat-eligible for donors looking to fulfill their religious obligations.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://hyusa.org/zakat/"
         },
         {
-          "claim": "The latest available financial filings are from fiscal year 2023.",
+          "claim": "The lack of recent financial data makes it difficult to verify its current financial health.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/993373484#financials"
         }
       ],
-      "amal_score_rationale": "This charity shows a balanced profile with a high program expense ratio and a focus on an urgent cause, but it is held back by outdated financial filings. The lack of recent data makes it difficult to verify the organization's current financial health.",
+      "amal_score_rationale": "This charity provides essential direct services in an urgent cause area, but its overall assessment is limited by outdated financial reporting. While it shows efficient spending on programs, the three-year gap in public records creates a lack of current transparency.",
       "areas_for_improvement": [
-        "No financial filings newer than FY2023 are available; donors should treat this 3-year-old financial picture with caution",
-        "Limited public data regarding the total number of beneficiaries served",
-        "Short track record of public financial reporting"
+        "Update public financial filings, as the latest available data is from 2023",
+        "Improve the length of its documented track record",
+        "Increase transparency regarding current funding gaps"
       ],
       "dimension_explanations": {
-        "alignment": "The mission addresses extreme poverty and the needs of displaced children in Syria [1]. It aligns well with Muslim donor needs by offering zakat-eligible programs and specific giving methods [3]. However, the organization has a limited public track record for donors to review [4].",
-        "impact": "The charity focuses on direct services like orphan sponsorship and seasonal projects [1]. While it reports that 100.0% of expenses goes to programs, the most recent financial data is from 2023 [2]. This delay in reporting creates uncertainty about its current impact and financial stability [4]."
+        "alignment": "The foundation serves an extremely urgent cause by helping orphans in Syria [1]. It meets the requirements for zakat-eligible giving, which is a key priority for many Muslim donors [3]. While the mission is clear, the organization has a relatively short documented track record in public databases [4].",
+        "impact": "The charity reports a 100.0% program expense Ratio, meaning all tracked spending goes toward orphan sponsorship and seasonal aid [2]. It works directly on the ground to provide food and housing to displaced children [1]. However, the lack of recent financial data makes it difficult to verify its current financial health or cost per person [4]."
       },
-      "headline": "Yateem Foundation USA focuses on returning displaced Syrian orphans to their home cities through direct sponsorship and seasonal aid.",
+      "headline": "Yateem Foundation USA provides direct aid to orphans in Syria, though its public financial records are several years behind.",
       "strengths": [
-        "Direct service model that provides food and shelter to orphans",
-        "High spending efficiency with a 100.0% program expense ratio",
+        "Maintains a 100.0% program expense Ratio according to available records",
+        "Provides direct services in a high-urgency conflict zone",
         "Clear zakat eligibility for Muslim donors"
       ],
-      "summary": "The organization provides food and shelter to children in Syria to help them rebuild their lives [1]. It maintains a 100.0% program expense ratio, ensuring all reported spending goes toward its mission [2]. Donors can fulfill religious obligations through the charity, as it is zakat-eligible [3]."
+      "summary": "The organization focuses on returning displaced Syrian children to their home cities by providing food and shelter [1]. It is recognized as zakat-eligible for donors looking to fulfill their religious obligations [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]."
     },
     "rich_narrative": {
       "all_citations": [
