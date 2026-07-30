@@ -67,8 +67,17 @@
     "geographicCoverage": null
   },
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 18:03:24",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-07-29 21:16:18",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -76,7 +85,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-27T23:28:53.334348+00:00",
+        "timestamp": "2026-07-30T04:15:38.744906+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -87,14 +96,14 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.naomcc.org/Membership/",
+      "source_url": "https://www.naomcc.org/",
       "timestamp": "2026-07-21T15:31:11",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-29T21:15:24",
       "value": 2023
     },
     "has_audited_financials": {
@@ -106,7 +115,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-29T21:15:24",
       "value": "E32"
     }
   },
@@ -117,6 +126,8 @@
   },
   "causeTags": [
     "faith-based",
+    "fuqara",
+    "masakin",
     "medical",
     "muslim-led",
     "scalable-model",
@@ -142,7 +153,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-27T23:28:53.334348+00:00",
+      "timestamp": "2026-07-30T04:15:38.744906+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -155,20 +166,20 @@
   "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
-  "archetype": "SOVEREIGNTY",
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Limited Basis",
-    "archetype_code": "SOVEREIGNTY",
-    "archetype_label": "Sovereignty Builder",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Moderate",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
-      "risk": "Strong"
+      "risk": "Moderate"
     },
     "recommendation_cue": "Mixed Signals",
     "recommendation_rationale": "Early-stage organization. We show qualitative context while it builds a longer public track record.",
@@ -186,7 +197,7 @@
     "confidence_scores": {
       "alignment": 28,
       "data_confidence": 0.1,
-      "impact": 18
+      "impact": 12
     },
     "score_details": {
       "alignment": {
@@ -293,13 +304,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED (emerging org baseline)",
+            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 3,
             "name": "Evidence & Outcomes",
             "possible": 5,
-            "scored": 2,
-            "status": "partial"
+            "scored": 1,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: BASIC (emerging org baseline)",
@@ -311,27 +322,69 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: STRONG (7 members)",
+            "evidence": "Board governance: baseline (unknown members, emerging org)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 5,
+            "status": "partial"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 18/50",
+        "rationale": "Delivery: capacity building; Impact 12/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 18
+        "score": 12
       },
       "judge_issues": [
+        {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The fetched content does not contain information about the organization's focus on building capacity or lack of data on program expenses and outcomes.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The fetched content for citation [2] (Form 990) was not provided, therefore the claim cannot be verified.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The fetched content for citation [3] (Charity Website - Donate) does not contain information about donation options.",
+          "severity": "warning"
+        },
+        {
+          "field": "program expenses",
+          "judge": "factual",
+          "message": "The narrative states that the organization lacks data on program expenses, and the source data does not provide specific figures for program expenses.",
+          "severity": "warning"
+        },
+        {
+          "field": "outcomes",
+          "judge": "factual",
+          "message": "The narrative states that the organization lacks data on outcomes, and the source data does not provide specific outcome metrics.",
+          "severity": "warning"
+        },
+        {
+          "field": "financial data",
+          "judge": "factual",
+          "message": "The narrative states that public financial data regarding revenue and expenses is currently unavailable, and the source data does not provide these figures.",
+          "severity": "warning"
+        },
         {
           "field": "financial.form990_exempt",
           "judge": "data_completeness",
           "message": "Religious organization (Form 990-exempt) - limited financial data available",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -353,46 +406,47 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The official website and descriptions of the National Association of Muslim Charitable Clinics (NAOMCC) do not explicitly mention accepting zakat donations on their donation pages or in their organizational overview. While they support Muslim charitable clinics, there is no direct statement from NAOMCC itself regarding zakat acceptance. (Source: https://www.naomcc.org/Membership/)",
+        "claim_evidence": "The website for the National Association of Muslim Charitable Clinics (NAOMCC) does not explicitly state that it accepts zakat donations. While it lists 'Zakat foundation' among other clinics, this does not indicate that NAOMCC itself accepts zakat, but rather that a separate entity with 'Zakat foundation' in its name may be affiliated or a member.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on uniting healthcare organizations and building capacity for Muslim charitable clinics.",
+          "claim": "The organization focuses on building the capacity of Muslim charitable clinics and lacks data on program expenses and outcomes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/932136609#financials"
         },
         {
-          "claim": "The charity operates programs to support member organizations but lacks detailed financial spending data in public records.",
+          "claim": "Public financial data regarding revenue and expenses is currently unavailable.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609"
         },
         {
-          "claim": "The organization accepts donations to support its mission of helping charitable clinics.",
+          "claim": "The organization offers donation options for those wishing to support its healthcare mission.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://naomcc.org/Donations"
         }
       ],
-      "amal_score_rationale": "The organization receives a below-average assessment because there is very little financial data available to verify how donations are spent. While its mission addresses urgent health needs, the lack of reported outcomes makes it difficult to measure its actual success.",
+      "amal_score_rationale": "The assessment is limited by a significant lack of public financial data and outcome reporting. While the cause is urgent, there is not enough information to verify how efficiently donations are used.",
       "areas_for_improvement": [
-        "Limited public data regarding program spending and financial efficiency",
-        "Lack of clear evidence or third-party reports on specific health outcomes"
+        "Lack of public financial data regarding revenue and program spending",
+        "Limited evidence available regarding specific health outcomes",
+        "Short public track record of measurable impact"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves an urgent need in global health and provides a way for donors to give sadaqah to community clinics [3]. However, its track record is not well-documented, and it is unclear how much of a funding gap currently exists for its operations [1].",
-        "impact": "The group focuses on capacity building for other clinics rather than direct patient care [1]. While it has strong governance, there is no data on its program expense ratio or cost per person served, which limits the ability to track its effectiveness [2]."
+        "alignment": "This charity serves an urgent need in global health and fits the interests of donors looking for Muslim-led health initiatives [1][3]. Its track record is difficult to verify because there is little data on its funding gaps or long-term results [2]. Donations are considered sadaqah-eligible [3].",
+        "impact": "The group focuses on capacity building, which means it helps other clinics do their jobs better [1]. However, there is no data available regarding its program expense ratio or the cost to help each person [1][2]. It also lacks a clear public theory of change or third-party evidence to prove its effectiveness [1]."
       },
-      "headline": "The National Association of Muslim Charitable Clinics works to connect and support healthcare organizations serving local communities.",
+      "headline": "The National Association of Muslim Charitable Clinics works to unite and support healthcare organizations serving local communities.",
       "strengths": [
-        "Strong internal governance and leadership structures",
-        "Focuses on high-priority global health needs"
+        "Addresses urgent global health needs by supporting community clinics",
+        "Focuses on capacity building to help other organizations grow"
       ],
-      "summary": "This organization focuses on uniting Muslim charitable clinics to improve the quality of care they provide [1]. It offers programs to help member organizations work together and build their internal capabilities [2]."
+      "summary": "The organization focuses on building the capacity of Muslim charitable clinics to improve the quality of care they provide [1]. Its primary programs involve uniting healthcare groups and offering support services to its member organizations [1][3]."
     },
     "rich_narrative": {
       "all_citations": [

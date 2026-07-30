@@ -214,9 +214,86 @@ instead — see "Open recommendations".
 
 ---
 
+### batch05 run 2 — 5 of 5. PASSED.
+
+`--budget 2.0 --checkpoint 2`. Ended FINISHED: `$0.5807 spent of $2.00 cap`.
+All 5 verified exported with fresh `lastUpdated` (2026-07-29 21:12-21:13 Dolt/PDT),
+`judge_error_count = 0`, refreshed content hashes, **zero new exclusion events**
+after the watermark. Scores shifted slightly vs run 1 (UNRWA 78→80, Amoud 65→69)
+because the underlying data was refreshed.
+
+### batch10 run 1 — 8 of 10. FAILED the batch rule.
+
+`--budget 2.0 --checkpoint 5`. Ended FINISHED: `$0.4367 spent of $2.00 cap`.
+Cache behaved correctly — batch05's 5 charities cost **$0.0000** each
+(`[cache:crawl,extract,discover,synthesize,baseline,judge]`); only the 5 new ones cost.
+
+**The runner printed `Completed: 10, Failed: 0` — that was MISLEADING.** It counts
+pipeline completion, not publication. Two charities were excluded by the judge gate
+at export and their files on disk are STALE from earlier runs:
+
+| # | EIN | Name | judge errors | file lastUpdated | verdict |
+|---|-----|------|--------------|------------------|---------|
+| 7 | 27-3175543 | United Muslim Relief | 5 | 2026-07-28 21:26 (stale) | BLOCKED |
+| 9 | 99-3373484 | Yateem Foundation | 3 | 2026-07-23 17:56 (stale) | BLOCKED |
+
+A "does the file exist?" check would have falsely reported 10/10 here. Only the
+embedded-`lastUpdated` check caught it. Confirms the decision in fact #3 above.
+
+The other 8 exported fresh, including the three risk cases batch10 was meant to
+probe: null-financials clinic #6 (A:40), Citizens Foundation #10 (A:83 — one of the
+4 charities the BBB fix saved), and IIIT #8.
+
+### Failure C — UMR narrative contradicts the scorer on the program ratio (SYSTEMATIC)
+
+**Not stochastic.** Forced `baseline`+`rich`+`judge` regeneration (`$0.2119`):
+UMR 5→4 errors, Yateem 3→2. Same defects recurred. Regeneration is not the fix.
+
+**Root cause.** UMR is ~95% Gifts-in-Kind. Three layers disagree:
+- The **scorer** deliberately and correctly scores on the **48% cash-adjusted**
+  program ratio. `_compute_cash_adjusted_ratio`'s docstring names UMR by EIN as a
+  live case that "must keep scoring on its measured 48% cash-adjusted ratio rather
+  than falling back to its 96% filed ratio, which would swing its published score."
+  Program Ratio component scored **0/5**.
+- The **reconciliation layer** already DETECTS this: `check_gik_inflated_ratio`
+  fires HIGH severity at ≥80% noncash and carries the cash-adjusted figure. The run
+  logged `United Muslim Relief - Reconcile: 2 signals, 0 patched`.
+- The **narrative prompt** (`src/llm/prompts/rich_narrative_v2.txt`) is never told
+  any of it. `grep cash_adjusted` on that prompt returns **nothing**. It receives
+  the filed `program_expense_ratio` and actively encourages touting it
+  ("DO use real financial data: ... '80% program ratio'", "Compare to sector norms:
+  '80% program ratio beats the 75% sector average'").
+
+So the LLM dutifully headlines 96.5% as a strength in `amal_score_rationale`,
+`strengths`, `summary`, and `dimension_explanations.impact`, and the judge correctly
+refuses to publish it. **The judge is right and the narrative is wrong.** Secondary:
+narrative says "100% of revenue from non-cash gifts"; actual 95.4%.
+
+**Fix NOT applied — needs sign-off.** Feeding the cash-adjusted ratio + GIK signal
+into the narrative prompt changes generated narratives fleet-wide and invalidates
+baseline/rich cache for all 169. **55 of 169 charities have a filed program ratio
+≥90%**, so that bounds the affected population. This is squarely the "pipeline
+change that affects charities outside these 40" case the instructions say to stop on.
+
+### Failure D — Yateem synthesized financials are implausible (DIFFERENT cause)
+
+Not a prompt problem. Synthesized data reads
+`total_revenue = program_expenses = total_expenses = exactly $100,000`, ratio
+`1.0000` — three identical suspiciously-round values for a real filer. The 990
+source shows **$47,893** for TY2024. The narrative faithfully reports the bad
+synthesized values (`100.0%` appears 9× in the exported JSON), and the `factual`
+judge correctly flags narrative-vs-source contradiction. Root cause is in the
+synthesize/aggregation layer for sparse micro orgs, not narrative generation —
+exactly the micro-org sparse-data failure mode the run brief predicted.
+
+---
+
 ## Cumulative LLM spend
 
 | Batch | Run | Reported cost | Ended because |
 |-------|-----|---------------|---------------|
-| batch05 | 1 | $0.2316 | FINISHED (cap $6.00, 3.9% used) |
-| **Total** | | **$0.2316** | |
+| batch05 | 1 | $0.2316 | FINISHED (cap $6.00) |
+| batch05 | 2 | $0.5807 | FINISHED (cap $2.00) |
+| batch10 | 1 | $0.4367 | FINISHED (cap $2.00) |
+| UMR+Yateem regen probe | 1 | $0.2119 | FINISHED (cap $1.00) |
+| **Total so far** | | **$1.4609** | no run was ever budget-truncated |
