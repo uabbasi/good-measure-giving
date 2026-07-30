@@ -288,6 +288,85 @@ exactly the micro-org sparse-data failure mode the run brief predicted.
 
 ---
 
+### batch10 run 2 — 8 of 10. Two fixed, two newly broken.
+
+`--budget 3.0`. FINISHED: `$1.0641 spent of $3.00 cap`. No cache hits (extract +
+baseline code changed), so everything re-ran.
+
+- **UMR #7 → 0 errors, exported.** GIK fix worked.
+- **Yateem #9 → 0 errors, exported.** CN placeholder fix worked.
+- **Rahima #2 newly blocked** (1 error) and **IIIT #8 newly blocked** (3 errors).
+  This is exactly why the brief requires re-running the whole batch after a fix.
+
+### Failure E — IIIT rich narrative embedded a stale score (REAL, fixed)
+
+`rich_narrative.amal_scores.amal_score = 47` against `evaluations.amal_score = 58`
+(and `impact_tier` "BELOW_AVERAGE" vs "AVERAGE"). 47 was IIIT's **pre-run** score.
+
+`rich_content["amal_scores"]` is stamped deterministically from the evaluation row,
+not LLM-written, so once baseline re-scores, the stored narrative keeps the old
+score. `generate_rich_for_pipeline`'s re-entrancy check asked only whether a rich
+narrative **exists**, never whether it is **current**, and short-circuited.
+streaming_runner's phase gate *had* correctly decided rich must re-run, but it only
+passes `force=True` for `--force-all`/`--force-phase`, so the inner check silently
+overrode the dependency-aware decision.
+
+**Fix:** the re-entrancy check now compares the embedded `amal_score` against the
+evaluation's current score and regenerates on mismatch. Fixed in the check, not the
+call site, so `rich_phase.py`'s standalone entry point benefits too. Genuine
+re-entrancy preserved (matching score still short-circuits at zero cost).
+**Commit `0bbc3bb`.** Suite 1921.
+
+### Failure F — Rahima revenue error was a JUDGE FALSE POSITIVE (no fix needed)
+
+Judge: "narrative states $4,100,385 but Form 990 (2023) reports $4,006,022."
+Per-source check: CN (FY2024) $4,100,385 and form990_grants (tax_year 2024)
+$4,100,385 **agree**; ProPublica is tax_year **2023** at $4,006,022. The narrative's
+figure is correct and corroborated by two sources for FY2024 — the judge compared it
+against the prior fiscal year. It cleared on the next run without any change.
+
+### batch10 run 3 — 8 of 10 again, but a DIFFERENT two.
+
+`--budget 3.0`. FINISHED: `$0.3614 spent of $3.00 cap`. Cache worked (5 charities
+$0.0000).
+
+Rahima #2 ✓ and IIIT #8 ✓ (staleness fix confirmed). But clinic #6 and UMR #7 —
+both of which had passed in run 2 — each newly reported exactly 1 `factual` error.
+
+### Failure G — THE JUDGE IS NONDETERMINISTIC (structural; NOT yet fixed)
+
+`judge_content_hash` is the pipeline's own hash over the judged content. Across
+runs 2 and 3, the hash is **byte-identical** and the verdict **flipped**:
+
+| EIN | judge_content_hash | run 2 | run 3 |
+|-----|--------------------|-------|-------|
+| 27-3175543 UMR | `13aad00e94299cfc` | 0 errors | **1 error** |
+| 77-0442850 Rahima | `5f54d69843b4f4b9` | 1 error | **0 errors** |
+| 93-2136609 Clinic | `e1912686657e7fca` | 0 errors | **1 error** |
+
+Same content, same code, different publication decision. The flipping errors are
+interpretive, not factual contradictions — both run-3 errors are phrased as what the
+narrative *"implies"* ("implies revenue is primarily cash-based"; "implies the
+organization accepts sadaqah"), and the second conflates sadaqah with zakat
+eligibility when `SADAQAH-ELIGIBLE` is the documented default for every charity.
+
+**The codebase already diagnosed this class for a different judge.** `score_judge`
+carries `CONSENSUS_ROLLS = 3` with an explicit comment: "The rationale/score-
+consistency check is nondeterministic — identical content flip-flops between 0 and N
+errors across rolls. **Gating on a single roll produced spurious publication
+blocks.**" It takes an ERROR only on a majority of rolls, and fails closed if no
+roll completes.
+
+`factual_judge` emits publication-gating `Severity.ERROR` from a **single roll** and
+has no consensus mechanism at all. That is the gap.
+
+**Consequence for this run:** with a ~10-20% per-charity single-roll false-positive
+rate, "all 40 clean in one run" is improbable by construction — and grinding
+re-runs until green would be gate-shopping, not engineering. Escalated to the user
+rather than papered over.
+
+---
+
 ## Cumulative LLM spend
 
 | Batch | Run | Reported cost | Ended because |
@@ -296,4 +375,6 @@ exactly the micro-org sparse-data failure mode the run brief predicted.
 | batch05 | 2 | $0.5807 | FINISHED (cap $2.00) |
 | batch10 | 1 | $0.4367 | FINISHED (cap $2.00) |
 | UMR+Yateem regen probe | 1 | $0.2119 | FINISHED (cap $1.00) |
-| **Total so far** | | **$1.4609** | no run was ever budget-truncated |
+| batch10 | 2 | $1.0641 | FINISHED (cap $3.00) |
+| batch10 | 3 | $0.3614 | FINISHED (cap $3.00) |
+| **Total so far** | | **$2.8864** | no run was ever budget-truncated |
