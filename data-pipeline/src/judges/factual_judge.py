@@ -119,6 +119,60 @@ def _parse_number(v: Any) -> Optional[float]:
         return None
 
 
+def _normalized_text(value: Any) -> str:
+    """Lowercased, whitespace-collapsed text, or "" when the value is absent."""
+    if value is None:
+        return ""
+    return " ".join(str(value).strip().lower().split())
+
+
+def _values_are_textually_identical(claim_value: Any, source_value: Any) -> bool:
+    """Both sides present and the same string once case/spacing are normalized.
+
+    numeric_agreement covers this for numbers; it returns None for prose, so
+    `claim='two members'` against `source='two members'` reached the gate as a
+    blocking contradiction on EIN 23-7065716 — in a message that itself ended
+    "which is not a contradiction".
+    """
+    a, b = _normalized_text(claim_value), _normalized_text(source_value)
+    return bool(a) and a == b
+
+
+def _unnamed_claim_against_a_source(claim_value: Any, source_value: Any) -> bool:
+    """The judge produced a source value but never named what the narrative claimed.
+
+    Without a claim there is no stated pair to contradict — on EIN 27-3175543 the
+    judge blocked on `claim=None, source='0.475'` while the message objected to the
+    narrative "mentioning a low cost per beneficiary and strong program outcomes",
+    which is framing, not a competing figure.
+
+    Deliberately one-directional. The MIRROR shape — a claim with no source — is
+    what a fabrication looks like ("the narrative states $4.2M was distributed as
+    zakat; the Form 990 reports no such program") and must keep blocking, as must
+    a finding that names neither side, since the model states real contradictions
+    in prose without filling the structured fields.
+    """
+    return not _normalized_text(claim_value) and bool(_normalized_text(source_value))
+
+
+def _prose_claim_against_a_number(claim_value: Any, source_value: Any) -> bool:
+    """Both sides present, but exactly one of them is a number.
+
+    A qualitative claim cannot be numerically falsified without interpretation,
+    and interpretation is the part that is unreliable: on EIN 27-3175543 the judge
+    set claim='much of which is non-cash' against source='143021451' and called it
+    an error in a sentence reading "which is supported by the source data".
+
+    Two numbers are left to numeric_agreement, which can actually adjudicate them;
+    two prose values are left alone, since those can genuinely contradict.
+    """
+    if not _normalized_text(claim_value) or not _normalized_text(source_value):
+        return False
+    claim_is_number = _parse_number(claim_value) is not None
+    source_is_number = _parse_number(source_value) is not None
+    return claim_is_number != source_is_number
+
+
 def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
     """Do two reported values agree once rounding is allowed?
 
@@ -527,6 +581,20 @@ class FactualJudge(BaseJudge):
                     # narrative fault -- our sources cover different years and the
                     # narrative citing the newer one is correct.
                     elif _is_cross_fiscal_year_comparison(issue.field, issue.message):
+                        severity = Severity.WARNING
+                    # Sixth: an ERROR must be self-consistent to gate. The model
+                    # routinely files verification NOTES as errors -- severity
+                    # contradicting its own message ("which is not a
+                    # contradiction", "which is supported by the source data") and
+                    # its own claim/source pair. numeric_agreement above already
+                    # catches the numeric form; these are the same failure in
+                    # prose, which it cannot see.
+                    elif _values_are_textually_identical(issue.claim_value, issue.source_value):
+                        # Provable agreement, exactly like the numeric case.
+                        severity = Severity.INFO
+                    elif _unnamed_claim_against_a_source(issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    elif _prose_claim_against_a_number(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
