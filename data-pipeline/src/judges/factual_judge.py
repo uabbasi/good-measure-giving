@@ -126,6 +126,46 @@ def _normalized_text(value: Any) -> str:
     return " ".join(str(value).strip().lower().split())
 
 
+# The program ratio carries two legitimate values since this run's GIK fix: the
+# filed ratio Charity Navigator reports, and the cash-adjusted ratio we publish and
+# score when gifts-in-kind inflate the filed one.
+_RATIO_FIELD_RE = re.compile(r"program.{0,3}(?:expense.{0,3})?ratio", re.IGNORECASE)
+# Measured in PERCENTAGE POINTS. _same_story's 60% relative bound would swallow
+# 96.5% vs 47.5%, which is precisely the gap donors must see.
+_RATIO_BASIS_GAP_MAX_POINTS = 10.0
+
+
+def _as_percentage_points(value: Any) -> Optional[float]:
+    """A ratio on a 0-100 scale, whether it arrived as 0.475 or as 47.5%.
+
+    Both spellings occur for the same field in the same judge output. Anything
+    within [-1, 1] is read as a fraction; a program ratio of literally 1% does not
+    occur for these organizations, while 1.0 meaning 100% is common.
+    """
+    number = _parse_number(value)
+    if number is None:
+        return None
+    return number * 100 if abs(number) <= 1 else number
+
+
+def _is_ratio_basis_gap(field: str, claim_value: Any, source_value: Any) -> bool:
+    """Two program-ratio figures close enough to be the same story told two ways.
+
+    Justice Defenders' 58.5% against CN's 65.13% is a basis difference. UMR's
+    96.48% against its 47.5% cash-adjusted ratio is not — that is "nearly all
+    spending reaches programs" versus "less than half", the gap that earned it 0/5
+    on Program Ratio, and it must keep blocking.
+    """
+    if not _RATIO_FIELD_RE.search(field or ""):
+        return False
+    a, b = _as_percentage_points(claim_value), _as_percentage_points(source_value)
+    if a is None or b is None:
+        return False
+    if (a < 0) != (b < 0):
+        return False
+    return abs(a - b) <= _RATIO_BASIS_GAP_MAX_POINTS
+
+
 def _values_are_textually_identical(claim_value: Any, source_value: Any) -> bool:
     """Both sides present and the same string once case/spacing are normalized.
 
@@ -595,6 +635,12 @@ class FactualJudge(BaseJudge):
                     elif _unnamed_claim_against_a_source(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                     elif _prose_claim_against_a_number(issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    # Seventh: the filed and cash-adjusted program ratios are both
+                    # ours and both legitimate, so a basis-sized gap between them
+                    # is not a fault. Bounded in percentage points so the GIK gap
+                    # donors must see (96.5% vs 47.5%) still blocks.
+                    elif _is_ratio_basis_gap(issue.field, issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
