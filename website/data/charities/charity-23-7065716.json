@@ -86,7 +86,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 12:59:10",
+  "lastUpdated": "2026-07-30 13:38:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -462,79 +462,67 @@
         {
           "field": "claims_zakat_eligible",
           "judge": "factual",
-          "message": "The charity claims zakat eligibility, and the wallet tag reflects this.",
+          "message": "The narrative claims the charity is zakat-eligible, and the source data confirms this.",
           "severity": "info"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative states the charity has 3.2 months of working capital, but the source data indicates 3.25 months.",
+          "severity": "warning"
+        },
+        {
+          "field": "board_size",
+          "judge": "factual",
+          "message": "The narrative implies a small board of directors, but the source data indicates a board size of 2, which is not necessarily small in all contexts, but the specific number is contradicted.",
+          "severity": "warning"
+        },
+        {
+          "field": "financial_filings_availability",
+          "judge": "factual",
+          "message": "The narrative states the latest available financial filings are several years old, but the source data shows a filing for fiscal year 2022 from Charity Navigator.",
+          "severity": "warning"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative revenue of $14,210,352 matches the source data for FY2022.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "factual",
-          "message": "The narrative working capital of 3.2 months is close to the source value of 3.25 months.",
+          "message": "The narrative states $14,210,352 in total revenue, which matches the source data.",
           "severity": "info"
         },
         {
           "field": "theory_of_change",
           "judge": "factual",
-          "message": "The narrative claims the organization lacks a documented theory of change, but the source data does not explicitly confirm or deny this.",
+          "message": "The narrative claims the organization lacks a documented theory of change, but the source data does not explicitly confirm or deny the existence of a documented theory of change.",
           "severity": "warning"
         },
         {
           "field": "governance_policies",
           "judge": "factual",
-          "message": "The narrative states the organization has specific governance policies, which is supported by the ISGH Policy Manual.",
+          "message": "The narrative states the organization has specific governance policies, which is supported by the source data.",
           "severity": "info"
         },
         {
-          "field": "program_highlights",
+          "field": "programs",
           "judge": "factual",
-          "message": "The narrative claims the organization has a long track record of providing program highlights, which is supported by the Annual Report.",
+          "message": "The narrative states the charity serves the community through food bank partnerships and weekend schools, which is supported by the source data.",
           "severity": "info"
         },
         {
-          "field": "religious_services",
+          "field": "track_record",
           "judge": "factual",
-          "message": "The narrative claims the organization has a long track record of providing religious services, which is supported by the Annual Report.",
+          "message": "The narrative claims a long track record of providing program highlights and religious services, which is generally supported by the source data.",
           "severity": "info"
         },
         {
-          "field": "financial_filings_availability",
-          "judge": "factual",
-          "message": "The narrative claims the latest available financial filings are several years old, but Charity Navigator indicates FY2022 filings are available.",
-          "severity": "warning"
-        },
-        {
-          "field": "food_bank_partnerships",
-          "judge": "factual",
-          "message": "The narrative states the charity serves the community through food bank partnerships, which is supported by the Annual Report.",
-          "severity": "info"
-        },
-        {
-          "field": "weekend_schools",
-          "judge": "factual",
-          "message": "The narrative states the charity serves the community through weekend schools, which is supported by the Annual Report.",
-          "severity": "info"
-        },
-        {
-          "field": "areas_for_improvement",
+          "field": "amal_score_rationale",
           "judge": "score",
-          "message": "The narrative states that \"The organization holds 3.2 months of working capital, which is high for a group collecting zakat that should be distributed promptly.\" This statement is inconsistent with the 'Financial Health' component of the Impact score, which assigns 5/7 points and labels 3.2 months of working capital as 'RESILIENT'. The reasoning for concern ('high for a group collecting zakat that should be distributed promptly') is only applicable to the '39 months of reserves' identified as a high severity risk in the score details, not the 3.2 months.",
+          "message": "The narrative factually misrepresents the organization's cash reserves, which is a decisive limiting factor for the overall score.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs primarily focus on religious and community services, which align with 'fi_sabilillah'. However, the provided details do not explicitly mention serving the 'Fuqara' or 'Masakin' categories, which are often the primary focus for zakat distribution. While religious services can fall under 'fi_sabilillah', a stronger case for zakat distribution would be made if direct aid to the poor and needy was more clearly documented.",
-          "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "zakat",
-          "message": "The wallet tag 'ZAKAT-ELIGIBLE' is claimed by the charity. While the organization provides religious and educational services which can fall under 'fi_sabilillah', the evidence for direct aid to the poor and needy (Fuqara/Masakin) is not explicitly detailed. This makes the 'ZAKAT-ELIGIBLE' tag potentially questionable without further clarification on how zakat funds are distributed to the poor and needy.",
+          "message": "The charity's programs primarily focus on religious and community services, which align with 'fi_sabilillah' (in Allah's cause) for religious/educational causes. However, the provided evidence does not explicitly detail how these services directly benefit the 'Fuqara' (poor) or 'Masakin' (needy) asnaf categories, which are typically associated with direct financial or material aid to those lacking basic necessities. While religious and educational services can fall under 'fi_sabilillah', the direct link to poverty alleviation for the poor and needy asnaf is not clearly established in the provided data.",
           "severity": "warning"
         },
         {

@@ -568,3 +568,49 @@ utilisation was batch40 run 2 at $3.3693 of $6.00 (56%).
 `uv run pytest -q` → **1949 passed**, 0 failed. `ruff check` clean on every file
 touched. Started from 1909 passing; the 40 added tests are the ones written for the
 fixes below (RED confirmed before each fix, with non-vacuous regression guards).
+
+---
+
+## Follow-up session: judge self-consistency + ratio basis gap
+
+Three more fixes after the main run, at the user's direction.
+
+| Commit | What | Effect |
+|--------|------|--------|
+| `c8c4a91` | An ERROR must be self-consistent to gate: identical values → INFO; unnamed claim against a present source → WARNING; prose claim vs bare number → WARNING | Greater Houston 7→0, Humaniti 1→0, Justice Defenders 5→1, UMR 2→1 |
+| `dda51e2` | Filed vs cash-adjusted program ratio is a basis gap, bounded in percentage points | Justice Defenders 1→0 |
+
+**Two mistakes caught and corrected mid-implementation, both by existing tests:**
+1. Rule 2's first draft downgraded whenever NEITHER value was present, which gutted
+   fabrication findings — `test_an_unrelated_zakat_claim_still_blocks` failed.
+   Narrowed to one direction (claim unnamed, source present). The mirror shape is
+   what a fabrication looks like and still blocks.
+2. I nearly added the program ratio to the SHARED `METHODOLOGY_DIVERGENT_FIELD_RE`.
+   The score judge defers on that list **unbounded**, so it would have stopped
+   blocking narratives that tout the filed 96.5% as an efficiency strength — undoing
+   `e60549b`/`f0b7764` from earlier in this run. Kept factual-judge-local, with a
+   regression test asserting the shared list still excludes it.
+
+**I also over-claimed once:** I said these rules would fix MAS Boston. They don't —
+that error is from the **citation** judge, a different chain entirely.
+
+### State now
+
+Only **2 of 40 are judge-blocked**, down from 5:
+
+| # | EIN | Name | Cause |
+|---|-----|------|-------|
+| 7 | 27-3175543 | United Muslim Relief | judge compares `claim='7.44'` (cost per beneficiary, **dollars**) against `source='47.5%'` (a **ratio**) — unrelated quantities |
+| 28 | 20-1799252 | MAS Boston Society | **citation** judge asserts "Zakat eligible" contradicts "recognized as zakat-eligible"; its own `not contradicted` guard doesn't fire because the model claims it observed one |
+
+Plus **#20 Islamic Services Foundation**, which is not judge-blocked (jerr=0) but
+cannot crawl at all — its published file is a week old and would stay that way.
+
+Files written today: **38 of 40**. UMR's file is from 00:39 today but predates its
+current (blocked) content. #20 and #28 are from 2026-07-23.
+
+**Not yet verified end-to-end:** no full batch40 run since `c8c4a91`/`dda51e2`. The
+other 35 charities' content is unchanged so their hashes still match and they remain
+exportable, but a confirming run (~$3, re-judges all 40) has not been done.
+
+Suite: **1974 passed**. Total spend now **$15.29**.
