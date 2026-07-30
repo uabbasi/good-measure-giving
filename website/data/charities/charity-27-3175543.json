@@ -103,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:39:52",
+  "lastUpdated": "2026-07-30 14:30:01",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -708,37 +708,31 @@
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative states total revenue of $149,888,609, but the Charity Navigator source for FY2024 shows $149,888,609, while the Form 990 (2023) shows $57,586,233. The narrative's figure matches the Charity Navigator source for FY2024, but the Form 990 (2023) figure is different. It is important to use the most recent fiscal year data available.",
-          "severity": "info"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states a program expense ratio of 96.48%, but the Charity Navigator source shows 96.48% for FY2024. However, the website's audit report for 2024 indicates a program expense ratio of 97.45%. This discrepancy needs to be clarified.",
+          "message": "The narrative states total revenue of $149,888,609, but the source data shows $149,888,605 for FY2024.",
           "severity": "info"
         },
         {
           "field": "fundraising_efficiency",
           "judge": "factual",
-          "message": "The narrative states a fundraising efficiency of $0.05 per $1 raised, while Charity Navigator shows $0.02. This is a minor difference likely due to rounding or different calculation methodologies.",
+          "message": "The narrative states a fundraising efficiency of $0.05 per $1 raised, while the source data shows $0.02 per $1 raised.",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital_ratio",
+          "judge": "factual",
+          "message": "The narrative mentions 'critically low working capital of only 0.3 months to cover operations', which matches the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states a cash-adjusted program expense ratio of 47.5% when excluding non-cash gifts, but the source data shows 48% for FY2024.",
           "severity": "info"
         },
         {
           "field": "strengths",
           "judge": "score",
-          "message": "The stated fundraising efficiency of $0.05 per $1 raised is factually incorrect. According to Charity Navigator and calculations from financial data, the efficiency is approximately $0.02 per $1 raised. The citation [1] also incorrectly states $0.05.",
-          "severity": "warning"
-        },
-        {
-          "field": "areas_for_improvement",
-          "judge": "score",
-          "message": "The citation [1] for 'Low cash-adjusted program expense ratio of 47.5%' and 'Critically low working capital of only 0.3 months' is incorrect. Citation [1] refers to Charity Navigator's overall score and fundraising efficiency, not these specific financial metrics.",
-          "severity": "warning"
-        },
-        {
-          "field": "dimension_explanations.impact",
-          "judge": "score",
-          "message": "The citation [6] for 'the cash-adjusted program expense ratio is only 47.5% in FY2024, and the group maintains just 0.3 months of working capital' is insufficient. While citation [6] mentions non-cash contributions, it does not explicitly state the 47.5% ratio or the 0.3 months of working capital.",
+          "message": "The stated fundraising efficiency of $0.05 per $1 raised is factually incorrect based on the provided Charity Navigator data.",
           "severity": "warning"
         },
         {

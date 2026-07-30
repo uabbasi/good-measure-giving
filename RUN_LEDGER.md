@@ -614,3 +614,83 @@ other 35 charities' content is unchanged so their hashes still match and they re
 exportable, but a confirming run (~$3, re-judges all 40) has not been done.
 
 Suite: **1974 passed**. Total spend now **$15.29**.
+
+---
+
+## Session 3: #7 and #28 fixed; #20 re-examined; data issues traced
+
+### #7 and #28 — FIXED (`33319d2`), verified 1→0 errors each
+
+Both were category errors, not data problems.
+- **UMR**: judge compared `claim='7.44'` (cost per beneficiary, dollars) against
+  `source='47.5%'` (a ratio). Deterministic rule: a currency claim against a
+  percentage source is not a discrepancy. Requires BOTH that the source is a
+  percentage AND that the claim appears as currency in the message, so two
+  percentages (a real ratio disagreement) or two dollar amounts still block.
+- **MAS Boston**: citation judge blocked over "the citation states the organization
+  is Zakat eligible, but the claim states it is recognized as zakat-eligible" — the
+  same assertion twice. Zakat eligibility is settled in code by `_quick_checks`, and
+  `factual_judge` already refuses the model's second opinion via
+  `_is_wallet_tag_agreement`; the citation judge had no equivalent. Claimed zakat
+  AMOUNTS are excluded and keep blocking.
+
+**State: 0 of 40 judge-blocked. 39 of 40 files written today.**
+
+### #20 Islamic Services Foundation — my earlier read was WRONG, corrected
+
+The user pushed back that it "used to work." The history says they were right, and
+in a way that matters:
+
+```
+raw_scraped_data.scraped_at = 2026-03-07   (320,485 bytes of real content)
+crawl_attempts 2026-07-23 22:35  success=1  pages_found=1  pages_with_data=0
+              reason: "website re-observation thinner than last-good; preserved"
+crawl_attempts 2026-07-30 00:43  success=0  CAPTCHA_BLOCKED (HTTP 202)
+```
+
+So the last REAL content is from **March 7**. On Jul 23 the crawl was already
+returning a page with **zero data**; it only counted as success because the
+non-downgrade guard preserved March's content. The failure mode then escalated to a
+hard challenge during this run's repeated crawling.
+
+Re-tested ~13 hours later, twice: still `HTTP 202`, 169 bytes,
+`/.well-known/sgcaptcha/`. The token is IP-keyed and its prefix changed between
+attempts (`ipc:189.204.104.71` → `ipr:189.204.104.71`), i.e. a reputation/IP-scoped
+block on our crawler — plausibly aggravated by our own crawl volume.
+
+**Not routed around.** Rotating IPs or solving the challenge is bot-protection
+evasion. Options are: accept it, let a verified terminal bot-block demote `website`
+to optional (a policy call), or approach the org / another data source.
+
+Adjacent bug worth noting: a reputational block earns the full **180-day** terminal
+TTL, and `streaming_runner` still has no way to force a source retry.
+
+### DATA ISSUE — much larger than expected, NOT acted on
+
+`working_capital_months` is computed in `synthesize.py` **exclusively from
+ProPublica** (`pp_profile.get("total_expenses")`), while the PUBLISHED
+`total_expenses` often comes from Charity Navigator via the aggregator's field-count
+selection. The two are frequently different fiscal years.
+
+Humaniti (92-3079413):
+```
+ProPublica  tax_year 2023  expenses   474,737  assets 306,342  liabilities 548,013
+CharityNav  fiscal   2024  expenses 12,707,276  (no balance sheet)
+stored working_capital_months = -6.10   (= net assets / PP FY2023 monthly expenses)
+recomputed from PUBLISHED figures = -0.2   <- what the judge said, and it was right
+```
+
+**Blast radius measured: 128 of 156 charities (82%)** have a `working_capital_months`
+that does not reconcile with their own published balance-sheet and expense figures.
+Some are extreme (stored 124 months vs 3,149 recomputed). "RESERVES x mo" is
+displayed on every charity page.
+
+Same root cause as **The Morocco Foundation** (published CN's FY2022 $147,814 while
+FY2023's $134,320 sat in the DB): the income statement may come from CN while other
+fields and derived stats come from ProPublica, with nothing requiring a consistent
+fiscal year.
+
+Held for a decision because any fix changes a displayed statistic for most of the
+site. Options recorded in the summary to the user.
+
+Suite: **1984 passed**. Spend this session: +$0.63 (total ~$15.92).
