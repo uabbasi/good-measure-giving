@@ -605,6 +605,13 @@ class DataCollectionOrchestrator:
         if source == "form990_grants" and content == Form990GrantsCollector.NO_XML_SENTINEL:
             return True
 
+        # "BBB does not review this charity" is a verified negative, and its
+        # payload is far below the bbb floor below by design. Judging it on
+        # length rejected it as empty/shell, which re-failed bbb as a required
+        # source and took the whole crawl down — H12 again, just one layer later.
+        if source == "bbb" and BBBCollector.is_not_reviewed_sentinel(content):
+            return True
+
         # Minimum content length thresholds by type
         # JSON API responses are compact; HTML pages have markup overhead
         min_lengths = {
