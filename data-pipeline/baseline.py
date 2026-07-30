@@ -721,6 +721,16 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
     _eff_ratio = _effective_program_ratio(metrics)
     ratio_str = f"{_eff_ratio:.1%}" if _eff_ratio else "N/A"
+    # The label travels with the number. Handing over a GIK-adjusted figure still
+    # labelled "Program Expense Ratio" just relocates the misstatement, which the
+    # score judge caught: "presenting the cash-adjusted ratio as the general
+    # 'program expense ratio' without qualification is misleading."
+    _filed_ratio = getattr(metrics, "program_expense_ratio", None)
+    ratio_label = (
+        "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)"
+        if _eff_ratio is not None and _filed_ratio is not None and _eff_ratio != _filed_ratio
+        else "Program Expense Ratio"
+    )
     cn_score_str = f"{round(metrics.cn_overall_score, 1)}/100" if metrics.cn_overall_score else "N/A"
     programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
@@ -760,6 +770,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         "programs": programs_str,
         "revenue": revenue_str,
         "ratio": ratio_str,
+        "ratio_label": ratio_label,
         "cn_score": cn_score_str,
         "working_capital": working_capital_str,
         "fundraising_efficiency": fundraising_efficiency_str,

@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.3.0
-# LAST_UPDATED: 2026-07-18
-# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule
+# VERSION: 2.4.0
+# LAST_UPDATED: 2026-07-29
+# DESCRIPTION: Baseline narrative with inline citations - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule; 2.4.0 makes the program-ratio label a placeholder so a gifts-in-kind-adjusted figure is named as such instead of passing for the filed ratio
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -21,7 +21,7 @@ with [N] markers that match the available sources listed below.
 
 ## Financial Data
 - Total Revenue: {revenue}
-- Program Expense Ratio: {ratio}
+- {ratio_label}: {ratio}
 - Charity Navigator Score: {cn_score}
 - Working Capital: {working_capital}
 - Fundraising Efficiency: {fundraising_efficiency}
@@ -30,7 +30,7 @@ with [N] markers that match the available sources listed below.
 When mentioning these metrics in the narrative, you MUST use the EXACT values below.
 Do NOT round differently, do NOT calculate your own values, do NOT invent numbers.
 
-- Program Expense Ratio: {ratio} (use this exact percentage everywhere)
+- {ratio_label}: {ratio} (use this exact percentage everywhere, and describe it using this exact label — do not restate it as the plain "program expense ratio" if the label says cash-adjusted)
 - Total Revenue: {revenue} (use this exact amount everywhere)
 - Working Capital: {working_capital} (use this exact value everywhere)
 - Fundraising Efficiency: {fundraising_efficiency} (use this exact value everywhere)

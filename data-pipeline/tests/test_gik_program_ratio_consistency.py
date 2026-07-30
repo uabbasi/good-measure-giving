@@ -56,6 +56,30 @@ class TestTheGikAdjustedRatioReachesTheNarrative:
             "the inflated filed ratio must not be handed over as a mandatory value"
         )
 
+    def test_the_substituted_ratio_is_labelled_cash_adjusted(self, sample_charity_metrics):
+        """Swapping the VALUE without the LABEL just moves the lie.
+
+        The first version of this fix handed over 47.5% still labelled "Program
+        Expense Ratio", and the score judge caught it: "Presenting the
+        cash-adjusted ratio as the general 'program expense ratio' without
+        qualification is misleading." The label has to travel with the number,
+        which is what v2_scorers already does for the score component.
+        """
+        m = sample_charity_metrics.model_copy(
+            update={"program_expense_ratio": 0.965, "cash_adjusted_program_ratio": 0.48}
+        )
+        kwargs = _baseline_prompt_kwargs(m, _fake_scores(), 3, "[1] CN")
+        assert "cash-adjusted" in kwargs["ratio_label"].lower(), (
+            f"label must qualify the figure, got {kwargs['ratio_label']!r}"
+        )
+
+    def test_the_unadjusted_ratio_keeps_the_plain_label(self, sample_charity_metrics):
+        m = sample_charity_metrics.model_copy(
+            update={"program_expense_ratio": 0.83, "cash_adjusted_program_ratio": None}
+        )
+        kwargs = _baseline_prompt_kwargs(m, _fake_scores(), 3, "[1] CN")
+        assert "cash-adjusted" not in kwargs["ratio_label"].lower()
+
     def test_filed_ratio_is_still_used_when_there_is_no_gik_adjustment(
         self, sample_charity_metrics
     ):
