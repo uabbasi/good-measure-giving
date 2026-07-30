@@ -85,15 +85,132 @@ centers, 5 advocacy/civil rights, 5 education/scholarship, 3 health/wellness,
 - **Budget set:** `--budget 6.0`. Headroom over the $2.50 worst case because the
   per-charity cost is genuinely unknown on a cold cache, and a budget-truncated run
   wastes the spend already made while looking like a data failure. `--checkpoint 2`.
-- **Status:** IN PROGRESS
+#### Run 1 — 2 of 5. FAILED the batch rule.
 
-| # | EIN | Name | Result | Notes |
-|---|-----|------|--------|-------|
-| 1 | 20-2714426 | UNRWA | pending | |
-| 2 | 77-0442850 | Rahima Foundation | pending | |
-| 3 | 45-5637293 | The Noor Project | pending | |
-| 4 | 75-2882187 | Amoud Foundation | pending | |
-| 5 | 82-1150290 | American Imam Academy | pending | |
+Ended because it FINISHED (exit 0), not budget-capped: `$0.2316 spent of $6.00 cap`.
+
+| # | EIN | Name | Run 1 | Cost | Notes |
+|---|-----|------|-------|------|-------|
+| 1 | 20-2714426 | UNRWA | ✓ exported | $0.1409 | A:78 |
+| 2 | 77-0442850 | Rahima Foundation | ✗ crawl failed | — | bbb required-source failure |
+| 3 | 45-5637293 | The Noor Project | ✗ crawl failed | — | website terminal captcha |
+| 4 | 75-2882187 | Amoud Foundation | ✓ exported | $0.0779 | A:65 |
+| 5 | 82-1150290 | American Imam Academy | ✗ crawl failed | — | bbb required-source failure |
+
+**Real per-charity cost (supersedes the estimate):** mega $0.141, mid $0.078.
+Failures cost ~$0.013 combined because they die at crawl before the LLM phases.
+My $0.25-0.35/charity estimate was ~3x too high.
+
+---
+
+## Failures, root causes, fixes, commits
+
+### Failure A — bbb required-source failure (Rahima #2, American Imam Academy #5)
+
+**Symptom:** `Crawl incomplete: required sources failed/missing:
+{'bbb': 'empty or failed to store content'}` — dies at crawl, before extract.
+
+**Root cause (confirmed empirically, not by inspection).** Chain:
+1. `BBBCollector.fetch()` correctly reports "not in the BBB registry" as
+   `success=True` with sentinel `{"bbb_not_reviewed": true, "ein": ...}` — the H12 fix.
+2. That payload is **47 bytes**; `_has_content_substance`'s floor for `bbb` is
+   **200**. Verified directly: `has_substance=False` for all three EINs tested.
+3. No prior *successful* bbb row exists (all 5 batch05 rows are `success=0`,
+   `raw_content` NULL), so `_guard_against_content_downgrade` doesn't fire —
+   it returns early on `not existing.get("success")`. Falls through to reject.
+4. `_store_raw_content_only` returns False → orchestrator sets
+   `sources_failed["bbb"] = "empty or failed to store content"`.
+5. `_is_bbb_not_found()` — the escape hatch that strips bbb from
+   `required_sources` — only matches the **legacy** text `"not found on BBB"`.
+6. bbb stays required → `missing_sources` non-empty → whole crawl returns False.
+
+**Why it looked random / why review missed it.** UNRWA and Amoud hit the *same*
+47-byte rejection but survived, because their rows still carry the legacy string
+`"Charity not found on BBB WGA"`, so step 5 rescued them. Rahima and Imam Academy
+had theirs reset to `"reset: failure TTL expired"` and had nothing to match.
+Whether a charity crawls at all came down to which error text it happened to have
+on file. `_is_bbb_not_found`'s docstring asserts the `sources_failed` branch "is
+already dead" for freshly-crawled charities — provably false; the substance floor
+resurrects it.
+
+**Blast radius across the 40 (surveyed, not guessed):** 29 of 40 have failed bbb
+rows. 6 carry `reset: failure TTL expired` with no legacy string to save them —
+Rahima #2, Imam Academy #5, **Citizens Foundation #10, Anera #22, SAMS #27,
+Sadagaat #39**. The latter 4 would have failed in batch10/25/40. This is very
+likely also what produced the pre-run Dolt commit's "9 ok, 21 failed of 34".
+
+**Fix:** `_has_content_substance` recognizes the not-reviewed sentinel as
+substantive, mirroring the existing `Form990GrantsCollector.NO_XML_SENTINEL`
+precedent. Sentinel knowledge centralized as `BBBCollector.NOT_REVIEWED_KEY` +
+`is_not_reviewed_sentinel()`. Deliberately narrow: only a JSON object with a
+truthy `bbb_not_reviewed` qualifies.
+
+**Tests:** 4 new in `tests/test_bbb_not_reviewed.py` (class
+`TestTheVerifiedNegativeSurvivesTheSubstanceGate`) — 2 reproduced the bug (RED
+confirmed before the fix), 2 are regression guards proving the fix recognizes the
+sentinel rather than lowering the floor (both passed pre-fix, so not vacuous).
+Full suite **1909 passed**.
+
+**Commit:** `e504436`
+
+### Failure B — website terminal captcha lockout (The Noor Project #3)
+
+**Symptom:** `required sources failed/missing:
+{'website': 'terminal failure (captcha_blocked), TTL 180d'}` — source never even attempted.
+
+**Root cause.** On 2026-07-23 a real attempt got HTTP 202 and was recorded
+`CAPTCHA_BLOCKED: challenge page (HTTP 202)`. `classify_failure` matches
+`captcha_blocked`/`challenge page` in `TERMINAL_FAILURE_MARKERS` →
+`_should_skip_failed_source` applies `TERMINAL_FAILURE_TTL_DAYS = 180` from
+`last_attempt_at` → blocked until ~2027-01-19.
+
+**That verdict was wrong.** Fetching the site now: **HTTP 200, 298,249 bytes**,
+title "The Noor Project", "Donate" ×13, "Zakat" ×5, exactly one line mentioning a
+challenge — a Turnstile widget on a donate form, not an interstitial.
+
+**Design gap found.** Two detectors disagree. The careful one,
+`_is_bot_challenge_html`, has a proper co-occurrence gate (a vendor marker or a
+`<title>` match is required). The path that produced this verdict
+(`web_collector.py:1221-1238`) does **not** use it: HTTP 202/403 sets
+`CAPTCHA_BLOCKED` unconditionally, then a naive first-5KB substring sniff for
+`"captcha"`/`"challenge"` upgrades it to "challenge page". Worse,
+`force_sources` — the only thing that bypasses the 180d skip — is wired into
+`crawl.py` only and **never passed by `streaming_runner.py`**, so the canonical
+runner has no way to retry a source pinned by a transient verdict.
+
+**Resolution used: data-level, via the pipeline's own designed escape hatch** —
+`crawl.py --ein 45-5637293 --refresh-stale`, documented as exactly "what lets the
+mode re-crawl a terminally-failed (e.g. captcha) website row instead of respecting
+its 180-day skip". Result: **success=1, 38 pages found, 38 with data**, content
+refreshed 2026-07-29 21:08. This is not a gate bypass in the `--no-judge-gate`
+sense: it re-attempts a skipped fetch and the fetch genuinely succeeded with real
+current data.
+
+**No pipeline code change made for B, deliberately.** Changing terminal-failure
+backoff policy or the 202/403 detector would affect every charity in the fleet,
+which the run instructions say to check in about first. Surveyed the other 39:
+**no other terminal website failure exists among the 40**, so B was a single case
+and needs no fleet-wide change to finish this run. Raised as a recommendation
+instead — see "Open recommendations".
+
+**Commit:** none (data-level remedy only)
+
+## Pipeline code changes made during this run
+
+| Commit | Files | What |
+|--------|-------|------|
+| `e504436` | `src/collectors/bbb_collector.py`, `src/collectors/orchestrator.py`, `tests/test_bbb_not_reviewed.py` | BBB verified-negative sentinel recognized by the substance gate |
+
+## Open recommendations (NOT acted on — need user sign-off, fleet-wide)
+
+1. `web_collector.py:1221-1238` should call `_is_bot_challenge_html` instead of
+   its own naive first-5KB `"captcha"`/`"challenge"` substring sniff. As written it
+   brands any HTTP 202/403 page containing those words a terminal challenge page.
+2. A transient block earns a **180-day** terminal TTL, and `streaming_runner.py`
+   cannot override it (`force_sources` is `crawl.py`-only). One bad response locks
+   a charity out of the canonical pipeline for half a year. Either plumb a force
+   flag through `streaming_runner`, or require corroboration//shorten the TTL
+   before treating a captcha as terminal.
 
 ---
 
@@ -101,12 +218,5 @@ centers, 5 advocacy/civil rights, 5 education/scholarship, 3 health/wellness,
 
 | Batch | Run | Reported cost | Ended because |
 |-------|-----|---------------|---------------|
-| batch05 | 1 | pending | pending |
-
-## Failures, root causes, fixes, commits
-
-(none yet)
-
-## Pipeline code changes made during this run
-
-(none yet)
+| batch05 | 1 | $0.2316 | FINISHED (cap $6.00, 3.9% used) |
+| **Total** | | **$0.2316** | |
