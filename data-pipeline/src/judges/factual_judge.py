@@ -166,6 +166,31 @@ def _is_ratio_basis_gap(field: str, claim_value: Any, source_value: Any) -> bool
     return abs(a - b) <= _RATIO_BASIS_GAP_MAX_POINTS
 
 
+def _currency_claim_against_a_percentage(message: str, claim_value: Any, source_value: Any) -> bool:
+    """The two compared figures are a dollar amount and a percentage.
+
+    Those are different quantities, so their difference is not a discrepancy. On
+    EIN 27-3175543 the judge set claim='7.44' against source='47.5%' and wrote "the
+    narrative claims a low cost per beneficiary of $7.44 ... but the cash-adjusted
+    program expense ratio is only 47.5%" — a cost per person measured against a
+    ratio. The prompt's "CRITICAL: Working Capital Units" section shows unit
+    confusion is a known failure mode here; this is its deterministic form.
+
+    Requires BOTH that the source is a percentage and that the claim actually
+    appears as currency in the message, so two percentages or two dollar amounts
+    (a real disagreement) are untouched.
+    """
+    if "%" not in str(source_value or ""):
+        return False
+    if "%" in str(claim_value or ""):
+        return False
+    number = _parse_number(claim_value)
+    if number is None:
+        return False
+    rendered = f"{number:g}"
+    return bool(re.search(rf"\$\s*{re.escape(rendered)}", message or ""))
+
+
 def _values_are_textually_identical(claim_value: Any, source_value: Any) -> bool:
     """Both sides present and the same string once case/spacing are normalized.
 
@@ -641,6 +666,12 @@ class FactualJudge(BaseJudge):
                     # is not a fault. Bounded in percentage points so the GIK gap
                     # donors must see (96.5% vs 47.5%) still blocks.
                     elif _is_ratio_basis_gap(issue.field, issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    # Eighth: a dollar amount and a percentage are different
+                    # quantities, so their difference is not a discrepancy.
+                    elif _currency_claim_against_a_percentage(
+                        issue.message, issue.claim_value, issue.source_value
+                    ):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
