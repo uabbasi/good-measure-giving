@@ -64,18 +64,27 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 21:02:05",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-07-30 00:53:12",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
-      "timestamp": "2026-07-23T20:36:45",
-      "value": 1134605
+      "timestamp": "2026-07-30T00:51:58",
+      "value": 0
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://magorlando.net",
+      "source_url": "https://magorlando.net/",
       "timestamp": "2026-07-23T20:27:16",
       "value": false
     },
@@ -88,7 +97,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-07-30T00:51:58",
       "value": 0
     },
     "has_audited_financials": {
@@ -100,26 +109,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/562620244",
-      "timestamp": "2026-07-23T20:36:43",
+      "timestamp": "2026-07-30T00:51:56",
       "value": "B20"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-07-30T00:51:58",
       "value": 0.6779999999999999
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-07-30T00:51:58",
+      "value": 2640174
+    },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
+      "timestamp": "2026-07-30T00:51:58",
       "value": 2640174
     },
     "total_revenue": {
-      "source_name": "Form 990 (2024)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/562620244",
-      "timestamp": "2026-07-23T20:36:43",
-      "value": 3572587
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/562620244#financials",
+      "timestamp": "2026-07-30T00:51:58",
+      "value": 3145617
     },
     "working_capital_months": {
       "derived_from": [
@@ -129,7 +144,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/562620244",
-      "timestamp": "2026-07-23T20:36:43",
+      "timestamp": "2026-07-30T00:51:56",
       "value": 15.6
     }
   },
@@ -169,13 +184,9 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Candid/GuideStar",
-      "Academic Institution (via Step Up For Students)",
-      "Niche",
-      "Private School Review",
-      "Accredited (Cognia)",
-      "Top 20% of Private Schools in Florida (Private School Review)",
-      "Overall Niche Grade A+ (Niche.com)"
+      "Independent Auditor",
+      "Cognia",
+      "Accreditation (Cognia)"
     ],
     "receivesFoundationGrants": null
   },
@@ -204,13 +215,6 @@
     {
       "type": "risk_deduction",
       "severity": "low",
-      "headline": "No outcome measurement or metrics tracking",
-      "detail": "Source: Website/Candid",
-      "data_points": {}
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "low",
       "headline": "No documented theory of change",
       "detail": "Source: Website",
       "data_points": {}
@@ -219,7 +223,7 @@
   "amalEvaluation": {
     "charity_ein": "56-2620244",
     "charity_name": "Muslim Academy of Greater Orlando",
-    "amal_score": 42,
+    "amal_score": 43,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:15",
     "rubric_version": "5.3.0",
@@ -369,6 +373,54 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The provided Form 990 (2024) content does not contain the reported total revenue of $3,145,617 or the program expense ratio of 67.8% for FY2025. The content appears to be a PDF document with a lot of binary data and is not easily parseable for specific financial figures.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The PDF content for citation [3] is largely unparseable binary data and does not contain information about capacity building through KG-8 education programs.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "The PDF content for citation [4] is largely unparseable binary data and does not contain information confirming that the academy offers education for children from KG through 8th grade.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "The PDF content for citation [5] is largely unparseable binary data and does not contain information confirming that the academy offers education for children in Pre-K.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "The PDF content for citation [6] is largely unparseable binary data and does not contain information about the organization not providing a formal plan for how its activities lead to specific long-term outcomes.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_7",
+          "judge": "citation",
+          "message": "The content for citation [7] is a webpage that mentions '26-27 Tuition & Fees' and '26-27 KG-8 Registration' and '26-27 PRE-K Registration', but it does not explicitly state that the school tracks student outcomes or lacks formal governance policies. The claim is not directly supported or contradicted by the provided text.",
+          "severity": "info"
+        },
+        {
+          "field": "revenue",
+          "judge": "factual",
+          "message": "The narrative reports total revenue of $3,145,617 for FY2025, but the source data for FY2024 shows $3,572,587 and for FY2023 shows $2,640,161. The provided source for FY2025 (Form 990) also shows $3,145,617, which matches the narrative.",
+          "severity": "warning"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative reports a program expense ratio of 67.8%, which matches the source data.",
+          "severity": "info"
+        },
+        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -381,36 +433,17 @@
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.evaluators[3].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'niche.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.evaluators[4].url",
-          "judge": "discover_quality",
-          "message": "Evaluation source domain 'privateschoolreview.com' is not a known trusted evaluator",
-          "severity": "info"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
         }
       ],
-      "risk_deduction": -2,
+      "risk_deduction": -1,
       "risks": {
-        "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "overall_risk_level": "LOW",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
-          {
-            "category": "impact",
-            "data_source": "Website/Candid",
-            "description": "No outcome measurement or metrics tracking",
-            "mitigation": null,
-            "severity": "low"
-          },
           {
             "category": "impact",
             "data_source": "Website",
@@ -419,85 +452,78 @@
             "severity": "low"
           }
         ],
-        "total_deduction": -2
+        "total_deduction": -1
       },
       "score_summary": "Muslim Academy of Greater Orlando Inc shows moderate alignment and moderate impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No explicit mention of zakat acceptance found on the Muslim Academy of Greater Orlando's website or related information in the search results.",
+        "claim_evidence": "The official website and other informational pages for Muslim Academy of Greater Orlando (MAGO) describe it as a private Islamic school providing education. There is no explicit mention of 'zakat' on their website or donation pages, nor any dedicated zakat funds or campaigns for MAGO itself in the search results.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The academy reported total revenue of $3,145,617 and a program expense ratio of 67.8% in FY2025.",
+          "claim": "In FY2025, the organization reported total revenue of $3,145,617 and a program expense ratio of 67.8%.",
           "id": "[1]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562620244"
         },
         {
-          "claim": "Financial data for FY2025 shows 15.6 months of working capital and $0.00 fundraising efficiency.",
-          "id": "[2]",
-          "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/562620244#financials"
-        },
-        {
-          "claim": "The organization provides education programs for children.",
+          "claim": "The school focuses on capacity building through its KG-8 education programs.",
           "id": "[3]",
-          "source_name": "Document (PDF) - Tuition Schedule",
+          "source_name": "Document (PDF) - General Tuition & Fee Schedule",
           "source_url": "https://img1.wsimg.com/blobby/go/ab609dd2-fa34-4b72-8ece-f78dd8fbd50f/General%20Tuition%20%26%20Fee%20Schedule%202026_2027.pdf"
         },
         {
-          "claim": "The academy operates KG through Grade 8 education programs.",
+          "claim": "The academy offers education for children from KG through 8th grade.",
           "id": "[4]",
-          "source_name": "Document (PDF) - Admission Requirements KG-8",
+          "source_name": "Document (PDF) - Admission Requirements KG-Grade 8",
           "source_url": "https://img1.wsimg.com/blobby/go/ab609dd2-fa34-4b72-8ece-f78dd8fbd50f/2026-27%20Admission%20Requirements%20KG-Grade%208.pdf"
         },
         {
-          "claim": "The school offers Pre-K education services.",
+          "claim": "The academy offers education for children in Pre-K.",
           "id": "[5]",
           "source_name": "Document (PDF) - Admission Requirements Pre-K",
           "source_url": "https://img1.wsimg.com/blobby/go/ab609dd2-fa34-4b72-8ece-f78dd8fbd50f/2026-27%20Admission%20Requirements%20Pre-K-f2a6f59.pdf"
         },
         {
-          "claim": "The organization maintains standards for ethical conduct in its educational environment.",
+          "claim": "The organization does not provide a formal plan for how its activities lead to specific long-term outcomes.",
           "id": "[6]",
           "source_name": "Download - Standards of Ethical Conduct",
           "source_url": "https://img1.wsimg.com/blobby/go/ab609dd2-fa34-4b72-8ece-f78dd8fbd50f/downloads/Standards%20of%20Ethical%20Conduct_UPDATED%20on%2011_21_.pdf?ver=1783533372054"
         },
         {
-          "claim": "The academy tracks organizational data related to its school operations.",
+          "claim": "The school tracks student outcomes but lacks formal governance policies.",
           "id": "[7]",
           "source_name": "Download - Organizational Data",
           "source_url": "https://img1.wsimg.com/blobby/go/ab609dd2-fa34-4b72-8ece-f78dd8fbd50f/downloads/1c6q4775o_330169.pdf?ver=1783533372054"
         },
         {
-          "claim": "The organization accepts donations and tuition to fund its academic mission.",
+          "claim": "The academy is eligible for sadaqah donations.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://magorlando.net/26-27-tuition-%26-fees"
         }
       ],
-      "amal_score_rationale": "The academy's assessment is limited by a lack of documented impact metrics and a missing theory of change. While financial health is stable, the organization does not provide clear data on how its programs specifically improve student lives over time.",
+      "amal_score_rationale": "The organization's assessment is limited by a lack of documented governance and a clear strategy for long-term impact. While financial health is stable, a significant portion of spending remains directed toward non-program costs.",
       "areas_for_improvement": [
-        "Establish a formal theory of change to define long-term goals",
-        "Begin tracking and reporting specific student outcome metrics",
-        "Improve governance documentation and public transparency regarding leadership"
+        "Lack of a documented theory of change to explain long-term impact",
+        "Absence of formal governance structures and independent board oversight",
+        "Moderate program spending compared to administrative costs"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific educational cause but has a lower fit for donors seeking traditional religious charity models [4][8]. While it has a verified track record of operating school programs, it lacks data on serving underserved populations or addressing urgent funding gaps [5][7].",
-        "impact": "The academy focuses on capacity building through its school system, but it does not currently track specific outcome metrics or follow a documented theory of change [3][6]. While it maintains a moderate program expense ratio of 67.8%, the lack of data on cost per beneficiary makes it difficult to measure overall effectiveness [1][2]."
+        "alignment": "The academy serves a specific local need for education and is eligible for sadaqah donations [8]. It has a verified track record of providing schooling for several years [4]. However, it shows low alignment for broad Muslim donor needs due to its narrow geographic focus and limited underserved reach [3].",
+        "impact": "The school focuses on capacity building through its KG-8 education programs [3]. In FY2025, it maintained a moderate program expense ratio of 67.8% [1]. While the school tracks student outcomes, it lacks a formal theory of change and has no documented governance policies, which limits its impact rating [6][7]."
       },
-      "headline": "The Muslim Academy of Greater Orlando provides private schooling but lacks clear outcome tracking and governance documentation.",
+      "headline": "The Muslim Academy of Greater Orlando provides private schooling but lacks clear governance and a documented theory of change.",
       "strengths": [
-        "Maintains a moderate program expense ratio of 67.8% in FY2025",
-        "holds 15.6 months of working capital, providing a significant financial safety net",
-        "High fundraising efficiency with $0.00 spent to raise every $1"
+        "Maintains 15.6 months of working capital to support ongoing operations [1]",
+        "High fundraising efficiency with $0.00 spent to raise every $1 [1]"
       ],
-      "summary": "Based in Florida, this organization operates Pre-K through 8th-grade education programs focused on virtue and wisdom [3][4]. In FY2025, the academy reported total revenue of $3,145,617 to support its academic operations [1][2]."
+      "summary": "The academy offers education for children from Pre-K through 8th grade in the Orlando area [4][5]. In FY2025, the organization reported total revenue of $3,145,617 [1]. While the school maintains a moderate program expense ratio of 67.8%, it does not provide a formal plan for how its activities lead to specific long-term outcomes [1][6]."
     },
     "rich_narrative": {
       "all_citations": [

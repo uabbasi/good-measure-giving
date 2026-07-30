@@ -44,8 +44,10 @@ _YEAR_VARYING_FINANCIAL_FIELD_RE = re.compile(
     r"revenue|expense|contribution|asset|liabilit|net_assets|working.?capital",
     re.IGNORECASE,
 )
-# A bare four-digit year, not the tail of a dollar amount ("$2,024" / "$52,024").
-_FISCAL_YEAR_RE = re.compile(r"(?<![\d,$.])(20[1-3]\d)(?![\d,])")
+# A bare four-digit year, not part of a larger number ("$2,024" / "$2024500").
+# The trailing guard rejects a comma only when digits follow it, so an ordinary
+# prose comma ("for FY2024, which matches...") still leaves the year visible.
+_FISCAL_YEAR_RE = re.compile(r"(?<![\d,$.])(20[1-3]\d)(?!,?\d)")
 
 
 def _is_cross_fiscal_year_comparison(field: str, message: str) -> bool:

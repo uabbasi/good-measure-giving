@@ -54,6 +54,19 @@ class TestTheObservedMessagesAreRecognized:
             "$11,142,566 for FY2024.",
         )
 
+    def test_a_year_followed_by_a_comma_still_counts(self):
+        """Justice Defenders (36-4787320) exposed this: the first year is written
+        "for FY2024, which matches Charity Navigator", and a lookahead meant to
+        reject dollar amounts like "$52,024" was also rejecting a year followed by
+        an ordinary prose comma -- so only one year was found and the comparison
+        was not recognized as cross-year."""
+        assert _is_cross_fiscal_year_comparison(
+            "total_revenue",
+            "The narrative states total revenue of $1,331,729 for FY2024, which matches "
+            "Charity Navigator, but the 2023 Annual Report (Source [2]) indicates total "
+            "revenue of $1,624,040.",
+        )
+
     def test_yateem_fiscal_year_vs_tax_year(self):
         assert _is_cross_fiscal_year_comparison(
             "total_revenue",

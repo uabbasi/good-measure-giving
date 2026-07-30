@@ -229,6 +229,91 @@ response must not cost the charity its page) unchanged and still asserted.
 | `0bbc3bb` | `rich_phase.py`, `tests/test_rich_reentrancy_staleness.py` | Rich re-entrancy check compares embedded score, not mere existence |
 | `c3737a4` | `src/judges/factual_judge.py`, `tests/test_factual_judge_consensus.py`, `tests/test_factual_judge_blockers.py` | k=3 majority consensus + fail-closed on zero completed rolls |
 
+### batch10 runs 4-9 — the long tail, and how it converged
+
+Nine runs. Blockers per run: 2, 2, 3, 2, 1, 1, 1, 1, **0**. Every one was
+root-caused; none was waved through. The pattern was a rotating single charity, which
+is why the "re-run the whole batch" rule mattered — a fix verified only on the
+charity it targeted would have hidden each new one.
+
+| Run | Result | Blocker(s) | Disposition |
+|-----|--------|-----------|-------------|
+| 4 | 7/10 | Rahima, Noor, UMR | consensus now active; surviving errors were real |
+| 5 | 8/10 | Amoud, Clinic | UMR/Rahima/Noor cleared by the ratio-label fix |
+| 6 | 9/10 | Noor | zakat non-finding |
+| 7 | 9/10 | Amoud | CN overall score cited as transparency |
+| 8 | 9/10 | UMR | cross-fiscal-year, again |
+| 9 | **10/10** | none | zero new exclusions after watermark `00:37:38` |
+
+Fixes landed in this stretch, each with its own root cause and commit:
+
+- **`f0b7764` — the cash-adjusted ratio needed its LABEL, not just its value.** My
+  own earlier fix was half-right: swapping 96.5%→47.5% while still calling it
+  "Program Expense Ratio" just relocated the misstatement, and the judge caught it
+  ("presenting the cash-adjusted ratio as the general 'program expense ratio'
+  without qualification is misleading"). Label is now a prompt placeholder.
+- **`00448b0` — the noncash signal named the wrong denominator.** `noncash_ratio` is
+  noncash / total CONTRIBUTIONS but the signal headline said "of reported revenue".
+  UMR clamps to 100% of contributions while noncash is 95.4% of revenue, so the
+  narrative asserted "100% of revenue". Wording only.
+- **`40241d0` — fiscal-year prompt rule.** Necessary but NOT sufficient.
+- **`2782801` — an empty zakat search asserted zakat is refused.** Noor stored
+  `accepts_zakat: false` with 0 sources, 0 confidence, no evidence, no URL. Same
+  shape as the BBB bug at the start of this run: a non-finding readable as a
+  negative. Now stores None; logic-neutral downstream (None and False are both
+  falsy, and `web_collector` already used None for this field).
+- **`85f9851` — CN overall score cited as a transparency score.** Amoud claimed "high
+  level of transparency with a 80.0/100 score from Charity Navigator" while our own
+  transparency signal was NONE. 80.0 is CN's *overall* rating.
+- **`71d49e8` — cross-fiscal-year comparison suppressed deterministically.** The
+  prompt rule failed: the judge named the year gap itself ("the narrative's figure
+  appears to be from FY2024 data") and still returned ERROR, across three charities in
+  three runs. Consensus can't filter it because every roll makes the same error. This
+  is exactly the case the file already documents for the wallet tag — "the answer is
+  not more prompt text. Where a deterministic check owns the question, the model's
+  copy does not get to block." Downgraded to WARNING (not dropped), consistent with
+  the four existing rules in that chain, so it still reaches the editorial queue.
+
+### batch25 run 1 — 22 of 25
+
+`--budget 5.0 --checkpoint 5`. FINISHED: `$1.5962 spent of $5.00 cap`.
+The mega end held: Second Harvest ($286M) A:67, Anera ($204M) A:72, PCRF A:71.
+
+Three blocked, and they are three DIFFERENT kinds of problem:
+
+**#20 Islamic Services Foundation (75-2352043) — GENUINELY UNCRAWLABLE.**
+Crawl failed on a live fetch: `website: CAPTCHA_BLOCKED: challenge page (HTTP 202)`.
+Verified independently, twice, with a browser user-agent: the site returns a
+**169-byte HTTP 202** whose entire body is
+`<meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2F...">` — a
+ShieldSquare/Radware bot-management interstitial. This is a TRUE positive, unlike
+The Noor Project (298KB of real content misread as a challenge). `sgcaptcha` is
+already one of `_is_bot_challenge_html`'s `strong_markers`, and the codebase itself
+documents that such pages "render fine under Playwright" while still being challenge
+screens — so the Playwright rescue cannot get through either. `website` is a required
+source and H5 deliberately made CAPTCHA *not* demote it.
+**Not bypassed. Escalated — this is the "legitimately cannot pass" case.**
+
+**#24 The Morocco Foundation (90-0327815) — REAL data defect, judge was right.**
+Narrative reported $147,814; the judge cited Form 990 (FY2023) $134,320. Per source:
+CN `fiscal_year 2022 → $147,814`; ProPublica `tax_year 2023 → $134,320`;
+form990_grants `tax_year 2023 → $134,320`. **The narrative published the OLDER year.**
+Cause is the same CN-vs-ProPublica selection path as Yateem
+(`charity_metrics_aggregator` ~L1694): when years differ and PP has <3 income fields
+while CN has ≥3, CN's ENTIRE income statement wins **on field count, with no regard
+for which year is newer**. So a charity can publish stale-year financials while a
+newer filing sits in the DB. Fixing this changes published financials fleet-wide →
+NOT acted on, see recommendations.
+
+**#15 Islamic Society of Greater Houston (23-7065716) — judge false positive.**
+`board_size`: "the narrative states the board is too small with only two members
+listed, **but Candid data shows 2 board members**." The judge flagged an *agreement*
+as a contradiction. The existing `numeric_agreement(claim_value, source_value)`
+downgrade can't catch it because the two numbers appear only in the prose, not in the
+structured claim/source fields. Second error (`financial_filings_availability`) is
+arguable at best: it objects to "filings are several years old" by citing FY2022 data,
+which in 2026 is four years old.
+
 ## Open recommendations (NOT acted on — need user sign-off, fleet-wide)
 
 1. `web_collector.py:1221-1238` should call `_is_bot_challenge_html` instead of
