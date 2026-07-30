@@ -86,7 +86,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:51:52",
+  "lastUpdated": "2026-07-30 01:03:18",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -418,27 +418,33 @@
           "severity": "warning"
         },
         {
-          "field": "revenue",
+          "field": "total revenue",
           "judge": "factual",
-          "message": "The narrative states the charity reported $497,120 in revenue for FY2024, but the source data for FY2024 shows $497,120. The ProPublica Form 990 data for FY2023 shows $850,837, and for FY2022 shows $1,784,619. The narrative's claim aligns with the Charity Navigator data for FY2024, but the ProPublica data for FY2023 and FY2022 are significantly different.",
-          "severity": "warning"
-        },
-        {
-          "field": "expenses",
-          "judge": "factual",
-          "message": "The narrative states that expenses were 1.7 times higher than revenue for FY2024. The Charity Navigator data for FY2024 shows total expenses of $856,282 and revenue of $497,120, resulting in an expense-to-revenue ratio of approximately 1.72. The ProPublica Form 990 data for FY2023 shows expenses of $1,025,716 and revenue of $850,837, a ratio of approximately 1.21. The narrative's claim aligns with the Charity Navigator data for FY2024 but not with the ProPublica data for FY2023.",
+          "message": "The narrative states the total revenue for FY2024 was $497,120, but the source data for FY2024 shows a total revenue of $497,120. The ProPublica Form 990 data for FY2023 shows a total revenue of $850,837.",
           "severity": "info"
         },
         {
-          "field": "working_capital_months",
+          "field": "expenses vs revenue",
           "judge": "factual",
-          "message": "The narrative mentions 'Large financial reserves of 28 months' in the 'areas_for_improvement' section. The Charity Navigator data indicates working capital of 23.6 months. The Form 990 data for FY2023 shows net assets of $2,017,649 and total expenses of $1,025,716, which translates to approximately 23.6 months of reserves. The narrative's claim of 28 months is a contradiction.",
-          "severity": "warning"
+          "message": "The narrative states that expenses were 1.7 times higher than revenue in FY2024. The source data shows total expenses of $856,282 and total revenue of $497,120 for FY2024, resulting in expenses being approximately 1.72 times higher than revenue. This is a minor difference and within acceptable rounding tolerances.",
+          "severity": "info"
+        },
+        {
+          "field": "Charity Navigator rating",
+          "judge": "factual",
+          "message": "The narrative states an overall rating of 90.0/100 from Charity Navigator, which matches the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "dimension_explanations.alignment",
+          "judge": "score",
+          "message": "The rationale for 'alignment' includes a financial risk factor (large reserves) which is not directly related to the alignment dimension. While a valid point, its placement is a minor categorization issue.",
+          "severity": "info"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The claimed asnaf category 'amil' is not directly supported by the charity's programs. The charity's website states it is zakat-eligible under the 'fisabilillah' category, and its programs focus on research and education, which aligns with 'fisabilillah'. There is no evidence that the charity employs or supports individuals who collect or distribute zakat.",
+          "message": "The claimed asnaf category 'amil' is not directly supported by the provided program descriptions. The charity's programs focus on research, education, and community wellness, which align more closely with 'fisabilillah'. There is no information indicating the organization employs individuals specifically for zakat collection or distribution.",
           "severity": "warning"
         },
         {

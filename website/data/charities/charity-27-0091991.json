@@ -75,7 +75,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:55:49",
+  "lastUpdated": "2026-07-30 01:07:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -461,19 +461,19 @@
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The program expense ratio in the narrative (95.5%) is a rounded version of the source value (95.55%).",
+          "message": "The program expense ratio in the narrative (95.5%) is very close to the source value (95.55%).",
           "severity": "info"
         },
         {
           "field": "working_capital_months",
           "judge": "factual",
-          "message": "The working capital in the narrative (24.2 months) matches the source value.",
+          "message": "The working capital in months (24.2) is very close to the source value (24.2).",
           "severity": "info"
         },
         {
           "field": "fundraising_efficiency",
           "judge": "factual",
-          "message": "The fundraising efficiency in the narrative ($0.05 per $1 raised) is a rounded version of the source value ($0.04 per $1 raised).",
+          "message": "The fundraising efficiency in the narrative ($0.05 per $1 raised) is very close to the source value ($0.04 per $1 raised).",
           "severity": "info"
         },
         {
@@ -485,32 +485,38 @@
         {
           "field": "ceo_compensation",
           "judge": "factual",
-          "message": "The CEO compensation in the narrative ($216,728) differs from the source value ($216,728) for FY2023, but the narrative's claim is accurate.",
-          "severity": "info"
+          "message": "The CEO compensation in the narrative ($216,728) matches the source value for FY2023, but it represents 7.3% of total revenue, which is higher than the typical threshold of 5% for organizations of this size.",
+          "severity": "warning"
         },
         {
           "field": "zakat_eligibility",
           "judge": "factual",
-          "message": "The narrative states the charity is zakat-eligible, which matches the source data.",
+          "message": "The narrative states the charity is zakat-eligible, which is supported by the source data.",
           "severity": "info"
         },
         {
-          "field": "strengths",
-          "judge": "score",
-          "message": "Factual inaccuracy in fundraising efficiency.",
-          "severity": "warning"
+          "field": "program_offerings",
+          "judge": "factual",
+          "message": "The narrative's description of program offerings aligns with the source data.",
+          "severity": "info"
         },
         {
-          "field": "dimension_explanations.impact",
-          "judge": "score",
-          "message": "Incorrect citation for cost per beneficiary.",
-          "severity": "warning"
+          "field": "exam_policies",
+          "judge": "factual",
+          "message": "The narrative's claim about specific policies and thresholds for student exams is supported by the 'Exam policy' PDF.",
+          "severity": "info"
         },
         {
-          "field": "dimension_explanations.impact",
-          "judge": "score",
-          "message": "Incorrect citations for lack of recent financial filings.",
-          "severity": "warning"
+          "field": "curriculum_structure",
+          "judge": "factual",
+          "message": "The narrative's claim about a structured curriculum is supported by the 'Curriculum' PDF.",
+          "severity": "info"
+        },
+        {
+          "field": "donation_options",
+          "judge": "factual",
+          "message": "The narrative's claim about various donation options is generally supported by the source data.",
+          "severity": "info"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -653,90 +659,189 @@
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "program expense ratio of 95.5%",
+          "access_date": "2025-01-15",
+          "claim": "United States, Canada, and the United Kingdom",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 95.5%",
+          "quote": "geographic coverage: USA, Canada, United Kingdom, Spain, Japan",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://almaghrib.org/about-us"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "2002",
+          "confidence": 1,
+          "id": "[2]",
+          "quote": "Founded: 2002",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://almaghrib.org/about-us"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "program expense ratio of 95.5%",
+          "confidence": 1,
+          "id": "[3]",
+          "quote": "Program Expense Ratio: 95.4%",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "no financial filings newer than FY2023 are available",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "No financial filings newer than FY2023 are available",
           "source_name": "Charity Navigator - AlMaghrib",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "verified as zakat-eligible",
+          "access_date": "2025-01-15",
+          "claim": "revenue decline of 8%",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "Zakat-eligible for fisabilillah",
-          "source_name": "Feeling Blessed - AlMaghrib",
-          "source_type": "website",
-          "source_url": "https://www.feelingblessed.org/almaghrib"
+          "id": "[5]",
+          "quote": "Revenue DECLINED 8% in the most recent year",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         },
         {
-          "access_date": "2026-01-09",
+          "access_date": "2025-01-15",
           "claim": "$2,959,388 in total revenue",
           "confidence": 1,
-          "id": "[3]",
+          "id": "[6]",
           "quote": "Total Revenue: $2,959,388",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "in-person seminars and online courses",
-          "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Our mission is simple: to empower people through the best Islamic learning experience",
-          "source_name": "AlMaghrib - About Us",
+          "access_date": "2025-01-15",
+          "claim": "zakat-eligible",
+          "confidence": 1,
+          "id": "[7]",
+          "quote": "Accepts Zakat: Yes",
+          "source_name": "Feeling Blessed - AlMaghrib",
           "source_type": "website",
-          "source_url": "https://almaghrib.org/about-us"
+          "source_url": "https://www.feelingblessed.org/almaghrib"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "70% exam passing thresholds",
+          "access_date": "2025-01-15",
+          "claim": "24.2 months of working capital",
+          "confidence": 0.9,
+          "id": "[8]",
+          "quote": "Working Capital: 24.2 months",
+          "source_name": "Charity Navigator - AlMaghrib",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "officer compensation totaled $216,728",
           "confidence": 1,
-          "id": "[5]",
+          "id": "[9]",
+          "quote": "Officer Compensation: $216,728",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "$0.05 per $1 raised",
+          "confidence": 0.95,
+          "id": "[10]",
+          "quote": "Fundraising Efficiency: $0.05 per $1 raised",
+          "source_name": "Charity Navigator - AlMaghrib",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "poor and needy",
+          "confidence": 0.9,
+          "id": "[11]",
+          "quote": "Zakat Categories: fuqara, masakin",
+          "source_name": "Feeling Blessed - AlMaghrib",
+          "source_type": "website",
+          "source_url": "https://www.feelingblessed.org/almaghrib"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "70% passing threshold",
+          "confidence": 1,
+          "id": "[12]",
           "quote": "Exam passing threshold: 70",
           "source_name": "AlMaghrib Exam Policies",
-          "source_type": "website",
+          "source_type": "evaluation",
           "source_url": "https://assets.almaghrib.org/docs/almaghrib-exam-policies.pdf"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "300,000 beneficiaries",
+          "confidence": 0.8,
+          "id": "[13]",
+          "quote": "Beneficiaries Served: 300000",
+          "source_name": "Charity Navigator - AlMaghrib",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270091991#ratings"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "approximately $8.58",
+          "confidence": 0.85,
+          "id": "[14]",
+          "quote": "Evidence: $8.58/beneficiary",
+          "source_name": "Internal Assessment Data",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/270091991"
+        },
+        {
+          "access_date": "2025-01-15",
+          "claim": "Islamic learning experiences",
+          "confidence": 1,
+          "id": "[15]",
+          "quote": "Our mission is simple: to empower people through the best Islamic learning experience possible",
+          "source_name": "Charity Website - About",
+          "source_type": "website",
+          "source_url": "https://almaghrib.org/about-us"
         }
       ],
-      "amal_score_rationale": "The charity earns an above-average assessment because it spends almost all revenue on its mission, though its outdated public filings and large cash reserves limit its overall standing.",
+      "amal_score_rationale": "This charity shows a balance of high spending on its actual programs and efficient fundraising, but it is held back by outdated financial records and high cash reserves.",
       "amal_scores": {
-        "amal_score": 68,
+        "amal_score": 61,
         "confidence_scores": {
-          "alignment": 34,
+          "alignment": 32,
           "data_confidence": 0.51,
-          "impact": 38
+          "impact": 33
         },
         "confidence_tier": "MEDIUM",
-        "impact_tier": "ABOVE_AVERAGE",
+        "impact_tier": "AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Outdated Financial Transparency",
+          "area": "Financial Reporting Delays",
           "citation_ids": [
-            "[3]"
+            "[4]"
           ],
-          "context": "No financial filings <cite id=\"3\">newer than FY2023 are available</cite>, which limits a donor's ability to assess current health."
+          "context": "The latest available <cite id=\"4\">financial filings are from FY2023</cite>, creating a three-year transparency gap for donors."
         },
         {
-          "area": "Excessive Capital Reserves",
+          "area": "High Executive Compensation Ratio",
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[9]"
           ],
-          "context": "Holding <cite id=\"1\">nearly 29 months of expenses</cite> in reserve may be seen as inefficient for a zakat-collecting entity."
+          "context": "Officer compensation of <cite id=\"9\">$216,728 accounts for 7.3% of revenue</cite>, which warrants scrutiny for an organization of this size."
         },
         {
-          "area": "Recent Revenue Decline",
+          "area": "Excessive Financial Reserves",
           "citation_ids": [
-            "[3]"
+            "[8]"
           ],
-          "context": "Revenue fell from <cite id=\"3\">$3,216,305 in 2022 to $2,959,388 in 2023</cite>, an 8% decrease."
+          "context": "The organization holds <cite id=\"8\">24.2 months of working capital</cite> in reserve, which may be excessive for a zakat-collecting entity."
         }
       ],
       "bbb_assessment": {
@@ -752,108 +857,114 @@
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[4]",
+          "[5]",
+          "[8]",
+          "[9]"
         ],
-        "mitigation_notes": "The organization maintains a very strong asset-to-liability ratio which provides a buffer against revenue volatility.",
+        "mitigation_notes": "The organization maintains a high program ratio despite the revenue decline.",
         "risk_factors": [
-          "<cite id=\"3\">No financial filings available newer than FY2023</cite>",
-          "<cite id=\"3\">Recent 8% decline in annual revenue</cite>",
-          "<cite id=\"1\">Unusually high reserves of 24.2 months</cite>"
+          "<cite id=\"4\">No financial filings newer than FY2023 are available</cite>",
+          "<cite id=\"9\">CEO pay exceeds 7% of total revenue</cite>",
+          "<cite id=\"8\">Reserves exceed 24 months of expenses</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"3\">stale financial data</cite> and an <cite id=\"3\">8% revenue decline</cite> in the most recent reported year."
+        "summary": "The primary concerns involve <cite id=\"4\">stale financial data from 2023</cite> and a <cite id=\"5\">recent 8% decline in revenue</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 6,
-          "rating": 4,
-          "website": 5
+          "evaluation": 1,
+          "form990": 5,
+          "rating": 5,
+          "website": 4
         },
-        "high_confidence_count": 12,
+        "high_confidence_count": 13,
         "total_count": 15,
-        "unique_sources": 5
+        "unique_sources": 7
       },
       "confidence": {
-        "data_freshness": "Data is 3 years old",
+        "data_freshness": "Financial data is 3 years old (FY2023)",
         "data_gaps": [
-          "Missing 2024-2025 financials"
+          "Missing 2024 financials",
+          "No independent board list"
         ],
         "level": "MEDIUM",
-        "notes": "Financial efficiency is high but transparency is limited by outdated filings.",
+        "notes": "High program ratio is a strength, but data vintage is a significant concern.",
         "score": 51,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Website"
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 51,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024-2025 financials",
-          "Small board size (3 members)"
+          "Missing 2024 financials",
+          "No independent board data"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 15,
-        "unique_sources": 5,
+        "unique_sources": 7,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
-            "[4]"
+            "[7]",
+            "[15]"
           ],
-          "explanation": "Strong fit for Muslim donors due to <cite id=\"2\">verified zakat status</cite> and a focus on <cite id=\"4\">Islamic academic empowerment</cite>.",
+          "explanation": "There is a high fit for Muslim donors due to <cite id=\"7\">verified zakat eligibility</cite> and a focus on <cite id=\"15\">Islamic learning experiences</cite>.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[3]",
-            "[4]"
+            "[2]",
+            "[4]",
+            "[12]"
           ],
-          "explanation": "The organization has a <cite id=\"4\">24-year track record</cite> and maintains <cite id=\"3\">detailed 990 filings</cite>, though the data is now three years old.",
-          "improvement": "The charity should <cite id=\"3\">publish FY2024 and FY2025 financial statements</cite> to address the current transparency gap."
+          "explanation": "Trust is established through a <cite id=\"2\">24-year track record</cite> and clear <cite id=\"12\">exam policies for students</cite>, but is hampered by <cite id=\"4\">three-year-old financial data</cite>.",
+          "improvement": "The organization should prioritize <cite id=\"4\">releasing updated financial statements</cite> to provide donors with a current view of its health."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[8]",
+            "[13]",
+            "[14]"
           ],
-          "explanation": "Operations are highly direct, with a <cite id=\"1\">95.4% program ratio</cite> and a low <cite id=\"1\">cost of $8.58 per beneficiary</cite>.",
-          "improvement": "The institute could <cite id=\"1\">document specific triggers</cite> for deploying its <cite id=\"1\">high cash reserves</cite> into new educational programs."
+          "explanation": "The institute reports serving <cite id=\"13\">300,000 beneficiaries</cite> with a <cite id=\"14\">cost per beneficiary of approximately $8.58</cite>.",
+          "improvement": "To improve impact transparency, the charity should <cite id=\"8\">document why reserves are so high</cite> and publish a plan for deploying those funds."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS EDUCATION",
         "citation_ids": [
-          "[2]",
-          "[4]"
+          "[3]",
+          "[7]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes with internal tracking",
+        "evidence_rigor": "Grade C - Verified outcomes with some tracking",
         "geographic_focus": [
           "USA",
           "Canada",
-          "UK",
-          "Spain",
-          "Japan"
+          "UK"
         ],
-        "giving_style": "Capacity Building",
+        "giving_style": "Capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fisabilillah"
+          "fuqara (poor)",
+          "masakin (needy)"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.045,
+        "admin_ratio": 0.041,
         "annual_revenue": 2959388,
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[8]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.001,
+        "fundraising_ratio": 0.005,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
@@ -889,73 +1000,70 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service provider; does not primarily issue grants.",
+        "grant_strategy": "Does not primarily operate as a grantmaking entity.",
         "is_significant_grantmaker": false,
         "regions_served": [],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "AlMaghrib Institute provides efficient Islamic education but faces transparency concerns due to outdated financial records.",
+      "headline": "AlMaghrib Institute provides Islamic education with high program spending but faces significant delays in financial reporting.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value high-efficiency Islamic academic instruction and want to fulfill zakat through religious educational capacity building.",
+        "best_for_summary": "Best for donors who prioritize Islamic educational advancement and value high program-to-overhead spending ratios.",
         "citation_ids": [
-          "[1]",
-          "[3]",
-          "[4]"
+          "[4]",
+          "[5]",
+          "[9]"
         ],
         "donor_motivations": [
-          "Want to support long-term Islamic literacy and leadership",
-          "Value organizations with extremely low fundraising overhead",
-          "Seek to fulfill zakat under the fisabilillah category",
-          "Prefer established institutions with a multi-decade track record"
+          "Want to support structured Islamic learning and seminars",
+          "Value organizations with very low fundraising costs",
+          "Seek to fulfill zakat through educational empowerment"
         ],
         "giving_considerations": [
-          "Donors must accept that the latest financial data is from 2023",
-          "The organization is currently in a period of slight revenue contraction",
-          "High reserves suggest the charity is not in an immediate cash crisis"
+          "Financial data is significantly delayed (3 years old)",
+          "Large cash reserves suggest the organization is not in immediate need of liquidity",
+          "Revenue has recently trended downward"
         ],
-        "not_ideal_for": "Donors seeking urgent frontline humanitarian relief or those who require real-time financial transparency."
+        "not_ideal_for": "Donors who require up-to-the-minute financial transparency or those who prefer charities with low executive-to-revenue pay ratios."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[12]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "The organization tracks <cite id=\"1\">300,000 beneficiaries</cite> and uses <cite id=\"5\">standardized testing</cite> to measure educational outcomes.",
-        "external_evaluations": [
-          "Internal student assessments"
-        ],
+        "evidence_grade_explanation": "Grade C reflects verified outcomes and a documented theory of change, but lacks independent third-party evaluations.",
+        "external_evaluations": [],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "AlMaghrib uses a structured curriculum and <cite id=\"5\">70% exam passing thresholds</cite> to ensure knowledge retention and student empowerment.",
-        "why_evidence_matters": "Standardized testing ensures that the educational mission results in actual knowledge transfer to the community."
+        "theory_of_change_summary": "The organization uses a structured curriculum and exams to ensure students meet a <cite id=\"12\">70% passing threshold</cite> for Islamic knowledge.",
+        "why_evidence_matters": "Evidence ensures that educational seminars actually result in knowledge retention and community benefit."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[2]",
+          "[15]"
         ],
         "founded_year": 2002,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 7.2,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While reserves are high, the <cite id=\"3\">recent revenue decline</cite> suggests a need for stable, long-term donor support.",
+        "room_for_funding_explanation": "While revenue declined recently, the high reserves provide a significant buffer for operations.",
         "strategic_priorities": [
-          "Online and On-Demand course expansion",
-          "Global seminar delivery"
+          "Online and On-Demand Courses",
+          "Travel-Learning Programs"
         ],
         "years_operating": 24
       },
       "organizational_capacity": {
-        "board_size": 3,
-        "ceo_compensation": 180000,
-        "ceo_compensation_pct_revenue": 6.08,
+        "board_size": null,
+        "ceo_compensation": 216728,
+        "ceo_compensation_pct_revenue": 7.32,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[1]",
+          "[9]",
+          "[15]"
         ],
         "employees_count": null,
         "geographic_reach": "USA, Canada, UK, Spain, Japan",
@@ -970,9 +1078,9 @@
       "peer_comparison": {
         "citation_ids": [
           "[1]",
-          "[4]"
+          "[3]"
         ],
-        "differentiator": "Distinguished by an <cite id=\"1\">extremely high 95.4% program ratio</cite> and <cite id=\"4\">global reach across 5 countries</cite>.",
+        "differentiator": "AlMaghrib stands out for its <cite id=\"3\">95.5% program expense</cite> and its <cite id=\"1\">international seminar model</cite>.",
         "peer_group": "Islamic Educational Institutions",
         "similar_orgs": [
           "Zaytuna College",
@@ -985,42 +1093,42 @@
           "name": "Zaytuna College"
         },
         {
-          "differentiator": "Focus on Quranic linguistics",
+          "differentiator": "Focus on Arabic linguistics and Quranic study",
           "name": "Bayyinah Institute"
         },
         {
-          "differentiator": "Fully virtual degree programs",
-          "name": "Islamic Online University"
+          "differentiator": "Higher focus on academic Islamic degrees",
+          "name": "Guidance College"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]",
             "[3]"
           ],
-          "detail": "The organization directs <cite id=\"1\">95.4% of its total spending</cite> toward educational programs rather than overhead.",
-          "point": "Exceptional Program Efficiency"
+          "detail": "The organization directs <cite id=\"3\">95.4% of its total expenses</cite> toward its educational programs and services.",
+          "point": "High Program Spending Ratio"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[10]"
           ],
-          "detail": "AlMaghrib spends only <cite id=\"1\">$0.01 per $1 raised</cite> of contribution revenue, maximizing donor impact.",
-          "point": "Highly Efficient Fundraising"
+          "detail": "AlMaghrib spends only <cite id=\"10\">$0.04 to raise every $1</cite> in contribution revenue, reflecting lean development costs.",
+          "point": "Efficient Fundraising Operations"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[7]",
+            "[11]"
           ],
-          "detail": "The institute holds <cite id=\"1\">24.2 months of working capital</cite>, providing a significant safety net for operations.",
-          "point": "Strong Liquidity and Reserves"
+          "detail": "The charity is <cite id=\"7\">zakat-eligible</cite> and accepts funds for the <cite id=\"11\">poor and needy</cite> categories.",
+          "point": "Verified Zakat Eligibility"
         }
       ],
       "strengths_deep_dive": [
-        "AlMaghrib Institute demonstrates a specialized model of <cite id=\"4\">capacity building through Islamic education</cite>. Their financial structure is notably lean, with <cite id=\"3\">officer compensation totaling $216,728</cite>, which represents a modest <cite id=\"3\">7.3% of total revenue</cite>. This lean management allows the organization to reach <cite id=\"1\">300,000 beneficiaries</cite> at an estimated <cite id=\"1\">cost of $8.58 per person</cite>. Furthermore, the institute maintains <cite id=\"3\">total assets of $5,604,790</cite> against minimal <cite id=\"3\">liabilities of $175,285</cite>, indicating a very healthy balance sheet as of their last filing."
+        "AlMaghrib Institute demonstrates a strong commitment to direct program delivery, as evidenced by its <cite id=\"3\">95.5% program expense ratio</cite>. This level of spending on core activities is significantly higher than the typical 75% industry benchmark. The organization also maintains a <cite id=\"10\">fundraising efficiency of $0.05 per $1 raised</cite>, ensuring that donor contributions are not heavily diluted by marketing or solicitation costs. Furthermore, the institute has a long operational history, having been <cite id=\"2\">founded in 2002</cite>, and has expanded its reach to <cite id=\"1\">multiple countries including Spain and Japan</cite>."
       ],
-      "summary": "AlMaghrib Institute is a religious educational organization that provides <cite id=\"4\">in-person seminars and online courses</cite> across the United States, Canada, and the United Kingdom. Founded in <cite id=\"4\">2002</cite>, the institute focuses on <cite id=\"4\">Islamic learning experiences</cite> to empower students through academic rigor. The organization demonstrates <cite id=\"3\">high program efficiency</cite>, with a significant portion of its budget dedicated to direct educational services. However, donors should note that <cite id=\"3\">no financial filings newer than FY2023 are available</cite>, meaning this three-year-old financial picture should be treated with caution. While the institute reported <cite id=\"3\">$2,959,388 in total revenue</cite> for 2023, this represented an <cite id=\"3\">8% decline from the previous year</cite>. Despite this recent dip, the organization maintains a <cite id=\"1\">program expense ratio of 95.5%</cite>, which is well above the industry benchmark of 75%. This efficiency is supported by <cite id=\"1\">extremely low fundraising costs</cite>, spending only <cite id=\"1\">$0.01 to raise every $1</cite>. The institute is <cite id=\"2\">verified as zakat-eligible</cite>, specifically serving the <cite id=\"2\">fisabilillah (in the way of Allah) category</cite>. While the financial efficiency is positive, the <cite id=\"3\">lack of current public filings</cite> raises questions about ongoing accountability that the organization has yet to address through more recent disclosures.",
+      "summary": "AlMaghrib Institute is an educational organization that provides in-person seminars and online Islamic learning across the <cite id=\"1\">United States, Canada, and the United Kingdom</cite>. Founded in <cite id=\"2\">2002</cite>, the institute focuses on empowering students through a structured curriculum and travel-learning programs. The organization maintains a <cite id=\"3\">program expense ratio of 95.5%</cite>, which indicates that the vast majority of its spending is directed toward its educational mission. However, donors should note that <cite id=\"4\">no financial filings newer than FY2023 are available</cite>, meaning the current financial picture is three years old and should be treated with caution. In the most recent reported year, the organization saw a <cite id=\"5\">revenue decline of 8%</cite>, dropping from $3.2 million to <cite id=\"6\">$2,959,388 in total revenue</cite>. While the institute is <cite id=\"7\">zakat-eligible</cite>, it holds <cite id=\"8\">24.2 months of working capital</cite> in reserve. This high level of liquidity is unusual for a charity collecting zakat, as it suggests funds are being held rather than immediately deployed to beneficiaries. Additionally, <cite id=\"9\">officer compensation totaled $216,728</cite>, which represents approximately 7.3% of the organization's total revenue.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"

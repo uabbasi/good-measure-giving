@@ -480,6 +480,52 @@ rather than papered over.
 
 ---
 
+### batch40 — FINAL: 34 of 40 exported with current data and current narratives
+
+Two runs. Run 1: 39 completed / 1 crawl-failed, 4 judge-gated → 35/40.
+Run 2 (after the cross-year regex fix): 39 completed / 1 crawl-failed, 5 judge-gated
+→ **34/40**. Neither run was budget-truncated ($1.5785 / $6.00 and $3.3693 / $6.00).
+
+**The 6 not exported this run, by cause — none bypassed:**
+
+| # | EIN | Name | jerr | Cause | Class |
+|---|-----|------|------|-------|-------|
+| 20 | 75-2352043 | Islamic Services Foundation | 0 | site serves a 169-byte HTTP 202 `sgcaptcha` interstitial; never reached judge | **hard block, genuinely uncrawlable** |
+| 15 | 23-7065716 | Islamic Society of Greater Houston | 7 | incl. "board too small with only two members … but Candid shows 2 board members" | judge false positive |
+| 28 | 20-1799252 | MAS Boston Society | 1 | citation judge: "citation states … Zakat eligible, but the claim states it is recognized as zakat-eligible" — semantically identical | judge false positive |
+| 35 | 36-4787320 | Justice Defenders | 5 | narrative matches Charity Navigator (judge says so) but is compared against the charity's own scraped Annual Report PDF | cross-source, unresolved |
+| 7 | 27-3175543 | United Muslim Relief | 2 | rotating residual | judge, rotating |
+| 34 | 92-3079413 | Humaniti | 1 | rotating residual | judge, rotating |
+
+Files for these 6 exist on disk but are STALE — #15/#20/#28/#35 from 2026-07-23/24,
+#7 from 00:39 and #34 from 00:53 earlier in this session. **The exporter leaves a
+gated charity's previous file in place**, so "the file exists" is never evidence of a
+current export; only the embedded `lastUpdated` is.
+
+**Honest read of the residual:** at 40-charity scale roughly 4-6 charities are gated
+per run and *which* ones rotates. Consensus (k=3) removed the purely random flips;
+what remains are several distinct judge *reasoning* errors — every roll makes the same
+mistake, so a majority agrees on a wrong answer. Each is individually fixable in the
+same style as the six already fixed, but it is a long tail, not one more fix. I did
+not re-roll runs hoping for a clean 40: that would be gate-shopping, which the brief
+explicitly rules out.
+
+### Spot-checks on the local dev site (deliverable 6) — all three PASS
+
+`npm install` was required first (fresh worktree has no node_modules). Dev server on
+**port 3000**.
+
+| Size | Charity | Verified on the rendered page |
+|------|---------|-------------------------------|
+| MEGA | UNRWA (20-2714426) | new headline "…critical humanitarian aid and education to Palestine refugees…" **and** fresh `$51,495,126`; the stale `96.5%` string is absent |
+| MID | Al-maghrib Institute (27-0091991) | new headline "…Islamic education with high program spending…" and `$2,959,388` |
+| MICRO | The Noor Project (45-5637293) | "ACCEPTS ZAKAT" badge now present (the zakat non-finding fix reaching the UI); every rendered phrase — `1,759,964`, `29.6`, "lifting marginalized families out of poverty in Pakistan", "perfect program expense ratio" — confirmed present in the export written at 00:58:57 |
+
+Note on method: the micro page renders the RICH narrative, not the baseline headline,
+so an initial grep for the baseline headline returned false. Verified against the
+exported JSON instead of assuming. Also confirmed the dev server serves the fresh
+`lastUpdated` for all three at `/data/charities/charity-{EIN}.json`.
+
 ## Cumulative LLM spend
 
 | Batch | Run | Reported cost | Ended because |
@@ -491,3 +537,34 @@ rather than papered over.
 | batch10 | 2 | $1.0641 | FINISHED (cap $3.00) |
 | batch10 | 3 | $0.3614 | FINISHED (cap $3.00) |
 | **Total so far** | | **$2.8864** | no run was ever budget-truncated |
+
+| batch05 | 1 | $0.2316 | FINISHED |
+| batch05 | 2 | $0.5807 | FINISHED |
+| batch10 | 1 | $0.4367 | FINISHED |
+| UMR+Yateem probe | 1 | $0.2119 | FINISHED |
+| batch10 | 2 | $1.0641 | FINISHED |
+| batch10 | 3 | $0.3614 | FINISHED |
+| batch10 | 4 | $1.0049 | FINISHED |
+| batch10 | 5 | $0.7718 | FINISHED |
+| batch10 | 6 | $0.6593 | FINISHED |
+| batch10 | 7 | $0.9984 | FINISHED |
+| batch10 | 8 | $0.8380 | FINISHED |
+| batch10 | 9 | $0.6712 | FINISHED |
+| batch25 | 1 | $1.5962 | FINISHED |
+| batch40 | 1 | $1.5785 | FINISHED |
+| batch40 | 2 | $3.3693 | FINISHED |
+| **TOTAL** | **15 runs** | **$14.3740** | **no run was ever budget-truncated** |
+
+Plus one uncaptured amount: `crawl.py --ein 45-5637293 --refresh-stale` (the Noor
+Project website unblock). `crawl.py` prints no budget line, so its website-extraction
+LLM cost is not in the $14.3740. Comparable crawl-phase costs elsewhere in this run
+were cents.
+
+**Every run ended because it FINISHED, never because it hit the cap.** Highest
+utilisation was batch40 run 2 at $3.3693 of $6.00 (56%).
+
+## Final test suite
+
+`uv run pytest -q` → **1949 passed**, 0 failed. `ruff check` clean on every file
+touched. Started from 1909 passing; the 40 added tests are the ones written for the
+fixes below (RED confirmed before each fix, with non-vacuous regression guards).

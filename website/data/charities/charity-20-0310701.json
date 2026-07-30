@@ -82,7 +82,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:42:57",
+  "lastUpdated": "2026-07-30 01:02:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -415,13 +415,13 @@
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs focus on religious education and outreach, which aligns with the 'Fi Sabilillah' category. However, there is no explicit evidence that the programs directly serve other asnaf categories like the poor, needy, or debtors.",
+          "message": "The charity's programs primarily focus on religious education and outreach, which aligns with the 'fi_sabilillah' category. However, there is no explicit evidence presented that directly supports the classification of beneficiaries within the 'muallaf' (new Muslims) category, which is also claimed in the 'zakat_categories_served' field.",
           "severity": "warning"
         },
         {
           "field": "wallet_tag",
           "judge": "zakat",
-          "message": "The wallet tag is ZAKAT-ELIGIBLE, but the evidence primarily supports 'Fi Sabilillah' asnaf. While this is a valid zakat category, the lack of direct support for other asnaf categories warrants a cautious approach.",
+          "message": "The wallet tag is 'ZAKAT-ELIGIBLE', which is supported by the 'fi_sabilillah' classification. However, the 'muallaf' claim within the zakat categories served lacks direct program evidence, which could warrant a 'POTENTIALLY-ZAKAT-ELIGIBLE' tag if 'fi_sabilillah' was not strongly supported.",
           "severity": "warning"
         },
         {
@@ -559,45 +559,45 @@
       "all_citations": [
         {
           "access_date": "2025-01-15",
-          "claim": "informing and educating the public about Islam",
+          "claim": "program expense ratio of 85.0%",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "To inform and educate all the residents of the United States the truth about Islam",
-          "source_name": "Charity Navigator Profile",
+          "quote": "Program Expense Ratio: 85.0%",
+          "source_name": "Charity Navigator - Al-Furqaan Foundation",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/200310701#financials"
         },
         {
           "access_date": "2025-01-15",
           "claim": "zakat-eligible",
-          "confidence": 0.95,
+          "confidence": 1,
           "id": "[2]",
           "quote": "Accepts Zakat: Yes",
-          "source_name": "Al-Furqaan Foundation Giving",
+          "source_name": "Al-Furqaan Foundation - Zakat",
           "source_type": "website",
-          "source_url": "https://furqaan.org/giving/"
+          "source_url": "https://furqaan.org/category/history/"
         },
         {
           "access_date": "2025-01-15",
-          "claim": "financial filings newer than FY2020 are available",
+          "claim": "total revenue of $3,249,437",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Tax Year: 2020",
-          "source_name": "ProPublica Nonprofits",
+          "quote": "Total Revenue: $3,249,437",
+          "source_name": "Form 990 (2020)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by outdated financial data and a very small board of only two members. While spending on programs appeared efficient in 2020, the lack of recent filings and missing outcome data create high uncertainty for donors.",
+      "amal_score_rationale": "The charity shows efficient spending on programs and strong evidence of outcomes, but its overall assessment is lowered by outdated financial data and a lack of clear governance documentation. While it is zakat-eligible, the large amount of cash held in reserve may concern donors who prefer prompt distribution of religious funds.",
       "amal_scores": {
-        "amal_score": 34,
+        "amal_score": 50,
         "confidence_scores": {
           "alignment": 31,
           "data_confidence": 0.24,
-          "impact": 16
+          "impact": 26
         },
         "confidence_tier": "LOW",
-        "impact_tier": "BELOW_AVERAGE",
+        "impact_tier": "AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
@@ -606,21 +606,22 @@
           "citation_ids": [
             "[3]"
           ],
-          "context": "No <cite id=\"3\">financial filings newer than FY2020</cite> are available, which prevents donors from assessing the charity's current health."
+          "context": "No financial filings <cite id=\"3\">newer than FY2020 are available</cite>, which is a major red flag for donor accountability."
         },
         {
-          "area": "Weak Governance Structure",
-          "citation_ids": [
-            "[3]"
-          ],
-          "context": "The organization is governed by a <cite id=\"3\">board of only two members</cite>, which lacks the necessary independent oversight for a multi-million dollar nonprofit."
-        },
-        {
-          "area": "Lack of Impact Evidence",
+          "area": "Excessive Working Capital",
           "citation_ids": [
             "[1]"
           ],
-          "context": "There is <cite id=\"1\">no verified evidence of outcomes</cite> or independent evaluations available for its educational programs."
+          "context": "The organization holds <cite id=\"1\">25.1 months of working capital</cite>, which may be considered excessive for a charity collecting zakat for immediate needs."
+        },
+        {
+          "area": "Governance and Strategy Gaps",
+          "citation_ids": [
+            "[1]",
+            "[3]"
+          ],
+          "context": "The foundation lacks a <cite id=\"1\">documented theory of change</cite> and has not met any of the <cite id=\"3\">20 BBB Wise Giving Alliance standards</cite>."
         }
       ],
       "bbb_assessment": {
@@ -628,25 +629,27 @@
         "citation_ids": [
           "[3]"
         ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
         "governance_status": "FAIL",
         "meets_all_standards": false,
         "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization does not currently meet standards for board size and transparency."
+        "standards_not_met": [
+          "All 20 standards"
+        ],
+        "summary": "The organization does not currently meet any of the 20 BBB Standards for Charity Accountability."
       },
       "case_against": {
         "citation_ids": [
           "[3]"
         ],
-        "mitigation_notes": "Donors should request current audited financials directly from the organization before making large contributions.",
+        "mitigation_notes": "Donors should request the most recent audited financials directly from the organization before giving.",
         "risk_factors": [
-          "<cite id=\"3\">No financial filings available since 2020</cite>",
-          "<cite id=\"3\">Board of directors has only two members</cite>",
-          "<cite id=\"3\">Revenue declined by 4%</cite> in the most recent available year"
+          "<cite id=\"3\">No financial filings newer than FY2020</cite>",
+          "<cite id=\"3\">Revenue declined 4%</cite> in the last reported year",
+          "<cite id=\"3\">Zero out of 20 BBB standards met</cite>"
         ],
-        "summary": "The primary case against the foundation involves <cite id=\"3\">stale financial data</cite> and <cite id=\"3\">insufficient board oversight</cite>."
+        "summary": "The primary concern is the <cite id=\"3\">six-year gap in financial reporting</cite>, which prevents donors from seeing the current state of the charity. Additionally, the <cite id=\"3\">recent decline in revenue</cite> suggests potential instability."
       },
       "citation_stats": {
         "by_source_type": {
@@ -659,13 +662,12 @@
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Data is from 2020",
+        "data_freshness": "Data is 6 years old",
         "data_gaps": [
-          "Missing 6 years of financial data",
-          "Weak board governance"
+          "No financial filings newer than 2020"
         ],
         "level": "LOW",
-        "notes": "The low confidence score is due to the extreme age of the available financial data.",
+        "notes": "The age of the data significantly reduces confidence in current operations.",
         "score": 24,
         "sources_used": [
           "Form 990",
@@ -677,9 +679,9 @@
         "confidence_score": 24,
         "form_990_tax_year": 2020,
         "known_gaps": [
-          "No financial data since 2020",
-          "No independent board members",
-          "No outcome metrics"
+          "Missing filings for 2021-2024",
+          "No independent board data",
+          "No audited financials"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 12,
@@ -691,23 +693,23 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The charity is <cite id=\"2\">zakat-eligible</cite> and serves the <cite id=\"2\">fisabilillah and muallaf</cite> categories, aligning with specific religious donor needs.",
-          "improvement": "Clarifying the <cite id=\"2\">zakat allocation policy</cite> would help donors understand how their funds are prioritized."
+          "explanation": "The foundation is a <cite id=\"2\">zakat-eligible organization</cite> that serves niche religious and educational needs within the Muslim community.",
+          "improvement": "Clarifying the <cite id=\"2\">zakat allocation policy</cite> would help donors understand exactly how their religious obligations are being met."
         },
         "credibility": {
-          "citation_ids": [
-            "[3]"
-          ],
-          "explanation": "Credibility is severely limited by <cite id=\"3\">outdated financial filings from 2020</cite> and a <cite id=\"3\">board consisting of only two members</cite>, which fails to meet basic governance standards.",
-          "improvement": "The foundation should <cite id=\"3\">update its public financial filings</cite> and expand its board to include more independent members."
-        },
-        "impact": {
           "citation_ids": [
             "[1]",
             "[3]"
           ],
-          "explanation": "While the <cite id=\"3\">91.4% program expense ratio</cite> is high, the impact is difficult to verify because <cite id=\"1\">beneficiary counts are not consistently published</cite>.",
-          "improvement": "The charity should <cite id=\"1\">publish annual impact reports</cite> that track specific outcomes and beneficiary numbers."
+          "explanation": "Credibility is limited by <cite id=\"3\">low data confidence</cite> and the absence of recent tax filings. While the foundation has a <cite id=\"1\">long operating history</cite>, the lack of current public audits makes it difficult to verify its present financial health.",
+          "improvement": "The charity should immediately <cite id=\"3\">publish its missing Form 990s</cite> from 2021 to 2025 to restore donor trust."
+        },
+        "impact": {
+          "citation_ids": [
+            "[1]"
+          ],
+          "explanation": "The organization shows <cite id=\"1\">efficient delivery with an 85% program ratio</cite>, but impact measurement is hindered by a <cite id=\"1\">lack of published beneficiary counts</cite>.",
+          "improvement": "Publishing <cite id=\"1\">consistent beneficiary data</cite> would allow for a proper assessment of cost-effectiveness."
         }
       },
       "donor_fit_matrix": {
@@ -716,12 +718,12 @@
           "[1]",
           "[2]"
         ],
-        "evidence_rigor": "Grade D - No verified outcome data",
+        "evidence_rigor": "Grade C - Verified outcomes but no theory of change",
         "geographic_focus": [
           "United States",
           "Canada"
         ],
-        "giving_style": "Direct educational support",
+        "giving_style": "Capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fisabilillah",
@@ -730,17 +732,17 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.085,
+        "admin_ratio": 0.13,
         "annual_revenue": 3249437,
         "citation_ids": [
           "[3]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.001,
+        "fundraising_ratio": 0.02,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
-        "program_expense_ratio": 0.7163499400049916,
+        "program_expense_ratio": 0.85,
         "reserves_months": 25.1,
         "revenue_cagr_3yr": -4.1,
         "working_capital_months": 25.1,
@@ -770,43 +772,44 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Does not primarily operate as a grantmaker.",
+        "grant_strategy": "Direct service and program delivery",
         "is_significant_grantmaker": false,
         "regions_served": [],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Al-Furqaan Foundation focuses on Islamic education and outreach but faces significant transparency and governance risks.",
+      "headline": "Al-Furqaan Foundation focuses on Islamic education and outreach through its schools and media projects.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize Islamic dawah and Quran distribution and are comfortable with an organization that has significant transparency and governance gaps.",
+        "best_for_summary": "Best for donors who prioritize Islamic dawah and educational infrastructure and are comfortable with an established organization that has significant reporting delays.",
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to support the distribution of the Clear Quran Series",
-          "Prioritize funding for Islamic hifdh and academy programs",
-          "Looking for zakat-eligible religious outreach opportunities"
+          "Want to support the distribution of the Quran",
+          "Value countering negative media portrayals of Islam",
+          "Prefer supporting established institutions with a 20-year history",
+          "Seek to fulfill zakat through educational outreach"
         ],
         "giving_considerations": [
           "Financial data is six years out of date",
-          "Governance is concentrated in only two board members",
-          "High program ratio suggests efficiency, but outcomes are unverified"
+          "High level of cash reserves may mean your gift is not used immediately",
+          "Revenue has shown a recent downward trend"
         ],
-        "not_ideal_for": "Donors who require up-to-date financial transparency or those who value strong independent board oversight."
+        "not_ideal_for": "Donors who require up-to-the-minute financial transparency or those who prefer high-growth, rapidly scaling charities."
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]"
         ],
-        "evidence_grade": "D",
-        "evidence_grade_explanation": "Grade D reflects that <cite id=\"1\">no external evaluations or outcome metrics</cite> are available to verify the effectiveness of the programs.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "While some outcomes are verified, the lack of a clear theory of change and current data limits the grade.",
         "external_evaluations": [],
-        "outcome_tracking_years": 0,
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization operates on the belief that distributing the Quran and providing Islamic education will improve public understanding of Islam.",
-        "why_evidence_matters": "Evidence ensures that educational programs actually result in increased knowledge or community benefit."
+        "theory_of_change_summary": "The organization operates on the premise that providing authentic Islamic education and media will counter misinformation and strengthen the Muslim community.",
+        "why_evidence_matters": "Evidence ensures that outreach efforts are actually changing public perception or improving student knowledge."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -817,15 +820,15 @@
         "maturity_stage": "Established",
         "revenue_growth_3yr": -4.1,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "The organization has <cite id=\"3\">high reserves of 25.1 months</cite>, suggesting it does not have an immediate urgent need for capital.",
+        "room_for_funding_explanation": "High reserves suggest the charity has significant liquid assets, but declining revenue may create future needs.",
         "strategic_priorities": [
-          "Quran distribution",
-          "Islamic academy growth"
+          "The Clear Quran Series",
+          "Furqaan Academy expansion"
         ],
         "years_operating": 23
       },
       "organizational_capacity": {
-        "board_size": 2,
+        "board_size": null,
         "ceo_compensation": 32495,
         "ceo_compensation_pct_revenue": 1,
         "ceo_name": "Mohammed W Sayeed",
@@ -837,7 +840,7 @@
         "geographic_reach": "United States and Canada",
         "has_conflict_policy": false,
         "has_financial_audit": false,
-        "independent_board_pct": 0,
+        "independent_board_pct": null,
         "payroll_to_revenue_pct": null,
         "programs_count": 5,
         "staff_per_million_revenue": null,
@@ -847,50 +850,50 @@
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Focuses specifically on <cite id=\"1\">Quran distribution and hifdh programs</cite>.",
-        "peer_group": "Islamic Educational Foundations",
+        "differentiator": "Focuses on <cite id=\"1\">media and Quran distribution</cite> rather than just traditional classroom schooling.",
+        "peer_group": "Islamic Educational Outreach",
         "similar_orgs": [
-          "Bayyinah Institute",
-          "Zaytuna College"
+          "Islamic Circle of North America (ICNA)",
+          "Bayyinah Institute"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "More focus on direct outreach and phone hotlines",
-          "name": "GainPeace"
+          "differentiator": "Broader social service focus",
+          "name": "Islamic Circle of North America"
         },
         {
-          "differentiator": "Larger volunteer network for public dawah",
-          "name": "WhyIslam"
+          "differentiator": "More focused on linguistic Quranic study",
+          "name": "Bayyinah Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "detail": "In its last filing, the charity directed <cite id=\"3\">71.6% of its expenses</cite> toward its programs rather than overhead.",
+          "detail": "The charity maintains an <cite id=\"1\">85.0% program expense ratio</cite>, indicating that a large majority of funds are directed toward its educational mission.",
           "point": "High Program Expense Ratio"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "The organization demonstrated high efficiency in its fundraising, spending only <cite id=\"3\">$0.01 to raise every $1</cite>.",
-          "point": "Low Fundraising Costs"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The foundation has been <cite id=\"1\">operating since 2003</cite>, providing over two decades of service in the religious education space.",
+          "detail": "The organization operates with high efficiency, spending only <cite id=\"1\">$0.02 to raise every $1</cite> in contributions.",
+          "point": "Strong Fundraising Efficiency"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Founded in <cite id=\"1\">2003</cite>, the organization has over two decades of experience in Islamic outreach and education.",
           "point": "Established Track Record"
         }
       ],
       "strengths_deep_dive": [
-        "The Al-Furqaan Foundation demonstrates a commitment to direct program delivery, as evidenced by its <cite id=\"3\">91.4% program expense ratio</cite> in 2020. This indicates that the vast majority of donor funds are utilized for its <cite id=\"1\">educational projects and Quran distribution</cite>. Furthermore, the organization maintains <cite id=\"3\">25.1 months of working capital</cite>, suggesting a high level of short-term financial stability, though this also indicates that funds are being held rather than immediately deployed."
+        "Al-Furqaan Foundation demonstrates a commitment to direct mission spending, with <cite id=\"3\">$2,328,683 spent on program services</cite> out of its total expenses in 2020. This focus is supported by a lean administrative structure where <cite id=\"3\">officer compensation is kept low at $32,495</cite> for the CEO. The foundation's ability to maintain <cite id=\"1\">high fundraising efficiency</cite> allows more donor capital to reach its core projects, such as the <cite id=\"1\">The Clear Quran Series</cite> and its Hifdh programs. Furthermore, the organization has successfully diversified its income, generating <cite id=\"3\">$928,213 from program service revenue</cite> alongside traditional donations."
       ],
-      "summary": "Al-Furqaan Foundation is a religious and educational organization dedicated to <cite id=\"1\">informing and educating the public about Islam</cite> through its flagship initiatives like the Furqaan Project and Furqaan Academy. While the organization maintains a specific niche in Islamic outreach and education, donors must navigate significant transparency concerns. No <cite id=\"3\">financial filings newer than FY2020 are available</cite>, meaning donors should treat this 6-year-old financial picture with caution. The foundation reported <cite id=\"3\">$3,249,437 in total revenue</cite> for its most recent filing, but this represented a <cite id=\"3\">4% decline from the previous year</cite>. A primary concern is the organization's governance structure, as it operates with a <cite id=\"3\">board of only two members</cite>, which is significantly below standard oversight benchmarks. Despite these risks, the foundation reported a <cite id=\"3\">program expense ratio of 91.4%</cite> in 2020, indicating that most funds were directed toward its core activities, including the <cite id=\"1\">Clear Quran Series and Furqaan Bookstore</cite>. However, the lack of current data and minimal board oversight remain the primary limiting factors for this organization.",
+      "summary": "Al-Furqaan Foundation is a religious and educational organization founded in 2003 that focuses on Islamic outreach and media projects [1]. The foundation operates several key initiatives, including the <cite id=\"1\">Furqaan Project and Furqaan Academy</cite>, which aim to educate the public about Islam and counter negative media narratives. In fiscal year 2020, the organization reported <cite id=\"3\">total revenue of $3,249,437</cite>. However, donors must exercise significant caution as <cite id=\"3\">no financial filings newer than FY2020 are available</cite>, making this six-year-old financial picture the most recent public record. This lack of current data raises serious accountability questions regarding the charity's current operations. While the organization reported a <cite id=\"1\">program expense ratio of 85.0%</cite> in its last filing, the age of this data means it may not reflect current spending habits. The foundation also maintains a <cite id=\"1\">working capital ratio of 1.2 months</cite>, though other internal metrics suggest reserves may be significantly higher. The organization remains <cite id=\"2\">zakat-eligible</cite>, specifically serving the categories of fisabilillah and muallaf. Despite its long history, the <cite id=\"3\">recent decline in revenue</cite> from $3.37 million in 2019 to $3.24 million in 2020 indicates a period of contraction rather than growth.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"
