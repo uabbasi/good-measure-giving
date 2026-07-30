@@ -65,7 +65,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-29 22:52:06",
+  "lastUpdated": "2026-07-29 23:03:09",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "pattern_match",
@@ -371,9 +371,21 @@
           "severity": "warning"
         },
         {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states a 100.0% program expense ratio, which matches the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "latest_financial_filings",
+          "judge": "factual",
+          "message": "The narrative claims the latest available financial filings are from fiscal year 2023, but the source data indicates the latest known filing year is 2023, and the ProPublica Form 990 indicates no filings are available.",
+          "severity": "warning"
+        },
+        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The claimed asnaf category 'masakin' is not explicitly supported by the provided program descriptions. While the charity serves orphans and displaced persons, which often fall under 'fuqara' (poor) or 'masakin' (needy), the direct evidence for 'masakin' specifically is not as strong as for 'fuqara'.",
+          "message": "The claimed asnaf category 'masakin' is not explicitly supported by the provided program descriptions. While the charity serves orphans and displaced persons, which could fall under 'fuqara' or 'masakin', there is no direct evidence stating beneficiaries are classified as 'masakin'.",
           "severity": "warning"
         },
         {

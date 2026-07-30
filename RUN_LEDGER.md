@@ -195,11 +195,39 @@ instead — see "Open recommendations".
 
 **Commit:** none (data-level remedy only)
 
+### Failure G resolution — factual judge now uses k=3 majority consensus
+
+**User approved the fleet-wide fix** (mirror `score_judge`'s precedent).
+
+`CONSENSUS_ROLLS = 3` added to `factual_judge`. An ERROR stands only when a
+majority of completed rolls report one; warnings/info (non-gating) come from the
+first roll; deterministic `_quick_checks` stay OUTSIDE the vote because arithmetic
+doesn't flip and a majority requirement would only dilute it. The per-roll
+rate-limit/truncation retry was extracted to `_verify_claims_with_rate_limit_retry`,
+so one rate-limited roll no longer blocks a charity by itself.
+
+**The gate got STRONGER, not weaker, in two ways:**
+1. A real error found by 2+ rolls still blocks — only lone dissenters are dropped.
+2. **Found a second, latent fail-OPEN bug while fixing this.** The old
+   `if llm_result:` path returned `passed=True` whenever verification came back
+   `None` rather than raising — i.e. an *unverified* narrative opened the
+   publication gate. `score_judge`'s own comment asserts "factual_judge.py does the
+   same on this path" (fails closed); it did not. Now it does.
+
+**Commit `c3737a4`.** Suite **1928 passed**. One pre-existing test
+(`test_a_clipped_response_is_retried`) asserted `call_count == 2`, which encoded the
+single-roll shape; updated to `CONSENSUS_ROLLS + 1` with its intent (a truncated
+response must not cost the charity its page) unchanged and still asserted.
+
 ## Pipeline code changes made during this run
 
 | Commit | Files | What |
 |--------|-------|------|
 | `e504436` | `src/collectors/bbb_collector.py`, `src/collectors/orchestrator.py`, `tests/test_bbb_not_reviewed.py` | BBB verified-negative sentinel recognized by the substance gate |
+| `ede5e3d` | `src/collectors/charity_navigator.py`, `tests/test_cn_llm_placeholder_financials.py` | Reject LLM-invented placeholder financials (3+ money fields identical) |
+| `e60549b` | `baseline.py`, `tests/test_gik_program_ratio_consistency.py` | Narrative uses the cash-adjusted program ratio the scorer actually credited |
+| `0bbc3bb` | `rich_phase.py`, `tests/test_rich_reentrancy_staleness.py` | Rich re-entrancy check compares embedded score, not mere existence |
+| `c3737a4` | `src/judges/factual_judge.py`, `tests/test_factual_judge_consensus.py`, `tests/test_factual_judge_blockers.py` | k=3 majority consensus + fail-closed on zero completed rolls |
 
 ## Open recommendations (NOT acted on — need user sign-off, fleet-wide)
 
