@@ -51,14 +51,28 @@ def generate_rich_for_pipeline(
     """
     result: dict[str, Any] = {"success": False, "cost_usd": 0.0}
 
-    # Re-entrancy check
+    # Re-entrancy check. "A rich narrative exists" is not the same question as
+    # "the stored rich narrative is still current": rich_content["amal_scores"]
+    # is stamped from the evaluation row, so once baseline re-scores a charity
+    # the stored narrative keeps the OLD score until it is regenerated. Skipping
+    # on mere existence let that stale copy survive and the score judge blocked
+    # publication for the contradiction -- EIN 23-2202414 stored amal_score 47
+    # against a current 58. Compare before short-circuiting.
     if not force:
         existing = eval_repo.get(ein)
-        if existing and existing.get("rich_narrative"):
-            result["success"] = True
-            result["skipped"] = True
-            result["reason"] = "Already has rich narrative"
-            return result
+        stored_rich = (existing or {}).get("rich_narrative")
+        if existing and stored_rich:
+            stored_score = (stored_rich.get("amal_scores") or {}).get("amal_score")
+            current_score = existing.get("amal_score")
+            if stored_score is not None and current_score is not None and stored_score != current_score:
+                result["stale_reason"] = (
+                    f"stored amal_score {stored_score} != current {current_score}"
+                )
+            else:
+                result["success"] = True
+                result["skipped"] = True
+                result["reason"] = "Already has rich narrative"
+                return result
 
     try:
         generator = RichNarrativeGenerator()

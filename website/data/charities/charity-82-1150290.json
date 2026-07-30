@@ -67,30 +67,30 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-29 21:12:33",
+  "lastUpdated": "2026-07-29 22:43:34",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 122280
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#ratings",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 58
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 2017
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 0
     },
     "has_audited_financials": {
@@ -102,31 +102,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 0.7016
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 292700
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/821150290#financials",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 414980
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 824033
     },
     "working_capital_months": {
@@ -137,7 +137,7 @@
       ],
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
-      "timestamp": "2026-07-29T21:11:21",
+      "timestamp": "2026-07-29T22:42:04",
       "value": 48.4
     }
   },
@@ -180,6 +180,8 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
+      "Candid/GuideStar",
+      "Independent accountant",
       "Grant (Texas Instruments Foundation)"
     ],
     "receivesFoundationGrants": null
@@ -376,52 +378,64 @@
       },
       "judge_issues": [
         {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "Citation 4 defined but not referenced in narrative",
+          "severity": "info"
+        },
+        {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content for citation [1] was not provided, so the claim could not be verified.",
+          "message": "The content from the Charity Navigator URL does not contain the claimed information about program expense ratio, working capital, or overall rating.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content for citation [3] was not provided, so the claim could not be verified.",
+          "message": "The content from the Form 990 URL does not contain the claimed information about total revenue for FY2023.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The content for citation [4] was not provided, so the claim could not be verified.",
+          "message": "The content from the Charity Website - Donate URL does not contain the claimed information about accepting general donations and sadaqah.",
           "severity": "warning"
-        },
-        {
-          "field": "score",
-          "judge": "factual",
-          "message": "The narrative claims a score of 58.0/100, but Charity Navigator's data shows a score of 58.",
-          "severity": "info"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative claims a program ratio of 70.2%, which matches the source data when rounded.",
+          "message": "The program expense ratio is 70.2% in the narrative and 70.16% in the source.",
           "severity": "info"
         },
         {
           "field": "working_capital_months",
           "judge": "factual",
-          "message": "The narrative states the charity has 48.4 months of capital, which matches the source data.",
+          "message": "The working capital is 48.4 months in the narrative and 48.4 months in the source.",
           "severity": "info"
         },
         {
-          "field": "fundraising_costs",
+          "field": "overall_score",
           "judge": "factual",
-          "message": "The narrative claims $0.00 fundraising costs, which matches the source data.",
+          "message": "The overall score is 58.0/100 in the narrative and 58 in the source.",
           "severity": "info"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative states total revenue was $824,033 in FY2023, which matches the source data.",
+          "message": "Total revenue was $824,033 in FY2023, which matches the source.",
           "severity": "info"
+        },
+        {
+          "field": "donation_types",
+          "judge": "factual",
+          "message": "The charity accepts general donations and sadaqah, which is supported by the source.",
+          "severity": "info"
+        },
+        {
+          "field": "rich_narrative.strengths",
+          "judge": "score",
+          "message": "The narrative incorrectly frames '48.4 months of working capital' as a strength, while the scoring system identifies it as 'EXCESSIVE' and a financial risk.",
+          "severity": "warning"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -482,7 +496,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 58.0/100 score, a 70.2% program ratio, 48.4 months of capital, and $0.00 fundraising costs.",
+          "claim": "The charity has a 70.2% program expense ratio, 48.4 months of working capital, and a 58.0/100 rating.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/821150290#financials"
@@ -494,29 +508,28 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
         },
         {
-          "claim": "The organization accepts general donations for its educational mission.",
+          "claim": "The charity accepts general donations and sadaqah.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://imamsacademy.org/donate/"
         }
       ],
-      "amal_score_rationale": "The charity shows a balance between efficient fundraising and a moderate program spending rate. However, the three-year delay in financial reporting and a lack of clear donor alignment limit its overall standing.",
+      "amal_score_rationale": "The charity receives an average rating because its moderate program spending is offset by a significant delay in financial reporting. While it operates efficiently without fundraising costs, the three-year gap in public data raises questions about current accountability.",
       "areas_for_improvement": [
         "Financial transparency is a concern as the latest available filings are three years old [3]",
-        "Holds 48.4 months of working capital without a clear explanation for such a large surplus [1]",
-        "Limited public data regarding specific program outcomes or beneficiary reach [1]"
+        "Holds 48.4 months of working capital without a clear plan for these large reserves [1]",
+        "Limited public data regarding specific program outcomes and evidence of impact [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific niche in global education but has a lower fit for typical Muslim donor priorities compared to other groups [1]. Donations are considered sadaqah-eligible for those looking to support general religious education [4]. Its track record is established, but the outdated financial data makes it harder for donors to track current progress [3].",
-        "impact": "The academy focuses on capacity building through religious education and masjid services [3]. While it spends 70.2% of its budget on these programs, the organization holds over four years of cash in reserve, which is unusually high for a group of this size [1]. Its Charity Navigator score is 58.0/100, reflecting some gaps in financial health metrics [1]."
+        "alignment": "This organization serves a specific niche in global education and leadership training [3]. While it provides a platform for charitable giving. The lack of recent financial updates makes it difficult for donors to track its current progress or funding needs [1][3].",
+        "impact": "The academy focuses on capacity building through religious education and masjid programs [3]. It spends 70.2% of its budget on these programs, which is considered a moderate level of spending [1]. However, the organization holds 48.4 months of working capital, suggesting that funds are being saved rather than immediately deployed for community impact [1]."
       },
-      "headline": "American Imams Academy focuses on religious education and masjid programs with moderate spending efficiency.",
+      "headline": "American Imams Academy focuses on religious education and leadership training while maintaining high cash reserves.",
       "strengths": [
         "Maintains a moderate program expense ratio of 70.2% [1]",
-        "High fundraising efficiency with $0.00 spent to raise every $1 [1]",
-        "Strong liquidity with 48.4 months of working capital available [1]"
+        "High fundraising efficiency with $0.00 spent to raise every $1 [1]"
       ],
-      "summary": "The organization reported total revenue of $824,033 in its most recent public filing [3]. It operates the Academy and Masjid programs to support community education [3]. Donors should treat this financial picture with caution, as no financial filings newer than FY2023 are available [3]."
+      "summary": "The organization reported a total revenue of $824,033 in its most recent public filing [3]. It operates programs including an academy and a masjid to support its educational mission [3]. Donors should treat this financial picture with caution, as no financial filings newer than FY2023 are available [3]."
     },
     "rich_narrative": {
       "all_citations": [
