@@ -1248,6 +1248,35 @@ class CharityNavigatorCollector(BaseCollector):
             else:
                 validated[key] = value
 
+        # Cross-field check: the range checks above are per-field, so a single
+        # invented round number passes every one of them. When CN changes its
+        # page format the structured extraction finds nothing, the LLM fallback
+        # runs against a page with no financials, and it answers with one
+        # placeholder repeated across every money field. Observed on EIN
+        # 99-3373484: revenue == expenses == program == admin == fundraising ==
+        # $100,000 against a Form 990 reporting $47,893, with "100000" appearing
+        # nowhere in the CN page. No real filer produces that shape -- it implies
+        # zero admin, zero fundraising, and revenue exactly equal to expenses at
+        # once -- so treat it as a failed extraction and keep the fields NULL
+        # rather than publishing a fabricated figure.
+        #
+        # Zero is deliberately excluded: the aggregator already resolves
+        # ambiguous CN zeros by arithmetic corroboration, and pre-empting that
+        # here would discard a signal it knows how to interpret.
+        shared = {
+            key: validated[key]
+            for key in financial_fields
+            if validated.get(key) not in (None, 0)
+        }
+        if len(shared) >= 3 and len(set(shared.values())) == 1:
+            if self.logger:
+                self.logger.warning(
+                    f"LLM financials rejected: {len(shared)} money fields all equal "
+                    f"{next(iter(shared.values()))} (placeholder, not a filing)"
+                )
+            for key in shared:
+                validated[key] = None
+
         return validated
 
     def _extract_financial_metrics(self, soup: BeautifulSoup) -> Dict[str, Any]:
