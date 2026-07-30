@@ -30,7 +30,7 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.judges.factual_judge import FactualJudge, FactualVerificationResult
+from src.judges.factual_judge import CONSENSUS_ROLLS, FactualJudge, FactualVerificationResult
 from src.judges.schemas.config import JudgeConfig
 from src.judges.schemas.verdict import Severity
 
@@ -106,7 +106,12 @@ class TestWalletTagZakatAgreementIsDeterministic:
 
 class TestTruncatedResponseIsRetried:
     def test_a_clipped_response_is_retried_and_the_charity_survives(self):
-        """First call returns truncated JSON, second returns a clean verdict."""
+        """First call returns truncated JSON, second returns a clean verdict.
+
+        validate() now takes CONSENSUS_ROLLS independent rolls (the gate flipped
+        on identical content at temperature 0), so the expected call count is one
+        per roll plus the extra retry the truncated first response costs.
+        """
         good = FactualVerificationResult(
             issues=[], claims_checked=3, claims_verified=3
         ).model_dump_json()
@@ -115,13 +120,14 @@ class TestTruncatedResponseIsRetried:
         client.generate.side_effect = [
             Mock(text='{"issues": [{"field": "revenue", "messa', cost_usd=0.0),
             Mock(text=good, cost_usd=0.0),
-        ]
+        ] + [Mock(text=good, cost_usd=0.0) for _ in range(CONSENSUS_ROLLS - 1)]
         with patch.object(judge, "get_llm_client", return_value=client), patch.object(
             judge, "_escalated_client", return_value=client
         ), patch("src.judges.factual_judge.time.sleep"):
             verdict = judge.validate({"narrative": {"content": "x"}}, {})
 
-        assert client.generate.call_count == 2
+        # 1 retried roll (2 calls) + the remaining rolls (1 call each)
+        assert client.generate.call_count == CONSENSUS_ROLLS + 1
         assert not [
             i
             for i in verdict.issues

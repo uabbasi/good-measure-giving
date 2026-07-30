@@ -61,6 +61,11 @@ _TRUNCATED_RESPONSE_MARKERS = ("invalid json", "json_invalid", "eof while parsin
 
 _ESCALATION_MODEL = "gemini-2.5-flash"
 
+# Independent LLM rolls for the error-consensus vote (odd number → clean majority).
+# Mirrors score_judge: this judge gates publication on interpretive prose, which
+# flips roll to roll even at temperature 0.
+CONSENSUS_ROLLS = 3
+
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
 # Matches the prompt's stated tolerances: 1% relative for money, half a unit
@@ -219,46 +224,55 @@ class FactualJudge(BaseJudge):
         quick_issues = self._quick_checks(output, context)
         issues.extend(quick_issues)
 
-        # Step 2: LLM-based claim extraction and verification (with retry for rate limits)
-        max_retries = 3
-        escalated: Optional[LLMClient] = None
-        for attempt in range(max_retries):
-            try:
-                llm_result = self._verify_claims_with_llm(output, context, client=escalated)
-                if llm_result:
-                    issues.extend(llm_result.issues)
-                    cost_usd = llm_result.cost
-                    metadata["claims_checked"] = llm_result.claims_checked
-                    metadata["claims_verified"] = llm_result.claims_verified
-                break  # Success, exit retry loop
-            except Exception as e:
-                error_str = str(e).lower()
-                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
-                is_truncated = any(m in error_str for m in _TRUNCATED_RESPONSE_MARKERS)
+        # Step 2: LLM verification, k=3 majority consensus on ERRORS.
+        # temperature=0 was already set here for reproducibility ("a publication
+        # gate must not change its mind on identical input") and it is not
+        # sufficient: across two consecutive runs with a byte-identical
+        # judge_content_hash, UMR (27-3175543) went 0 -> 1 errors, Rahima
+        # (77-0442850) 1 -> 0, and the Muslim clinics association (93-2136609)
+        # 0 -> 1. Same content, same code, different publication decision, and the
+        # flipping errors were interpretive ("the narrative *implies* revenue is
+        # primarily cash-based"). So gate on a majority instead of a single roll,
+        # exactly as score_judge already does for the same reason. Warnings and
+        # info never gate, so they come from the first completed roll.
+        roll_results: list["LLMFactualResult"] = []
+        for _ in range(CONSENSUS_ROLLS):
+            roll = self._verify_claims_with_rate_limit_retry(output, context)
+            if roll is not None:
+                roll_results.append(roll)
 
-                if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
-                    wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
-                    if is_truncated and escalated is None:
-                        # The same model at temperature 0 will return the same
-                        # unparseable bytes, so change the model, not just the
-                        # timing.
-                        escalated = self._escalated_client()
-                        cause = f"Unparseable response, escalating to {_ESCALATION_MODEL}"
-                    else:
-                        cause = "Truncated response" if is_truncated else "Rate limit hit"
-                    logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(wait_time)
-                    continue
+        if roll_results:
+            metadata["consensus_rolls"] = len(roll_results)
+            metadata["claims_checked"] = roll_results[0].claims_checked
+            metadata["claims_verified"] = roll_results[0].claims_verified
+            cost_usd = sum(r.cost for r in roll_results)
 
-                logger.error(f"Factual judge LLM verification failed: {e}")
-                self.add_issue(
-                    issues,
-                    Severity.ERROR,
-                    "llm_verification",
-                    f"Could not complete LLM verification: {str(e)[:100]}",
+            error_roll_count = sum(
+                1 for r in roll_results if any(i.severity == Severity.ERROR for i in r.issues)
+            )
+            metadata["error_roll_count"] = error_roll_count
+            majority = (len(roll_results) // 2) + 1
+            if error_roll_count >= majority:
+                # Errors are real — surface them from the roll that found the most.
+                worst = max(
+                    roll_results,
+                    key=lambda r: sum(1 for i in r.issues if i.severity == Severity.ERROR),
                 )
-                metadata["llm_failed"] = True
-                break
+                issues.extend([i for i in worst.issues if i.severity == Severity.ERROR])
+            issues.extend([i for i in roll_results[0].issues if i.severity != Severity.ERROR])
+        else:
+            # Fail CLOSED. A judge that completed no roll verified nothing, and
+            # reporting error_count == 0 opened the publication gate on an
+            # unchecked narrative — which is what the old `if llm_result:` path
+            # did when verification returned None rather than raising.
+            logger.error("Factual judge: all consensus rolls failed")
+            self.add_issue(
+                issues,
+                Severity.ERROR,
+                "llm_verification",
+                "Could not complete LLM verification (no consensus roll completed)",
+            )
+            metadata["llm_failed"] = True
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])
@@ -369,6 +383,43 @@ class FactualJudge(BaseJudge):
             m for m in [default_primary, *default_fallbacks] if m != _ESCALATION_MODEL
         ]
         return client
+
+    def _verify_claims_with_rate_limit_retry(
+        self, output: dict[str, Any], context: dict[str, Any]
+    ) -> Optional["LLMFactualResult"]:
+        """One consensus roll, with the rate-limit/truncation retry around it.
+
+        Returns None when this roll could not complete. A single failed roll is
+        not an error on its own — `validate` only fails closed when EVERY roll
+        fails, so one rate-limited roll no longer blocks a charity by itself.
+        """
+        max_retries = 3
+        escalated: Optional[LLMClient] = None
+        for attempt in range(max_retries):
+            try:
+                return self._verify_claims_with_llm(output, context, client=escalated)
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
+                is_truncated = any(m in error_str for m in _TRUNCATED_RESPONSE_MARKERS)
+
+                if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
+                    wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
+                    if is_truncated and escalated is None:
+                        # The same model at temperature 0 will return the same
+                        # unparseable bytes, so change the model, not just the
+                        # timing.
+                        escalated = self._escalated_client()
+                        cause = f"Unparseable response, escalating to {_ESCALATION_MODEL}"
+                    else:
+                        cause = "Truncated response" if is_truncated else "Rate limit hit"
+                    logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+
+                logger.error(f"Factual judge LLM verification failed: {e}")
+                return None
+        return None
 
     def _verify_claims_with_llm(
         self,
