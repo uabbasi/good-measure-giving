@@ -99,7 +99,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:27:34",
+  "lastUpdated": "2026-07-30 00:33:44",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -492,25 +492,37 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content for citation 1 was not provided, so the claim could not be verified.",
+          "message": "The provided content for citation 1 does not contain information about the charity's rating from Charity Navigator or documented evidence of long-term outcomes.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The content for citation 2 confirms that the organization runs food distribution and soup kitchen programs, and is zakat-eligible. However, the specific claim about being zakat-eligible is not explicitly stated in the provided text, though it is implied by the presence of a 'Zakat' donation option.",
-          "severity": "info"
+          "message": "The provided content for citation 2 does not mention that the organization is zakat-eligible.",
+          "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content for citation 3 was not provided, so the claim could not be verified.",
+          "message": "The provided content for citation 3 does not contain information about the charity's total revenue or working capital for FY2024.",
           "severity": "warning"
         },
         {
-          "field": "summary",
-          "judge": "score",
-          "message": "The summary is misleadingly positive for a 'Below Average' amal_score (37) as it omits the dominant limiting factors such as the small board size and excessive cash reserves, which are highlighted in the amal_score_rationale and areas_for_improvement.",
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative states the charity held 65.0 months of working capital, but the source data indicates 45.66 months.",
+          "severity": "warning"
+        },
+        {
+          "field": "long-term outcomes",
+          "judge": "factual",
+          "message": "The narrative claims a lack of documented evidence of long-term outcomes, but the source data does not explicitly confirm or deny this.",
+          "severity": "warning"
+        },
+        {
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "The charity claims to serve 'fuqara' (poor) and 'masakin' (needy), but the provided data does not explicitly detail how beneficiaries meet these specific criteria beyond general food and financial assistance. While the programs align with serving those in need, more specific evidence linking beneficiaries to the 'fuqara' or 'masakin' categories would strengthen the classification.",
           "severity": "warning"
         },
         {
@@ -586,40 +598,41 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity earned a 92.0/100 from Charity Navigator score and spends approximately $5.93 per beneficiary.",
+          "claim": "The charity maintains a 92.0/100 rating from Charity Navigator but lacks documented evidence of long-term outcomes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and runs food distribution and soup kitchen programs.",
+          "claim": "The organization focuses on feeding the hungry and supporting students and is zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.rahima.org/rahimas-programs"
         },
         {
-          "claim": "In FY2024, the charity reported $4,100,385 in revenue, a 95.3% program expense ratio, and 65.0 months of working capital.",
+          "claim": "In FY2024, the charity reported a total revenue of $4,100,385 and held 65.0 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         }
       ],
-      "amal_score_rationale": "The charity is efficient with spending but lacks transparency in its governance and long-term planning. The very high cash reserves are also a concern for an organization that collects zakat, which is typically meant for prompt distribution.",
+      "amal_score_rationale": "The charity is limited by a very small board of only two people and a lack of clear evidence regarding its long-term impact. Additionally, it holds over five years of cash reserves, which is unusual for an organization that collects zakat intended for prompt distribution.",
       "areas_for_improvement": [
-        "The board of directors consists of only two members, which limits oversight",
-        "Holds 65.0 months of working capital, which is unusually high for a zakat-collecting group",
-        "Lacks a documented theory of change to explain its long-term impact"
+        "Small board size consisting of only two members",
+        "Holding 65.0 months of working capital despite collecting zakat",
+        "Lack of a documented theory of change or foreign grant records for claimed geographic areas"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is zakat-eligible and serves domestic poverty needs, which aligns with many Muslim donor priorities [2]. However, the small board size and lack of clarity on geographic operations outside of local areas limit its overall alignment [3].",
-        "impact": "The charity provides direct services at a cost of approximately $5.93 per beneficiary [1]. While it spends 95.3% of its budget on programs, it does not provide a clear theory of change or detailed evidence of long-term outcomes [3]."
+        "alignment": "This organization is zakat-eligible and serves domestic poverty needs, which aligns with many Muslim donor interests [2].",
+        "impact": "The charity spends $5.93 to help each person through direct services like food distribution [3]. While 95.3% of expenses goes to programs, the organization lacks a formal theory of change and has no documented evidence of long-term outcomes [1]."
       },
-      "headline": "Rahima International Foundation provides direct food assistance but faces concerns regarding its small board and large cash reserves.",
+      "headline": "Rahima International Foundation provides direct food aid but faces significant governance and financial distribution concerns.",
       "strengths": [
-        "Maintains a high program expense ratio of 95.3% in FY2024",
-        "Operates with high fundraising efficiency of <$0.01 per $1 raised"
+        "High program expense ratio of 95.3% in FY2024",
+        "Fundraising efficiency of <$0.01 per $1 raised",
+        "Direct service model with a low cost of $5.93 per beneficiary"
       ],
-      "summary": "The organization focuses on feeding the hungry and supporting financially insecure families through food distribution and soup kitchens [2]. In FY2024, the charity reported total revenue of $4,100,385 while maintaining a high Charity Navigator score of 92.0/100 [1][3]."
+      "summary": "The organization focuses on feeding the hungry and supporting students through programs like soup kitchens and meat collection [2]. In FY2024, the charity reported a total revenue of $4,100,385 [3]. While it maintains a 92.0/100 rating from Charity Navigator, internal data shows gaps in how it manages its long-term funds [1]."
     },
     "rich_narrative": {
       "all_citations": [

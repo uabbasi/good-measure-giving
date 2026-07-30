@@ -65,7 +65,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-30 00:30:25",
+  "lastUpdated": "2026-07-30 00:34:33",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "pattern_match",
@@ -351,33 +351,45 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The fetched content does not mention the organization's focus on returning displaced children to their home cities.",
-          "severity": "warning"
-        },
-        {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched content for citation 2 was not provided.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "The fetched content does not explicitly state that the organization is Zakat-eligible.",
+          "message": "The provided URL for citation 2 is for Form 990 (2025), but the content of the URL does not contain financial data for the year 2023 or any other year. The content is a ProPublica page about the organization's financials, but it does not display the actual Form 990 or specific financial ratios.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The fetched content for citation 4 was not provided.",
+          "message": "The provided URL for citation 4 is for Charity Navigator, but the content of the URL does not explicitly state that the organization's profile shows a lack of recent financial data. While the narrative mentions a three-year gap in financial filings, the Charity Navigator page itself does not directly confirm this statement.",
           "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The program expense ratio is reported as 100.0% in the narrative and 1.0 in the source data, which are equivalent.",
+          "message": "The program expense ratio is reported as 100.0% in the narrative, which rounds to 100% from the source value of 1.0.",
+          "severity": "info"
+        },
+        {
+          "field": "financial_data_tax_year",
+          "judge": "factual",
+          "message": "The narrative states the latest available financial filing is from 2023, but the source data indicates the latest available filing is from 2023 (Charity Navigator) and 2024 (ProPublica Form 990). The narrative's claim of 'latest available' is therefore potentially misleading.",
+          "severity": "warning"
+        },
+        {
+          "field": "financial_data_tax_year",
+          "judge": "factual",
+          "message": "The narrative states the latest available financial filing is from 2023, but the source data indicates the latest available filing is from 2023 (Charity Navigator) and 2024 (ProPublica Form 990). The narrative's claim of 'latest available' is therefore potentially misleading.",
+          "severity": "warning"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The program expense ratio is reported as 100.0% in the narrative, which rounds to 100% from the source value of 1.0.",
+          "severity": "info"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The program expense ratio is reported as 100.0% in the narrative, which rounds to 100% from the source value of 1.0.",
           "severity": "info"
         },
         {
@@ -420,47 +432,47 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on returning displaced children to their home cities by providing food, shelter, and orphan sponsorship.",
+          "claim": "The organization operates programs for orphan sponsorship and seasonal assistance projects.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
-          "claim": "Records show a 100.0% program expense Ratio, meaning all reported spending goes toward these services.",
+          "claim": "The latest available financial filing is from 2023 and shows a 100.0% program expense Ratio.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484"
         },
         {
-          "claim": "It is Zakat-eligible, which fits the needs of many Muslim donors looking to fulfill their religious obligations.",
+          "claim": "The charity is recognized as zakat-eligible.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
-          "claim": "Donors should treat this three-year-old financial picture with caution.",
+          "claim": "The organization's profile shows a lack of recent financial data.",
           "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/993373484#financials"
         }
       ],
-      "amal_score_rationale": "The charity addresses an urgent humanitarian need with high spending efficiency, but its outdated financial records create significant transparency risks. This balance of direct impact and missing data results in an average assessment.",
+      "amal_score_rationale": "This charity receives an average rating because it serves an urgent cause with high spending efficiency, but it is significantly behind on public financial reporting. The lack of recent data makes it difficult to verify the organization's current scale or stability.",
       "areas_for_improvement": [
-        "Update public financial filings, as the latest data is from 2023",
-        "Improve transparency regarding long-term program outcomes",
-        "Provide more recent evidence of organizational growth and stability"
+        "Update public financial disclosures, as the latest available filing is from 2023",
+        "Provide more recent evidence of program outcomes and long-term impact",
+        "Improve transparency regarding current leadership and governance"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves an extremely urgent cause by helping orphans in poverty-stricken areas [1]. It is Zakat-eligible, which fits the needs of many Muslim donors looking to fulfill their religious obligations [3]. The organization has a limited track record of public reporting, which affects its overall alignment with donor expectations [2].",
-        "impact": "The foundation provides direct services like seasonal assistance and orphan sponsorship to children in Syria [1]. Records show a 100.0% program expense Ratio, meaning all reported spending goes toward these services [2]. However, the lack of recent financial data makes it difficult to verify current health or long-term results [4]."
+        "alignment": "This organization aligns with the needs of Muslim donors by offering zakat-eligible programs for orphans [3]. It works in Syria, which is considered an area of extreme poverty and high urgency, though its long-term track record is difficult to assess without updated records [1][2].",
+        "impact": "The charity reports a 100.0% program expense Ratio, meaning all reported spending goes toward direct services like food and shelter [2]. While the organization provides direct aid to vulnerable children, the three-year gap in financial filings creates uncertainty about its current health and evidence of recent outcomes [4]."
       },
-      "headline": "Yateem Foundation USA provides direct aid to displaced Syrian orphans but lacks recent financial data.",
+      "headline": "Yateem Foundation USA focuses on providing food and shelter to displaced Syrian orphans to help them return to their home cities.",
       "strengths": [
-        "Maintains a 100.0% program expense Ratio according to available records",
-        "Offers Zakat-eligible programs for Muslim donors",
-        "Provides direct services in a high-urgency cause area"
+        "Maintains a 100.0% program expense Ratio based on available data",
+        "Directly serves orphans in high-urgency conflict zones",
+        "Offers clear zakat-eligible giving options for Muslim donors"
       ],
-      "summary": "The organization focuses on returning displaced children to their home cities by providing food, shelter, and orphan sponsorship [1]. While it reports spending all funds on programs, no financial filings newer than FY2023 are available [2]. Donors should treat this three-year-old financial picture with caution [4]."
+      "summary": "The organization operates programs for orphan sponsorship and seasonal assistance projects [1]. It is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through its support services [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]."
     },
     "rich_narrative": {
       "all_citations": [

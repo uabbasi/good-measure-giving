@@ -95,7 +95,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:27:22",
+  "lastUpdated": "2026-07-30 00:33:29",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -423,40 +423,40 @@
       },
       "judge_issues": [
         {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "Citation 4 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "Citation 5 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
           "field": "citation_3",
           "judge": "citation",
           "message": "URL unreachable: HTTP 202",
           "severity": "warning"
         },
         {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "URL unreachable: HTTP 202",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "URL unreachable: HTTP 202",
-          "severity": "warning"
-        },
-        {
-          "field": "claims_zakat_eligible",
+          "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The charity claims zakat eligibility, and the wallet tag reflects this.",
+          "message": "The program expense ratio is reported as 100.0% in the narrative, which matches the source value of 1.0 after accounting for rounding.",
           "severity": "info"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The working capital is reported as 3.4 months in the narrative, which matches the source value of 3.4 after accounting for rounding.",
+          "severity": "info"
+        },
+        {
+          "field": "revenue",
+          "judge": "factual",
+          "message": "The revenue reported in the narrative ($1,759,964) matches the source value for 2023.",
+          "severity": "info"
+        },
+        {
+          "field": "outcome_metrics",
+          "judge": "factual",
+          "message": "The narrative claims the charity lacks public outcome metrics, but the source data does not explicitly state this. While the source data does not provide specific outcome metrics, it also does not confirm their absence.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations.impact",
+          "judge": "score",
+          "message": "The rationale for the Impact score omits a dominant limiting factor.",
+          "severity": "warning"
         },
         {
           "field": "discovered.awards.confidence",
@@ -511,52 +511,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization operates the Noor Project to help families move above the poverty line through schooling and medical clinics.",
+          "claim": "The charity provides direct services like a grammar school and clinic but lacks public outcome metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455637293#financials"
         },
         {
-          "claim": "No financial filings newer than FY2023 are available.",
+          "claim": "The charity reported $1,759,964 in revenue, a 100.0% program expense Ratio, and 3.4 months of working capital in its last filing from 2023.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
         },
         {
-          "claim": "The charity is zakat-eligible and offers a calculator to help donors fulfill their religious obligations.",
+          "claim": "The charity is Zakat-eligible and provides a calculator for donors.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://thenoorproject.org/zakat-calculator"
-        },
-        {
-          "claim": "The foundation provides various donation options for its programs.",
-          "id": "[4]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://thenoorproject.org/donate"
-        },
-        {
-          "claim": "The organization offers volunteer opportunities to engage with its mission.",
-          "id": "[5]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://thenoorproject.org/volunteer"
         }
       ],
-      "amal_score_rationale": "The foundation shows a strong commitment to direct service and efficient spending, but it faces significant transparency risks due to outdated financial filings and a very small board. While the cost to help each person is low, the lack of recent data and outcome tracking limits the overall assessment.",
+      "amal_score_rationale": "The foundation shows a high level of spending efficiency and a strong fit for Muslim donors, but it is held back by outdated financial filings and a lack of formal outcome tracking. The very small board size also presents a risk to long-term stability and oversight.",
       "areas_for_improvement": [
-        "Financial transparency is a concern as there are no public filings more recent than 2023",
-        "The board of directors is too small with only one reported member",
-        "The organization does not publicly track or report specific outcome metrics"
+        "The organization is significantly behind on public reporting, with no financial data available after 2023 [2].",
+        "The board of directors is too small, consisting of only one member, which limits oversight [2].",
+        "There is no public data showing how the charity measures the success or outcomes of its programs [1]."
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors as it is zakat-eligible and focuses on global education [3]. It addresses urgent needs in marginalized communities through the Noor Grammar School and vocational centers [1]. While it has a clear mission, the lack of recent public records makes it harder to verify its current track record [2].",
-        "impact": "The charity reported a total revenue of $1,759,964 and spent 100.0% of its funds on programs [1]. It operates with 3.4 months of working capital and provides direct aid at a low cost of approximately $3.48 per beneficiary [1]. However, there is no third-party evidence or internal metrics to prove the long-term success of these programs [1]."
+        "alignment": "This organization is a strong match for donors looking to support global education and poverty relief within an Islamic framework [3]. However, the lack of recent financial updates makes it harder to judge its current track record [2].",
+        "impact": "The charity reports a 100.0% program expense Ratio, which indicates that all funds are used for its programs [2]. While the cost to help each person is low at approximately $3.48, the organization does not share specific metrics or third-party evidence to prove the long-term success of its school or clinic [1]."
       },
-      "headline": "For the Needy & Hungry Foundation Inc provides direct aid through education and vocational training while maintaining a high program expense ratio.",
+      "headline": "For the Needy & Hungry Foundation Inc works to lift marginalized families out of poverty through education and vocational training.",
       "strengths": [
-        "Maintains a 100.0% program expense Ratio according to the latest available data",
-        "Provides direct services including a grammar school, pharmacy, and vocational training"
+        "Maintains a 100.0% program expense Ratio, meaning all spending is directed toward its core missions [2].",
+        "Provides direct services including a grammar school, clinic, and pharmacy to help those in need [1]."
       ],
-      "summary": "The organization operates the Noor Project to help families move above the poverty line through schooling and medical clinics [1]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]. The charity is zakat-eligible and offers a calculator to help donors fulfill their religious obligations [3]."
+      "summary": "Operating as The Noor Project, this organization provides schooling, medical care, and job training to help families reach self-sufficiency [1]. The charity is Zakat-eligible and offers a dedicated calculator to help donors fulfill their religious obligations [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]."
     },
     "rich_narrative": {
       "all_citations": [

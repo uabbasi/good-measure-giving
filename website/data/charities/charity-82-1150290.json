@@ -67,7 +67,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-30 00:27:24",
+  "lastUpdated": "2026-07-30 00:33:29",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -378,19 +378,31 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content for citation 1 was not provided.",
+          "message": "The fetched content for citation [1] does not contain information about the Charity Navigator score, working capital, or fundraising efficiency. Therefore, the claim cannot be verified.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content for citation 3 does not contain the claimed information.",
+          "message": "The fetched content for citation [3] does not contain information about total revenue or program expense ratio. Therefore, the claim cannot be verified.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The content for citation 4 was not provided.",
+          "message": "The fetched content for citation [4] does not contain information about the charity accepting general donations and sadaqah through its website. Therefore, the claim cannot be verified.",
+          "severity": "warning"
+        },
+        {
+          "field": "fundraising_efficiency",
+          "judge": "factual",
+          "message": "The narrative states a fundraising efficiency of $0.00 per $1 raised, which is consistent with the source data indicating $0 fundraising expenses.",
+          "severity": "info"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative states 48.4 months of working capital, but the source data indicates 48.4 months of working capital. The narrative's claim is accurate.",
           "severity": "warning"
         },
         {
@@ -452,40 +464,39 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 58.0/100 score, a 70.2% program expense ratio, 48.4 months of working capital, and $0.00 fundraising efficiency.",
+          "claim": "The organization has a Charity Navigator score of 58.0/100, 48.4 months of working capital, and a fundraising efficiency of $0.00 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/821150290#financials"
         },
         {
-          "claim": "The organization reported $824,033 in revenue for fiscal year 2023 and operates academy and masjid programs.",
+          "claim": "Total revenue was $824,033 with a program expense ratio of 70.2% in the latest available filing from 2023.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
         },
         {
-          "claim": "The charity provides options for general charitable giving and sadaqah.",
+          "claim": "The charity accepts general donations and sadaqah through its website.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://imamsacademy.org/donate/"
         }
       ],
-      "amal_score_rationale": "This charity receives an average assessment because its moderate program spending is offset by a significant lack of recent financial data and unusually high cash reserves.",
+      "amal_score_rationale": "The academy receives an average rating because it shows clear program goals and evidence of outcomes, but its outdated financial filings and high cash reserves limit its transparency.",
       "areas_for_improvement": [
-        "Financial transparency is a concern as the latest available public filings are from 2023 [3]",
-        "The charity holds 48.4 months of working capital without a clear explanation for such large reserves [1]",
-        "Overall accountability is rated at 58.0/100 by independent evaluators [1]"
+        "Public financial data is three years out of date, raising accountability concerns [3]",
+        "Holds 48.4 months of working capital without a clear explanation for such high reserves [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific niche in global religious education [3]. However, it may have a lower fit for many Muslim donors because it is only listed as eligible for sadaqah, not zakat [4].",
-        "impact": "The academy focuses on capacity building through education and masjid services [3]. While it spends a moderate 70.2% of its budget on these programs, its financial health is weakened by outdated reporting and a lack of current data [1]."
+        "alignment": "This organization serves a specific niche in global education and religious capacity building [3]. It offers various ways to give general charity.",
+        "impact": "The charity spends 70.2% of its budget on its academy and masjid programs [3]. While it provides clear evidence of its work and has a solid theory of change, its overall Charity Navigator score is 58.0/100 [1]."
       },
-      "headline": "American Imams Academy focuses on religious education and masjid programs with moderate spending efficiency.",
+      "headline": "American Imams Academy focuses on religious education but faces significant delays in financial reporting.",
       "strengths": [
-        "Maintains a moderate program expense ratio of 70.2% [1]",
-        "Operates with high fundraising efficiency, spending $0.00 to raise every $1 [1]"
+        "Maintains a moderate program expense ratio of 70.2% [3]",
+        "Operates with a fundraising efficiency of $0.00 per $1 raised [1]"
       ],
-      "summary": "The organization reported a total revenue of $824,033 in its most recent public filing [3]. It operates programs including an academy and a masjid to provide religious instruction [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]."
+      "summary": "The organization manages religious programs and an academy with a total revenue of $824,033 [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]. Donations to this group are considered sadaqah-eligible [4]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -38,6 +38,35 @@ BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
 _WALLET_TAG_AGREEMENT_RE = re.compile(r"wallet.{0,3}tag", re.IGNORECASE)
 
 
+# Financial figures whose value legitimately differs year to year. Founding year
+# and similar identity fields are excluded: for those, two years IS the finding.
+_YEAR_VARYING_FINANCIAL_FIELD_RE = re.compile(
+    r"revenue|expense|contribution|asset|liabilit|net_assets|working.?capital",
+    re.IGNORECASE,
+)
+# A bare four-digit year, not the tail of a dollar amount ("$2,024" / "$52,024").
+_FISCAL_YEAR_RE = re.compile(r"(?<![\d,$.])(20[1-3]\d)(?![\d,])")
+
+
+def _is_cross_fiscal_year_comparison(field: str, message: str) -> bool:
+    """Is this finding just two different fiscal years being compared?
+
+    ProPublica's latest filing routinely lags Charity Navigator by a year, so the
+    same charity legitimately reports different revenue for FY2023 and FY2024, and a
+    narrative citing the newer year is correct. The judge kept reading that gap as a
+    contradiction across three separate charities (27-3175543, 75-2882187,
+    77-0442850) even while naming the gap itself ("the narrative's figure appears to
+    be from FY2024 data"), and prompt guidance did not stop it.
+
+    Deterministic marker: the message names two or more DISTINCT fiscal years on a
+    field whose value varies by year. Same-year disagreements, year-free messages,
+    and identity fields like founded_year are untouched.
+    """
+    if not _YEAR_VARYING_FINANCIAL_FIELD_RE.search(field or ""):
+        return False
+    return len(set(_FISCAL_YEAR_RE.findall(message or ""))) >= 2
+
+
 def _is_wallet_tag_agreement(field: str, message: str) -> bool:
     """Is this finding the wallet-tag/zakat-claim comparison _quick_checks owns?"""
     text = f"{field} {message}"
@@ -491,6 +520,11 @@ class FactualJudge(BaseJudge):
                     ) and _same_story(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                     elif _is_wallet_tag_agreement(issue.field, issue.message):
+                        severity = Severity.WARNING
+                    # Fifth: two different fiscal years being compared is not a
+                    # narrative fault -- our sources cover different years and the
+                    # narrative citing the newer one is correct.
+                    elif _is_cross_fiscal_year_comparison(issue.field, issue.message):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:
