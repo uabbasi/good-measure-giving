@@ -25,8 +25,8 @@
   "zakatEligible": null,
   "status": "generated",
   "scores": {
-    "overall": 100,
-    "financial": 100,
+    "overall": 92.5,
+    "financial": 88,
     "accountability": 0,
     "transparency": null
   },
@@ -37,7 +37,7 @@
     "programExpenses": null,
     "adminExpenses": null,
     "fundraisingExpenses": null,
-    "programExpenseRatio": "0.9610",
+    "programExpenseRatio": "0.8630",
     "fiscalYear": 2023,
     "dataSource": "propublica",
     "totalAssets": 71946,
@@ -55,7 +55,15 @@
     ],
     "geographicCoverage": null
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": null,
+    "isConflictZone": 0,
+    "nonprofitSizeTier": "small_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": {
     "claims_longitudinal": false,
     "claims_rcts": false,
@@ -66,7 +74,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 21:31:47",
+  "lastUpdated": "2026-07-30 22:00:58",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -74,7 +82,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-31T04:30:55.562944+00:00",
+        "timestamp": "2026-07-31T04:59:34.089962+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -82,12 +90,6 @@
       "source_url": "https://morocco-foundation.org/annual-meeting-2025-registration/",
       "timestamp": "2026-07-23T20:25:27",
       "value": 8536
-    },
-    "claims_zakat_eligible": {
-      "source_name": "Charity Website",
-      "source_url": "https://www.morocco-foundation.org/donate/",
-      "timestamp": "2026-07-23T20:25:27",
-      "value": false
     },
     "founded_year": {
       "source_name": "Charity Website",
@@ -99,18 +101,18 @@
       "source_name": "Charity Website",
       "source_url": "https://morocco-foundation.org/annual-meeting-2025-registration/",
       "timestamp": "2026-07-23T20:25:27",
-      "value": false
+      "value": true
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
-      "timestamp": "2026-07-30T00:44:17",
-      "value": 0.961
+      "timestamp": "2026-07-30T21:59:14",
+      "value": 0.863
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815",
-      "timestamp": "2026-07-30T00:44:17",
+      "timestamp": "2026-07-30T21:59:14",
       "value": 134320
     },
     "working_capital_months": {
@@ -122,7 +124,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815",
-      "timestamp": "2026-07-30T00:44:17",
+      "timestamp": "2026-07-30T21:59:14",
       "value": 8.5
     }
   },
@@ -134,8 +136,10 @@
   "causeTags": [
     "educational",
     "faith-based",
+    "fuqara",
     "grantmaking",
     "low-income",
+    "masakin",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -159,7 +163,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-31T04:30:55.562944+00:00",
+      "timestamp": "2026-07-31T04:59:34.089962+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -170,33 +174,25 @@
   },
   "beneficiariesConfidence": "cited",
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": {
-    "hasOutcomeMethodology": null,
-    "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": null,
-    "evaluationSources": [
-      "Best Prize in Education (Moroccan Social Innovation Awards (WeXchange Forum))"
-    ],
-    "receivesFoundationGrants": null
-  },
+  "evidenceQuality": null,
   "zakatClaimEvidence": null,
   "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Promising",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
-    "evidence_stage": "Early",
+    "evidence_stage": "Building",
     "signal_states": {
       "evidence": "Limited",
       "financial_health": "Strong",
       "donor_fit": "Moderate",
       "risk": "Moderate"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Good Match",
+    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -204,15 +200,31 @@
     {
       "type": "data_quality",
       "severity": "low",
-      "headline": "Expense breakdown unavailable for FY2023",
-      "detail": "The IRS filing for FY2023 does not break out functional expenses, and Charity Navigator's breakdown is from FY2022 \u2014 too old to present as current.",
+      "headline": "Sources disagree on total revenue for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $134,320 from the IRS filing while Charity Navigator reports $125,000 for the same year. We publish the filing.",
       "data_points": {
         "canonical_source": "propublica",
-        "field": "income_statement",
+        "canonical_value": 134320,
+        "field": "total_revenue",
         "fiscal_year": 2023,
-        "other_fiscal_year": 2022,
         "other_source": "charity_navigator",
-        "reason": "alternate_source_is_staler"
+        "other_value": 125000,
+        "reason": "same_fiscal_year_disagreement"
+      }
+    },
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Sources disagree on total expenses for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $102,044 from the IRS filing while Charity Navigator reports $110,000 for the same year. We publish the filing.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 102044,
+        "field": "total_expenses",
+        "fiscal_year": 2023,
+        "other_source": "charity_navigator",
+        "other_value": 110000,
+        "reason": "same_fiscal_year_disagreement"
       }
     },
     {
@@ -232,7 +244,7 @@
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 29,
-      "data_confidence": 0.26,
+      "data_confidence": 0.51,
       "impact": 38
     },
     "score_details": {
@@ -290,16 +302,16 @@
         "score": 29
       },
       "data_confidence": {
-        "badge": "LOW",
+        "badge": "MEDIUM",
         "data_age_years": 3,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.26,
+        "overall": 0.51,
         "recency_factor": 0.85,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "BASIC",
-        "verification_value": 0.4
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
@@ -331,7 +343,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 96%",
+            "evidence": "Program expense ratio: 86%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -376,51 +388,27 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The content of the URL does not contain information about the claim.",
-          "severity": "warning"
-        },
-        {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The content of the URL does not contain information about the claim.",
+          "message": "URL unreachable: HTTP 403",
           "severity": "warning"
         },
         {
-          "field": "citation_3",
+          "field": "citation_4",
           "judge": "citation",
-          "message": "The content of the URL supports the claim that the foundation offers sadaqah-eligible giving options.",
-          "severity": "info"
+          "message": "The content of the URL does not contain information about the organization's track record or geographic focus.",
+          "severity": "warning"
         },
         {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The reported total revenue of $134,320 for 2023 differs from the source data which shows $134,320 for 2023.",
-          "severity": "info"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The program expense ratio of 96.1% is consistent with the source data, allowing for minor rounding differences.",
-          "severity": "info"
-        },
-        {
-          "field": "sadaqah_eligible",
-          "judge": "factual",
-          "message": "The narrative claims the foundation offers sadaqah-eligible giving options, but the source data indicates the foundation does not explicitly mention accepting zakat donations and the wallet tag is SADAQAH-ELIGIBLE.",
+          "field": "discovered.zakat.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
           "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -450,48 +438,54 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The Morocco Foundation's website and donation pages do not explicitly mention accepting zakat donations. The 'donate' page lists options for wire transfers and PayPal but does not include any specific mention of 'zakat' or a dedicated zakat fund. (Source: https://www.morocco-foundation.org/donate/)",
+        "claim_evidence": "CORROBORATION FAILED: Discovered via search (confidence=0.50) (Source: https://www.feelingblessed.org/moroccofoundation)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization works to reduce poverty and illiteracy in rural Morocco through education and themed caravans.",
+          "claim": "The foundation provides direct services at a low cost of roughly $11.95 per person.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/900327815#financials"
         },
         {
-          "claim": "The foundation reported total revenue of $134,320 and a 96.1% program expense Ratio in its latest filing from 2023.",
+          "claim": "It is a sadaqah-eligible organization, making it a fit for Muslim donors looking to provide general voluntary charity.",
           "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://www.feelingblessed.org/moroccofoundation"
+        },
+        {
+          "claim": "In fiscal year 2023, the foundation reported total revenue of $134,320 and a program expense ratio of 86.3%.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815"
         },
         {
-          "claim": "The foundation offers sadaqah-eligible giving options for donors interested in Moroccan development.",
-          "id": "[3]",
+          "claim": "The group has a consistent track record of service, though its focus is specialized to a specific geographic region.",
+          "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.morocco-foundation.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation shows efficient spending on direct services, but the lack of recent financial filings and limited outcome data lower its overall standing.",
+      "amal_score_rationale": "The charity is efficient with its spending and has a low cost per person served, but the lack of recent financial filings is a significant concern for transparency. While it effectively delivers direct aid, more evidence is needed to show the long-term impact of its educational programs.",
       "areas_for_improvement": [
         "Update public financial disclosures, as the latest available data is from 2023",
-        "Provide more public evidence of long-term program outcomes and impact",
-        "Improve transparency regarding organizational governance and leadership"
+        "Provide more detailed public reporting on long-term program outcomes",
+        "Improve transparency regarding organizational governance and theory of change"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific cultural and religious need for donors interested in Moroccan rural development [3]. It has a steady track record, though the cause is considered less urgent than immediate disaster relief [1].",
-        "impact": "The charity spends $11.95 per person to provide direct services like the ABT-MF Academy [1]. While its 96.1% program expense Ratio is very efficient, there is little public data to prove the long-term success of its programs [2]."
+        "alignment": "This charity serves a specific cultural and religious need by supporting underserved rural populations in Morocco [1]. It is a sadaqah-eligible organization, making it a fit for Muslim donors looking to provide general voluntary charity [2]. The group has a consistent track record of service, though its focus is specialized to a specific geographic region [4].",
+        "impact": "The foundation operates with a high program expense ratio of 86.3%, meaning the vast majority of donations go toward its mission [3]. It provides direct services at a low cost of roughly $11.95 per person [1]. However, while the financial health is stable with 8.5 months of working capital, there is limited public data regarding the long-term results of its literacy programs [3]."
       },
-      "headline": "The Morocco Foundation provides direct aid to rural communities, but its financial reporting is significantly delayed.",
+      "headline": "The Morocco Foundation provides direct aid to rural communities through education and social programs.",
       "strengths": [
-        "High program spending with a 96.1% program expense Ratio",
-        "Low cost of approximately $11.95 per beneficiary",
-        "Strong working capital of 8.5 months to sustain operations"
+        "High program expense ratio of 86.3% ensures most funds reach the field",
+        "Low cost of approximately $11.95 per beneficiary for direct services",
+        "Strong working capital of 8.5 months provides short-term stability"
       ],
-      "summary": "The organization works to reduce poverty and illiteracy in rural Morocco through education and themed caravans [1]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]. During that period, the foundation reported total revenue of $134,320 [2]."
+      "summary": "The organization works to reduce poverty and illiteracy in rural Morocco through its ABT-MF Academy and themed caravans [1]. In fiscal year 2023, the foundation reported total revenue of $134,320 to support these initiatives [3]. Donors should note that no financial filings newer than FY2023 are available, meaning this three-year-old data may not reflect the charity's current situation [3]."
     },
     "rich_narrative": {
       "all_citations": [

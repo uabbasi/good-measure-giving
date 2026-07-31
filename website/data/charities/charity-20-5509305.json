@@ -70,7 +70,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 21:30:55",
+  "lastUpdated": "2026-07-30 21:58:04",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -93,13 +93,13 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-30T00:41:27",
+      "timestamp": "2026-07-30T21:57:01",
       "value": "S46"
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-30T00:41:27",
+      "timestamp": "2026-07-30T21:57:01",
       "value": 93638
     },
     "working_capital_months": {
@@ -111,7 +111,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-30T00:41:27",
+      "timestamp": "2026-07-30T21:57:01",
       "value": 9
     }
   },
@@ -142,7 +142,15 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": 0,
+    "evaluationSources": [
+      "UNCORROBORATED: Good Measure Giving"
+    ],
+    "receivesFoundationGrants": null
+  },
   "zakatClaimEvidence": null,
   "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
@@ -328,44 +336,14 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content does not contain information about the organization's working capital.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "The claim is supported, but the source is described as 'Charity Website - About' while the URL points to 'mubany.org/about-us'. This is a minor discrepancy.",
-          "severity": "info"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "The provided content for the bylaws is a PDF file that could not be parsed to verify the claim.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_7",
-          "judge": "citation",
-          "message": "The provided content for the endorsement policy is a PDF file that could not be parsed to verify the claim.",
+          "message": "The provided content for citation [1] does not contain information about the organization's working capital.",
           "severity": "warning"
         },
         {
           "field": "citation_8",
           "judge": "citation",
-          "message": "The provided content for Form 990 (2023) is a PDF file that could not be parsed to verify the claim.",
+          "message": "The provided content for citation [8] does not contain the organization's total revenue for FY2023.",
           "severity": "warning"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "factual",
-          "message": "The narrative states the organization maintains 9.0 months of working capital, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative states total revenue of $93,638 in FY2023, which matches the source data.",
-          "severity": "info"
         },
         {
           "field": "financial.program_expense_ratio",
@@ -374,10 +352,34 @@
           "severity": "warning"
         },
         {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[0].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
         }
       ],
       "risk_deduction": -2,
@@ -400,7 +402,7 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The 'Good Measure Giving' evaluation of the Muslim Bar Association of New York suggests to \"Add a dedicated zakat page or clearly state whether donations are zakat-eligible.\" (Source: https://goodmeasuregiving.org/charity/20-5509305/)",
+        "claim_evidence": "Muslim Bar Association of New York does not publicly claim zakat acceptance (sadaqah-eligible). No mention of \"zakat\" or \"zakat donations\" on the Muslim Bar Association of New York's website or related search results. The organization's mission and activities focus on organizing and representing Muslim attorneys, professional development, and advocacy for the Muslim community in New York and the US, rather than direct charitable distribution to zakat-eligible recipients. (Source: https://goodmeasuregiving.org/charity/20-5509305/)",
         "notes": null
       }
     },
@@ -413,46 +415,53 @@
           "source_url": "https://www.charitynavigator.org/ein/205509305#financials"
         },
         {
-          "claim": "The organization represents Muslim attorneys in the New York area through professional development and job board services.",
+          "claim": "The organization represents Muslim attorneys in the New York area through professional development and networking programs.",
           "id": "[2]",
           "source_name": "Charity Website - About",
           "source_url": "https://mubany.org/about-us"
         },
         {
-          "claim": "The organization focuses on capacity building for the legal community through networking.",
+          "claim": "The organization's programs include professional development and networking for its members.",
           "id": "[3]",
           "source_name": "bylaws",
           "source_url": "https://www.mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
         },
         {
-          "claim": "The organization provides endorsements for judicial positions.",
+          "claim": "The organization is governed by a set of formal bylaws adopted in 2019.",
+          "id": "[4]",
+          "source_name": "bylaws",
+          "source_url": "https://mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
+        },
+        {
+          "claim": "The organization has established formal procedures for endorsing judicial and senior political candidates.",
           "id": "[7]",
           "source_name": "MuBANY's Policy and Procedures for Judicial or Senior Political Position Endorsements",
           "source_url": "https://mubany.org/sites/default/files/content-files/MuBANY%20Endorsement%20Policy%20and%20Procedures%20for%20Judicial%20or%20Senior%20Political%20Positions.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $93,638 in its latest available filing from FY2023.",
+          "claim": "The organization reported a total revenue of $93,638 in its FY2023 filing, which is the most recent available.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a significant lack of recent financial data and a primary focus on member networking rather than direct social services. While the group maintains a stable cash reserve, the three-year gap in public filings raises accountability questions.",
+      "amal_score_rationale": "The assessment is limited by a lack of recent financial data and missing details on program spending efficiency. While the group serves a clear niche for legal advocacy, the three-year delay in filings raises accountability concerns.",
       "areas_for_improvement": [
-        "Financial transparency is a major concern as the latest public filings are from 2023 [8]",
-        "Lack of recent data makes it difficult to verify current program spending or impact [1]",
-        "Limited evidence is available regarding the long-term outcomes of its professional development programs [3]"
+        "Update public financial disclosures, as the latest available data is from 2023 [8]",
+        "Provide clearer evidence of program outcomes and specific impact metrics [3]",
+        "Improve transparency regarding how much of the annual budget is spent directly on programs [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific niche by supporting Muslim legal professionals in New York [2]. It addresses an underserved space in professional advocacy, though its mission is centered on member interests rather than urgent humanitarian needs [3].",
-        "impact": "The organization focuses on capacity building for the legal community through networking and endorsements for judicial positions [3][7]. While it shows stability with 9.0 months of working capital, the lack of recent filings and specific outcome data makes it hard to measure its overall effectiveness [1]."
+        "alignment": "This group serves a specific need for representation and advocacy within the New York legal community [2]. It has a documented track record of organizational governance through its bylaws and endorsement policies [4][7]. However, the lack of recent financial updates makes it difficult for donors to assess the current urgency of its funding needs [8].",
+        "impact": "The organization focuses on capacity building for Muslim lawyers through networking and career services [2]. While it maintains 9.0 months of working capital, there is no current data available to verify the percentage of funds spent on programs versus administration [1]. Evidence of long-term outcomes for members remains limited in public records [3]."
       },
-      "headline": "The Muslim Bar Association of New York provides networking and professional support for Muslim legal professionals, but its financial reporting is significantly delayed.",
+      "headline": "The Muslim Bar Association of New York supports legal professionals but faces significant transparency gaps due to outdated financial reporting.",
       "strengths": [
-        "Maintains 9.0 months of working capital to cover ongoing operations [1]",
-        "Provides specific career support through a dedicated job board for members [2]"
+        "Maintains 9.0 months of working capital to cover operational needs [1]",
+        "Provides specialized career support including a job board for legal professionals [2]",
+        "Established formal procedures for endorsing judicial and senior political candidates [7]"
       ],
-      "summary": "The organization represents Muslim attorneys in the New York area through professional development and job board services [2][3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [8]. During that period, the group reported total revenue of $93,638 [8]."
+      "summary": "The organization represents Muslim attorneys in the New York area through professional development and networking programs [2][3]. It reported a total revenue of $93,638 in its most recent public filing [8]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [8]."
     },
     "rich_narrative": {
       "all_citations": [

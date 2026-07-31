@@ -67,8 +67,17 @@
     "geographicCoverage": null
   },
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-30 21:29:44",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-07-30 21:56:20",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -76,7 +85,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-31T04:29:06.843462+00:00",
+        "timestamp": "2026-07-31T04:55:30.364879+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -87,14 +96,14 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.naomcc.org/",
+      "source_url": "https://www.naomcc.org/Aboutus/",
       "timestamp": "2026-07-21T15:31:11",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:16",
       "value": 2023
     },
     "has_audited_financials": {
@@ -106,7 +115,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:16",
       "value": "E32"
     }
   },
@@ -117,8 +126,6 @@
   },
   "causeTags": [
     "faith-based",
-    "fuqara",
-    "masakin",
     "medical",
     "muslim-led",
     "scalable-model",
@@ -144,7 +151,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-31T04:29:06.843462+00:00",
+      "timestamp": "2026-07-31T04:55:30.364879+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -167,7 +174,7 @@
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Moderate",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
       "risk": "Moderate"
@@ -188,7 +195,7 @@
     "confidence_scores": {
       "alignment": 28,
       "data_confidence": 0.1,
-      "impact": 13
+      "impact": 12
     },
     "score_details": {
       "alignment": {
@@ -295,13 +302,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED (emerging org baseline)",
+            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 3,
             "name": "Evidence & Outcomes",
             "possible": 5,
-            "scored": 2,
-            "status": "partial"
+            "scored": 1,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: BASIC (emerging org baseline)",
@@ -325,27 +332,39 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 13/50",
+        "rationale": "Delivery: capacity building; Impact 12/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 13
+        "score": 12
       },
       "judge_issues": [
         {
-          "field": "citation_3",
+          "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation 3 does not contain information about donating to the organization's efforts.",
+          "message": "The content of the provided URL does not contain information about the organization's focus on uniting healthcare groups to improve the quality of care provided by Muslim charitable clinics.",
           "severity": "warning"
         },
         {
-          "field": "claims_zakat_eligible",
-          "judge": "factual",
-          "message": "The narrative does not make a claim about zakat eligibility, but the source data indicates the organization does not explicitly claim zakat eligibility.",
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The content of the provided URL does not contain information about the organization offering support services to its member organizations to help them better serve their patients.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The content of the provided URL does not contain information about donors contributing to these efforts through general charitable giving on the organization's website.",
           "severity": "warning"
         },
         {
           "field": "financial.form990_exempt",
           "judge": "data_completeness",
           "message": "Religious organization (Form 990-exempt) - limited financial data available",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.outcomes.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -367,46 +386,47 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No explicit mention of zakat donations being accepted by the National Association of Muslim Charitable Clinics (NAOMCC) was found on their website or in the provided search results. While NAOMCC supports various Muslim charitable clinics, and one of its listed member clinics is 'Zakat foundation', there is no direct statement from NAOMCC itself indicating that it accepts zakat donations.",
+        "claim_evidence": "The website for the National Association of Muslim Charitable Clinics (NAOMCC) describes its mission to support and develop Muslim charitable clinics and serve \"the underserved, uninsured, immigrants, and underprivileged communities facing various health challenges\". While it lists \"Zakat foundation\" among other clinics and organizations, there is no explicit statement or dedicated section on NAOMCC's website or donation pages indicating that NAOMCC itself accepts zakat donations. (Source: https://www.naomcc.org/Aboutus/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on uniting healthcare groups and improving care in Muslim charitable clinics.",
+          "claim": "The organization focuses on uniting healthcare groups to improve the quality of care provided by Muslim charitable clinics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/932136609#financials"
         },
         {
-          "claim": "There is very little public data available regarding the organization's financial health or track record.",
+          "claim": "It offers support services to its member organizations to help them better serve their patients.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/932136609"
         },
         {
-          "claim": "Donors can contribute to these efforts through general charitable giving on the group's website.",
+          "claim": "Donors can contribute to these efforts through general charitable giving on the organization's website.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://naomcc.org/Donations"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of available financial data and outcome evidence. While the mission addresses an urgent need in global health, there is not enough information to verify how efficiently funds are used.",
+      "amal_score_rationale": "The organization's assessment is limited by a significant lack of public financial data and evidence of program outcomes. While it addresses an urgent need in global health, there is not enough information to verify how efficiently it uses its resources.",
       "areas_for_improvement": [
-        "Limited public data available regarding financial health and spending efficiency",
-        "Lack of clear evidence or third-party reports on specific program outcomes"
+        "Lack of public data regarding financial health and spending efficiency",
+        "Limited evidence available to show the specific outcomes of its programs",
+        "Need for more transparency regarding governance and leadership structures"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves an urgent need in the global health sector [1]. It provides a medium fit for Muslim donors looking to support community healthcare through sadaqah [3]. Its track record is not well-documented in public records, which limits the ability to see its long-term growth [2].",
-        "impact": "The group focuses on capacity building by supporting a network of clinics [1]. However, there is very little data available regarding its financial health or the specific results of its programs [2]. This lack of evidence makes it difficult to measure how much change the organization creates for each dollar spent."
+        "alignment": "This charity serves an urgent need in the global health space and is a moderate fit for Muslim donors seeking to give sadaqah [3]. However, its track record is difficult to assess because there is limited information about its past funding gaps or long-term results [1].",
+        "impact": "The group focuses on capacity building by supporting other clinics, but there is very little data to measure its actual effectiveness [1]. It currently lacks public information regarding its program expense ratio, financial health, or third-party evidence of its impact [2]."
       },
       "headline": "The National Association of Muslim Charitable Clinics works to connect and support healthcare organizations serving local communities.",
       "strengths": [
-        "Focuses on global health, which is a high-priority cause area [1]",
-        "Provides capacity-building support to help other clinics succeed [1]"
+        "Focuses on global health, which is a high-priority cause area",
+        "Works on capacity building to help other clinics improve their own services"
       ],
-      "summary": "The organization focuses on uniting healthcare groups to improve the quality of care provided by Muslim charitable clinics [1]. It offers support for member organizations to help them better serve their patients [1]. Donors can contribute to these efforts through general charitable giving on the group's website [3]."
+      "summary": "The organization focuses on uniting healthcare groups to improve the quality of care provided by Muslim charitable clinics [1]. It offers support services to its member organizations to help them better serve their patients [2]. Donors can contribute to these efforts through general charitable giving on the organization's website [3]."
     },
     "rich_narrative": {
       "all_citations": [

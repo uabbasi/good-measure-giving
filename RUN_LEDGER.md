@@ -761,3 +761,95 @@ not done.
 Commits `80434e3` (fix) and `bb2a581` (export tests). Suite **2029 passed**
 (was 1984). No LLM spend. Nothing regenerated — the change takes effect only on a
 re-run of synthesize onward, which is a pending decision.
+
+---
+
+## Regeneration of the 40 under the canonical rule (2026-07-30 evening)
+
+Dolt rollback point: `83namf2q` ("Snapshot: before canonical-financial-source
+regeneration of the 40").
+
+| run | scope | spend | exported | judge-blocked |
+|---|---|---|---|---|
+| probe | UNRWA only | $0.0900 | 1 | 0 |
+| batch40 #3 | synthesize-onward | $3.6895 of $8.00 | 36 | 3 |
+| blocked3 | ISGH/MAS/TMWF, `--force-phase extract` | $0.3357 of $2.00 | 3 | 0 |
+| batch40 #4 | all 40, `--force-phase extract` | $3.9297 of $10.00 | 32 | 7 |
+
+No run was budget-truncated. Session spend ~$8.05; total ~$24.
+
+**Current state: 33 of the 40 are in the site index (155 total, down from 162).**
+All 40 detail files exist; the 7 blocked ones are delisted, carrying earlier
+copies from today. 39 of 40 were regenerated today; 75-2352043 is still on
+Jul 23 data.
+
+Clean on the canonical rule itself: 0 charities with program_expenses exceeding
+total_expenses, and 0 reserves figures that mismatch without the keyConcern
+explaining the year.
+
+### The three original blocks: root-caused and fixed (`6bfef6a`, `bdd3fe3`)
+
+1. CN states working capital in YEARS, we read months; the LLM path never
+   converted. 6 charities. ISGH's "3.25" is 39.0 months — the judge compared
+   ours against theirs and called it a contradiction.
+2. Judges had no current date, so age arithmetic ran against whatever year the
+   model assumed. MAS Boston was blocked for correctly calling FY2018 data 8
+   years old.
+3. Candid board sizes came from a split landing inside people's names
+   (`{"name": "Ayman", "title": "Khalil"}`). 10 charities; 6 published it and
+   took -2 through `board_under_3` for a parser bug.
+4. Zakat corroboration checked for "zakat" inside a string the keyword scanner
+   itself wrote, so one unverified hit passed on its own say-so, and the
+   discovery agent's explicit denial was never consulted. **Texas Muslim
+   Women's Foundation was tagged ZAKAT-ELIGIBLE on live data** from a phrase
+   that appears zero times in the 182KB of site content we hold; the agent had
+   reported it belongs to a different org in Garland, TX. Now corrected.
+5. A CN working capital figure larger than the net assets behind it is refused
+   (EIN 20-1799252 returned 39 against a ceiling of 3.2).
+
+All three re-ran clean afterwards.
+
+### The 7 that appeared after `--force-phase extract`
+
+Not caused by the fixes above — re-extraction regenerates narratives from fresh
+LLM output, and each regeneration surfaces a different subset. That instability
+is itself the finding.
+
+The dominant cause is one thing: **the canonical rule adjudicates a same-year
+source disagreement and records it, and the judges then re-litigate the raw
+divergence because nothing tells them it was settled.**
+
+  45-5637293 Noor Project   PP FY2023 rev 1,759,964 vs CN FY2023 rev 100,000
+                            (a round-number LLM fabrication). We correctly
+                            published PP whole. `crawl_quality` blocks on
+                            "revenue diverges >80% across sources".
+  81-3451645 Poligon        PP 32,150 vs CN 142,345, same year. We published
+                            PP; `factual` blocks citing CN. NOTE: PP's figures
+                            imply spending 4x revenue — worth a look before
+                            assuming the filing is right.
+  92-3079413 Humaniti       reserves -6.1 (FY2023 basis, disclosed) against the
+                            judge's -0.23 recomputed from FY2024 expenses.
+
+Two are judge self-contradictions:
+
+  81-2822877 Yaqeen         the message says "The narrative's claim of 96.0/100
+                            is accurate" and is filed severity=error.
+  56-2620244 Muslim Academy the judge computed the program ratio as program /
+                            REVENUE rather than program / expenses.
+
+Two are genuine narrative-consistency problems (score judge, prose):
+
+  41-2046295 Citizens Fdn   rationale says "clear theory of change"; the score
+                            details say DEVELOPING/IMPLICIT.
+  86-1226156 Qalam          narrative says large savings imply a lower funding
+                            gap while Funding Gap scores 5/5.
+
+### 75-2352043 — the crawl gate, not the charity
+
+`website` row: `success=0`, `last_failure_reason=CAPTCHA_BLOCKED`, **and
+`scraped_at=2026-03-07` with 320,485 bytes still stored and parsed into 45
+usable fields**. Every other source is fresh. The required-source gate reads the
+`success` flag rather than whether we hold usable content, so a blocked
+re-fetch discards a charity we have data for — while the non-downgrade design
+exists specifically to preserve that content. Changing the gate affects every
+charity, so it is not done: it needs a decision.
