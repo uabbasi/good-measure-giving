@@ -94,6 +94,41 @@ _FIELD_GROUPS: dict[str, str] = {
 }
 
 
+# Judges name fields in their own words ("revenue", "rating", "working
+# capital"); these are the columns those names refer to.
+_FIELD_COLUMNS: dict[str, str] = {
+    "revenue": "total_revenue",
+    "expenses": "total_expenses",
+    "administrative_expenses": "admin_expenses",
+    "working_capital": "working_capital_months",
+    "working_capital_ratio": "working_capital_months",
+    "reserves_months": "working_capital_months",
+    "assets": "total_assets",
+    "liabilities": "total_liabilities",
+    "board_members": "board_size",
+    "accepts_zakat": "claims_zakat_eligible",
+}
+
+
+def published_column_for(field: Optional[str]) -> Optional[str]:
+    """The charity_data column a judge's field name refers to."""
+    if not field:
+        return None
+    key = str(field).strip().lower().replace(" ", "_").replace("-", "_")
+    key = key.rsplit(".", 1)[-1]
+    if key in _FIELD_COLUMNS:
+        return _FIELD_COLUMNS[key]
+    if key in _FIELD_GROUPS:
+        return key
+    for known in sorted(_FIELD_COLUMNS, key=len, reverse=True):
+        if known in key:
+            return _FIELD_COLUMNS[known]
+    for known in sorted(_FIELD_GROUPS, key=len, reverse=True):
+        if known in key:
+            return known
+    return None
+
+
 def field_group(field: Optional[str]) -> Optional[str]:
     """The trust group a field belongs to, or None if it is not adjudicated."""
     if not field:

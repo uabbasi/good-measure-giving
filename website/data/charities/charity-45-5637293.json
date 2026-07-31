@@ -31,8 +31,8 @@
   "zakatEligible": null,
   "status": "generated",
   "scores": {
-    "overall": 100,
-    "financial": 100,
+    "overall": 92.5,
+    "financial": 88,
     "accountability": 100,
     "transparency": "70.00"
   },
@@ -50,7 +50,7 @@
     "programExpenses": null,
     "adminExpenses": null,
     "fundraisingExpenses": null,
-    "programExpenseRatio": "1.0000",
+    "programExpenseRatio": "0.8420",
     "fiscalYear": 2023,
     "dataSource": "propublica",
     "totalAssets": 431195,
@@ -64,13 +64,13 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Adults",
-      "Youth",
       "Women",
-      "Children",
-      "Men",
+      "Adults",
       "Families",
-      "Communities"
+      "Children",
+      "Youth",
+      "Communities",
+      "Men"
     ],
     "geographicCoverage": [
       "Pakistan"
@@ -95,7 +95,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 21:30:01",
+  "lastUpdated": "2026-07-30 22:21:47",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -103,7 +103,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-31T04:29:06.853610+00:00",
+        "timestamp": "2026-07-31T04:55:35.240886+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -115,7 +115,7 @@
     "candid_seal": {
       "source_name": "Candid",
       "source_url": null,
-      "timestamp": "2026-07-29T22:42:02",
+      "timestamp": "2026-07-30T21:55:15",
       "value": "silver"
     },
     "claims_zakat_eligible": {
@@ -127,7 +127,7 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:17",
       "value": 2014
     },
     "has_audited_financials": {
@@ -139,25 +139,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:17",
       "value": "K30"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455637293#financials",
-      "timestamp": "2026-07-29T22:42:04",
-      "value": 1
+      "timestamp": "2026-07-30T21:55:17",
+      "value": 0.842
     },
     "total_revenue": {
       "source_name": "Form 990 (2023)",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:17",
       "value": 1759964
     },
     "transparency_score": {
       "source_name": "Candid Silver Seal",
       "source_url": null,
-      "timestamp": "2026-07-29T22:42:02",
+      "timestamp": "2026-07-30T21:55:15",
       "value": 70
     },
     "working_capital_months": {
@@ -169,7 +169,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
-      "timestamp": "2026-07-29T22:42:04",
+      "timestamp": "2026-07-30T21:55:17",
       "value": 3.4
     }
   },
@@ -200,7 +200,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2014,
-  "scoreSummary": "For the Needy & Hungry Foundation Inc shows strong alignment and good impact, with zakat compliance (significant risk deductions applied).",
+  "scoreSummary": "For the Needy & Hungry Foundation Inc shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 1,
   "form990ExemptReason": "Exempt from Form 990 filing",
   "noFilings": false,
@@ -212,7 +212,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-31T04:29:06.853610+00:00",
+      "timestamp": "2026-07-31T04:55:35.240886+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -227,9 +227,7 @@
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": null,
-    "evaluationSources": [
-      "Verified by Feeling Blessed (Feeling Blessed)"
-    ],
+    "evaluationSources": null,
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
@@ -257,11 +255,34 @@
   },
   "keyConcerns": [
     {
-      "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Board too small: 1 members",
-      "detail": "Source: Candid profile",
-      "data_points": {}
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Sources disagree on total revenue for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $1,759,964 from the IRS filing while Charity Navigator reports $100,000 for the same year. We publish the filing.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 1759964,
+        "field": "total_revenue",
+        "fiscal_year": 2023,
+        "other_source": "charity_navigator",
+        "other_value": 100000,
+        "reason": "same_fiscal_year_disagreement"
+      }
+    },
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Sources disagree on total expenses for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $1,530,084 from the IRS filing while Charity Navigator reports $95,000 for the same year. We publish the filing.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 1530084,
+        "field": "total_expenses",
+        "fiscal_year": 2023,
+        "other_source": "charity_navigator",
+        "other_value": 95000,
+        "reason": "same_fiscal_year_disagreement"
+      }
     },
     {
       "type": "risk_deduction",
@@ -274,7 +295,7 @@
   "amalEvaluation": {
     "charity_ein": "45-5637293",
     "charity_name": "The Noor Project",
-    "amal_score": 63,
+    "amal_score": 68,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:45:58",
     "rubric_version": "5.3.0",
@@ -379,7 +400,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 100%",
+            "evidence": "Program expense ratio: 84%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -406,7 +427,7 @@
             "status": "full"
           },
           {
-            "evidence": "Board governance: WEAK (1 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -430,10 +451,22 @@
           "severity": "warning"
         },
         {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 202",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 202",
+          "severity": "warning"
+        },
+        {
+          "field": "multi_source.revenue_divergence",
+          "judge": "crawl_quality",
+          "message": "Revenue diverges >80% across sources ($100,000 - $1,759,964) in same fiscal year - resolved by source trust order; the lower figure is likely a transcription error",
+          "severity": "warning"
         },
         {
           "field": "source_attribution.claims_zakat_eligible.source_url",
@@ -448,18 +481,11 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -6,
+      "risk_deduction": -1,
       "risks": {
-        "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: Board too small: 1 members",
+        "overall_risk_level": "LOW",
+        "risk_summary": "1 risk(s) identified.",
         "risks": [
-          {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 1 members",
-            "mitigation": null,
-            "severity": "high"
-          },
           {
             "category": "impact",
             "data_source": "Website/Candid",
@@ -468,9 +494,9 @@
             "severity": "low"
           }
         ],
-        "total_deduction": -6
+        "total_deduction": -1
       },
-      "score_summary": "For the Needy & Hungry Foundation Inc shows strong alignment and good impact, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "For the Needy & Hungry Foundation Inc shows strong alignment and good impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -482,40 +508,53 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization operates the Noor Project, maintains a 100.0% program expense Ratio, and lacks outcome metrics.",
+          "claim": "The organization operates the Noor Grammar School and a clinic to help lift families out of poverty.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455637293#financials"
         },
         {
-          "claim": "The charity reported $1,759,964 in revenue for FY2023 and operates with a one-member board.",
+          "claim": "For the Needy & Hungry Foundation Inc reported a total revenue of $1,759,964 in fiscal year 2023.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
         },
         {
-          "claim": "The charity is Zakat-eligible and provides a calculator for donors.",
+          "claim": "Donors can contribute through Zakat-eligible programs to support these community services.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://thenoorproject.org/zakat-calculator"
+        },
+        {
+          "claim": "It works in the urgent area of global education and allows people to help through money.",
+          "id": "[4]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://thenoorproject.org/donate"
+        },
+        {
+          "claim": "The organization allows people to help through volunteering.",
+          "id": "[5]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://thenoorproject.org/volunteer"
         }
       ],
-      "amal_score_rationale": "The charity shows a balanced profile with efficient spending on direct services, but it faces significant transparency risks due to outdated financial filings and a lack of outcome tracking.",
+      "amal_score_rationale": "The charity shows above-average performance due to its high program spending and low cost to serve each person. However, the lack of recent financial data and formal outcome tracking limits its overall rating.",
       "areas_for_improvement": [
-        "No financial filings newer than FY2023 are available\u2014donors should treat this 3-year-old financial picture with caution [2].",
-        "The organization operates with a very small board of only one member [2].",
-        "There is no public data showing how the charity measures its outcomes or program success [1]."
+        "No financial filings newer than FY2023 are available\u2014donors should treat this 3-year-old financial picture with caution",
+        "Lack of public metrics to track long-term outcomes and program success",
+        "No evidence of independent governance reviews or third-party impact audits"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors as it is Zakat-eligible and focuses on global education [3]. However, its track record is difficult to verify because it has not updated its public financial records since 2023 [2].",
-        "impact": "The foundation reports a 100.0% program expense Ratio and a low cost of approximately $3.48 per beneficiary [1]. While it has 3.4 months of working capital, the charity does not share specific metrics to prove the long-term success of its programs [1]."
+        "alignment": "This organization is a strong fit for Muslim donors because it offers Zakat-eligible giving options [3]. It works in the urgent area of global education and allows people to help through both money and volunteering [4][5]. It has a steady track record of providing direct aid to the poor [1].",
+        "impact": "The charity spends 84.2% of its money on direct services like its school and pharmacy [1]. It reaches people at a low cost of $3.48 per beneficiary [2]. While it has enough cash to cover 3.4 months of work, it does not publicly share data to prove how well its programs work over time [1]."
       },
-      "headline": "For the Needy & Hungry Foundation Inc works to lift families out of poverty through education and vocational training.",
+      "headline": "The Noor Project provides direct aid to marginalized families through education and vocational training.",
       "strengths": [
-        "Maintains a 100.0% program expense Ratio, meaning all reported spending goes toward its mission [1].",
-        "Provides direct services including a grammar school, clinic, and pharmacy [1]."
+        "High spending efficiency with 84.2% of funds going directly to programs",
+        "Low cost per beneficiary at approximately $3.48",
+        "Clear focus on high-urgency needs like global education and healthcare"
       ],
-      "summary": "The organization operates the Noor Project, which provides schooling and medical care to marginalized communities [1]. It reported a Total Revenue of $1,759,964 in its most recent public filing [2]. The charity is Zakat-eligible and offers a calculator to help donors fulfill their religious giving requirements [3]."
+      "summary": "For the Needy & Hungry Foundation Inc reported a total revenue of $1,759,964 in fiscal year 2023 [2]. The organization operates the Noor Grammar School and a clinic to help lift families out of poverty [1]. Donors can contribute through Zakat-eligible programs to support these community services [3]."
     },
     "rich_narrative": {
       "all_citations": [

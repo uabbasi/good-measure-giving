@@ -127,3 +127,40 @@ class TestFabricationStillBlocks:
     def test_no_published_data_at_all(self):
         assert not claim_matches_published_value("total_revenue", "1759964", {})
         assert not claim_matches_published_value("total_revenue", "1759964", None)
+
+
+class TestTheFigureStatedOnlyInProse:
+    """The model routinely leaves claim_value null and puts both numbers in the
+    message. EIN 56-2620244: "The narrative claims FY2025 revenue of $3,145,617,
+    but the source data for FY2025 shows $3,572,587" — where $3,145,617 is what
+    we published and $3,572,587 is ProPublica's FY2024, mislabelled.
+    """
+
+    ORLANDO = {"total_revenue": 3145617}
+
+    def test_the_orlando_message(self):
+        assert claim_matches_published_value(
+            "revenue", None, self.ORLANDO,
+            "The narrative claims FY2025 revenue of $3,145,617, but the source data "
+            "for FY2025 shows $3,572,587.",
+        )
+
+    def test_the_number_cited_against_the_narrative_is_not_read_as_the_claim(self):
+        """The decisive case. Matching ANY number in the message would wave
+        through a real fabrication whenever the judge quotes our figure as the
+        correct one."""
+        assert not claim_matches_published_value(
+            "revenue", None, self.ORLANDO,
+            "The narrative claims revenue of $9,900,000, but the source data shows "
+            "$3,145,617.",
+        )
+
+    def test_prose_with_no_figure_attributed_to_the_narrative(self):
+        assert not claim_matches_published_value(
+            "revenue", None, self.ORLANDO, "Revenue could not be verified against any source."
+        )
+
+    def test_an_explicit_claim_value_still_takes_precedence(self):
+        assert claim_matches_published_value(
+            "revenue", "3145617", self.ORLANDO, "unrelated prose mentioning 42"
+        )

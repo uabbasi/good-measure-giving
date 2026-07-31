@@ -13,7 +13,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 from src.llm.llm_client import TASK_MODELS, LLMClient, LLMTask
-from src.utils.source_trust import field_group
+from src.utils.source_trust import field_group, published_column_for
 
 from .base_judge import BaseJudge, JudgeType
 from .materiality import is_methodology_divergent
@@ -131,20 +131,47 @@ def _published_value(field: Any, published: Any) -> Optional[float]:
     """What we actually published for this field, as a number."""
     if not isinstance(published, dict):
         return None
-    group = field_group(field)
-    if group is None:
+    if field_group(field) is None:
         return None
-    key = str(field or "").strip().lower().replace(" ", "_").replace("-", "_")
+    column = published_column_for(field)
+    if column is None:
+        return None
     metrics = published.get("metrics_json")
     metrics = metrics if isinstance(metrics, dict) else {}
-    for candidate in (key, key.rsplit(".", 1)[-1]):
-        for holder in (published, metrics):
-            if candidate in holder and holder[candidate] is not None:
-                return _parse_number(holder[candidate])
+    for holder in (published, metrics):
+        if isinstance(holder, dict) and holder.get(column) is not None:
+            return _parse_number(holder[column])
     return None
 
 
-def claim_matches_published_value(field: Any, claim_value: Any, published: Any) -> bool:
+# The model frequently leaves claim_value null and states both figures in prose:
+# "The narrative claims FY2025 revenue of $3,145,617, but the source data shows
+# $3,572,587." Only the first of those is the narrative's claim, so matching any
+# number in the message would also match the figure the judge is citing AGAINST
+# it — which would wave through real fabrications. This picks out the number the
+# sentence attributes to the narrative, and nothing else.
+_NARRATIVE_CLAIM_RE = re.compile(
+    r"(?:narrative|report|page|it)\s+(?:claims?|states?|says?|reports?|indicates?)"
+    r"[^.;]{0,80}?(-?\$?\s?\d[\d,]*\.?\d*)\s*%?",
+    re.IGNORECASE,
+)
+
+
+# "The narrative claims FY2025 revenue of $3,145,617" — the first number after
+# "claims" is the fiscal year, not the claim. Years are removed before matching.
+_YEAR_TOKEN_RE = re.compile(r"\bFY\s*\d{4}\b|\b(?:19|20)\d{2}\b", re.IGNORECASE)
+
+
+def _claim_stated_in_message(message: Any) -> Optional[float]:
+    """The figure a judge's prose attributes to the narrative itself."""
+    text = _YEAR_TOKEN_RE.sub(" ", str(message or ""))
+    match = _NARRATIVE_CLAIM_RE.search(text)
+    return _parse_number(match.group(1)) if match else None
+
+
+def claim_matches_published_value(
+    field: Any, claim_value: Any, published: Any, message: Any = None
+) -> bool:
     """Is the narrative faithfully reporting the figure we published?
 
     This is the whole answer to "the sources disagree". Which source a field
@@ -163,6 +190,8 @@ def claim_matches_published_value(field: Any, claim_value: Any, published: Any) 
     fabrication, and no hierarchy excuses it.
     """
     claimed = _parse_number(claim_value)
+    if claimed is None:
+        claimed = _claim_stated_in_message(message)
     if claimed is None:
         return False
     ours = _published_value(field, published)
@@ -691,7 +720,10 @@ class FactualJudge(BaseJudge):
                     # after this one are narrower shapes of the same mistake,
                     # each added after a regeneration surfaced it.
                     if claim_matches_published_value(
-                        issue.field, issue.claim_value, context.get("charity_data")
+                        issue.field,
+                        issue.claim_value,
+                        context.get("charity_data"),
+                        issue.message,
                     ):
                         severity = Severity.WARNING
                     elif numeric_agreement(issue.claim_value, issue.source_value) is True:
