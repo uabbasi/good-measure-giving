@@ -1019,3 +1019,133 @@ Reverted to gemini-3.5-flash-lite, with 3.1-flash-lite kept as first fallback.
 Confirmation pass after reverting: 0 errors, 5 of 5, index back to 162.
 
 Suite 2093 green.
+
+---
+
+# BATCH 80 — the next 40 charities (2026-07-31)
+
+## Selection
+
+86 charities remained after batch40, once the HARD DATA section and the
+HIDE:TRUE benchmark orgs (American Red Cross, GiveDirectly, ACLU and the rest —
+hidden from the curated list on purpose) are removed.
+
+Four were missing from the index or currently blocked, so all four are in;
+excluding them would flatter the result. The other 36 are stratified across
+sections rather than taken in source order — source order alone would have made
+the batch 31/40 international relief and 2/40 mosques, which says nothing about
+the 33 mosque-and-community orgs still queued behind it, the largest remaining
+group and the one whose small filers have the thinnest source coverage.
+
+Final spread: 16 mosque/community, 14 relief, 4 education, 2 advocacy,
+2 health, 2 active-testing. Reproducible via `data-pipeline/select_batch80.py`
+— "blocked" means an export_exclusions row with nothing successful after it,
+since that table is append-only and a bare row proves nothing.
+
+Must-include four: 46-3973114 International Aid Charity, 13-3626299 Imran Khan
+Cancer Appeal USA, 56-2392452 Rebuilding Alliance, 83-0919620 Humanity for
+Relief and Development.
+
+## What the first 5 turned up: the IRS was never readable
+
+`b80_05` run 1: 4 of 5. Zakat Foundation of America (36-4476244) failed its
+crawl — "Failed to download any XML filings", which reads like the IRS has
+nothing for it. The IRS has three filings for it. Three separate defects, each
+reporting a filing we could not ADDRESS as a filing that does not EXIST:
+
+| # | defect | evidence |
+|---|---|---|
+| 1 | **Overflow volumes.** The index names one bundle per filing; when a batch outgrows one zip the IRS publishes lettered volumes and keeps naming only the first. | index_2026 assigns 168,344 rows to `2026_TEOS_XML_05A`, which holds 84,172 members and stops at object_id 202621329349203217. `05B` holds the next 84,172, starts at 202621329349203222, and is named by **no index row at all**. 12 arbitrary 05A rows sampled: 5 present. |
+| 2 | **Case.** | index_2024 writes `2024_TEOS_XML_05a`; the server has `05A.zip` and 302s the lowercase to irs.gov/404. zipfile then said "File is not a zip file" — corruption, for a wrong URL. |
+| 3 | **Deflate64.** Python's zipfile will not decompress method 9. | Every member of 2026_TEOS_XML_05A/05B and 2025_TEOS_XML_05B is method 9; batches 01–04 and all of 2024 are ordinary deflate. It is the oversized batch that gets packed past deflate's limits — the same size that forces the split. |
+
+Plus a fourth, in the filing picker: it kept one filing per tax period by first
+arrival, so the CSV's row order chose the return. Orgs that file a 990-T file
+it for the same period as the real 990, and index_2025 and index_2024 list the
+990-T first — so two of this charity's three slots went to returns carrying no
+Schedule I. That is how a run logs "Extracted 0 domestic + 0 foreign grants".
+
+**Scale: batch 05 carries 168,344 of index_2026's 353,651 rows — 48% of the
+submission year was silently unreadable**, and every charity among them quietly
+kept whatever older filing was already cached. Fix verified against the live
+IRS, not fixtures: 36-4476244 went from zero readable filings to three.
+
+Added dependency `inflate64` (wheels available; `zipfile-deflate64` fails to
+build against the current toolchain).
+
+## The backoff outlived the fix
+
+Run 2 still failed the same charity: "within backoff window (2.7h remaining)".
+The failure from run 1 had armed a 4-hour retry backoff, and a code fix cannot
+invalidate that record — every charity a broken collector touched keeps serving
+its sentence. `--force-phase crawl` now clears the window and the retry count,
+deliberately BELOW the terminal check so CAPTCHA and not-found stay skipped.
+**EIN 75-2352043 stays frozen, by test.**
+
+**Separate defect found there and NOT fixed** (not blocking, and it changes
+crawl politeness for all 169): the backoff clock is wrong. `last_attempt_at` is
+written by the Dolt server as CURRENT_TIMESTAMP in the SERVER's zone (PDT),
+read back naive, then compared against `datetime.now(None)` — the HOST's clock.
+A 23-minute-old failure measured as 1h23m, and the 4h window reported 2.7h left
+instead of 3.6h. Both age helpers do `datetime.now(dt.tzinfo) - dt` with
+`dt.tzinfo` always None, so freshness.py's "Tz-aware age" docstring describes an
+intent the code does not deliver. It errs toward retrying too SOON, which is why
+it never surfaced as a failure; from a UTC host the gap would be 7h and the 1h
+and 4h windows would be defeated outright.
+
+## The primary source is ahead of both mirrors
+
+With the XML readable, it turned out to be newer than what we publish. For
+36-4476244 the two mirrors agreed with each other to the dollar and were both
+a year behind the filing they are copies of:
+
+| source | fiscal year | revenue |
+|---|---|---|
+| ProPublica | 2023 | $29,498,054 |
+| Charity Navigator | 2023 | $29,498,054 |
+| **IRS e-file (primary)** | **2024** | **$34,923,926** |
+
+Measured across the 40 from the index CSVs (free): **the filing is ahead on 6,
+level on 32**. The gap appears where a fiscal year ends mid-calendar.
+
+User approved adding it before running the 40, so the 6 are regenerated once
+rather than twice. Three parts:
+
+- **Parse.** The 990 carries the whole statement in one group that reconciles
+  to the dollar (34,365,532 + 1,198,626 + 1,253,842 = 36,818,000). We read two
+  fields. `program_expenses` was looked up at `CYProgramServiceExpenseAmt` —
+  not a tag in this schema, so None for every charity, a path that never
+  matched anything. Admin/fundraising XPaths are scoped to
+  `TotalFunctionalExpensesGrp` on purpose: every Part IX line repeats those tag
+  names and an unscoped search returns the first row, which would publish
+  $38,852 of legal fees as an org's entire administrative expense.
+- **Elect.** Supersedes only when strictly newer AND at least as complete. A
+  990-EZ has no Part IX; taking it whole would trade a stale complete statement
+  for a current mutilated one and delete the split that
+  `program_expense_ratio` and Financial Health are computed from.
+- **Ratio.** Found while verifying: the aggregator's values overwrite the
+  financial columns, but that list omits `program_expense_ratio`, which kept
+  Charity Navigator's precomputed quotient. First run published 34,365,532 over
+  36,818,000 (0.9334) beside a ratio of **0.9159** from another year and
+  another source — the numerator-over-a-foreign-denominator defect the
+  canonical-source work exists to prevent, arriving already divided.
+
+`b80_05` run 3: **5 of 5**, FINISHED at $3.06 of $5.00.
+
+## Cost
+
+$0.60/charity against batch40's $0.23 — judging is 97.9% of it, and every
+charity here needs full regeneration (`Code changed`). Estimated ~$24 for the
+40 against an earlier ~$10, so 2.4x; **checked in with the user before
+proceeding** per the standing rule, approved at a $30 cap.
+
+## Run log
+
+| run | scope | result |
+|---|---|---|
+| b80_05 #1 | 5, force crawl+extract | 4/5 — IRS bundle failure |
+| b80_05 #2 | 5, force crawl+extract | 4/5 — stale backoff |
+| b80_05 #3 | 5, force crawl+extract | **5/5**, $3.06 of $5.00, FINISHED |
+| 36-4476244 | single, IRS election | FY2024 published, ratio consistent |
+| batch80 #1 | 40, force crawl+extract | killed at ~29/40 by the 10-min tool cap, not by budget |
+| batch80 #2 | 40, resumed on cache | in progress |
