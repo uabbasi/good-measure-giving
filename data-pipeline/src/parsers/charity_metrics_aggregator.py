@@ -193,6 +193,86 @@ def zero_expense_component_is_corroborated(
     return abs(total_expenses - sibling_total) / total_expenses <= tolerance
 
 
+SHARED_FIELD_TOLERANCE = 0.02
+
+# The whole income statement is elected from one source. Splicing CN's
+# program_expenses onto PP's total_expenses produced a published program figure
+# 7.8x the published total (EIN 83-1171525) and a ratio matching neither source
+# (EIN 92-1198452) — the numerator and denominator described different filings.
+ELECT_PROPUBLICA = "propublica"
+ELECT_CHARITY_NAVIGATOR = "charity_navigator"
+ELECT_GAP_FILL = "gap_fill"
+
+
+def shared_income_fields_agree(
+    pp_profile: Optional[Dict[str, Any]],
+    cn_profile: Optional[Dict[str, Any]],
+    tolerance: float = SHARED_FIELD_TOLERANCE,
+) -> bool:
+    """Do the two sources agree on the fields they BOTH report?
+
+    Only meaningful when they claim the same fiscal year: same year means same
+    filing, so a material gap is a transcription error rather than a genuine
+    year-over-year change. ProPublica reads the IRS e-file directly and reports
+    to the dollar; Charity Navigator is LLM-extracted from scraped HTML and its
+    errors are recognizably round ($5,400,000 against PP's $11,189,635).
+
+    A field only one side reports is not a disagreement — PP omitting the
+    functional-expense breakdown is the entire reason CN is consulted at all.
+    """
+    pp_profile = pp_profile or {}
+    cn_profile = cn_profile or {}
+    for name in ("total_revenue", "total_expenses"):
+        pp_value, cn_value = pp_profile.get(name), cn_profile.get(name)
+        if pp_value is None or cn_value is None:
+            continue
+        try:
+            pp_value, cn_value = float(pp_value), float(cn_value)
+        except (TypeError, ValueError):
+            continue
+        largest = max(abs(pp_value), abs(cn_value))
+        if largest == 0:
+            continue
+        if abs(pp_value - cn_value) / largest > tolerance:
+            return False
+    return True
+
+
+def elect_income_statement(
+    pp_tax_year: Optional[int],
+    cn_fiscal_year: Optional[int],
+    pp_income_count: int,
+    cn_income_count: int,
+    shared_fields_agree: bool = True,
+) -> str:
+    """Choose the single source for the whole income statement.
+
+    Recency first: presenting a years-old filing as an organization's current
+    financials misinforms a donor, while an incomplete current one is merely
+    incomplete. The prior rule elected on field count alone, so five charities
+    published a staler income statement than the one already in hand — Hikma
+    Health showed Charity Navigator's FY2019 over ProPublica's FY2023.
+
+    Ties break toward ProPublica: it is the filing itself.
+    """
+    has_pp = pp_income_count > 0 or pp_tax_year is not None
+    has_cn = cn_income_count > 0 or cn_fiscal_year is not None
+    if not has_cn:
+        return ELECT_PROPUBLICA
+    if not has_pp:
+        return ELECT_CHARITY_NAVIGATOR
+
+    if pp_tax_year is not None and cn_fiscal_year is not None and pp_tax_year != cn_fiscal_year:
+        cn_is_newer = cn_fiscal_year > pp_tax_year
+        cn_says_more = cn_income_count >= 3 and pp_income_count < 3
+        return ELECT_CHARITY_NAVIGATOR if (cn_is_newer and cn_says_more) else ELECT_PROPUBLICA
+
+    # Same fiscal year (or PP never named one): the two are describing one
+    # filing, so CN may fill what PP omits — but only if they agree about the
+    # filing. Where they do not, the filing wins whole and the gap is noted.
+    return ELECT_GAP_FILL if shared_fields_agree else ELECT_PROPUBLICA
+
+
 def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> Optional[float]:
     """GIK-adjusted program ratio, clamped to [0.0, 1.0], or None when the
     ratio is not a measurable signal.
@@ -463,6 +543,16 @@ class CharityMetrics(BaseModel):
     )
     financial_data_source: Optional[str] = Field(
         None, description="Source of income statement financials: 'propublica', 'charity_navigator', or 'mixed'"
+    )
+    balance_sheet_tax_year: Optional[int] = Field(
+        None,
+        description="Fiscal year of the published balance sheet. Equal to financial_data_tax_year "
+        "when the two describe one filing; anything derived from BOTH (working capital) may only "
+        "be published when they match.",
+    )
+    financial_source_discrepancies: list[dict] = Field(
+        default_factory=list,
+        description="Where ProPublica and Charity Navigator diverged and one was chosen as canonical",
     )
     financial_quality_flags: Optional[list[str]] = Field(
         None, description="Detected data quality issues (e.g., 'program_exceeds_total', 'expense_sum_mismatch')"
@@ -1633,7 +1723,9 @@ class CharityMetricsAggregator:
             metrics_data["total_contributions"] = propublica_990.get("total_contributions")
             metrics_data["program_service_revenue"] = propublica_990.get("program_service_revenue")
             metrics_data["investment_income"] = propublica_990.get("investment_income")
-            # Balance sheet (point-in-time, always safe to pull)
+            # Balance sheet — carries the tax year of the filing it came from,
+            # so nothing downstream can derive across a year boundary. Stamped
+            # below, once the tax year has actually been read.
             for f in _BALANCE_SHEET_FIELDS:
                 metrics_data[f] = propublica_990.get(f)
                 _track(f, "propublica", metrics_data.get(f))
@@ -1655,10 +1747,15 @@ class CharityMetricsAggregator:
                     metrics_data["financial_data_tax_year"] = int(tax_year)
                 except (ValueError, TypeError):
                     pass
+            # The balance sheet pulled above belongs to this same filing.
+            metrics_data["balance_sheet_tax_year"] = metrics_data.get("financial_data_tax_year")
 
-        # --- Fiscal-year-aware CN gap-fill for income statement ---
+        # --- Canonical financial source: one source, one fiscal year ---
+        # The income statement is elected whole. It used to be assembled
+        # per-field, which published a program figure 7.8x its own total
+        # (EIN 83-1171525) because the numerator came from Charity Navigator
+        # and the denominator from ProPublica.
         if cn_profile:
-            # Determine fiscal years
             pp_tax_year = metrics_data.get("financial_data_tax_year")
             cn_fy = cn_profile.get("fiscal_year")
             try:
@@ -1666,99 +1763,126 @@ class CharityMetricsAggregator:
             except (ValueError, TypeError):
                 cn_fiscal_year = None
 
-            years_match = (
-                pp_tax_year is not None
-                and cn_fiscal_year is not None
-                and pp_tax_year == cn_fiscal_year
-            )
-            years_differ = (
-                pp_tax_year is not None
-                and cn_fiscal_year is not None
-                and pp_tax_year != cn_fiscal_year
-            )
-
-            # Count how many income statement fields PP provided (non-None)
-            pp_income_count = sum(
-                1 for f in _INCOME_STMT_FIELDS if metrics_data.get(f) is not None
-            )
-            # Count how many CN provides
-            cn_income_count = sum(
-                1 for f in _INCOME_STMT_FIELDS
-                if cn_profile.get(f) is not None
-                or (f == "admin_expenses" and (
-                    cn_profile.get("admin_expenses") is not None
-                    or cn_profile.get("administrative_expenses") is not None
-                ))
-            )
-
-            if years_differ:
-                if pp_income_count < 3 and cn_income_count >= 3:
-                    # PP has too few fields — use CN for ALL income statement
-                    for f in _INCOME_STMT_FIELDS:
-                        if f == "admin_expenses":
-                            metrics_data[f] = _first_non_none(
-                                cn_profile.get("admin_expenses"),
-                                cn_profile.get("administrative_expenses"),
-                            )
-                        else:
-                            metrics_data[f] = cn_profile.get(f)
-                    metrics_data["financial_data_source"] = "charity_navigator"
-                    metrics_data["financial_data_tax_year"] = cn_fiscal_year
-                    logger.info(
-                        f"Using CN income statement for {ein}: PP year={pp_tax_year} "
-                        f"(only {pp_income_count} fields), CN year={cn_fiscal_year} "
-                        f"({cn_income_count} fields)"
+            def _cn_income_value(field: str):
+                if field == "admin_expenses":
+                    return _first_non_none(
+                        cn_profile.get("admin_expenses"),
+                        cn_profile.get("administrative_expenses"),
                     )
-                else:
-                    # PP has enough fields OR CN doesn't — keep PP, no gap-fill
-                    metrics_data["financial_data_source"] = "propublica"
-                    if cn_income_count >= 3:
-                        logger.info(
-                            f"Keeping PP income statement for {ein}: PP year={pp_tax_year} "
-                            f"({pp_income_count} fields), CN year={cn_fiscal_year} skipped"
-                        )
-            elif years_match or pp_tax_year is None:
-                # Same year or PP didn't provide year — safe to gap-fill
+                return cn_profile.get(field)
+
+            pp_income_count = sum(1 for f in _INCOME_STMT_FIELDS if metrics_data.get(f) is not None)
+            cn_income_count = sum(1 for f in _INCOME_STMT_FIELDS if _cn_income_value(f) is not None)
+            # Agreement is only meaningful within one fiscal year: across years
+            # a gap is a genuine year-over-year change, not a transcription
+            # error, so comparing them would mislabel Hikma Health's FY2019-vs-
+            # FY2023 recency problem as a same-year source conflict.
+            same_claimed_year = pp_tax_year is None or pp_tax_year == cn_fiscal_year
+            sources_agree = not same_claimed_year or shared_income_fields_agree(
+                {f: metrics_data.get(f) for f in _INCOME_STMT_FIELDS}, cn_profile
+            )
+            election = elect_income_statement(
+                pp_tax_year=pp_tax_year,
+                cn_fiscal_year=cn_fiscal_year,
+                pp_income_count=pp_income_count,
+                cn_income_count=cn_income_count,
+                shared_fields_agree=sources_agree,
+            )
+            discrepancies: list[dict] = metrics_data.setdefault("financial_source_discrepancies", [])
+
+            if election == ELECT_CHARITY_NAVIGATOR:
+                for f in _INCOME_STMT_FIELDS:
+                    metrics_data[f] = _cn_income_value(f)
+                    _track(f, "charity_navigator", metrics_data[f])
+                metrics_data["financial_data_source"] = "charity_navigator"
+                metrics_data["financial_data_tax_year"] = cn_fiscal_year
+                logger.info(
+                    f"CN income statement is canonical for {ein}: CN FY{cn_fiscal_year} "
+                    f"({cn_income_count} fields) over PP FY{pp_tax_year} ({pp_income_count})"
+                )
+            elif election == ELECT_GAP_FILL:
                 gap_filled = False
                 for f in _INCOME_STMT_FIELDS:
                     if metrics_data.get(f) is None:
-                        if f == "admin_expenses":
-                            val = _first_non_none(
-                                cn_profile.get("admin_expenses"),
-                                cn_profile.get("administrative_expenses"),
-                            )
-                        else:
-                            val = cn_profile.get(f)
+                        val = _cn_income_value(f)
                         if val is not None:
                             metrics_data[f] = val
+                            _track(f, "charity_navigator", val)
                             gap_filled = True
                 if gap_filled:
                     metrics_data["financial_data_source"] = "mixed"
                 elif propublica_990:
                     metrics_data["financial_data_source"] = "propublica"
-            elif not propublica_990:
-                # No PP data at all — use CN entirely
-                for f in _INCOME_STMT_FIELDS:
-                    if f == "admin_expenses":
-                        metrics_data[f] = _first_non_none(
-                            cn_profile.get("admin_expenses"),
-                            cn_profile.get("administrative_expenses"),
-                        )
-                    else:
-                        metrics_data[f] = cn_profile.get(f)
-                metrics_data["financial_data_source"] = "charity_navigator"
+            else:
+                metrics_data["financial_data_source"] = "propublica"
+                # Record what was refused, and why, so a page missing its
+                # expense breakdown can explain itself.
+                if not sources_agree:
+                    for f in ("total_revenue", "total_expenses"):
+                        pp_value, cn_value = metrics_data.get(f), cn_profile.get(f)
+                        if pp_value is None or cn_value is None or pp_value == cn_value:
+                            continue
+                        discrepancies.append({
+                            "field": f,
+                            "fiscal_year": pp_tax_year,
+                            "canonical_source": "propublica",
+                            "canonical_value": pp_value,
+                            "other_source": "charity_navigator",
+                            "other_value": cn_value,
+                            "reason": "same_fiscal_year_disagreement",
+                        })
+                    logger.info(
+                        f"Sources disagree on FY{pp_tax_year} for {ein}; keeping the Form 990 "
+                        f"whole rather than splicing Charity Navigator into it"
+                    )
+                elif cn_income_count >= 3 and cn_fiscal_year is not None and pp_tax_year is not None:
+                    discrepancies.append({
+                        "field": "income_statement",
+                        "fiscal_year": pp_tax_year,
+                        "canonical_source": "propublica",
+                        "canonical_value": None,
+                        "other_source": "charity_navigator",
+                        "other_value": None,
+                        "other_fiscal_year": cn_fiscal_year,
+                        "reason": "alternate_source_is_staler",
+                    })
+                    logger.info(
+                        f"Keeping PP FY{pp_tax_year} income statement for {ein}; "
+                        f"CN's fuller breakdown is FY{cn_fiscal_year} and would be staler"
+                    )
 
-            # Balance sheet: always safe to gap-fill (point-in-time snapshots)
-            for f in _BALANCE_SHEET_FIELDS:
-                if metrics_data.get(f) is None:
+            # The balance sheet is ProPublica's, whoever won the income
+            # statement. Charity Navigator can be trusted for the functional
+            # expense breakdown, which is why it wins most income statements —
+            # but not for the balance sheet: of the 123 charities where both
+            # carry one, 18 of Charity Navigator's are visibly corrupt against
+            # 2 of ProPublica's. Its failures are the round-number signature of
+            # LLM extraction ($100,000 and $500,000 assets appearing four
+            # times) and lost magnitudes (EIN 11-3013369 reads $113,404 where
+            # the 990 reads $27,427,805; EIN 47-1313957 reads zero against $1M).
+            # Adopting them would have published 3,694 months of reserves for
+            # The Mecca Center.
+            #
+            # It is taken whole or not at all — two balance sheets spliced
+            # field-by-field belong to no organization.
+            pp_has_balance_sheet = any(
+                metrics_data.get(f) is not None for f in ("total_assets", "total_liabilities")
+            )
+            if not pp_has_balance_sheet:
+                for f in _BALANCE_SHEET_FIELDS:
                     val = cn_profile.get(f)
                     if val is not None:
                         metrics_data[f] = val
                         _track(f, "charity_navigator", val)
+                        metrics_data["balance_sheet_tax_year"] = cn_fiscal_year
+            else:
+                metrics_data["balance_sheet_tax_year"] = pp_tax_year
 
             # Fallback tax year from CN if PP didn't provide one
             if metrics_data.get("financial_data_tax_year") is None and cn_fiscal_year is not None:
                 metrics_data["financial_data_tax_year"] = cn_fiscal_year
+                if metrics_data.get("balance_sheet_tax_year") is None:
+                    metrics_data["balance_sheet_tax_year"] = cn_fiscal_year
 
         # ── Corroborate zero-valued expense components ──
         # The income statement is now final. A component reported as 0 is

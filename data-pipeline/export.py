@@ -879,6 +879,59 @@ def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None
                     "data_points": {},
                 })
 
+        # --- Where the sources diverged and we picked one ---
+        # The income statement is elected whole from a single source; when the
+        # loser disagreed materially, say so rather than leave a donor to
+        # wonder why our figure differs from one they can look up themselves.
+        discrepancies = _get_metric(charity_data, "financial_source_discrepancies")
+        if isinstance(discrepancies, list):
+            for entry in discrepancies:
+                if not isinstance(entry, dict):
+                    continue
+                if entry.get("reason") == "same_fiscal_year_disagreement":
+                    field = str(entry.get("field", "figure")).replace("_", " ")
+                    headline = (
+                        f"Sources disagree on {field} for FY{entry.get('fiscal_year')}; "
+                        f"the Form 990 filing is shown"
+                    )
+                    detail = (
+                        f"ProPublica reports ${entry.get('canonical_value'):,.0f} from the IRS filing "
+                        f"while Charity Navigator reports ${entry.get('other_value'):,.0f} for the same "
+                        f"year. We publish the filing."
+                        if isinstance(entry.get("canonical_value"), (int, float))
+                        and isinstance(entry.get("other_value"), (int, float))
+                        else "The two sources report different figures for the same fiscal year."
+                    )
+                elif entry.get("reason") == "derived_from_a_different_filing_year":
+                    headline = (
+                        f"Operating reserves are calculated from the FY{entry.get('fiscal_year')} "
+                        f"Form 990, not the FY{entry.get('other_fiscal_year')} income statement above"
+                    )
+                    detail = (
+                        "Charity Navigator supplied the more recent income statement but publishes "
+                        "no balance sheet for that year, so reserves are computed from the IRS "
+                        "filing's own assets and expenses. The two figures describe different years "
+                        "and will not divide into one another."
+                    )
+                elif entry.get("reason") == "alternate_source_is_staler":
+                    headline = (
+                        f"Expense breakdown unavailable for FY{entry.get('fiscal_year')}"
+                    )
+                    detail = (
+                        f"The IRS filing for FY{entry.get('fiscal_year')} does not break out functional "
+                        f"expenses, and Charity Navigator's breakdown is from FY"
+                        f"{entry.get('other_fiscal_year')} — too old to present as current."
+                    )
+                else:
+                    continue
+                concerns.append({
+                    "type": "data_quality",
+                    "severity": "low",
+                    "headline": headline,
+                    "detail": detail,
+                    "data_points": {k: v for k, v in entry.items() if v is not None},
+                })
+
     # --- Metrics-derived concerns (with data_points) ---
     if charity_data:
         # GIK inflation

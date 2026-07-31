@@ -951,9 +951,9 @@ def detect_conflict_zone(geographic_coverage: list[str] | None) -> bool:
 
 
 def calculate_working_capital_months(
-    total_assets: int | None,
-    total_liabilities: int | None,
-    total_expenses: int | None,
+    total_assets: float | None,
+    total_liabilities: float | None,
+    total_expenses: float | None,
 ) -> float | None:
     """Calculate working capital in months.
 
@@ -965,6 +965,50 @@ def calculate_working_capital_months(
     monthly_expenses = total_expenses / 12
     net_assets = (total_assets or 0) - (total_liabilities or 0)
     return round(net_assets / monthly_expenses, 1)
+
+
+def resolve_working_capital(
+    metrics: Any, propublica_profile: dict | None = None
+) -> tuple[float | None, int | None, bool]:
+    """Working capital, and the single fiscal year it describes.
+
+    Both operands must come from ONE filing. This used to read all three
+    straight out of ProPublica no matter which source won the income statement,
+    so on 103 of 169 charities the published reserves figure did not divide out
+    against the expenses printed beside it — Humaniti stored -6.10 months where
+    the published numbers give -0.2, The Mecca Center 124 against 3,149.
+
+    When Charity Navigator wins the income statement but carries no balance
+    sheet of its own, the coherent answer is ProPublica's own year rather than
+    nothing: net assets and expenses from the same 990 are a correct statement
+    about that year. Dropping it instead would cost the charity all 7 points of
+    Financial Health over a gap in our sources, not in its finances. The year is
+    returned so it can be stamped on the figure and the gap noted.
+
+    Returns (months, fiscal_year, differs_from_income_statement).
+    """
+    income_year = getattr(metrics, "financial_data_tax_year", None)
+    balance_year = getattr(metrics, "balance_sheet_tax_year", None)
+    coherent = income_year is None or balance_year is None or income_year == balance_year
+
+    if coherent:
+        return (
+            calculate_working_capital_months(
+                metrics.total_assets, metrics.total_liabilities, metrics.total_expenses
+            ),
+            income_year or balance_year,
+            False,
+        )
+
+    # The published balance sheet belongs to a different filing than the
+    # published income statement. Pair it with ITS own expenses.
+    profile = propublica_profile or {}
+    months = calculate_working_capital_months(
+        metrics.total_assets, metrics.total_liabilities, profile.get("total_expenses")
+    )
+    if months is None:
+        return None, None, True
+    return months, balance_year, True
 
 
 def detect_cause_tags(
@@ -1961,22 +2005,60 @@ def synthesize_charity(
     # Compute is_conflict_zone (>50% of geographic coverage in conflict zones)
     synthesized.is_conflict_zone = detect_conflict_zone(geographic_coverage)
 
-    # Compute working_capital_months from balance sheet data
-    if pp_data:
-        pp_profile = pp_data.get("propublica_990", pp_data)
-        total_assets = pp_profile.get("total_assets")
-        total_liabilities = pp_profile.get("total_liabilities")
-        total_expenses = pp_profile.get("total_expenses")
-        working_capital = calculate_working_capital_months(total_assets, total_liabilities, total_expenses)
-        if working_capital is not None:
-            synthesized.working_capital_months = working_capital
-            source_attribution["working_capital_months"] = {
-                "source_name": "Calculated from Form 990",
-                "source_url": build_source_url("propublica", ein),
-                "value": working_capital,
-                "derived_from": ["total_assets", "total_liabilities", "total_expenses"],
-                "timestamp": source_timestamps.get("propublica") or datetime.now(timezone.utc).isoformat(),
-            }
+    # Working capital divides the published net assets by the published
+    # monthly expenses, so it must be computed from the figures that actually
+    # got published — and only when both sides describe the same filing.
+    #
+    # It used to read all three operands straight out of ProPublica regardless
+    # of which source won the income statement. The result was internally
+    # coherent but reconciled with nothing on the page: 103 of 169 charities
+    # showed a reserves figure that did not divide out against the expenses
+    # printed beside it (Humaniti stored -6.10 months where the published
+    # numbers give -0.2; The Mecca Center stored 124 against 3,149).
+    working_capital, wc_fiscal_year, wc_off_year = resolve_working_capital(
+        metrics, pp_data.get("propublica_990", pp_data) if pp_data else None
+    )
+    if working_capital is not None:
+        synthesized.working_capital_months = working_capital
+        # A figure taken from ProPublica's own filing is cited to ProPublica
+        # even when Charity Navigator supplied the income statement.
+        attribution_source = (
+            "charity_navigator"
+            if getattr(metrics, "financial_data_source", None) == "charity_navigator"
+            and not wc_off_year
+            else "propublica"
+        )
+        source_attribution["working_capital_months"] = {
+            "source_name": (
+                "Calculated from Charity Navigator"
+                if attribution_source == "charity_navigator"
+                else "Calculated from Form 990"
+            ),
+            "source_url": build_source_url(attribution_source, ein),
+            "value": working_capital,
+            "derived_from": ["total_assets", "total_liabilities", "total_expenses"],
+            "fiscal_year": wc_fiscal_year,
+            "timestamp": source_timestamps.get(attribution_source)
+            or source_timestamps.get("propublica")
+            or datetime.now(timezone.utc).isoformat(),
+        }
+    if wc_off_year:
+        # Noted rather than buried: the reserves figure will not divide out
+        # against the expenses shown beside it, because it is a different year.
+        income_year = getattr(metrics, "financial_data_tax_year", None)
+        logging.getLogger(__name__).info(
+            f"Working capital for {ein} is FY{wc_fiscal_year}, income statement is FY{income_year}"
+        )
+        if hasattr(metrics, "financial_source_discrepancies"):
+            metrics.financial_source_discrepancies.append({
+                "field": "working_capital_months",
+                "fiscal_year": wc_fiscal_year,
+                "canonical_source": "propublica",
+                "canonical_value": working_capital,
+                "other_source": getattr(metrics, "financial_data_source", None),
+                "other_fiscal_year": income_year,
+                "reason": "derived_from_a_different_filing_year",
+            })
 
     # S-003: Track cause_detection_source based on internal classification signals.
     # NTEE is metadata only and is not used for cause classification.
