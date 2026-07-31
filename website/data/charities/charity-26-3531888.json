@@ -53,8 +53,8 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Families",
-      "Refugees"
+      "Refugees",
+      "Families"
     ],
     "geographicCoverage": null
   },
@@ -68,12 +68,12 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 23:30:38",
+  "lastUpdated": "2026-07-31 12:25:31",
   "sourceAttribution": {
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/263531888#ratings",
-      "timestamp": "2026-07-23T22:39:31",
+      "timestamp": "2026-07-31T12:17:11",
       "value": 75
     },
     "claims_zakat_eligible": {
@@ -97,26 +97,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888",
-      "timestamp": "2026-07-18T19:15:04",
+      "timestamp": "2026-07-31T12:17:11",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/263531888#financials",
-      "timestamp": "2026-07-23T22:39:31",
+      "timestamp": "2026-07-31T12:17:11",
       "value": 0.047599999999999996
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/263531888#financials",
-      "timestamp": "2026-07-23T22:39:31",
+      "timestamp": "2026-07-31T12:17:11",
       "value": 201084
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/263531888#financials",
+      "timestamp": "2026-07-31T12:17:11",
+      "value": 3773142
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888",
-      "timestamp": "2026-07-18T19:15:04",
-      "value": 6039144
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/263531888#financials",
+      "timestamp": "2026-07-31T12:17:11",
+      "value": 4794010
     },
     "working_capital_months": {
       "derived_from": [
@@ -124,9 +130,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888",
-      "timestamp": "2026-07-18T19:15:04",
+      "timestamp": "2026-07-31T12:17:11",
       "value": 17.2
     }
   },
@@ -140,7 +147,9 @@
     "bangladesh",
     "faith-based",
     "food",
+    "fuqara",
     "india",
+    "masakin",
     "muslim-led",
     "myanmar",
     "pakistan",
@@ -162,7 +171,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2008,
-  "scoreSummary": "Islamic Oasis Center CO shows good alignment and moderate impact, with zakat compliance (major risk deductions applied).",
+  "scoreSummary": "Islamic Oasis Center CO shows good alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -177,25 +186,21 @@
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
       "Charity Navigator",
-      "Candid/GuideStar",
-      "Grant (American Online Giving Foundation)",
-      "Grant (Islamic Food and Nutrition Council of America (IFANCA))",
-      "Grant (Support for Educational and Economic Development (SEED))",
-      "Grant (Give Lively Foundation)"
+      "Independent Auditor"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://islamicoasis.org/donate (Source: https://islamicoasis.org/donate)"
   ],
-  "archetype": "ASSET_CREATION",
+  "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "ASSET_CREATION",
-    "archetype_label": "Asset Creator",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -217,17 +222,25 @@
       "data_points": {}
     },
     {
-      "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Program expense ratio critically low: 5%",
-      "detail": "Source: Form 990",
-      "data_points": {}
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 17.2,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
     },
     {
       "type": "risk_deduction",
       "severity": "high",
-      "headline": "Board too small: 2 members",
-      "detail": "Source: Candid profile",
+      "headline": "Program expense ratio critically low: 5%",
+      "detail": "Source: Form 990",
       "data_points": {}
     },
     {
@@ -248,7 +261,7 @@
   "amalEvaluation": {
     "charity_ein": "26-3531888",
     "charity_name": "Islamic Oasis",
-    "amal_score": 45,
+    "amal_score": 48,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:25:54",
     "rubric_version": "5.3.0",
@@ -380,7 +393,7 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: WEAK (2 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -398,27 +411,15 @@
       },
       "judge_issues": [
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity's programs primarily focus on humanitarian aid and infrastructure development (masjid construction, water projects), which can align with 'Fi Sabilillah' if framed as supporting the broader Islamic cause and community well-being. However, the direct services like food pantries and life skills training for refugees could also align with 'Masakin' or 'Fuqara'. The classification as 'fi_sabilillah' is plausible but could be strengthened with more explicit links to religious or educational advancement as the primary outcome of these programs.",
-          "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "zakat",
-          "message": "The charity's programs, including humanitarian aid, masjid construction, and educational initiatives, strongly suggest it serves multiple asnaf categories, particularly 'Masakin' (needy) and 'Fi Sabilillah' (in Allah's cause). Therefore, the 'ZAKAT-ELIGIBLE' tag appears appropriate, but the specific classification of 'fi_sabilillah' could be more precisely supported by evidence directly linking these humanitarian efforts to broader Islamic cause advancement beyond immediate relief.",
-          "severity": "warning"
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "Citation 4 defined but not referenced in narrative",
+          "severity": "info"
         },
         {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -428,22 +429,15 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -10,
+      "risk_deduction": -7,
       "risks": {
-        "overall_risk_level": "HIGH",
+        "overall_risk_level": "ELEVATED",
         "risk_summary": "Key concern: Program expense ratio critically low: 5%",
         "risks": [
           {
             "category": "financial",
             "data_source": "Form 990",
             "description": "Program expense ratio critically low: 5%",
-            "mitigation": null,
-            "severity": "high"
-          },
-          {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 2 members",
             "mitigation": null,
             "severity": "high"
           },
@@ -462,9 +456,9 @@
             "severity": "low"
           }
         ],
-        "total_deduction": -10
+        "total_deduction": -7
       },
-      "score_summary": "Islamic Oasis Center CO shows good alignment and moderate impact, with zakat compliance (major risk deductions applied).",
+      "score_summary": "Islamic Oasis Center CO shows good alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "fi_sabilillah",
         "bonus_points": 0,
@@ -476,47 +470,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 4.8% program expense ratio, 17.2 months of working capital, and $0.00 fundraising efficiency.",
+          "claim": "The charity maintains 17.2 months of working capital and has an overall rating of 75.0/100.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/263531888#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and accepts donations for specific asnaf categories.",
+          "claim": "The charity is zakat-eligible for Muslim donors.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://islamicoasis.org/donate"
         },
         {
-          "claim": "The charity reported $4,794,010 in total revenue in FY2024 and operates with a two-member board.",
+          "claim": "In FY2024, the charity reported $4,794,010 in revenue and a 4.8% program expense ratio.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/263531888"
         },
         {
-          "claim": "The charity manages programs including emergency response and masjid construction.",
+          "claim": "The organization provides direct services including emergency response.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://islamicoasis.org/emergency-response-gb"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a very low program expense ratio and a small board of only two members. While it has strong cash reserves and no fundraising costs, most of its revenue does not yet reach its stated programs.",
+      "amal_score_rationale": "The charity's assessment is limited by a critically low program expense ratio and a lack of formal governance documents. While it has a high amount of cash on hand, very little of its annual spending currently goes toward its stated mission activities.",
       "areas_for_improvement": [
-        "Increase the program expense ratio, which was only 4.8% in FY2024 [1]",
-        "Expand the board of directors beyond the current two members to improve oversight [3]",
-        "Develop and share clear metrics to track program outcomes and impact [1]"
+        "Increase the program expense ratio, which was only 4.8% in FY2024 [3]",
+        "Develop and share a clear theory of change and documented outcome metrics",
+        "Establish formal governance policies to improve organizational oversight"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors as it is zakat-eligible and focuses on religious and cultural needs [2]. It has a solid track record of service, though the urgency of the cause is rated lower than other humanitarian sectors [1][4].",
-        "impact": "The charity provides direct services to those in need, but only 4.8% of its spending went toward programs in FY2024 [1][3]. While it has a perfect score for evidence and outcomes, it lacks a documented theory of change and does not track specific cost-per-beneficiary metrics [1]."
+        "alignment": "This organization is a strong fit for Muslim donors because it is zakat-eligible and focuses on religious and cultural needs [2]. It has an established track record in its community and receives an overall rating of 75.0/100 from Charity Navigator [1].",
+        "impact": "The charity provides direct services like food and emergency aid, but only 4.8% of its spending reached these programs in FY2024 [3]. While the group has enough working capital to last over 17 months, it lacks a documented theory of change or specific metrics to track its success [1]."
       },
-      "headline": "Islamic Oasis Center CO provides direct aid to refugees and low-income families but spends a small portion of its budget on programs.",
+      "headline": "Islamic Oasis Center CO provides emergency aid and food pantry services to refugee families but directs a very small portion of its budget to these programs.",
       "strengths": [
-        "holds 17.2 months of working capital to ensure long-term stability [1]",
-        "High fundraising efficiency with $0.00 spent to raise every $1 [1]",
-        "Provides direct services like emergency response and masjid construction [4]"
+        "Maintains 17.2 months of working capital to cover future operations [1]",
+        "Provides direct services including emergency response and masjid construction [4]"
       ],
-      "summary": "The organization operates a monthly food pantry and offers life skills training for refugee families [3]. While it is zakat-eligible and received $4,794,010 in total revenue in FY2024, its spending on direct services is very low compared to its total income [2][3]."
+      "summary": "The organization offers life skills and food assistance to low-income and refugee families in the Chicago area [3]. In FY2024, the charity reported $4,794,010 in total revenue [3]. It is recognized as a zakat-eligible organization for Muslim donors [2]."
     },
     "rich_narrative": {
       "all_citations": [

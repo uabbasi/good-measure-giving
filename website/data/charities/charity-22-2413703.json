@@ -72,18 +72,18 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-24 00:42:58",
+  "lastUpdated": "2026-07-31 12:27:01",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
-      "timestamp": "2026-07-24T00:19:45",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 346198
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/222413703#ratings",
-      "timestamp": "2026-07-24T00:19:45",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 64
     },
     "claims_zakat_eligible": {
@@ -95,13 +95,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/222413703",
-      "timestamp": "2026-07-18T19:15:04",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 1984
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
-      "timestamp": "2026-07-24T00:19:45",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 109115
     },
     "has_audited_financials": {
@@ -113,20 +113,26 @@
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
-      "timestamp": "2026-07-24T00:19:45",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 0.7241
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
-      "timestamp": "2026-07-24T00:19:45",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 1120932
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
+      "timestamp": "2026-07-31T12:26:15",
+      "value": 1576245
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/222413703",
-      "timestamp": "2026-07-18T19:15:04",
-      "value": 2504911
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/222413703#financials",
+      "timestamp": "2026-07-31T12:26:15",
+      "value": 2222033
     },
     "working_capital_months": {
       "derived_from": [
@@ -134,9 +140,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/222413703",
-      "timestamp": "2026-07-18T19:15:04",
+      "timestamp": "2026-07-31T12:26:15",
       "value": 74.8
     }
   },
@@ -152,14 +159,15 @@
     "muslim-led"
   ],
   "programFocusTags": [
-    "religious-services"
+    "religious-services",
+    "community-services"
   ],
   "hideFromCurated": null,
   "theoryOfChange": null,
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 1984,
-  "scoreSummary": "Muslim Foundation Inc shows moderate alignment and limited impact (significant risk deductions applied).",
+  "scoreSummary": "Muslim Foundation Inc shows moderate alignment and limited impact (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -171,12 +179,9 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": 1,
+    "thirdPartyEvaluated": null,
     "evaluationSources": [
-      "Charity Navigator",
-      "Candid/GuideStar",
-      "Grant (American Endowment Foundation)",
-      "Grant (The Haider Foundation)"
+      "Platinum Seal (Candid/GuideStar)"
     ],
     "receivesFoundationGrants": null
   },
@@ -186,28 +191,45 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Well Documented Low Score",
+    "assessment_label": "Limited Basis",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
-    "evidence_stage": "Established",
+    "evidence_stage": "Building",
     "signal_states": {
-      "evidence": "Strong",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Limited",
       "risk": "Limited"
     },
     "recommendation_cue": "Limited Match",
-    "recommendation_rationale": "Evidence quality is well documented, but results are weak on the current rubric dimensions.",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
   "keyConcerns": [
     {
-      "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Board too small: 2 members",
-      "detail": "Source: Candid profile",
-      "data_points": {}
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 74.8,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Holds 75 months of reserves without clear endowment model",
+      "detail": "Organizations holding >36 months of reserves should publish deployment plans.",
+      "data_points": {
+        "reserves_months": 74.8
+      }
     },
     {
       "type": "risk_deduction",
@@ -227,14 +249,14 @@
   "amalEvaluation": {
     "charity_ein": "22-2413703",
     "charity_name": "Muslim Foundation",
-    "amal_score": 33,
+    "amal_score": 26,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:27:58",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 22,
       "data_confidence": 0.6,
-      "impact": 18
+      "impact": 8
     },
     "score_details": {
       "alignment": {
@@ -341,13 +363,13 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: VERIFIED",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Evidence & outcomes: UNVERIFIED",
+            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
+            "improvement_value": 6,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: ABSENT",
@@ -359,7 +381,7 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: WEAK (2 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -371,17 +393,11 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 18/50",
+        "rationale": "Delivery: direct service; Impact 8/50",
         "rubric_archetype": "MULTIPLIER",
-        "score": 18
+        "score": 8
       },
       "judge_issues": [
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
         {
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
@@ -395,18 +411,11 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -7,
+      "risk_deduction": -4,
       "risks": {
-        "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: Board too small: 2 members",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "3 risk(s) identified.",
         "risks": [
-          {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 2 members",
-            "mitigation": null,
-            "severity": "high"
-          },
           {
             "category": "impact",
             "data_source": "Website/Candid",
@@ -420,56 +429,63 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Holds 75 months of reserves without clear endowment model",
+            "mitigation": null,
+            "severity": "medium"
           }
         ],
-        "total_deduction": -7
+        "total_deduction": -4
       },
-      "score_summary": "Muslim Foundation Inc shows moderate alignment and limited impact (significant risk deductions applied).",
+      "score_summary": "Muslim Foundation Inc shows moderate alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No specific US charity named 'Muslim Foundation' was found in the search results.",
+        "claim_evidence": "No specific US charity named \"Muslim Foundation\" was found in the search results with explicit mention of accepting or rejecting zakat donations.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a 64.0/100 rating and lacks specific outcome measurement and theory of change documentation.",
+          "claim": "The organization has a 64.0/100 rating, a 72.4% program expense ratio, and 74.8 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/222413703#financials"
         },
         {
-          "claim": "In FY2024, the charity reported $2,222,033 in revenue and operates the Sadiq School and daily prayer programs.",
+          "claim": "Muslim Foundation Inc reported total revenue of $2,222,033 and operates the Sadiq School.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/222413703"
         },
         {
-          "claim": "The organization accepts sadaqah and general donations for its religious and educational activities.",
+          "claim": "The foundation accepts donations through various methods including general charitable giving.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.masjid-e-ali.org/donation/"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a very small board and a lack of formal systems to measure the success of its programs. While financial spending on programs is moderate, the organization does not yet provide data to prove its long-term impact.",
+      "amal_score_rationale": "The organization receives a below-average assessment because it lacks transparent data on program outcomes and holds excessive cash reserves without a clear plan. While it operates with low fundraising overhead, there is no evidence showing the direct impact of its spending on the community.",
       "areas_for_improvement": [
-        "Small board of directors consisting of only two members",
-        "Lack of a documented theory of change or outcome metrics",
-        "Limited alignment with broader Muslim donor priorities"
+        "Lack of public outcome measurement or impact metrics",
+        "High level of idle cash reserves equal to 74.8 months of expenses",
+        "No documented theory of change to explain program results"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific religious and cultural niche within the Jafri faith [2]. While it has a long track record, it has a low fit for general Muslim donors because it serves a very narrow community and does not address urgent humanitarian needs [3].",
-        "impact": "The foundation focuses on direct services like religious education and daily prayers [2]. It spends 72.4% of its budget on these programs, which is a moderate level of spending [1]. However, the organization does not track specific metrics or outcomes to show how these programs change lives, and it lacks a formal plan for its social impact [1]."
+        "alignment": "This charity focuses on religious and cultural services for the Jafri Muslim community [2]. While it has a long track record, it offers limited specific appeal for general donors looking for urgent humanitarian causes [3]. Donors can contribute through general sadaqah giving options on their website [3].",
+        "impact": "The foundation spends a moderate 72.4% of its budget on programs like the Sadiq School [1]. However, it does not track or report specific success metrics, making it difficult to measure actual effectiveness [1]. It also holds 74.8 months of working capital, which is much higher than the standard for active charities [1]."
       },
-      "headline": "Muslim Foundation Inc provides religious services and education for the Jafri community but faces challenges with governance and outcome tracking.",
+      "headline": "Muslim Foundation Inc provides religious services and education while maintaining high financial reserves.",
       "strengths": [
-        "Low fundraising costs of $0.05 per $1 raised in FY2024",
-        "Large reserve of working capital totaling 74.8 months"
+        "Low fundraising costs of $0.08 per $1 raised",
+        "Moderate program spending ratio of 72.4%"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $2,222,033 to support daily prayers and the Sadiq School [2]. While it maintains a moderate program expense ratio of 72.4%, it currently holds a 64.0/100 rating from Charity Navigator [1]."
+      "summary": "Based in New Jersey, this organization promotes the Jafri faith through daily prayers and the Sadiq School [2]. In fiscal year 2024, the foundation reported total revenue of $2,222,033 [2]. It currently holds an overall rating of 64.0/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

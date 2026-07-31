@@ -69,12 +69,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 21:07:19",
+  "lastUpdated": "2026-07-31 12:16:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 637721
     },
     "claims_zakat_eligible": {
@@ -86,13 +86,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868",
-      "timestamp": "2026-07-23T20:36:46",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 2022
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 70663
     },
     "has_audited_financials": {
@@ -104,26 +104,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868",
-      "timestamp": "2026-07-23T20:36:46",
+      "timestamp": "2026-07-31T12:15:40",
       "value": "F32"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 0
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 0
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
+      "timestamp": "2026-07-31T12:15:40",
+      "value": 708384
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868",
-      "timestamp": "2026-07-23T20:36:46",
-      "value": 618632
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/871035868#financials",
+      "timestamp": "2026-07-31T12:15:40",
+      "value": 658402
     },
     "working_capital_months": {
       "derived_from": [
@@ -131,9 +137,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868",
-      "timestamp": "2026-07-23T20:36:46",
+      "timestamp": "2026-07-31T12:15:40",
       "value": 13.3
     }
   },
@@ -144,7 +151,6 @@
   },
   "causeTags": [
     "faith-based",
-    "fisabilillah",
     "fuqara",
     "masakin",
     "medical",
@@ -169,18 +175,7 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": {
-    "hasOutcomeMethodology": null,
-    "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": 1,
-    "evaluationSources": [
-      "UC San Diego Center for Community Health",
-      "Stanford University (Muslim Mental Health & Islamic Psychology Lab)",
-      "501(c)(3) Non-Profit Status (IRS)",
-      "Community Partner (Stanford University Muslim Mental Health & Islamic Psychology Lab)"
-    ],
-    "receivesFoundationGrants": null
-  },
+  "evidenceQuality": null,
   "zakatClaimEvidence": [
     "Help heal minds and hearts of our Ummah by supporting Maristan's essential, faith-centered mental health programs: Zakat-Eligible Mental Health Clinic, Healing & Learning Circle, Mental Health Trainings & Psychoeducation using evidence-based information to build mental health literacy and reduce stigma. 100% of your Zakat will go directly to Zakat-eligible clients receiving clinical therapy. (Source: https://amwkgvxs.donorsupport.co/page/FUNBFXDFWXS)"
   ],
@@ -194,7 +189,7 @@
     "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Strong",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Strong",
       "risk": "Moderate"
@@ -206,11 +201,19 @@
   },
   "keyConcerns": [
     {
-      "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Board too small: 1 members",
-      "detail": "Source: Candid profile",
-      "data_points": {}
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 13.3,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
     }
   ],
   "amalEvaluation": {
@@ -223,7 +226,7 @@
     "confidence_scores": {
       "alignment": 36,
       "data_confidence": 0.3,
-      "impact": 23
+      "impact": 19
     },
     "score_details": {
       "alignment": {
@@ -330,13 +333,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Evidence & outcomes: VERIFIED",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
+            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
+            "improvement_value": 3,
             "name": "Evidence & Outcomes",
             "possible": 5,
-            "scored": 5,
-            "status": "full"
+            "scored": 1,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: DEVELOPING",
@@ -348,7 +351,7 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: baseline (1 members, emerging org)",
+            "evidence": "Board governance: baseline (unknown members, emerging org)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -360,11 +363,41 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 23/50",
+        "rationale": "Delivery: capacity building; Impact 19/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 23
+        "score": 19
       },
       "judge_issues": [
+        {
+          "field": "alignment",
+          "judge": "citation",
+          "message": "The fetched content for citation 2 is extremely brief and does not confirm the claim about zakat-eligibility.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "The fetched content for citation 4 is a PDF binary stream and could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "The fetched content for citation 5 is a PDF binary stream and could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "The fetched content for citation 6 is a PDF binary stream and could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "The fetched content for citation 7 is a PDF binary stream and could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
         {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
@@ -372,21 +405,9 @@
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
           "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -399,19 +420,11 @@
       "risk_deduction": -5,
       "risks": {
         "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: Board too small: 1 members",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 1 members",
-            "mitigation": null,
-            "severity": "high"
-          }
-        ],
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
         "total_deduction": -5
       },
-      "score_summary": "Maristan shows strong alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Maristan shows strong alignment and limited impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -423,70 +436,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Maristan reported $658,402 in revenue, 13.3 months of working capital, and a fundraising efficiency of $0.11 per $1 raised in FY2024.",
+          "claim": "In fiscal year 2024, Maristan reported total revenue of $658,402 and maintained 13.3 months of working capital with a fundraising efficiency of $0.15 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/871035868#financials"
         },
         {
-          "claim": "The charity is zakat-eligible.",
+          "claim": "Maristan is zakat-eligible, allowing donors to fulfill their religious obligations through its mental health programs.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://amwkgvxs.donorsupport.co/page/FUNBFXDFWXS"
         },
         {
-          "claim": "The organization reported one board member and provided fiscal year financial details.",
+          "claim": "The organization's financial data and track record are documented in its tax filings.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/871035868"
         },
         {
-          "claim": "Maristan operates a clinic and employs mental health clinicians.",
+          "claim": "The organization operates the Maristan Clinic and employs clinicians for mental health services.",
           "id": "[4]",
           "source_name": "Download Job Description PDF",
           "source_url": "https://maristan.org/wp-content/uploads/2025/10/maristan_clinician_description_102025.pdf"
         },
         {
-          "claim": "The organization provides suicide prevention training and resources.",
+          "claim": "Maristan offers suicide response certification training and educational resources.",
           "id": "[5]",
           "source_name": "Download Here",
           "source_url": "https://static1.squarespace.com/static/603def97501d106c3562e8e7/t/613ebc6eca6782606e9fc971/1631501429895/Khutba++-+Suicide+Prevention.pdf"
         },
         {
-          "claim": "Maristan produces educational materials for postvention and mental health.",
+          "claim": "Maristan provides community resources such as khutbahs for suicide prevention and postvention.",
           "id": "[6]",
           "source_name": "Download PDF",
           "source_url": "https://bit.ly/postvention-khutbah"
         },
         {
-          "claim": "The charity uses religious sermons to provide evidence-based mental health education.",
+          "claim": "The organization focuses on capacity building through clinical services and suicide prevention education.",
           "id": "[7]",
           "source_name": "Khutbah Download Form",
           "source_url": "https://static1.squarespace.com/static/603def97501d106c3562e8e7/t/613ebc6eca6782606e9fc971/1631501429895/Khutba++-+Suicide+Prevention.pdf"
-        },
-        {
-          "claim": "Maristan offers various donation options for supporters.",
-          "id": "[8]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://maristan.org/givingtuesday/"
         }
       ],
-      "amal_score_rationale": "Maristan shows a balanced profile with strong financial stability and high relevance to Muslim donors, though its small board size and lack of specific program spending data limit its overall assessment.",
+      "amal_score_rationale": "Maristan shows average performance by balancing strong financial stability and donor alignment with a lack of detailed outcome data. While its fundraising is efficient, the organization focuses on capacity building which makes direct impact harder to measure.",
       "areas_for_improvement": [
-        "The board of directors is currently limited to only 1 member [3]",
-        "Financial data does not yet provide a specific program expense ratio [1]"
+        "Limited public data regarding specific cost per beneficiary",
+        "Needs more third-party evidence to verify long-term program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "This charity has a high fit for Muslim donors and addresses urgent global health needs through a faith-based lens [2][8]. It operates in a critical cause area, though it has a shorter documented track record compared to larger institutions [3][4].",
-        "impact": "Maristan focuses on building community capacity through clinical services and suicide prevention training [4][5]. While the organization shows strong financial health with 13.3 months of working capital, it does not currently report a specific program expense ratio [1]. The group provides clear evidence of its work through specialized educational materials and khutbahs [6][7]."
+        "alignment": "The organization has a high fit for Muslim donors and addresses urgent global health needs [2]. It provides specific resources like khutbahs for suicide prevention to reach the community directly [5][6]. While it has a clear mission, its track record is still developing compared to older institutions [3].",
+        "impact": "Maristan focuses on capacity building through clinical services and suicide prevention education [4][7]. The charity maintains a healthy financial position with 13.3 months of working capital available in FY2024 [1]. However, there is limited external evidence or specific data regarding the cost to serve each person [1]."
       },
       "headline": "Maristan provides community mental health services and suicide prevention training for the Muslim community.",
       "strengths": [
-        "holds 13.3 months of working capital to ensure operational stability [1]",
-        "Operates with high fundraising efficiency, spending only $0.11 to raise every $1 [1]",
-        "Provides clear evidence and outcomes for its specialized suicide prevention work [5][7]"
+        "Maintains 13.3 months of working capital to ensure operational stability [1]",
+        "High fundraising efficiency, spending only $0.15 to raise every $1 [1]",
+        "Strong alignment with Muslim donor needs through zakat-eligible programs [2]"
       ],
-      "summary": "Maristan focuses on mental health through its clinical services and specialized suicide response certification [4][5]. In fiscal year 2024, the organization reported total revenue of $658,402 [1][3]. The charity is zakat-eligible, allowing donors to fulfill their religious obligations through its programs [2]."
+      "summary": "In fiscal year 2024, Maristan reported total revenue of $658,402 [1]. The organization operates the Maristan Clinic and offers specialized suicide response certification training [4][5]. Maristan is zakat-eligible, allowing donors to fulfill their religious obligations through its mental health programs [2]."
     },
     "rich_narrative": {
       "all_citations": [

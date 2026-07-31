@@ -65,24 +65,24 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 18:43:10",
+  "lastUpdated": "2026-07-31 12:26:01",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-07-23T17:27:29",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 102
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 2021
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-07-23T17:27:29",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 0
     },
     "has_audited_financials": {
@@ -94,26 +94,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-31T12:25:09",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-07-23T17:27:29",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 0.8414
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
-      "timestamp": "2026-07-23T17:27:29",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 395978
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
+      "timestamp": "2026-07-31T12:25:09",
+      "value": 396080
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-07-23T17:27:28",
-      "value": 4559370
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/853547280#financials",
+      "timestamp": "2026-07-31T12:25:09",
+      "value": 181050
     },
     "working_capital_months": {
       "derived_from": [
@@ -121,9 +127,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-31T12:25:09",
       "value": 785.8
     }
   },
@@ -144,10 +151,10 @@
   ],
   "programFocusTags": [
     "education-k12",
-    "healthcare-direct"
+    "community-services"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "Ar-Rahman Institute (arqi.org) describes a '5-Step Academic System' as part of their approach to help students succeed. This system includes Concept Building, Practice Worksheets, Weekly Tests, Performance Analysis, and One-to-One Mentorship. Their approach is described as structured, concept-driven coaching that combines expert teaching, regular assessments, and personal mentorship to ensure consistent academic growth, aiming for excellence in school exams, board results, and competitive entrances.",
+  "theoryOfChange": null,
   "grantsData": null,
   "evaluationTrack": "NEW_ORG",
   "foundedYear": 2021,
@@ -190,7 +197,43 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 785.8,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
+      "type": "revenue_expense_mismatch",
+      "severity": "high",
+      "headline": "Expenses are 2.2x revenue ($396,080 vs $181,050)",
+      "detail": "Spending significantly exceeding revenue is unsustainable without reserves drawdown.",
+      "data_points": {
+        "expense_to_revenue_ratio": 2.19,
+        "total_expenses": 396080,
+        "total_revenue": 181050
+      }
+    },
+    {
+      "type": "zakat_hoarding",
+      "severity": "medium",
+      "headline": "Holds 786 months of reserves without clear endowment model",
+      "detail": "Organizations holding >36 months of reserves should publish deployment plans.",
+      "data_points": {
+        "reserves_months": 785.8
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "85-3547280",
     "charity_name": "Ar-Rahman Learning Center",
@@ -201,7 +244,7 @@
     "confidence_scores": {
       "alignment": 28,
       "data_confidence": 0.3,
-      "impact": 30
+      "impact": 25
     },
     "score_details": {
       "alignment": {
@@ -290,8 +333,8 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 785.8 months (EXCESSIVE)",
-            "improvement_suggestion": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, while keeping a clear operating reserve floor.",
+            "evidence": "Working capital: 785.8 months, but Spending significantly exceeding revenue is unsustainable without reserves drawdown. \u2014 unsustainable",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; set a board-approved minimum (typically at least 3 months).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -317,13 +360,13 @@
             "status": "full"
           },
           {
-            "evidence": "Theory of change: STRONG",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Theory of change: BASIC (emerging org baseline)",
+            "improvement_suggestion": "Document a clear theory of change with an explicit causal pathway.",
+            "improvement_value": 4,
             "name": "Theory of Change",
             "possible": 7,
-            "scored": 7,
-            "status": "full"
+            "scored": 2,
+            "status": "partial"
           },
           {
             "evidence": "Board governance: baseline (unknown members, emerging org)",
@@ -338,11 +381,17 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 30/50",
+        "rationale": "Delivery: capacity building; Impact 25/50",
         "rubric_archetype": "EDUCATION",
-        "score": 30
+        "score": 25
       },
       "judge_issues": [
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Narrative states working capital in months incorrectly compared to the source data.",
+          "severity": "warning"
+        },
         {
           "field": "charity_navigator.expense_ratio",
           "judge": "crawl_quality",
@@ -368,12 +417,6 @@
           "severity": "info"
         },
         {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
           "field": "working_capital_months",
           "judge": "synthesize_quality",
           "message": "Extremely high working capital (785.8 months) may indicate hoarding or data error",
@@ -386,14 +429,29 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": 0,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "Key concern: Expenses are 2.2x revenue ($396,080 vs $181,050)",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Expenses are 2.2x revenue ($396,080 vs $181,050)",
+            "mitigation": null,
+            "severity": "high"
+          },
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Holds 786 months of reserves without clear endowment model",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "AR-Rahman Learning Center Inc shows good impact and good alignment.",
+      "score_summary": "AR-Rahman Learning Center Inc shows good alignment and moderate impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -405,41 +463,45 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a program expense ratio of 84.1% and 785.8 months of working capital.",
+          "claim": "The organization focuses on social welfare and education by offering Quran classes and Arabic language studies.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/853547280#financials"
         },
         {
-          "claim": "Total revenue in FY2024 was $181,050 and the charity focuses on Quran and Arabic studies.",
+          "claim": "The organization offers a medium fit for Muslim donors seeking to provide sadaqah for community welfare.",
+          "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://arrahmanislamiccenter.com/?page_id=1353"
+        },
+        {
+          "claim": "In FY2024, the charity reported a total revenue of $181,050 and expenses of $396,080.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/853547280"
         },
         {
-          "claim": "The organization accepts donations for its educational and humanitarian programs.",
+          "claim": "Donors can contribute through general sadaqah giving to help fund these community services.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://arqi.org/register"
         }
       ],
-      "amal_score_rationale": "The charity shows a balanced profile with efficient spending on programs, but its overall assessment is limited by a shorter track record and very high levels of idle working capital.",
+      "amal_score_rationale": "The charity shows a balanced profile with high spending on direct programs, but it faces financial risks because its yearly expenses are more than double its income. While it has a large amount of cash on hand, the lack of a clear plan for these reserves and the gap between revenue and spending limit its overall assessment.",
       "areas_for_improvement": [
-        "Limited geographic reach and track record",
-        "Low financial health metrics despite high program spending",
-        "High working capital of 785.8 months suggests funds are not being deployed quickly"
+        "Spending significantly exceeded revenue in FY2024, with expenses reaching $396,080",
+        "Holds 785.8 months of working capital without a clear long-term endowment plan"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves a specific need for global education and religious studies, which is a high-priority cause for many donors [4]. While it fits the needs of those looking to give sadaqah, it has a limited history of operations and a smaller footprint compared to larger international groups [3].",
-        "impact": "The organization spends 84.1% of its budget directly on its programs, which is a high level of efficiency [1]. It focuses on capacity building through education and has clear evidence of its program outcomes [3]. However, its financial health is affected by having 785.8 months of working capital, which means money stays in the bank rather than being used for immediate services [1]."
+        "alignment": "The organization serves a clear need for global religious education and capacity building [1]. It offers a medium fit for Muslim donors seeking to provide sadaqah for community welfare and language studies [2][4].",
+        "impact": "The charity directs 84.1% of its spending toward its educational and social programs [1]. While it shows strong evidence of program delivery, its financial health is impacted by spending $396,080 against a revenue of only $181,050 in FY2024 [3]."
       },
-      "headline": "AR-Rahman Learning Center Inc provides affordable education and social services with a focus on religious studies.",
+      "headline": "AR-Rahman Learning Center Inc provides affordable religious and humanitarian education through specialized language and Quranic programs.",
       "strengths": [
         "High program expense ratio of 84.1% in FY2024",
-        "Zero fundraising costs with $0.00 spent per $1 raised",
-        "Strong evidence of program outcomes and theory of change"
+        "Zero fundraising costs, with $0.00 spent per $1 raised"
       ],
-      "summary": "Based in New York, this organization offers Quran classes and Arabic language studies to help build community knowledge [1]. In FY2024, the charity reported total revenue of $181,050 to support its humanitarian and educational missions [3]."
+      "summary": "The organization focuses on social welfare and education by offering Quran classes and Arabic language studies [1]. In FY2024, the charity reported a total revenue of $181,050 to support its humanitarian mission [3]. Donors can contribute through general sadaqah giving to help fund these community services [4]."
     },
     "rich_narrative": {
       "all_citations": [
