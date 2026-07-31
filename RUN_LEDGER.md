@@ -853,3 +853,75 @@ usable fields**. Every other source is fresh. The required-source gate reads the
 re-fetch discards a charity we have data for — while the non-downgrade design
 exists specifically to preserve that content. Changing the gate affects every
 charity, so it is not done: it needs a decision.
+
+---
+
+## Source disagreement made non-blocking (2026-07-30 late)
+
+Design change, at the user's direction: *"instead of blocking on disagreement we
+should have canonical sources and hierarchy of trustworthiness and then publish
+discrepancy. i.e. it becomes nonblocking."*
+
+`src/utils/source_trust.py` states the hierarchy in one place, with the
+measurement behind each ranking rather than an assertion. Charity Navigator
+leads the income statement (PP supplies 2 of 5 fields for 158 of 169 and is a
+year behind on 134 of 168); ProPublica leads the balance sheet (18 of CN's 123
+are visibly corrupt against 2 of PP's); same-year ties go to the filing; CN
+leads board size; zakat is ordered conservatively.
+
+The governing judge rule, ahead of the eight ad-hoc downgrades that had
+accumulated: **a narrative reporting the figure we published is correct by
+construction.** Which source supplies a field is settled deterministically
+before the judge runs and the disagreement is published, so re-litigating it can
+only withhold a page over our own provenance. A claim that does NOT match what
+we published still blocks — that is fabrication.
+
+`crawl_quality`'s same-year revenue divergence stopped gating for the same
+reason: it withheld EIN 45-5637293 for "likely wrong org" when CN had returned a
+round $100,000 against the 990's $1,759,964.
+
+Also fixed: claim_value is null on most findings, with both figures in prose.
+Only the number the sentence attributes to the NARRATIVE counts — matching any
+number would wave through a fabrication whenever the judge quotes our value as
+the correct one. Fiscal-year tokens are stripped first, or "claims FY2025
+revenue of $3,145,617" yields 2025.
+
+| step | spend | result |
+|---|---|---|
+| re-judge the 7 | $0.5300 | 4 cleared, index 155 -> 159 |
+| re-judge the 3 | $0.2505 | 2 cleared, index 159 -> 161 |
+| regenerate 41-2046295 | $0.1354 | still blocked |
+
+**Final: 39 of 40 in the index (161 total).**
+
+  - 38 regenerated today and passing
+  - 75-2352043 in the index but STALE (Jul 23) — blocked at the crawl gate,
+    see the section above; the gate reads the `success` flag while 320,485
+    bytes from Mar 7 sit parsed and usable in the same row. Needs a decision,
+    since changing it affects all 169.
+  - 41-2046295 The Citizens Foundation USA — genuinely blocked, and correctly.
+    Not a source disagreement: the narrative contradicts our OWN score
+    ("a clear theory of change" against a Theory of Change component of
+    DEVELOPING 5/7), and after regeneration it instead miscited its evidence
+    (citation [1] is a financial citation, attached to three non-financial
+    claims). The defect changes shape on every regeneration, which is the
+    narrative generator being nondeterministic rather than the gate.
+
+Clean on the canonical rule across all 40: no program_expenses exceeding
+total_expenses, no reserves figure mismatching without the keyConcern that
+explains its year.
+
+Suite 2091 green. Session spend ~$9. Nothing pushed.
+
+### Models in use (asked 2026-07-30)
+
+| stage | model |
+|---|---|
+| narratives, website + PDF extraction | `gemini-3-flash-preview` (→ 3.1-pro, 2.5-flash) |
+| rich strategic narrative | `gpt-5.2` (→ claude-sonnet-4-5, gemini-3-flash) |
+| **all LLM judges — the publication gate** | **`gemini-2.5-flash-lite`** |
+| score_judge only | `gemini-2.5-flash` (explicit override) |
+
+The gate deciding what ships runs on the cheapest model in the stack. It is the
+same judge that filed "the claim of 96.0/100 is accurate" as an error, read
+Charity Navigator's years as months, and anchored its date arithmetic to 2024.
