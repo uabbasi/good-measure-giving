@@ -451,8 +451,16 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
     This ensures that websites defined in pilot_charities.txt are available
     in the database for discovery phase lookups.
 
+    The file wins. It used to fill only blanks — NULL, empty, or not a URL —
+    which is exactly the wrong half: a stored value that is WRONG looks like a
+    perfectly good URL, so the database kept the first thing it ever saw and a
+    curated correction could not land. EIN 88-0405956 spent months crawling
+    ifnv.org, the Ivy Foundation of Northern Virginia, for a Las Vegas mosque
+    school. Nothing else writes this column, so there is no competing source
+    to protect.
+
     Returns:
-        Number of charities updated
+        Number of charities whose website actually changed.
     """
     from src.db.dolt_client import execute_query
 
@@ -460,22 +468,19 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
     for charity in charities:
         website = normalize_website_url(charity.get("website"))
         ein = charity.get("ein")
-        if website and ein:
-            result = execute_query(
-                """
-                UPDATE charities
-                SET website = %s
-                WHERE ein = %s
-                  AND (
-                    website IS NULL
-                    OR website = ''
-                    OR (website NOT LIKE 'http://%%' AND website NOT LIKE 'https://%%')
-                  )
-                """,
-                (website, ein),
-            )
-            if result is not None:
-                updated += 1
+        if not (website and ein):
+            continue
+        # Rows affected, not statements attempted. The old count incremented on
+        # "the query did not raise", so a run that changed nothing still
+        # reported "Synced 1" -- the one signal a curator would check to see
+        # whether their correction took.
+        changed = execute_query(
+            "UPDATE charities SET website = %s WHERE ein = %s AND website <=> %s IS FALSE",
+            (website, ein, website),
+        )
+        if isinstance(changed, int) and changed > 0:
+            updated += 1
+            logger.info(f"Website for {ein} corrected from the charities file: {website}")
 
     if updated > 0:
         logger.info(f"Synced {updated} websites from charities file to database")
