@@ -265,6 +265,7 @@ class DataCollectionOrchestrator:
         logger: Optional[PipelineLogger] = None,
         max_pdf_downloads: int = 0,
         skip_sources: Optional[List[str]] = None,
+        retry_failed_sources: bool = False,
     ):
         """
         Initialize orchestrator.
@@ -275,9 +276,14 @@ class DataCollectionOrchestrator:
             logger: Logger instance
             max_pdf_downloads: Max PDFs to download per charity (default 0 = disabled)
             skip_sources: List of source names to skip (e.g., ['causeiq', 'website'])
+            retry_failed_sources: Ignore the retry backoff for sources that
+                previously failed. Set when the operator forces the crawl
+                phase, i.e. asserts the client has changed. Terminal failures
+                (CAPTCHA, not-found) are unaffected.
         """
         self.logger = logger or PipelineLogger(name="orchestrator")
         self.skip_sources = set(skip_sources or [])
+        self.retry_failed_sources = retry_failed_sources
 
         # H5: CAPTCHA/anti-bot blocked sites collected for the run-end report
         self.blocked_sites: List[Dict[str, Any]] = []
@@ -446,6 +452,17 @@ class DataCollectionOrchestrator:
                     return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
                 self.raw_data_repo.reset_retry_count(ein, source)
                 return False, ""
+
+        # The backoff distrusts a source that failed, but it cannot tell OUR
+        # bug from theirs: when a collector is fixed, every charity it broke is
+        # still serving its sentence. --force-phase crawl is the operator
+        # saying the client changed, so the window and the retry count no
+        # longer describe anything. Deliberately below the terminal check --
+        # CAPTCHA and not-found are the publisher's decision, not our defect,
+        # and re-knocking on a door that was shut on purpose is the one thing
+        # that TTL exists to stop.
+        if self.retry_failed_sources:
+            return False, ""
 
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:

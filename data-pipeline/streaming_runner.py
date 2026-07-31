@@ -202,12 +202,15 @@ def _build_extract_collectors(logger: PipelineLogger) -> dict[str, Any]:
     return collectors
 
 
-def _create_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str, Any]:
+def _create_worker_resources(
+    logger: PipelineLogger, llm_model: str, retry_failed_sources: bool = False
+) -> dict[str, Any]:
     """Create per-worker resources to avoid cross-thread shared mutable state."""
     return {
         "orchestrator": DataCollectionOrchestrator(
             logger=logger,
             max_pdf_downloads=5,
+            retry_failed_sources=retry_failed_sources,
         ),
         "collectors": _build_extract_collectors(logger),
         "charity_repo": CharityRepository(),
@@ -220,7 +223,9 @@ def _create_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str
     }
 
 
-def _get_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str, Any]:
+def _get_worker_resources(
+    logger: PipelineLogger, llm_model: str, retry_failed_sources: bool = False
+) -> dict[str, Any]:
     """Get or lazily create worker-local resources for the current thread."""
     worker_id = threading.get_ident()
     with _worker_resources_lock:
@@ -228,7 +233,7 @@ def _get_worker_resources(logger: PipelineLogger, llm_model: str) -> dict[str, A
         if resources is not None:
             return resources
 
-    resources = _create_worker_resources(logger, llm_model)
+    resources = _create_worker_resources(logger, llm_model, retry_failed_sources)
     with _worker_resources_lock:
         _worker_resources[worker_id] = resources
     return resources
@@ -890,7 +895,11 @@ def process_charity_full(
         return result
 
     try:
-        worker_resources = _get_worker_resources(logger, llm_model)
+        # Forcing the crawl phase asserts that the client changed, so a source
+        # sitting in a retry backoff from OUR last bug gets another attempt.
+        worker_resources = _get_worker_resources(
+            logger, llm_model, force_all or "crawl" in (force_phases or [])
+        )
         orchestrator: DataCollectionOrchestrator = worker_resources["orchestrator"]
         collectors: dict[str, Any] = worker_resources["collectors"]
         charity_repo: CharityRepository = worker_resources["charity_repo"]

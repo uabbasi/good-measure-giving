@@ -14,6 +14,7 @@ from src.collectors.orchestrator import (
 from src.collectors.web_collector import WebsiteCollector
 from src.constants import (
     CRAWL_GLOBAL_MIN_INTERVAL_SECONDS,
+    CRAWL_MAX_RETRIES,
     PER_DOMAIN_CONCURRENCY,
     TERMINAL_FAILURE_TTL_DAYS,
 )
@@ -1501,6 +1502,7 @@ class TestFailureBackoffUsesAttemptClock:
         orch.raw_data_repo = MagicMock()
         orch.raw_data_repo.get_by_source.return_value = row
         orch.logger = MagicMock()
+        orch.retry_failed_sources = False  # ordinary run: the backoff applies
         return orch
 
     def test_recent_attempt_is_backed_off_even_when_scraped_at_is_ancient(self):
@@ -1639,3 +1641,72 @@ class TestHistoryBookkeepingNeverChangesOutcome:
         result = orch._store_raw_data("12-3456789", "candid", {"candid_profile": {"mission": "test"}})
 
         assert result is False
+
+
+class TestForcingTheCrawlPhaseRetriesASourceWeBroke:
+    """A failure caused by our own client outlives the fix for it.
+
+    form990_grants could not read EIN 36-4476244's filings because of three
+    bugs in our IRS reader. That failure armed a 4-hour backoff. The fix
+    landed twenty minutes later, and the next run skipped the source anyway --
+    "within backoff window" -- so the charity failed its required-source gate
+    for a reason that no longer existed. The backoff is right to distrust a
+    failing source; it has no way to know the client changed underneath it.
+
+    `--force-phase crawl` is the operator saying so explicitly. It clears the
+    window and the retry count, and nothing else: terminal classes (CAPTCHA,
+    not-found) are checked first and stay skipped, because those describe a
+    publisher's decision rather than our bug, and re-knocking on a door that
+    was deliberately shut is what that TTL exists to prevent.
+    """
+
+    def _orchestrator(self, retry_failed_sources, row):
+        from unittest.mock import MagicMock
+
+        from src.collectors.orchestrator import DataCollectionOrchestrator
+
+        o = DataCollectionOrchestrator.__new__(DataCollectionOrchestrator)
+        o.logger = MagicMock()
+        o.retry_failed_sources = retry_failed_sources
+        o.raw_data_repo = MagicMock()
+        o.raw_data_repo.get_by_source.return_value = row
+        return o
+
+    def _recent_failure(self, reason="Failed to download any XML filings"):
+        from datetime import datetime, timedelta
+
+        return {
+            "success": 0,
+            "retry_count": 2,
+            "last_attempt_at": datetime.now() - timedelta(minutes=20),
+            "error_message": reason,
+            "last_failure_reason": reason,
+        }
+
+    def test_without_the_override_the_fixed_source_stays_skipped(self):
+        """The defect, so the test below is not proving a no-op."""
+        o = self._orchestrator(False, self._recent_failure())
+        skip, reason = o._should_skip_failed_source("36-4476244", "form990_grants")
+        assert skip and "backoff" in reason
+
+    def test_forcing_the_crawl_retries_it_now(self):
+        o = self._orchestrator(True, self._recent_failure())
+        assert o._should_skip_failed_source("36-4476244", "form990_grants") == (False, "")
+
+    def test_a_permanently_failed_source_is_retried_too(self):
+        """Three failures against our own bug is still our own bug."""
+        row = self._recent_failure()
+        row["retry_count"] = CRAWL_MAX_RETRIES
+        o = self._orchestrator(True, row)
+        assert o._should_skip_failed_source("36-4476244", "form990_grants") == (False, "")
+
+    def test_forcing_the_crawl_does_not_reopen_a_captcha_block(self):
+        """EIN 75-2352043 sits behind a CAPTCHA on purpose. Forcing a crawl
+        must not start knocking on that door again."""
+        o = self._orchestrator(True, self._recent_failure("CAPTCHA_BLOCKED"))
+        skip, reason = o._should_skip_failed_source("75-2352043", "website")
+        assert skip and "terminal" in reason
+
+    def test_a_source_that_succeeded_is_untouched(self):
+        o = self._orchestrator(True, {"success": 1, "retry_count": 0})
+        assert o._should_skip_failed_source("36-4476244", "form990_grants") == (False, "")
