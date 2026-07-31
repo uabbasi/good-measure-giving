@@ -1149,3 +1149,61 @@ proceeding** per the standing rule, approved at a $30 cap.
 | 36-4476244 | single, IRS election | FY2024 published, ratio consistent |
 | batch80 #1 | 40, force crawl+extract | killed at ~29/40 by the 10-min tool cap, not by budget |
 | batch80 #2 | 40, resumed on cache | in progress |
+
+## batch80 result: 37 of 40 in the index, 36 regenerated
+
+`batch80 #2` FINISHED at **$2.23 of $30.00** — not budget-truncated. The
+resume cost a fraction of the estimate because the 29 charities completed
+before the tool-cap kill were cache hits at $0.0000 each; total across both
+attempts ~$9.70 against the ~$24 estimate.
+
+**Not 40/40.** Four outstanding, each a different problem, none of them the
+same as any other:
+
+| EIN | charity | state |
+|---|---|---|
+| 20-4423661 | Muslim Association of Puget Sound | **FIXED** — SSL handshake failure to the discovery service on the first pass, transient; clean on retry |
+| 82-2517347 | MedGlobal | frozen — website CAPTCHA-blocked, 180d terminal TTL, the same structural case as 75-2352043 |
+| 81-2169685 | ICNAB | **caused by the IRS election** — see below |
+| 88-0405956 | Islamic Foundation of Nevada | citation_4 points at the **Ivy Foundation of Northern Virginia**; the same two orgs were confused in a February verdict, so a real and long-standing data defect |
+| 20-0942434 | Baitulmaal | "cost per beneficiary of $76,612.48, but the source data has no such figure" — the derived-metric gap recorded 2026-07-30 |
+
+**Three of these were in the index before this run and are not now.** The gate
+fails closed, so a charity that stops passing is dropped rather than left
+stale. Working as designed, but the change cost three live pages.
+
+### The ICNAB regression, stated plainly
+
+Both mirrors report FY2023 $4,520,145. The filing reports FY2025 $3,851,438,
+so the income statement moved to FY2025 — correctly, that is what the primary
+source says. But the revenue *trend* the rich narrative discusses still ends at
+FY2024 ($4,243,273, $3,387,088 before it). Both figures are true. The page
+presents both as current, and the score judge correctly reads that as a
+contradiction.
+
+**The headline moved a year ahead of the series behind it.** Same family as the
+fiscal-year narrative fix of 2026-07-02.
+
+Ruled out along the way: the rich narrative was NOT stale — it regenerated at
+12:26:54, thirteen seconds after the "already exists, use force=True" line, and
+the log shows "Generated rich narrative ... valid=True". The multi-year figures
+are not in metrics_json either (it carries only `total_revenue` and
+`financial_data_tax_year: 2025`); the generator gets them from raw source
+context. So the fix is to make that context agree with the elected year, not to
+populate a field — bigger than a patch, and left for a decision.
+
+### Follow-ups, in priority order
+
+1. **ICNAB / the year-ahead headline.** Either give the narrative context a
+   multi-year series that includes the elected year (the IRS gives us up to 3
+   filings each with revenue, so the data exists), or narrow
+   `elect_primary_filing`. The first is correct; the second is cheap.
+2. **Islamic Foundation of Nevada.** Find where the Ivy Foundation URL enters
+   the citation registry. Pre-existing, not caused by this work.
+3. **Baitulmaal / derived metrics.** Extend the published-value rule to
+   computed figures so `cost_per_beneficiary` cannot block. Recorded 2026-07-30
+   and unaddressed since; it has now blocked a charity twice.
+4. **The backoff clock** (server PDT vs host local — see above). Not blocking.
+5. **MedGlobal + 75-2352043.** Both wait on the same decision about whether the
+   required-source gate should read stored usable content rather than the
+   success flag.
