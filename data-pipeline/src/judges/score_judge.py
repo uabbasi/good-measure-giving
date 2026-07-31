@@ -11,6 +11,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 from .base_judge import BaseJudge, JudgeType
+from .factual_judge import demote_published_figure_errors
 from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
@@ -145,6 +146,16 @@ class ScoreJudge(BaseJudge):
                 "llm_verification",
                 "Score judge could not complete any consensus roll",
             )
+
+        # The governing rule, shared with the factual judge rather than owned
+        # by it: which source supplies a field is settled for the whole
+        # pipeline before any judge runs, so a narrative reporting the figure
+        # we published is correct however this judge labels the field. EIN
+        # 81-2169685 was blocked here for reporting the FY2025 revenue we
+        # publish, cited against the mirrors' FY2023 that lost the election.
+        demoted = demote_published_figure_errors(issues, (context or {}).get("charity_data"))
+        if demoted:
+            metadata["demoted_published_figures"] = demoted
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])

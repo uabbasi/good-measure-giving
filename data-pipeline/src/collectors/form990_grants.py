@@ -659,11 +659,28 @@ class Form990GrantsCollector(BaseCollector):
         org_name = latest["org_name"]
         financials = latest["financials"]
 
+        # Every filing's own income statement, not just the newest. All three
+        # were parsed and then discarded, which is how a page came to publish
+        # an FY2025 headline above a trend that ended at FY2024.
+        annual: dict[int, Dict[str, Any]] = {}
+
         for fd in filings_data:
             all_domestic.extend(fd["domestic_grants"])
             all_foreign.extend(fd["foreign_grants"])
             if fd["tax_year"] is not None:
                 filing_years.append(fd["tax_year"])
+                # Filings arrive newest first, so an amended re-release of a
+                # year already seen must not displace the one we elected.
+                annual.setdefault(fd["tax_year"], {
+                    "fiscal_year": fd["tax_year"],
+                    **{
+                        key: fd["financials"].get(key)
+                        for key in (
+                            "total_revenue", "total_expenses", "program_expenses",
+                            "admin_expenses", "fundraising_expenses",
+                        )
+                    },
+                })
 
         # Calculate totals
         total_domestic = sum(g["amount"] for g in all_domestic if g["amount"])
@@ -676,6 +693,7 @@ class Form990GrantsCollector(BaseCollector):
             "tax_year": tax_year,
             "object_id": object_id,
             "filing_years": sorted(set(filing_years), reverse=True),
+            "annual_financials": [annual[y] for y in sorted(annual, reverse=True)],
             "domestic_grants": all_domestic,
             "foreign_grants": all_foreign,
             "total_domestic_grants": total_domestic,

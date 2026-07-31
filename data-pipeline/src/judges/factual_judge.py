@@ -127,6 +127,18 @@ def _normalized_text(value: Any) -> str:
     return " ".join(str(value).strip().lower().split())
 
 
+def _column_value(column: str, published: Any) -> Optional[float]:
+    """One published column, from the row or the metrics blob behind it."""
+    if not isinstance(published, dict):
+        return None
+    metrics = published.get("metrics_json")
+    metrics = metrics if isinstance(metrics, dict) else {}
+    for holder in (published, metrics):
+        if isinstance(holder, dict) and holder.get(column) is not None:
+            return _parse_number(holder[column])
+    return None
+
+
 def _published_value(field: Any, published: Any) -> Optional[float]:
     """What we actually published for this field, as a number."""
     if not isinstance(published, dict):
@@ -136,12 +148,96 @@ def _published_value(field: Any, published: Any) -> Optional[float]:
     column = published_column_for(field)
     if column is None:
         return None
-    metrics = published.get("metrics_json")
-    metrics = metrics if isinstance(metrics, dict) else {}
-    for holder in (published, metrics):
-        if isinstance(holder, dict) and holder.get(column) is not None:
-            return _parse_number(holder[column])
-    return None
+    return _column_value(column, published)
+
+
+def _normalised_field(field: Any) -> str:
+    key = str(field or "").strip().lower().replace(" ", "_").replace("-", "_")
+    return key.rsplit(".", 1)[-1]
+
+
+# Figures we compute rather than store, and the published columns they are
+# computed from. A judge objecting that one is "not found in the source data"
+# is right about the source data and wrong about the page: EIN 20-0942434's
+# cost per beneficiary of $76,612.48 is program_expenses 68,185,104 over
+# beneficiaries_served_annually 890, to the cent.
+#
+# Several numerators are accepted because which expense line to divide by is an
+# editorial choice rather than a fact — the same way the program ratio has
+# carried both a filed and a cash-adjusted basis since the GIK fix. What is NOT
+# accepted is a figure that reconciles to none of them.
+_DERIVED_BASES: dict[str, tuple[tuple[str, ...], str]] = {
+    "cost_per_beneficiary": (
+        ("program_expenses", "total_expenses"),
+        "beneficiaries_served_annually",
+    ),
+    "cost_per_person_served": (
+        ("program_expenses", "total_expenses"),
+        "beneficiaries_served_annually",
+    ),
+}
+
+
+def _derived_figure_reconciles(field: Any, claimed: float, published: Any) -> bool:
+    """Does a computed claim divide out of figures we published?"""
+    spec = _DERIVED_BASES.get(_normalised_field(field))
+    if spec is None:
+        return False
+    numerators, denominator = spec
+    denom = _column_value(denominator, published)
+    if not denom:
+        return False
+    for numerator in numerators:
+        value = _column_value(numerator, published)
+        if value is None:
+            continue
+        if numeric_agreement(claimed, value / denom) is True:
+            return True
+    return False
+
+
+# Field names that describe WHERE a claim sits in the page rather than WHAT it
+# is. There is no column to compare against, so the per-column check stays
+# silent and a correct page is withheld: EIN 81-2169685 was blocked on
+# baseline_narrative.summary for reporting the FY2025 revenue we publish,
+# against the mirrors' FY2023 that lost the election.
+_NARRATIVE_LOCATION_RE = re.compile(
+    r"narrative|summary|rationale|explanation|headline|verdict|strength|weakness|"
+    r"concern|case_for|case_against|dimension",
+    re.IGNORECASE,
+)
+
+# The figures a narrative actually quotes. Bounded on purpose: matching against
+# every number we hold would wave through a coincidence.
+_QUOTABLE_COLUMNS = (
+    "total_revenue",
+    "total_expenses",
+    "program_expenses",
+    "admin_expenses",
+    "fundraising_expenses",
+    "total_assets",
+    "total_liabilities",
+    "net_assets",
+    "working_capital_months",
+    "program_expense_ratio",
+)
+
+
+def _is_narrative_location(field: Any) -> bool:
+    return bool(_NARRATIVE_LOCATION_RE.search(str(field or "")))
+
+
+def _matches_any_published_figure(claimed: float, published: Any) -> bool:
+    for column in _QUOTABLE_COLUMNS:
+        ours = _column_value(column, published)
+        if ours is None:
+            continue
+        if (
+            numeric_agreement(claimed, ours) is True
+            or numeric_agreement(claimed, ours * 100) is True
+        ):
+            return True
+    return False
 
 
 # The model frequently leaves claim_value null and states both figures in prose:
@@ -194,14 +290,51 @@ def claim_matches_published_value(
         claimed = _claim_stated_in_message(message)
     if claimed is None:
         return False
+
     ours = _published_value(field, published)
-    if ours is None:
-        return False
-    # Ratios are published as fractions and written as percentages.
-    return (
-        numeric_agreement(claimed, ours) is True
-        or numeric_agreement(claimed, ours * 100) is True
-    )
+    if ours is not None:
+        # Ratios are published as fractions and written as percentages.
+        return (
+            numeric_agreement(claimed, ours) is True
+            or numeric_agreement(claimed, ours * 100) is True
+        )
+
+    # No column for this field. Either it is computed from columns, or it names
+    # a place in the page rather than a datum. Both are still our own figures.
+    if _derived_figure_reconciles(field, claimed, published):
+        return True
+    if _is_narrative_location(field) and _matches_any_published_figure(claimed, published):
+        return True
+    return False
+
+
+def demote_published_figure_errors(issues: Any, charity_data: Any) -> int:
+    """Demote every blocking issue that merely restates a figure we published.
+
+    The rule below is applied inline by this judge, among its other gates. It
+    is exposed here because it is not this judge's rule: which source supplies
+    a field is settled for the whole pipeline before any judge runs, so a page
+    withheld over our own provenance is the same defect whoever writes it down.
+    EIN 81-2169685 was blocked by the SCORE judge for reporting the FY2025
+    revenue we publish, against the mirrors' FY2023 that lost the election —
+    a finding this judge would have waved through.
+
+    Returns the number demoted. Fails closed: with no charity_data there is
+    nothing to compare against and nothing is demoted.
+    """
+    demoted = 0
+    for issue in issues or []:
+        if getattr(issue, "severity", None) != Severity.ERROR:
+            continue
+        if claim_matches_published_value(
+            getattr(issue, "field", None),
+            getattr(issue, "claim_value", None),
+            charity_data,
+            getattr(issue, "message", None),
+        ):
+            issue.severity = Severity.WARNING
+            demoted += 1
+    return demoted
 
 
 # The program ratio carries two legitimate values since this run's GIK fix: the

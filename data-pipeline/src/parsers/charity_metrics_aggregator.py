@@ -587,6 +587,14 @@ class CharityMetrics(BaseModel):
         default_factory=list,
         description="Where ProPublica and Charity Navigator diverged and one was chosen as canonical",
     )
+    annual_financials: list[dict] = Field(
+        default_factory=list,
+        description=(
+            "Year-by-year income statement from the IRS filings, newest first. "
+            "Published only when the filing also won the income statement, so "
+            "the trend and the headline always come from one source."
+        ),
+    )
     financial_quality_flags: Optional[list[str]] = Field(
         None, description="Detected data quality issues (e.g., 'program_exceeds_total', 'expense_sum_mismatch')"
     )
@@ -1981,6 +1989,19 @@ class CharityMetricsAggregator:
                     _track(f, "irs_990", metrics_data[f])
                 metrics_data["financial_data_source"] = "irs_990"
                 metrics_data["financial_data_tax_year"] = irs_tax_year
+                # The years behind the headline, from the same filings. Set
+                # only here, so a trend can never come from a source that lost
+                # the income statement: EIN 81-2169685 published an FY2025 top
+                # line above a trend ending FY2024 and the judge read the two
+                # as contradicting each other.
+                series = grants_profile.get("annual_financials")
+                if isinstance(series, list) and series:
+                    metrics_data["annual_financials"] = sorted(
+                        (row for row in series if isinstance(row, dict)
+                         and row.get("fiscal_year") is not None),
+                        key=lambda row: row["fiscal_year"],
+                        reverse=True,
+                    )
                 # Whoever wins the statement owns its ratios. Charity
                 # Navigator's precomputed ratio is applied further down
                 # whenever the field is still empty, so leaving these unset
