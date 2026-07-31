@@ -694,3 +694,70 @@ Held for a decision because any fix changes a displayed statistic for most of th
 site. Options recorded in the summary to the user.
 
 Suite: **1984 passed**. Spend this session: +$0.63 (total ~$15.92).
+
+---
+
+## DATA ISSUE — RESOLVED in code (2026-07-30). NOT yet regenerated.
+
+Decision taken (user): *"where things diverge, we should pick one to be canonical,
+whichever one is most trustworthy, and then note the discrepancy."*
+
+### What trustworthiness actually turned out to be
+
+Not one answer per source — it splits by field group. Measured, not assumed:
+
+| probe | result |
+|---|---|
+| PP income-statement completeness | exactly **2 of 5** fields for 158/169 charities, 0 for 11 |
+| fiscal-year recency | CN newer than PP on **134/168**, older on 6, same on 15 |
+| same-year agreement (same filing, so a gap is a transcription error) | agree within 1% on **13 of 15**; the 2 misses are CN round numbers ($5,400,000 vs PP's $11,189,635; $900,000 vs $102,250) |
+| balance sheets, where both carry one (123) | **18 of CN's visibly corrupt vs 2 of PP's** — `$100,000`/`$500,000` assets appearing 4x, magnitudes lost (11-3013369: CN $113,404 vs 990's $27,427,805; 47-1313957: CN 0 vs $1M) |
+
+So: **CN is canonical for the income statement** (PP simply does not have the
+functional-expense breakdown, and CN is a year newer). **PP is canonical for the
+balance sheet** (CN's is unreliable). Ties and same-year conflicts go to PP — it is
+the filing.
+
+### Defects fixed
+
+1. **Cross-source splicing inside the income statement.** 83-1171525 Link Outside
+   published CN's `program_expenses` 800,000 against PP's `total_expenses` 102,250 —
+   7.8x its own total, live. 92-1198452 The Intercept published a 40% program ratio
+   whose numerator was CN's and denominator PP's. The income statement is now elected
+   **whole**.
+2. **Election ignored recency.** Chose on field count, so 5 charities published a
+   staler statement than the one already held (83-1794093 Hikma Health showed CN's
+   **FY2019** over PP's FY2023; also Morocco, BASMAH, Saylani, Rohingya).
+3. **Working capital divided across two filings.** Now pairs the balance sheet with
+   its OWN expenses and carries the fiscal year it describes.
+4. **Balance sheets spliced field-by-field.** Now taken whole or not at all.
+
+### Measured effect (real aggregator over all 169, in memory, nothing written)
+
+```
+program_expenses > total_expenses     1 -> 0
+income-statement source               134 unchanged; 7 -> propublica; 6 mixed -> charity_navigator
+fiscal year corrected                 5  (2019->2023, 2021->2023, 2022->2023 x3)
+working capital                       156 unchanged, 5 newly available, 0 withheld,
+                                      134 now stamped with the year they describe
+discrepancies recorded                9 across 7 charities
+```
+
+Working-capital **values barely move** — that was the conservative choice. The
+figure was never wrong about the year it came from; it was unlabelled and sat beside
+a different year's expenses. Adopting CN's balance sheet instead would have made
+pages self-consistent at the cost of publishing 3,694 months of reserves for The
+Mecca Center (CN reports $13,034 of annual expenses against $7,038,771 of assets).
+
+### Where the discrepancy is noted
+
+`financial_source_discrepancies` (new field on `CharityMetrics`) rides `metrics_json`
+into `keyConcerns`; `source_attribution.working_capital_months` now carries
+`fiscal_year`. **Caveat: `keyConcerns` is exported and typed but rendered nowhere in
+the website** (`website/types.ts:1144` is its only reference) — so today the note
+lands in the data, not in front of a donor. Making it visible is a website change,
+not done.
+
+Commits `80434e3` (fix) and `bb2a581` (export tests). Suite **2029 passed**
+(was 1984). No LLM spend. Nothing regenerated — the change takes effect only on a
+re-run of synthesize onward, which is a pending decision.
