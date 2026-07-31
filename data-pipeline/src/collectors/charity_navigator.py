@@ -1208,6 +1208,17 @@ class CharityNavigatorCollector(BaseCollector):
             return financials
         if close(value, years):
             financials["working_capital_ratio"] = round(value * 12, 1)
+            return financials
+
+        # Neither reading fits. Working capital is a subset of net assets, so
+        # it cannot cover more months than net assets do — a figure above that
+        # ceiling is impossible rather than merely differently defined. (Below
+        # it is fine: Charity Navigator may count only unrestricted funds.)
+        # EIN 20-1799252 returned 39 against a ceiling of 3.2. It never reached
+        # the page, but it is handed to the factual judge as ground truth,
+        # where a wrong number blocks a narrative that is right.
+        if years > 0 and value > years * 12 * 1.05:
+            financials["working_capital_ratio"] = None
         return financials
 
     def _validate_llm_financials(self, financials: Dict[str, Any]) -> Dict[str, Any]:

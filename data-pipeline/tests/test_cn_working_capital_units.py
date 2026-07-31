@@ -94,13 +94,60 @@ class TestItRefusesToGuess:
         out = _normalize({"working_capital_ratio": 3.25})
         assert out["working_capital_ratio"] == 3.25
 
-    def test_a_value_matching_neither_reading_is_untouched(self):
+    def test_a_value_between_the_two_readings_is_untouched(self):
+        """Charity Navigator may count only unrestricted net assets, so a figure
+        BELOW net assets is a methodology difference, not an error."""
         out = _normalize({
             "working_capital_ratio": 7.0,
             "net_assets": 43407000,
             "total_expenses": 13351984,
         })
         assert out["working_capital_ratio"] == 7.0
+
+
+class TestAnImpossibleValueIsDropped:
+    """Working capital is a subset of net assets, so it cannot buy more months
+    than net assets do. EIN 20-1799252 came back with 39 against net assets
+    worth 3.2 months — 12x its own ceiling, matching neither unit reading.
+
+    It never reached the page (a computed figure won), but it is handed to the
+    factual judge as ground truth, so a wrong number there blocks publication
+    of a narrative that is right.
+    """
+
+    def test_the_mas_boston_value_is_refused(self):
+        out = _normalize({
+            "working_capital_ratio": 39,
+            "net_assets": 814400,
+            "total_expenses": 3083919,
+        })
+        assert out["working_capital_ratio"] is None
+
+    def test_the_ceiling_itself_is_allowed(self):
+        out = _normalize({
+            "working_capital_ratio": 39.0,
+            "net_assets": 43407000,
+            "total_expenses": 13351984,
+        })
+        assert out["working_capital_ratio"] == 39.0
+
+    def test_a_value_just_inside_the_ceiling_survives(self):
+        """3.2 months of net assets, reported as 3.1 — plausible."""
+        out = _normalize({
+            "working_capital_ratio": 3.1,
+            "net_assets": 814400,
+            "total_expenses": 3083919,
+        })
+        assert out["working_capital_ratio"] == 3.1
+
+    def test_negative_net_assets_are_left_to_the_unit_check(self):
+        """No ceiling to apply when there are no net assets to exceed."""
+        out = _normalize({
+            "working_capital_ratio": -6.0,
+            "net_assets": -50000,
+            "total_expenses": 100000,
+        })
+        assert out["working_capital_ratio"] == -6.0
 
     def test_zero_expenses_is_not_a_division(self):
         out = _normalize({
