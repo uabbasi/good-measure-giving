@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 from src.llm.llm_client import TASK_MODELS, LLMClient, LLMTask
+from src.utils.source_trust import field_group
 
 from .base_judge import BaseJudge, JudgeType
 from .materiality import is_methodology_divergent
@@ -124,6 +125,54 @@ def _normalized_text(value: Any) -> str:
     if value is None:
         return ""
     return " ".join(str(value).strip().lower().split())
+
+
+def _published_value(field: Any, published: Any) -> Optional[float]:
+    """What we actually published for this field, as a number."""
+    if not isinstance(published, dict):
+        return None
+    group = field_group(field)
+    if group is None:
+        return None
+    key = str(field or "").strip().lower().replace(" ", "_").replace("-", "_")
+    metrics = published.get("metrics_json")
+    metrics = metrics if isinstance(metrics, dict) else {}
+    for candidate in (key, key.rsplit(".", 1)[-1]):
+        for holder in (published, metrics):
+            if candidate in holder and holder[candidate] is not None:
+                return _parse_number(holder[candidate])
+    return None
+
+
+def claim_matches_published_value(field: Any, claim_value: Any, published: Any) -> bool:
+    """Is the narrative faithfully reporting the figure we published?
+
+    This is the whole answer to "the sources disagree". Which source a field
+    comes from is settled before the judge runs, by src/utils/source_trust.py,
+    and the disagreement is published as a discrepancy rather than hidden. So a
+    narrative that reports our published figure is correct BY CONSTRUCTION, and
+    a judge citing the source that lost the election is describing our
+    provenance, not a defect in the page.
+
+    EIN 45-5637293 is the case: ProPublica reported FY2023 revenue of
+    $1,759,964 and Charity Navigator $100,000 for the same year. The election
+    picked the filing, correctly, and the page was then withheld for
+    "revenue diverges >80% across sources - likely wrong org".
+
+    A claim that does NOT match what we published still blocks. That is
+    fabrication, and no hierarchy excuses it.
+    """
+    claimed = _parse_number(claim_value)
+    if claimed is None:
+        return False
+    ours = _published_value(field, published)
+    if ours is None:
+        return False
+    # Ratios are published as fractions and written as percentages.
+    return (
+        numeric_agreement(claimed, ours) is True
+        or numeric_agreement(claimed, ours * 100) is True
+    )
 
 
 # The program ratio carries two legitimate values since this run's GIK fix: the
@@ -632,7 +681,20 @@ class FactualJudge(BaseJudge):
                 # settled deterministically above, so the model's second
                 # opinion on it never blocks -- see _is_wallet_tag_agreement.
                 if severity == Severity.ERROR:
-                    if numeric_agreement(issue.claim_value, issue.source_value) is True:
+                    # Governing rule, ahead of everything below: a narrative
+                    # reporting the figure we published is correct, whatever a
+                    # source that lost the election says. Which source supplies
+                    # a field is settled deterministically before the judge runs
+                    # (src/utils/source_trust.py) and the disagreement is
+                    # published as a discrepancy, so re-litigating it here can
+                    # only withhold a page over our own provenance. The rules
+                    # after this one are narrower shapes of the same mistake,
+                    # each added after a regeneration surfaced it.
+                    if claim_matches_published_value(
+                        issue.field, issue.claim_value, context.get("charity_data")
+                    ):
+                        severity = Severity.WARNING
+                    elif numeric_agreement(issue.claim_value, issue.source_value) is True:
                         severity = Severity.INFO
                     elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
                         severity = Severity.WARNING
