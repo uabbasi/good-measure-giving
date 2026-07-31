@@ -51,6 +51,7 @@ MODEL_GEMINI_3_FLASH = "gemini-3-flash-preview"
 MODEL_GEMINI_36_FLASH = "gemini-3.6-flash"
 MODEL_GEMINI_35_FLASH = "gemini-3.5-flash"
 MODEL_GEMINI_35_FLASH_LITE = "gemini-3.5-flash-lite"
+MODEL_GEMINI_31_FLASH_LITE = "gemini-3.1-flash-lite"
 MODEL_GEMINI_25_PRO = "gemini-2.5-pro"
 MODEL_GEMINI_25_FLASH = "gemini-2.5-flash"
 MODEL_GEMINI_25_FLASH_LITE = "gemini-2.5-flash-lite"
@@ -119,6 +120,18 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "cost_per_1m_input": 0.30,
         "cost_per_1m_input_cached": 0.03,
         "cost_per_1m_output": 2.50,
+        "context_window": 1_000_000,
+        "supports_json_mode": True,
+    },
+    MODEL_GEMINI_31_FLASH_LITE: {
+        "litellm_name": "gemini/gemini-3.1-flash-lite",
+        "provider": "google",
+        # Cheaper than 3.5-flash-lite on both sides: 17% less input, 40% less
+        # output, and still three generations past the 2.5-flash-lite the gate
+        # had been left on.
+        "cost_per_1m_input": 0.25,
+        "cost_per_1m_input_cached": 0.025,
+        "cost_per_1m_output": 1.50,
         "context_window": 1_000_000,
         "supports_json_mode": True,
     },
@@ -272,8 +285,21 @@ TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
     # Navigator's years read as months, date arithmetic anchored to 2024, and
     # findings whose own message said "the claim is accurate" filed as errors.
     LLMTask.LLM_JUDGE: (
-        MODEL_GEMINI_35_FLASH_LITE,  # newest flash-lite; no 3.6 lite exists
-        [MODEL_GEMINI_35_FLASH, MODEL_GEMINI_36_FLASH],
+        # 3.5 rather than 3.1-flash-lite, despite 3.1 being cheaper per token
+        # (17% input, 40% output). Measured on the five charities that block
+        # most often, judge-only, same data:
+        #
+        #   3.5-flash-lite   0 errors on both passes, $0.68 per pass
+        #   3.1-flash-lite   1 of 5 blocked on BOTH passes, $1.05 and $1.39
+        #
+        # It is more expensive in practice because it is markedly more verbose
+        # — roughly twice the warnings per charity — which costs output tokens
+        # and drags the consensus rolls with it. And the block reproduced: it
+        # objects to United Muslim Relief's derived cost-per-beneficiary as
+        # "not found in the source data", which is true of any figure we
+        # compute rather than copy.
+        MODEL_GEMINI_35_FLASH_LITE,
+        [MODEL_GEMINI_31_FLASH_LITE, MODEL_GEMINI_35_FLASH],
     ),
 }
 

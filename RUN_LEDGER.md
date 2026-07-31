@@ -980,3 +980,42 @@ pricing. Judging is 96.7% of it. Extrapolated: ~$9 for the 40, ~$34 for all 150+
 gate pending the decision recorded above.
 
 Session spend ~$11. Suite 2093 green. Nothing pushed.
+
+---
+
+## gemini-3.1-flash-lite trialled for the judge, and rejected
+
+Cheaper per token — $0.25/$1.50 against 3.5-flash-lite's $0.30/$2.50, so 17%
+less input and 40% less output. It is nonetheless worse on both axes.
+
+Same five charities, judge-only, identical data:
+
+| judge model | pass 1 | pass 2 | cost/pass |
+|---|---|---|---|
+| gemini-3.5-flash-lite | 0 errors, 5/5 exported | 0 errors, 5/5 | $0.68 |
+| gemini-3.1-flash-lite | **1 blocked** | **1 blocked** | $1.05, $1.39 |
+| gemini-3.5-flash-lite (confirm) | 0 errors, 5/5 | — | $0.81 |
+
+**Cheaper per token, more expensive per charity.** 3.1-flash-lite is markedly
+more verbose — roughly twice the warnings (ISGH 8-10 against 3-5, MAS Boston
+5-6 against 0-3) — and output tokens plus the extra consensus work more than
+erase the lower rate.
+
+The block reproduced on both passes, so it is not roll variance. It objects to
+United Muslim Relief's cost per beneficiary:
+
+    "The narrative claims a cost per beneficiary of $7.44, but this figure is
+     not found in the provided source data."
+
+Which is literally true and beside the point: $7.44 is DERIVED, not copied from
+a source, as is every ratio we compute. Worth noting as a real gap — the
+governing published-value rule covers fields in the trust hierarchy, and derived
+metrics like cost_per_beneficiary sit outside it, so a sufficiently literal
+judge can still block on one. Not patched here, because tuning the rules to
+accommodate the weaker model is the wrong direction when the stronger one is
+also cheaper in practice.
+
+Reverted to gemini-3.5-flash-lite, with 3.1-flash-lite kept as first fallback.
+Confirmation pass after reverting: 0 errors, 5 of 5, index back to 162.
+
+Suite 2093 green.
