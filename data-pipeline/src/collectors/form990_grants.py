@@ -39,6 +39,16 @@ from .irs_990_source import (
 # Default cache directory for 990 XML files
 DEFAULT_CACHE_DIR = Path.home() / ".amal-metric-data" / "990_xml_cache"
 
+# Which return to keep when an organisation filed more than one for a tax
+# period. Form 990-T is the unrelated-business-income return: no Schedule I,
+# no functional expenses, nothing parsed here. It is ranked last rather than
+# dropped, so a period that has only a 990-T still counts as a filing.
+_RETURN_TYPE_RANK = {"990": 0, "990EZ": 1, "990PF": 2}
+
+
+def _return_rank(ref: FilingRef) -> int:
+    return _RETURN_TYPE_RANK.get((ref.return_type or "").upper(), 9)
+
 
 class Form990GrantsCollector(BaseCollector):
     """
@@ -133,8 +143,12 @@ class Form990GrantsCollector(BaseCollector):
         for year in range(current_year, current_year - self.INDEX_YEARS_BACK, -1):
             for ref in self._load_index_year(year).get(ein_clean, []):
                 # An amended or re-released filing can appear in more than one
-                # submission year; keep one entry per tax period.
-                found.setdefault(ref.tax_period, ref)
+                # submission year; keep one entry per tax period, preferring
+                # the informational return. Ties keep the incumbent, so the
+                # newest submission year still wins a genuine re-release.
+                current = found.get(ref.tax_period)
+                if current is None or _return_rank(ref) < _return_rank(current):
+                    found[ref.tax_period] = ref
 
         ordered = sorted(found.values(), key=lambda r: r.tax_period, reverse=True)
         return ordered[:max_filings]

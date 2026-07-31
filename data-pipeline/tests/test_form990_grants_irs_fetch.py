@@ -96,3 +96,54 @@ class TestTheExistingXmlCacheStillCounts:
         ):
             c.fetch("83-1794093")
         assert c._get_cached_xml("obj-2025") == XML
+
+
+class TestA990TDoesNotDisplaceTheRealReturn:
+    """Form 990-T is the unrelated-business-income return. It carries no
+    Schedule I and no functional expenses -- nothing this collector parses.
+
+    Organisations that file one file it for the SAME tax period as their
+    informational 990, so the index holds two rows per period. The picker kept
+    one row per period by first arrival, which means the CSV's row order chose
+    the return. For EIN 36-4476244 (Zakat Foundation of America) index_2025
+    and index_2024 both list the 990-T first, so two of its three filing slots
+    went to returns with no grants in them, and the run logged "Extracted 0
+    domestic + 0 foreign grants" from filings that could never have had any.
+    """
+
+    EIN = "364476244"
+
+    def _index(self):
+        # Row order as the IRS actually publishes it: the 990-T leads.
+        return {
+            self.EIN: [
+                FilingRef(self.EIN, "202406", "obj-2025-990T", "2025_TEOS_XML_05A", "990T"),
+                FilingRef(self.EIN, "202406", "obj-2025-990", "2025_TEOS_XML_05A", "990"),
+                FilingRef(self.EIN, "202306", "obj-2024-990T", "2024_TEOS_XML_05a", "990T"),
+                FilingRef(self.EIN, "202306", "obj-2024-990", "2024_TEOS_XML_05a", "990"),
+            ]
+        }
+
+    def _picked(self, tmp_path):
+        c = _collector(tmp_path)
+        with patch.object(c, "_load_index_year", return_value=self._index()):
+            return c._irs_filings(self.EIN)
+
+    def test_the_informational_return_wins_its_tax_period(self, tmp_path):
+        picked = self._picked(tmp_path)
+        assert [f.object_id for f in picked] == ["obj-2025-990", "obj-2024-990"]
+
+    def test_one_filing_per_tax_period_still_holds(self, tmp_path):
+        periods = [f.tax_period for f in self._picked(tmp_path)]
+        assert len(periods) == len(set(periods))
+
+    def test_a_period_with_only_a_990t_is_still_kept(self, tmp_path):
+        """Ranking the 990-T last must not throw the period away -- for a
+        period we have nothing else for, it is still the only evidence the
+        organisation filed at all."""
+        only_t = {self.EIN: [
+            FilingRef(self.EIN, "202306", "obj-only-990T", "2024_TEOS_XML_05A", "990T")
+        ]}
+        c = _collector(tmp_path)
+        with patch.object(c, "_load_index_year", return_value=only_t):
+            assert [f.object_id for f in c._irs_filings(self.EIN)] == ["obj-only-990T"]
