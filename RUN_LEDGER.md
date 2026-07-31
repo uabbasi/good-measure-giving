@@ -925,3 +925,58 @@ Suite 2091 green. Session spend ~$9. Nothing pushed.
 The gate deciding what ships runs on the cheapest model in the stack. It is the
 same judge that filed "the claim of 96.0/100 is accurate" as an error, read
 Charity Navigator's years as months, and anchored its date arithmetic to 2024.
+
+---
+
+## Current-generation Gemini models, tested on the 5 hardest charities
+
+Model IDs live-verified against the models endpoint and each probed with the
+judges' real request shape (json_mode + response schema at temperature 0).
+Pricing from litellm's live cost map — the copy vendored in the installed
+litellm predates all three new models and lists none of them.
+
+  narratives, extraction   gemini-3-flash-preview  -> gemini-3.6-flash    (GA)
+  judges                   gemini-2.5-flash-lite   -> gemini-3.5-flash-lite
+  score_judge override     gemini-2.5-flash        -> gemini-3.5-flash
+  factual escalation       gemini-2.5-flash        -> gemini-3.5-flash
+  pro tier                 gemini-3.1-pro-preview  unchanged (newest there is)
+
+Hardest five, chosen by how often they actually blocked since 2026-07-29:
+
+  8x  27-3175543  United Muslim Relief          GIK ratio; dollars vs percentage
+  5x  20-1799252  MAS Boston Society            date anchor; zakat restatement
+  4x  41-2046295  The Citizens Foundation USA   narrative vs our own score
+  4x  23-7065716  Islamic Society of Gtr Houston years-vs-months; board misparse
+  3x  45-5637293  The Noor Project              source divergence (CN's $100,000)
+
+**Both passes: 0 errors, 5 of 5 exported.** Including Citizens Foundation, which
+had survived every previous fix.
+
+Run twice against identical data to test stability:
+
+| EIN | pass 1 err/warn | pass 2 err/warn | per-judge identical |
+|---|---|---|---|
+| 27-3175543 | 0 / 2 | 0 / 2 | yes |
+| 20-1799252 | 0 / 0 | 0 / 3 | no |
+| 41-2046295 | 0 / 1 | 0 / 0 | no |
+| 23-7065716 | 0 / 3 | 0 / 5 | no |
+| 45-5637293 | 0 / 3 | 0 / 3 | yes |
+
+**Read this carefully: the model upgrade did NOT fix nondeterminism.** The
+warning sets still move run to run on 3 of 5 — the model finds different things
+each roll, exactly as before. What is now stable is the GATE: errors are 0 on
+both passes everywhere, because whether a finding blocks is decided by
+deterministic rules and the trust hierarchy rather than left to the model.
+
+That attribution matters for the cost decision below: the stability was bought
+by the deterministic classification, not by the newer model. Separating the two
+cleanly would need an A/B re-judging the same five on 2.5-flash-lite; not done.
+
+Cost: **$0.2277 per charity**, against ~$0.09 before — 2.5x, in line with the
+pricing. Judging is 96.7% of it. Extrapolated: ~$9 for the 40, ~$34 for all 150+.
+
+**All 40 of batch40 are in the index (162 total).** 39 regenerated today;
+75-2352043 remains in the index but stale (Jul 23), still blocked at the crawl
+gate pending the decision recorded above.
+
+Session spend ~$11. Suite 2093 green. Nothing pushed.
