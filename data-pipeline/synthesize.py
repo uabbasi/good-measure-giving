@@ -1282,6 +1282,27 @@ INCOME_STATEMENT_COLUMNS = (
 )
 
 
+def elected_program_expense_ratio(metrics: Any, financials: dict[str, Any]) -> float | None:
+    """The ratio that divides the components we actually publish.
+
+    Two elections run over the same charity (see below), and the aggregator
+    wins the columns. Its values are copied over the ones extract_financials
+    produced -- but only the ones named in that list, and the ratio is not
+    among them. extract_financials takes Charity Navigator's own precomputed
+    ratio whenever it has one, so the page could show the aggregator's
+    numerator and denominator beside Charity Navigator's quotient: EIN
+    36-4476244 published 34,365,532 over 36,818,000 (0.9334) under a ratio of
+    0.9159 belonging to a different fiscal year and a different source.
+
+    Charity Navigator still fills a genuine gap. Where the aggregator has no
+    ratio it has no components either, and a standalone ratio is then the only
+    thing known about how the money was split; dropping it collapses
+    program-ratio scoring the way Al-Furqaan went 0.85 -> None -> impact 8/50.
+    """
+    ratio = getattr(metrics, "program_expense_ratio", None)
+    return ratio if ratio is not None else financials.get("program_expense_ratio")
+
+
 def realign_income_statement_attribution(
     source_attribution: dict[str, dict],
     metrics: Any,
@@ -2307,6 +2328,9 @@ def synthesize_charity(
     synthesized.total_assets = _coerce_financial_column(metrics.total_assets)
     synthesized.total_liabilities = _coerce_financial_column(metrics.total_liabilities)
     synthesized.net_assets = _coerce_financial_column(metrics.net_assets)
+    # Must move with the components above: a quotient left behind describes a
+    # statement that is no longer on the page.
+    synthesized.program_expense_ratio = elected_program_expense_ratio(metrics, financials)
     synthesized.cn_overall_score = metrics.cn_overall_score
     synthesized.cn_financial_score = metrics.cn_financial_score
     synthesized.cn_accountability_score = metrics.cn_accountability_score

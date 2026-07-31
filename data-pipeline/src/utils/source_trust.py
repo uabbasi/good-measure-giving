@@ -12,14 +12,30 @@ narrative that misreports what we ourselves published.
 
 The rankings are measured, not assumed. Across the 169 charities in the index:
 
-  income statement    ProPublica supplies exactly two of five fields for 158 of
-                      169 charities and is a year behind on 134 of 168. It
-                      cannot carry the page. Charity Navigator has the full
-                      functional-expense breakdown and the newer year, so it
-                      leads — but only when its year is actually newer, since
-                      five charities were publishing CN figures OLDER than the
-                      filing already in hand (Hikma Health showed FY2019 over
-                      FY2023).
+  income statement    The filing itself leads, when we can read it and it is
+                      newer. Both other sources are downstream of the same IRS
+                      e-file XML, and until 2026-07-31 most of that XML was
+                      unreachable — the oversized batch is Deflate64 and split
+                      across volumes the index never names — so the election
+                      ran between the two mirrors by default. It carries all
+                      five fields in one group that reconciles to the dollar
+                      (36-4476244: 34,365,532 + 1,198,626 + 1,253,842 =
+                      36,818,000). Across batch80 it was ahead of the published
+                      page on 6 of 40 and level on 32; where both mirrors said
+                      FY2023 $29,498,054, the filing said FY2024 $34,923,926.
+                      It supersedes only when strictly newer AND at least as
+                      complete: a 990-EZ has no Part IX, and trading a stale
+                      complete statement for a current mutilated one would cost
+                      the page its program ratio.
+
+                      Between the mirrors, ProPublica supplies exactly two of
+                      five fields for 158 of 169 charities and is a year behind
+                      on 134 of 168. It cannot carry the page. Charity
+                      Navigator has the full functional-expense breakdown and
+                      the newer year, so it leads — but only when its year is
+                      actually newer, since five charities were publishing CN
+                      figures OLDER than the filing already in hand (Hikma
+                      Health showed FY2019 over FY2023).
 
   balance sheet       The reverse. Of the 123 charities where both carry one,
                       18 of Charity Navigator's are visibly corrupt against 2
@@ -52,6 +68,7 @@ The rankings are measured, not assumed. Across the 169 charities in the index:
 
 from typing import Optional
 
+IRS_990 = "irs_990"
 PROPUBLICA = "propublica"
 CHARITY_NAVIGATOR = "charity_navigator"
 CANDID = "candid"
@@ -60,7 +77,7 @@ DISCOVERY = "discovered"
 
 # Field group -> sources, most trusted first.
 TRUST_ORDER: dict[str, tuple[str, ...]] = {
-    "income_statement": (CHARITY_NAVIGATOR, PROPUBLICA),
+    "income_statement": (IRS_990, CHARITY_NAVIGATOR, PROPUBLICA),
     "balance_sheet": (PROPUBLICA, CHARITY_NAVIGATOR),
     "board": (CHARITY_NAVIGATOR, CANDID),
     "governance": (PROPUBLICA, CHARITY_NAVIGATOR, CANDID),

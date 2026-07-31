@@ -50,10 +50,16 @@ PUBLISHED = {
 
 
 class TestTheTrustHierarchy:
-    def test_charity_navigator_leads_the_income_statement(self):
-        """ProPublica supplies 2 of 5 fields for 158 of 169 charities."""
-        assert canonical_source_for("total_revenue") == "charity_navigator"
-        assert canonical_source_for("program_expenses") == "charity_navigator"
+    def test_the_filing_itself_leads_the_income_statement(self):
+        """Both rating sources are copies of this XML. It became readable on
+        2026-07-31, and where it is newer it is not a competing opinion."""
+        assert canonical_source_for("total_revenue") == "irs_990"
+        assert canonical_source_for("program_expenses") == "irs_990"
+
+    def test_charity_navigator_still_leads_the_mirrors(self):
+        """ProPublica supplies 2 of 5 fields for 158 of 169 charities, so
+        between the two mirrors Charity Navigator still carries the page."""
+        assert more_trusted("total_revenue", "propublica", "charity_navigator") == "charity_navigator"
 
     def test_propublica_leads_the_balance_sheet(self):
         """18 of 123 CN balance sheets are visibly corrupt against 2 of PP's."""

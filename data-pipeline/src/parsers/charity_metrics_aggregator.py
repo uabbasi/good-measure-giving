@@ -273,6 +273,39 @@ def elect_income_statement(
     return ELECT_GAP_FILL if shared_fields_agree else ELECT_PROPUBLICA
 
 
+def elect_primary_filing(
+    elected_year: Optional[int],
+    elected_count: int,
+    irs_tax_year: Optional[int],
+    irs_income_count: int,
+) -> bool:
+    """Should the IRS filing supersede the income statement elected above?
+
+    Charity Navigator and ProPublica are both downstream of this XML, so when
+    the filing itself is readable and newer it is not a competing opinion —
+    it is what the other two are copies of. For EIN 36-4476244 the mirrors
+    agreed with each other exactly on FY2023 $29,498,054 while the filing said
+    FY2024 $34,923,926.
+
+    Two conditions, because each protects something a page would otherwise
+    lose:
+
+    NEWER. A filing level with what we already have changes nothing (32 of the
+    40 in batch80), and the mirrors may carry revenue detail the grants parse
+    does not.
+
+    AT LEAST AS COMPLETE. A 990-EZ has no Part IX, so it offers revenue and
+    total expenses and no breakdown. Taking it whole would delete the
+    program/admin/fundraising split that program_expense_ratio and the
+    Financial Health score are computed from. Recency does not buy that.
+    """
+    if irs_tax_year is None or irs_income_count <= 0:
+        return False
+    if elected_year is None:
+        return True
+    return irs_tax_year > elected_year and irs_income_count >= elected_count
+
+
 def _compute_cash_adjusted_ratio(program_expenses: float, total_expenses: float, noncash: float) -> Optional[float]:
     """GIK-adjusted program ratio, clamped to [0.0, 1.0], or None when the
     ratio is not a measurable signal.
@@ -1916,6 +1949,73 @@ class CharityMetricsAggregator:
                 metrics_data["financial_data_tax_year"] = cn_fiscal_year
                 if metrics_data.get("balance_sheet_tax_year") is None:
                     metrics_data["balance_sheet_tax_year"] = cn_fiscal_year
+
+        # --- The filing itself, when we can read it and it is newer ---
+        # Both sources elected above are downstream of this XML. Most of it was
+        # unreadable until the bundle fixes landed, so the question could not
+        # be asked before. Deliberately outside the `if cn_profile` block above
+        # — a charity Charity Navigator has never heard of still has a filing —
+        # and last, so it supersedes a settled statement rather than competing
+        # inside the election. Whole statement for whole statement, no splicing.
+        if grants_profile:
+            irs_income = {
+                "total_revenue": grants_profile.get("total_revenue"),
+                "total_expenses": grants_profile.get("total_expenses"),
+                "program_expenses": grants_profile.get("program_expenses"),
+                "admin_expenses": grants_profile.get("admin_expenses"),
+                "fundraising_expenses": grants_profile.get("fundraising_expenses"),
+            }
+            try:
+                irs_tax_year = int(grants_profile["tax_year"])
+            except (KeyError, TypeError, ValueError):
+                irs_tax_year = None
+            elected_year = metrics_data.get("financial_data_tax_year")
+            elected_count = sum(1 for f in _INCOME_STMT_FIELDS if metrics_data.get(f) is not None)
+            irs_count = sum(1 for v in irs_income.values() if v is not None)
+
+            if elect_primary_filing(elected_year, elected_count, irs_tax_year, irs_count):
+                superseded_source = metrics_data.get("financial_data_source")
+                superseded_revenue = metrics_data.get("total_revenue")
+                for f in _INCOME_STMT_FIELDS:
+                    metrics_data[f] = irs_income[f]
+                    _track(f, "irs_990", metrics_data[f])
+                metrics_data["financial_data_source"] = "irs_990"
+                metrics_data["financial_data_tax_year"] = irs_tax_year
+                # Whoever wins the statement owns its ratios. Charity
+                # Navigator's precomputed ratio is applied further down
+                # whenever the field is still empty, so leaving these unset
+                # would put its FY2023 quotient over this filing's FY2024
+                # components — the numerator-over-a-foreign-denominator defect
+                # arriving by the back door, already divided.
+                irs_total = irs_income["total_expenses"]
+                for ratio_field, component in (
+                    ("program_expense_ratio", "program_expenses"),
+                    ("admin_expense_ratio", "admin_expenses"),
+                    ("fundraising_expense_ratio", "fundraising_expenses"),
+                ):
+                    value = irs_income[component]
+                    metrics_data[ratio_field] = (
+                        round(min(1.0, value / irs_total), 4)
+                        if isinstance(value, (int, float))
+                        and isinstance(irs_total, (int, float))
+                        and irs_total > 0
+                        else None
+                    )
+                if superseded_source and elected_year is not None:
+                    metrics_data.setdefault("financial_source_discrepancies", []).append({
+                        "field": "income_statement",
+                        "fiscal_year": irs_tax_year,
+                        "canonical_source": "irs_990",
+                        "canonical_value": metrics_data.get("total_revenue"),
+                        "other_source": superseded_source,
+                        "other_value": superseded_revenue,
+                        "other_fiscal_year": elected_year,
+                        "reason": "primary_filing_is_newer",
+                    })
+                logger.info(
+                    f"IRS filing is canonical for {ein}: FY{irs_tax_year} ({irs_count} fields) "
+                    f"supersedes {superseded_source} FY{elected_year} ({elected_count})"
+                )
 
         # ── Corroborate zero-valued expense components ──
         # The income statement is now final. A component reported as 0 is

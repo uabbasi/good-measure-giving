@@ -913,6 +913,23 @@ def _build_key_concerns(score_details: dict[str, Any], charity_data: dict | None
                         "filing's own assets and expenses. The two figures describe different years "
                         "and will not divide into one another."
                     )
+                elif entry.get("reason") == "primary_filing_is_newer":
+                    headline = (
+                        f"Figures are from the FY{entry.get('fiscal_year')} Form 990, which is "
+                        f"newer than the FY{entry.get('other_fiscal_year')} rating data"
+                    )
+                    canonical, other = entry.get("canonical_value"), entry.get("other_value")
+                    detail = (
+                        f"The IRS filing reports ${canonical:,.0f} in revenue for FY"
+                        f"{entry.get('fiscal_year')}; Charity Navigator and ProPublica have not yet "
+                        f"published past FY{entry.get('other_fiscal_year')} (${other:,.0f}). Ratings "
+                        f"elsewhere on this page may still reflect the older year."
+                        if isinstance(canonical, (int, float)) and isinstance(other, (int, float))
+                        else (
+                            f"The IRS filing for FY{entry.get('fiscal_year')} is newer than the "
+                            f"FY{entry.get('other_fiscal_year')} figures the rating sources publish."
+                        )
+                    )
                 elif entry.get("reason") == "alternate_source_is_staler":
                     headline = (
                         f"Expense breakdown unavailable for FY{entry.get('fiscal_year')}"

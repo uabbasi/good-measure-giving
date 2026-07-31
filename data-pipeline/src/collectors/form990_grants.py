@@ -369,8 +369,23 @@ class Form990GrantsCollector(BaseCollector):
                 ".//irs:GrantsToDomesticOrgsGrp/irs:TotalAmt",
             ],
             "total_revenue": [".//irs:CYTotalRevenueAmt", ".//irs:TotalRevenueAmt"],
-            "total_expenses": [".//irs:CYTotalExpensesAmt", ".//irs:TotalFunctionalExpensesAmt"],
-            "program_expenses": [".//irs:CYProgramServiceExpenseAmt"],
+            "total_expenses": [
+                ".//irs:TotalFunctionalExpensesGrp/irs:TotalAmt",
+                ".//irs:CYTotalExpensesAmt",
+                ".//irs:TotalExpensesAmt",
+                ".//irs:TotalFunctionalExpensesAmt",
+            ],
+            # Part IX's totals row. Every line item in Part IX repeats these
+            # same four tag names, so these paths MUST stay scoped to the
+            # totals group -- an unscoped .//irs:ManagementAndGeneralAmt
+            # returns the first line item, and $38,852 of legal fees would be
+            # published as the organisation's entire administrative expense.
+            "program_expenses": [
+                ".//irs:TotalFunctionalExpensesGrp/irs:ProgramServicesAmt",
+                ".//irs:TotalProgramServiceExpensesAmt",
+            ],
+            "admin_expenses": [".//irs:TotalFunctionalExpensesGrp/irs:ManagementAndGeneralAmt"],
+            "fundraising_expenses": [".//irs:TotalFunctionalExpensesGrp/irs:FundraisingAmt"],
         }
 
         for field, field_paths in paths.items():
@@ -671,6 +686,8 @@ class Form990GrantsCollector(BaseCollector):
             "total_revenue": financials.get("total_revenue"),
             "total_expenses": financials.get("total_expenses"),
             "program_expenses": financials.get("program_expenses"),
+            "admin_expenses": financials.get("admin_expenses"),
+            "fundraising_expenses": financials.get("fundraising_expenses"),
             "noncash_contributions": financials.get("noncash_contributions"),
         }
 

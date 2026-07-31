@@ -59,6 +59,8 @@ class Form990GrantsProfile(BaseModel):
     total_revenue: Optional[float] = None
     total_expenses: Optional[float] = None
     program_expenses: Optional[float] = None
+    admin_expenses: Optional[float] = None
+    fundraising_expenses: Optional[float] = None
     noncash_contributions: Optional[float] = None
 
     @field_validator("ein")
