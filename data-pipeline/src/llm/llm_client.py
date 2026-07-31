@@ -45,6 +45,12 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 # Google Gemini models
 MODEL_GEMINI_31_PRO = "gemini-3.1-pro-preview"
 MODEL_GEMINI_3_FLASH = "gemini-3-flash-preview"
+# Current generation, live-verified against the models endpoint 2026-07-30.
+# Both are GA — the incumbents on the narrative path were preview builds.
+# There is no 3.6 flash-lite and no pro newer than 3.1-pro-preview.
+MODEL_GEMINI_36_FLASH = "gemini-3.6-flash"
+MODEL_GEMINI_35_FLASH = "gemini-3.5-flash"
+MODEL_GEMINI_35_FLASH_LITE = "gemini-3.5-flash-lite"
 MODEL_GEMINI_25_PRO = "gemini-2.5-pro"
 MODEL_GEMINI_25_FLASH = "gemini-2.5-flash"
 MODEL_GEMINI_25_FLASH_LITE = "gemini-2.5-flash-lite"
@@ -83,6 +89,36 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "cost_per_1m_input": 0.50,
         "cost_per_1m_input_cached": 0.05,
         "cost_per_1m_output": 3.00,
+        "context_window": 1_000_000,
+        "supports_json_mode": True,
+    },
+    # Pricing below verified against litellm's live cost map 2026-07-30, not
+    # from memory: the copy vendored in the installed litellm predates all
+    # three of these models and lists none of them.
+    MODEL_GEMINI_36_FLASH: {
+        "litellm_name": "gemini/gemini-3.6-flash",
+        "provider": "google",
+        "cost_per_1m_input": 1.50,
+        "cost_per_1m_input_cached": 0.15,
+        "cost_per_1m_output": 7.50,
+        "context_window": 1_000_000,
+        "supports_json_mode": True,
+    },
+    MODEL_GEMINI_35_FLASH: {
+        "litellm_name": "gemini/gemini-3.5-flash",
+        "provider": "google",
+        "cost_per_1m_input": 1.50,
+        "cost_per_1m_input_cached": 0.15,
+        "cost_per_1m_output": 9.00,
+        "context_window": 1_000_000,
+        "supports_json_mode": True,
+    },
+    MODEL_GEMINI_35_FLASH_LITE: {
+        "litellm_name": "gemini/gemini-3.5-flash-lite",
+        "provider": "google",
+        "cost_per_1m_input": 0.30,
+        "cost_per_1m_input_cached": 0.03,
+        "cost_per_1m_output": 2.50,
         "context_window": 1_000_000,
         "supports_json_mode": True,
     },
@@ -206,34 +242,38 @@ class LLMTask(Enum):
 TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
     # Standard pipeline - Flash is best value per LLM-as-Judge evaluation
     LLMTask.NARRATIVE_GENERATION: (
-        MODEL_GEMINI_3_FLASH,  # Best quality/cost ratio
-        [MODEL_GEMINI_31_PRO, MODEL_GEMINI_25_FLASH],  # stable non-preview last
+        MODEL_GEMINI_36_FLASH,  # GA; replaces the 3-flash *preview* build
+        [MODEL_GEMINI_35_FLASH, MODEL_GEMINI_3_FLASH],
     ),
     LLMTask.WEBSITE_EXTRACTION: (
-        MODEL_GEMINI_3_FLASH,  # Default: best field coverage; hallucinations handled post-extraction
-        [MODEL_GEMINI_31_PRO, MODEL_GEMINI_25_FLASH],  # stable non-preview last
+        MODEL_GEMINI_36_FLASH,  # Best field coverage; hallucinations handled post-extraction
+        [MODEL_GEMINI_35_FLASH, MODEL_GEMINI_3_FLASH],
     ),
     LLMTask.PDF_EXTRACTION: (
-        MODEL_GEMINI_3_FLASH,  # Fast, cost-effective extraction
-        [MODEL_GEMINI_31_PRO],
+        MODEL_GEMINI_36_FLASH,
+        [MODEL_GEMINI_35_FLASH, MODEL_GEMINI_3_FLASH],
     ),
     # Premium tier for top 5-10 charities - still use Flash (proven quality)
-    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO]),
-    LLMTask.PREMIUM_PDF_EXTRACTION: (MODEL_GEMINI_3_FLASH, [MODEL_GEMINI_31_PRO]),
+    LLMTask.PREMIUM_NARRATIVE: (MODEL_GEMINI_36_FLASH, [MODEL_GEMINI_31_PRO, MODEL_GEMINI_35_FLASH]),
+    LLMTask.PREMIUM_PDF_EXTRACTION: (MODEL_GEMINI_36_FLASH, [MODEL_GEMINI_31_PRO]),
     # Evaluation scoring - LLM-as-judge
     LLMTask.EVALUATION_SCORING: (
-        MODEL_GEMINI_3_FLASH,  # Fast judge for benchmarking
+        MODEL_GEMINI_36_FLASH,  # Fast judge for benchmarking
         [MODEL_GEMINI_31_PRO],
     ),
     # Rich strategic narrative - GPT-5.2: 2x depth + 2x citations vs Flash per A/B test
     LLMTask.RICH_STRATEGIC_NARRATIVE: (
         MODEL_GPT52,  # Best quality (97.8 overall), 2x content depth, ~$0.06/charity
-        [MODEL_CLAUDE_SONNET_45, MODEL_GEMINI_3_FLASH],
+        [MODEL_CLAUDE_SONNET_45, MODEL_GEMINI_36_FLASH],
     ),
-    # Post-export validation - use cheapest live model
+    # Post-export validation. This chain decides what ships, and it had been
+    # left two generations behind the rest of the pipeline: 2.5-flash-lite was
+    # gating pages written by 3-flash. Its misreads were not subtle — Charity
+    # Navigator's years read as months, date arithmetic anchored to 2024, and
+    # findings whose own message said "the claim is accurate" filed as errors.
     LLMTask.LLM_JUDGE: (
-        MODEL_GEMINI_25_FLASH_LITE,  # Cost-effective (~$0.0005/charity)
-        [MODEL_GEMINI_25_FLASH, MODEL_GEMINI_3_FLASH],
+        MODEL_GEMINI_35_FLASH_LITE,  # newest flash-lite; no 3.6 lite exists
+        [MODEL_GEMINI_35_FLASH, MODEL_GEMINI_36_FLASH],
     ),
 }
 

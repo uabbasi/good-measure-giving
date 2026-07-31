@@ -48,7 +48,7 @@ class JudgeConfig:
     warning_threshold: int = 3  # Warnings to flag
 
     # Model selection (cost-effective)
-    judge_model: str = "gemini-2.5-flash-lite"  # Cheapest live Gemini
+    judge_model: str = "gemini-3.5-flash-lite"  # Newest flash-lite; must track TASK_MODELS[LLM_JUDGE]
     fallback_model: str = "gemini-3-flash-preview"  # Already in pipeline
 
     # Caching

@@ -91,7 +91,7 @@ def _is_wallet_tag_agreement(field: str, message: str) -> bool:
 # Retrying is not ignoring: exhausting the retries still blocks.
 _TRUNCATED_RESPONSE_MARKERS = ("invalid json", "json_invalid", "eof while parsing")
 
-_ESCALATION_MODEL = "gemini-2.5-flash"
+_ESCALATION_MODEL = "gemini-3.5-flash"
 
 # Independent LLM rolls for the error-consensus vote (odd number → clean majority).
 # Mirrors score_judge: this judge gates publication on interpretive prose, which

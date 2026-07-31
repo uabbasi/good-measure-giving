@@ -62,7 +62,7 @@ class ScoreJudge(BaseJudge):
     # (flagged concern-led prose as contradicting a Below Average band, 3/3
     # rolls, 2026-07-18) — this judge gates publication, so it gets the
     # stronger tier.
-    judge_model_override = "gemini-2.5-flash"
+    judge_model_override = "gemini-3.5-flash"
 
     @property
     def name(self) -> str:
