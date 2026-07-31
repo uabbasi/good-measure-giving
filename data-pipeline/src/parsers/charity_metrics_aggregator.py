@@ -1016,6 +1016,39 @@ class CrossSourceCorroborator:
             or len(unique_sources) >= 2
         )
 
+        # An explicit search finding of "no" defeats a keyword guess.
+        #
+        # has_website_zakat_evidence asks whether "zakat" appears in
+        # zakat_evidence — but the keyword scanner WRITES that string as
+        # f"Found '{keyword}' on {url}" and every keyword contains "zakat", so
+        # the test restates the signal instead of corroborating it. One
+        # unverified hit passed on its own say-so, and the discovery agent's
+        # finding was never consulted at all. EIN 20-3060929 is tagged
+        # ZAKAT-ELIGIBLE from "Found 'give zakat' on tmwf.org/ways-to-give/"
+        # while the agent reported the phrase belongs to a different
+        # organization, and the word does not occur anywhere in the 182KB of
+        # site content we stored.
+        #
+        # A donor whose zakat reaches an ineligible recipient may not have
+        # discharged the obligation, so the two errors are not symmetric.
+        # Direct page verification and a definitive name still win — those are
+        # not guesses. A discovery pass that merely found nothing is NOT a
+        # denial; only an explicit False carrying its reasoning counts.
+        discovery_denies = (
+            discovered_zakat.get("accepts_zakat") is False and bool(discovered_evidence)
+        )
+        if passed and discovery_denies and not (has_direct_verification or name_has_zakat):
+            logger.warning(
+                f"Zakat claim for {ein} ({name}) withdrawn: search explicitly found no "
+                f"zakat acceptance, and the website signal is an unverified keyword match. "
+                f"Search said: {discovered_evidence[:200]}"
+            )
+            reasons.append(
+                "Contradicted by search, which explicitly found no zakat acceptance; "
+                "the website signal is an unverified keyword match"
+            )
+            passed = False
+
         if not passed and len(unique_sources) == 1:
             logger.warning(
                 f"Zakat claim for {ein} ({name}) failed corroboration: "

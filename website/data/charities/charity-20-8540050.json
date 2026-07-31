@@ -87,7 +87,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:02:13",
+  "lastUpdated": "2026-07-30 21:31:30",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -101,7 +101,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:44:29.004688+00:00",
+        "timestamp": "2026-07-31T04:30:53.261460+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -188,6 +188,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050",
       "timestamp": "2026-07-30T00:44:14",
@@ -229,7 +230,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:44:29.004688+00:00",
+      "timestamp": "2026-07-31T04:30:53.261460+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -279,6 +280,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 30.2,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "medium",
@@ -444,31 +460,19 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The Charity Navigator score could not be verified from the provided content. The URL points to a page with financial information, but the specific score of 91.7/100 is not explicitly stated.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "The reported total revenue of $1,922,887 for fiscal year 2024 could not be verified from the provided Form 990 content. The URL leads to ProPublica's nonprofit data, but the specific revenue figure for FY2024 is not present in the fetched content.",
+          "message": "The content for citation 1 could not be fetched or processed.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The Annual Report (2023) content is not a parsable document and does not contain information about judicial internships, film grants, and legal fellowships.",
+          "message": "The content for citation 4 could not be fully processed.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The Annual Report (2024) content is not a parsable document and does not contain information about alumni working in their chosen fields.",
-          "severity": "warning"
-        },
-        {
-          "field": "strengths",
-          "judge": "score",
-          "message": "The stated fundraising efficiency of $0.15 per $1 raised contradicts the source data, which indicates $0.19 per $1 raised.",
+          "message": "The content for citation 5 could not be fully processed.",
           "severity": "warning"
         },
         {
@@ -527,52 +531,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a high overall Charity Navigator score of 91.7/100.",
+          "claim": "The charity holds an overall rating of 91.7/100, has 30.2 months of working capital, a 65.0% program expense ratio, and spends $0.15 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/208540050#financials"
         },
         {
-          "claim": "Donors can contribute through zakat-eligible donations to support these educational and professional programs.",
+          "claim": "The charity is zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.islamicscholarshipfund.org/donate"
         },
         {
-          "claim": "In fiscal year 2024, the organization reported total revenue of $1,922,887.",
+          "claim": "The organization reported total revenue of $1,922,887.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/208540050"
         },
         {
-          "claim": "The group provides judicial internships, film grants, and legal fellowships to help Muslims enter influential career fields.",
+          "claim": "The organization has awarded funds since 2009 and has a cost per beneficiary of approximately $1,379.",
           "id": "[4]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://irp.cdn-website.com/7a1b3247/files/uploaded/2023-ISF_Annual-Report_VF.pdf"
         },
         {
-          "claim": "Annual reports show that a high percentage of alumni work in their chosen fields.",
+          "claim": "The charity provides scholarships and internships, and alums show high graduation and employment rates in their fields.",
           "id": "[5]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://irp.cdn-website.com/7a1b3247/files/uploaded/ISF_Annual-Report-2024-wp-flipbook.pdf"
+        },
+        {
+          "claim": "The charity focuses on increasing representation in media and public policy.",
+          "id": "[8]",
+          "source_name": "Annual Report",
+          "source_url": "https://www.islamicscholarshipfund.org/annual-report"
         }
       ],
-      "amal_score_rationale": "This charity is rated as Above Average because it shows strong financial health and clear evidence of program success, though its spending on direct programs is moderate compared to its overhead.",
+      "amal_score_rationale": "This charity is rated as Above Average because it shows strong financial health and clear evidence of program success, though its spending on direct programs is moderate compared to overhead.",
       "areas_for_improvement": [
-        "Moderate program expense ratio of 65.0%",
-        "High cost of approximately $1,379 per beneficiary"
+        "The program expense ratio of 65.0% is moderate, meaning a significant portion of funds goes toward administrative costs [1]",
+        "The cost per beneficiary is relatively high at approximately $1,379 per person [4]"
       ],
       "dimension_explanations": {
-        "alignment": "This group is a good fit for Muslim donors as it is zakat-eligible and focuses on increasing representation in media and policy [2]. It has a long track record of awarding scholarships and grants to help American Muslims succeed in public interest careers [4].",
-        "impact": "The organization spends a moderate 65.0% of its budget on programs, while maintaining a high overall Charity Navigator score of 91.7/100 [1]. While the cost per beneficiary is $1,379, the group provides high-level career support, and its annual reports show that a high percentage of alumni work in their chosen fields [5]."
+        "alignment": "This charity serves a specific need for Muslim donor fit by being zakat-eligible and focusing on underrepresented voices in advocacy and media [2][8]. It has a solid track record of awarding funds since 2009 to fill gaps in public interest and legal representation [4].",
+        "impact": "The organization spends $1,379.77 per beneficiary to build long-term leadership capacity in the Muslim community [4]. While the program expense ratio is 65.0% in FY2024, the group provides strong evidence of outcomes, such as high employment rates for alumni in their fields of study [1][5]."
       },
-      "headline": "The Islamic Scholarship Fund supports American Muslim storytellers and leaders to improve representation in public policy and media.",
+      "headline": "The Islamic Scholarship Fund supports American Muslim storytellers and leaders to increase representation in public policy and media.",
       "strengths": [
-        "Maintains a high overall Charity Navigator score of 91.7/100",
-        "Strong financial stability with 30.2 months of working capital",
-        "Highly efficient fundraising costs of only $0.15 per $1 raised"
+        "Maintains a high graduation rate and career placement rate for its alumni in their chosen fields [5]",
+        "Strong financial stability with 30.2 months of working capital available [1]",
+        "Highly efficient fundraising costs of only $0.15 per $1 raised [1]"
       ],
-      "summary": "In fiscal year 2024, the organization reported total revenue of $1,922,887 to fund its mission [3]. The group provides judicial internships, film grants, and legal fellowships to help Muslims enter influential career fields [4]. Donors can contribute through zakat-eligible donations to support these educational and professional programs [2]."
+      "summary": "In fiscal year 2024, the organization reported total revenue of $1,922,887 to fund its mission [3]. The charity is zakat-eligible and provides scholarships, film grants, and judicial internships to help Muslims enter influential career fields [2][5]. It currently holds an overall rating of 91.7/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

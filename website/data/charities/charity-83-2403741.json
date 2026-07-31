@@ -67,7 +67,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-30 01:03:40",
+  "lastUpdated": "2026-07-30 21:32:38",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -141,6 +141,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/832403741",
       "timestamp": "2026-07-30T00:50:03",
@@ -213,7 +214,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 9,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "83-2403741",
     "charity_name": "Al Ummah Community Center",
@@ -369,43 +386,61 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not mention the overall score from Charity Navigator.",
+          "message": "The claim that the charity currently holds a 71.0/100 rating from Charity Navigator could not be verified from the provided content.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not mention the total revenue for FY2024.",
+          "message": "The claim regarding total revenue of $464,660 and an 82.3% program expense ratio in FY2024 could not be verified from the provided content.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not explicitly state that the center serves as a fit for Muslim donors looking to support local community causes through sadaqah.",
+          "message": "The claim that the center offers sadaqah-eligible giving opportunities could not be fully verified from the provided content.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not explicitly mention 'various youth activities'.",
-          "severity": "warning"
+          "message": "The claim that its primary operations include the Ummah's Kitchen Food Pantry and various youth activities is supported by the provided content.",
+          "severity": "info"
         },
         {
-          "field": "overall_score",
+          "field": "rating",
           "judge": "factual",
-          "message": "The Charity Navigator score of 71.0/100 is consistent with the source data.",
+          "message": "The narrative states a rating of 71.0/100, which matches the source data.",
           "severity": "info"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The total revenue for FY2024 is reported as $464,660 in the narrative and matches the source data.",
+          "message": "The narrative states $464,660 in total revenue for FY2024, which matches the source data.",
           "severity": "info"
         },
         {
-          "field": "confidence_tier",
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states an 82.3% program expense ratio, which matches the source data after rounding.",
+          "severity": "info"
+        },
+        {
+          "field": "sadaqah_eligible",
+          "judge": "factual",
+          "message": "The narrative claims the center offers sadaqah-eligible giving opportunities. While the website mentions 'sadaqah-eligible giving opportunities' in the context of serving the Muslim community, the source data does not explicitly confirm or deny this specific claim in a verifiable manner.",
+          "severity": "info"
+        },
+        {
+          "field": "primary_operations",
+          "judge": "factual",
+          "message": "The narrative states primary operations include the Ummah's Kitchen Food Pantry and various youth activities, which aligns with the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "strengths",
           "judge": "score",
-          "message": "Rationale for confidence_tier is missing from the narrative.",
+          "message": "The stated fundraising cost of $0.05 per $1 raised is factually incorrect. Based on the provided financial data (fundraising expenses: $28,255, total revenue: $464,660), the ratio is approximately $0.06 per $1.",
           "severity": "warning"
         },
         {
@@ -452,19 +487,19 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity holds an overall score of 71.0/100 from Charity Navigator.",
+          "claim": "The charity currently holds a 71.0/100 rating from Charity Navigator.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/832403741#financials"
         },
         {
-          "claim": "In FY2024, the organization managed $464,660 in total revenue.",
+          "claim": "In FY2024, the organization managed $464,660 in total revenue and maintained an 82.3% program expense Ratio.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/832403741"
         },
         {
-          "claim": "This center serves as a fit for Muslim donors looking to support local community causes through sadaqah.",
+          "claim": "The center offers sadaqah-eligible giving opportunities.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://auccnj.org/donate"
@@ -476,22 +511,22 @@
           "source_url": "https://auccnj.org/aucc-food-pantry"
         }
       ],
-      "amal_score_rationale": "The charity shows a balanced profile with efficient spending on direct services, though it lacks some formal governance and strategic planning elements found in larger organizations.",
+      "amal_score_rationale": "The charity shows a balanced profile with efficient spending on direct services, though it lacks a detailed long-term strategy and has room to improve its governance practices.",
       "areas_for_improvement": [
-        "Limited information regarding long-term theory of change",
-        "Governance structures could be further developed to meet top industry standards"
+        "Limited information on long-term theory of change",
+        "Governance structures could be further developed to meet higher standards"
       ],
       "dimension_explanations": {
-        "alignment": "This center serves as a medium fit for Muslim donors looking to support local community and religious-cultural causes through sadaqah [3]. It has a established track record of service in its local area, though the specific urgency of the cause is considered moderate compared to global humanitarian crises [1].",
-        "impact": "The organization focuses on direct service delivery through its food pantry and youth programs [4]. In FY2024, it maintained an 82.3% program expense Ratio, meaning the majority of its $464,660 in revenue went toward these services rather than overhead [2]. While it shows strong evidence of program outcomes, there is less public data regarding its long-term theory of change [1]."
+        "alignment": "This center serves as a religious and cultural hub for the local Muslim community, offering sadaqah-eligible giving opportunities [3]. It has a steady track record of local service, though the urgency of the cause is viewed as moderate compared to global humanitarian crises [1][2].",
+        "impact": "The organization focuses on direct service delivery through its food pantry and youth programs [4]. In FY2024, it maintained an 82.3% program expense Ratio, meaning most funds go directly to these services [2]. While it shows strong results in immediate aid, the cost to serve each person is not yet fully detailed in public records [1]."
       },
-      "headline": "AL Ummah Community Center provides direct food assistance and youth services based on Islamic principles of public service.",
+      "headline": "AL Ummah Community Center provides direct food assistance and youth services based on Islamic values of public service and equality.",
       "strengths": [
-        "High 82.3% program expense Ratio ensures most funds reach community services",
+        "High program spending with an 82.3% program expense Ratio in FY2024",
         "Efficient fundraising costs of only $0.05 per $1 raised",
-        "Strong short-term stability with 9.0 months of working capital"
+        "Strong short-term financial health with 9.0 months of working capital"
       ],
-      "summary": "In FY2024, the organization managed $464,660 in total revenue to support its local community programs [2]. Its primary operations include the Ummah's Kitchen Food Pantry and various youth activities [4]. The charity holds an overall score of 71.0/100 from Charity Navigator [1]."
+      "summary": "In FY2024, the organization managed $464,660 in total revenue to support its local community programs [2]. Its primary operations include the Ummah's Kitchen Food Pantry and various youth activities [4]. The charity currently holds a 71.0/100 rating from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

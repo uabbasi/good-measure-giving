@@ -82,7 +82,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:59:11",
+  "lastUpdated": "2026-07-30 21:29:58",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -156,6 +156,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/752882187",
       "timestamp": "2026-07-29T22:42:05",
@@ -237,7 +238,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 12.7,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "75-2882187",
     "charity_name": "Amoud Foundation",
@@ -393,13 +410,13 @@
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched content does not explicitly state that the charity follows Islamic law categories for aid, only that its programs are zakat-eligible.",
+          "message": "The fetched content does not contain information about the charity being Zakat-eligible or following specific religious guidelines for aid.",
           "severity": "warning"
         },
         {
           "field": "strengths",
           "judge": "score",
-          "message": "The narrative states fundraising costs <$0.01 to raise every $1, but Charity Navigator data and the rich narrative indicate it costs $0.03 to raise every $1.",
+          "message": "The narrative states 'Strong fundraising efficiency of less than <$0.01 per $1 raised', but Charity Navigator data indicates a fundraising efficiency of $0.03 per $1 raised.",
           "severity": "warning"
         },
         {
@@ -452,40 +469,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains an 80.0/100 overall rating and an 89.3% program expense ratio.",
+          "claim": "The charity maintains an 80.0/100 overall rating and spent 89.3% of its budget on programs in FY2024.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/752882187#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and follows Islamic law categories for aid.",
+          "claim": "The charity is Zakat-eligible and follows specific religious guidelines for aid.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.amoudfoundation.org/zakat"
         },
         {
-          "claim": "Total revenue for the organization reached $11,142,566 in FY2024.",
+          "claim": "The organization reported total revenue of $11,142,566 in FY2024 and supports orphan centers and schools.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/752882187"
         }
       ],
-      "amal_score_rationale": "This charity is a positive choice for donors because it spends the vast majority of its money on direct services. While it has a strong track record and clear religious alignment, its focus remains on a specific set of cultural and regional needs.",
+      "amal_score_rationale": "This charity is rated as Above Average because it spends a high percentage of its funds directly on programs and maintains excellent financial health. While it has a strong track record, its focus on specific regional causes may not feel as urgent to all donors.",
       "areas_for_improvement": [
-        "Limited geographic reach compared to larger international relief groups",
-        "The organization could provide more public detail on its specific theory of change"
+        "Limited geographic reach outside of its primary service areas",
+        "Lower urgency compared to immediate global humanitarian crises"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a high-fit option for Muslim donors because it is zakat-eligible and follows specific religious guidelines for aid [2]. It has a long track record of service, though it operates in a niche space with specific cultural urgency [1][5].",
-        "impact": "The foundation is efficient, with 89.3% of its spending going directly to programs like the Family Food Package and orphan care [1]. It has earned top marks for its evidence of outcomes and governance practices, showing that its direct service model is well-managed [1]."
+        "alignment": "This charity is a strong fit for Muslim donors as it is Zakat-eligible and follows specific religious guidelines for distributing aid [2]. It has a proven track record of service, though it operates in a niche space that may have less immediate funding gaps than other sectors [5].",
+        "impact": "The foundation shows strong effectiveness by directing 89.3% of its spending to program services like orphan care and healthcare [1]. It maintains an 80.0/100 rating from Charity Navigator, which reflects its overall health and accountability [1]. The group provides direct services and has verified evidence of its outcomes [5]."
       },
-      "headline": "Amoud Foundation provides direct aid to orphans and healthcare programs with strong financial efficiency.",
+      "headline": "Amoud Foundation provides direct aid to orphans and schools while maintaining high financial efficiency.",
       "strengths": [
-        "High financial efficiency with a program expense ratio of 89.3% in FY2024",
-        "Fundraising efficiency is high, costing <$0.01 to raise every $1",
-        "Strong cash reserves with 12.7 months of working capital"
+        "High financial efficiency with an 89.3% program expense ratio in FY2024",
+        "Strong fundraising efficiency of less than <$0.01 per $1 raised",
+        "Solid liquidity with 12.7 months of working capital available"
       ],
-      "summary": "In FY2024, the organization managed $11,142,566 in total revenue to support 15 orphan centers and schools for the deaf and blind [5]. The charity is zakat-eligible and directs funds toward specific categories of need defined by Islamic law [2]. It maintains an overall Charity Navigator score of 80.0/100 [1]."
+      "summary": "In FY2024, the organization managed $11,142,566 in total revenue to support 15 orphan centers and schools for the deaf and blind [1][5]. The charity is Zakat-eligible and focuses on food security and healthcare for vulnerable families [2]."
     },
     "rich_narrative": {
       "all_citations": [

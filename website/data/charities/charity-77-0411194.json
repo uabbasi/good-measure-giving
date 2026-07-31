@@ -94,7 +94,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:05:17",
+  "lastUpdated": "2026-07-30 21:32:38",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -174,6 +174,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194",
       "timestamp": "2026-07-30T00:50:20",
@@ -602,6 +603,21 @@
   },
   "keyConcerns": [
     {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 14.5,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
       "type": "ceo_comp_excessive",
       "severity": "high",
       "headline": "CEO compensation is 7.4% of revenue ($1,401,799 on $18,938,214)",
@@ -786,49 +802,55 @@
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided URL for citation 2 did not contain the claimed information about total revenue and CEO compensation for FY2024. The URL points to ProPublica's non-profit organization data, which typically requires further navigation or specific data extraction to find the exact figures.",
+          "message": "The claim regarding CEO compensation and its percentage of total revenue could not be verified from the provided 'Form 990 (2023)' content. The fetched content for this citation is missing.",
           "severity": "warning"
         },
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided URL for citation 1 did not contain the claimed information about program expense ratio and spending per dollar raised for FY2024. The URL points to Charity Navigator's financial section, which may require specific data extraction or navigation not present in the fetched content.",
-          "severity": "warning"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states the charity has a program expense ratio of 83.7%, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative reports total revenue of $18,938,214 for FY2024, but the source data for FY2023 reports $17,442,755 and FY2024 data is not available in this source.",
+          "message": "The claim regarding total revenue, program expense ratio, and fundraising efficiency could not be fully verified from the provided 'Charity Navigator' content. While the website is mentioned, the specific financial details were not present in the fetched content.",
           "severity": "warning"
         },
         {
           "field": "ceo_compensation",
           "judge": "factual",
-          "message": "The narrative reports CEO compensation of $1,401,799 for FY2024, but the source data for FY2023 reports $1,401,799 and FY2024 data is not available in this source.",
+          "message": "CEO compensation is 7.4% of total revenue, which is significantly higher than typical benchmarks.",
           "severity": "info"
         },
         {
-          "field": "program_description",
+          "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The charity's focus areas align with the source data.",
+          "message": "The program expense ratio is reported as 83.7% in the narrative, which aligns with the source data when considering rounding.",
           "severity": "info"
         },
         {
-          "field": "zakat_eligibility",
+          "field": "fundraising_efficiency",
           "judge": "factual",
-          "message": "The charity is zakat-eligible, as stated in the narrative and confirmed by the source.",
+          "message": "The fundraising efficiency is reported as $0.07 per $1 raised in the narrative, which aligns with the source data when considering rounding.",
           "severity": "info"
+        },
+        {
+          "field": "total_revenue",
+          "judge": "factual",
+          "message": "The total revenue is reported as $18,938,214 in the narrative, which aligns with the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "dimension_explanations.impact",
+          "judge": "score",
+          "message": "The rationale for the Impact score omits a dominant limiting factor: high executive compensation, which significantly contributed to the low Impact score.",
+          "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs focus on civil rights advocacy, legal aid, and policy work. While these can indirectly benefit the needy (masakin) or those in debt (gharimin) by addressing systemic issues, there is no direct evidence that the primary beneficiaries of these programs fall into specific zakat categories. The charity claims to serve 'masakin (needy)' [20], but the provided program descriptions (civil rights, policy advocacy, media relations) do not explicitly detail how these activities directly address the needs of the poor or needy.",
+          "message": "The charity's programs focus on civil rights advocacy, legal aid, and education. While these services can indirectly benefit the needy (masakin) or those in debt (gharimin), there is no direct evidence that the primary beneficiaries of these programs fall into specific zakat categories.",
+          "severity": "warning"
+        },
+        {
+          "field": "wallet_tag",
+          "judge": "zakat",
+          "message": "The charity claims to be ZAKAT-ELIGIBLE and serves the 'masakin' (needy) through its legal and advocacy programs. However, the primary classification of 'amil' for zakat workers does not directly align with the described programs. While the organization may serve the needy, the 'amil' classification is not strongly supported by the program descriptions.",
           "severity": "warning"
         },
         {
@@ -903,45 +925,45 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains a program expense ratio of 83.7% and spends $0.07 for every $1 raised.",
+          "claim": "The organization managed $18,938,214 in total revenue and maintains a program expense ratio of 83.7% and fundraising efficiency of $0.07 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770411194#financials"
         },
         {
-          "claim": "In FY2024, the organization reported total revenue of $18,938,214 and CEO compensation of $1,401,799.",
+          "claim": "CEO compensation totaled $1,401,799, representing 7.4% of total revenue.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770411194"
         },
         {
-          "claim": "The charity focuses on civil rights, policy advocacy, and media relations.",
+          "claim": "The charity focuses on legal advocacy, education, and civil rights for the Muslim community.",
           "id": "[3]",
           "source_name": "Charity Website - Programs",
           "source_url": "https://ca.cair.com/programs-education"
         },
         {
-          "claim": "The charity is zakat-eligible.",
+          "claim": "The charity is ZAKAT-ELIGIBLE and offers multiple ways to give.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://ca.cair.com/ways-to-give"
         }
       ],
-      "amal_score_rationale": "The organization shows a balanced performance with efficient program spending and high financial stability. However, the lack of a formal theory of change and high executive pay relative to revenue prevent a higher assessment.",
+      "amal_score_rationale": "The organization shows a balanced performance with efficient spending on programs and a long track record of service. However, high executive pay and the absence of a formal plan for measuring long-term impact limit its overall assessment.",
       "areas_for_improvement": [
-        "Lack of a documented theory of change to explain how activities lead to long-term results",
-        "High executive costs, with the CEO compensation of $1,401,799 representing 7.4% of total revenue"
+        "High executive costs, with CEO compensation totaling $1,401,799 or 7.4% of total revenue",
+        "Lack of a documented theory of change to explain how specific activities lead to long-term goals"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves an urgent cause by defending civil rights in an underserved space [3]. It is zakat-eligible, which fits the needs of many Muslim donors [4]. While it claims to work in five geographic areas, its financial filings do not show grants for work outside the country [2].",
-        "impact": "The charity spends its funds efficiently, with $0.07 spent for every $1 raised in FY2024 [1]. While it shows strong evidence of program outcomes, it lacks a clear theory of change to map out its long-term goals [2]. Its work focuses on capacity building through legal and policy advocacy [3]."
+        "alignment": "This group is a fit for donors interested in civil rights advocacy and serves an underserved community [3]. It has a long track record in California, though its high executive compensation of $1,401,799 is a notable factor for donors to consider [2].",
+        "impact": "The charity spends its money efficiently, with a program expense ratio of 83.7% and a low fundraising cost of $0.07 per $1 raised [1]. While it provides essential capacity-building services like legal aid and education, it does not have a formal theory of change to track specific outcomes [3]."
       },
-      "headline": "The Council on American-Islamic Relations California defends civil rights and provides legal advocacy for the Muslim community.",
+      "headline": "The Council on American-Islamic Relations California defends civil rights and provides legal services for the Muslim community.",
       "strengths": [
-        "Efficient spending with a program expense ratio of 83.7% in FY2024",
-        "Strong financial stability with 14.5 months of working capital"
+        "High program spending with a program expense ratio of 83.7% in FY2024",
+        "Strong financial stability with 14.5 months of working capital available"
       ],
-      "summary": "In FY2024, the organization reported a total revenue of $18,938,214 to support its mission of protecting constitutional rights [2]. The charity is zakat-eligible and focuses on civil rights, policy advocacy, and media relations [3][4]. It maintains a program expense ratio of 83.7%, ensuring most funds go toward its core services [1]."
+      "summary": "In FY2024, the organization managed $18,938,214 in total revenue to support its mission of protecting constitutional rights [1]. The charity is ZAKAT-ELIGIBLE and focuses on legal advocacy, policy work, and media relations [4]. It maintains a program expense ratio of 83.7%, ensuring most funds go toward direct services [1]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -15,6 +15,7 @@ import json
 import logging
 import re
 from abc import ABC, abstractmethod
+from datetime import date
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
@@ -138,8 +139,22 @@ class BaseJudge(ABC):
         Returns:
             Formatted prompt string ready for LLM
         """
-        template = self.load_prompt_template()
+        return self.apply_prompt_substitutions(self.load_prompt_template(), output, context)
 
+    @staticmethod
+    def apply_prompt_substitutions(
+        template: str, output: dict[str, Any], context: dict[str, Any]
+    ) -> str:
+        """Fill a judge prompt template.
+
+        current_date/current_year exist because judges do age arithmetic
+        ("this filing is N years old") and the template cannot know the date it
+        runs on. Without an anchor the model supplies its own: MAS Boston was
+        blocked for saying FY2018 data is 8 years old, against a judge that had
+        decided it was 2024. That verdict depends on the model rather than the
+        text, which is the opposite of what a gate is for.
+        """
+        today = date.today()
         # Build substitution dict (use SafeJSONEncoder for DoltDB Decimal values)
         substitutions = {
             "charity_name": output.get("name", "Unknown"),
@@ -148,6 +163,8 @@ class BaseJudge(ABC):
             "scores": json.dumps(output.get("evaluation", {}), indent=2, cls=SafeJSONEncoder),
             "citations": json.dumps(output.get("citations", []), indent=2, cls=SafeJSONEncoder),
             "context": json.dumps(context, indent=2, cls=SafeJSONEncoder),
+            "current_date": today.isoformat(),
+            "current_year": str(today.year),
         }
 
         # Simple string substitution

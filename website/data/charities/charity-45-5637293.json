@@ -95,7 +95,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:58:57",
+  "lastUpdated": "2026-07-30 21:30:01",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -103,7 +103,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:26:34.931242+00:00",
+        "timestamp": "2026-07-31T04:29:06.853610+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -166,6 +166,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293",
       "timestamp": "2026-07-29T22:42:04",
@@ -211,7 +212,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:26:34.931242+00:00",
+      "timestamp": "2026-07-31T04:29:06.853610+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -429,36 +430,6 @@
           "severity": "warning"
         },
         {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The program expense ratio is reported as 100.0% in the narrative, which rounds to 100% from the source value of 1.0.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The working capital is reported as 3.4 months in the narrative, which matches the source value.",
-          "severity": "info"
-        },
-        {
-          "field": "revenue",
-          "judge": "factual",
-          "message": "The reported revenue of $1,759,964 matches the source value for the 2023 filing.",
-          "severity": "info"
-        },
-        {
-          "field": "direct_services",
-          "judge": "factual",
-          "message": "The narrative mentions a grammar school and clinic, which are listed as programs in the source data. However, the claim that these are 'direct services' is a qualitative interpretation not directly verifiable as a distinct metric.",
-          "severity": "info"
-        },
-        {
-          "field": "outcome_metrics",
-          "judge": "factual",
-          "message": "The narrative states a lack of public outcome metrics. While the source data does not explicitly list detailed public outcome metrics, it does mention 'outcome examples' and a 'theory of change' on the website, suggesting some level of outcome tracking or reporting exists, making the claim of a complete lack of public outcome metrics potentially inaccurate but difficult to definitively verify without more specific data.",
-          "severity": "info"
-        },
-        {
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
@@ -511,13 +482,13 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides direct services like a grammar school and clinic but lacks public outcome metrics.",
+          "claim": "The organization operates the Noor Project, maintains a 100.0% program expense Ratio, and lacks outcome metrics.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455637293#financials"
         },
         {
-          "claim": "The charity reported $1,759,964 in revenue, a 100.0% program expense Ratio, and 3.4 months of working capital in its last filing from 2023.",
+          "claim": "The charity reported $1,759,964 in revenue for FY2023 and operates with a one-member board.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455637293"
@@ -529,22 +500,22 @@
           "source_url": "https://thenoorproject.org/zakat-calculator"
         }
       ],
-      "amal_score_rationale": "The foundation shows a high level of spending efficiency and a strong fit for Muslim donors, but it is held back by outdated financial filings and a lack of formal outcome tracking. The very small board size also presents a risk to long-term stability and oversight.",
+      "amal_score_rationale": "The charity shows a balanced profile with efficient spending on direct services, but it faces significant transparency risks due to outdated financial filings and a lack of outcome tracking.",
       "areas_for_improvement": [
-        "The organization is significantly behind on public reporting, with no financial data available after 2023 [2].",
-        "The board of directors is too small, consisting of only one member, which limits oversight [2].",
-        "There is no public data showing how the charity measures the success or outcomes of its programs [1]."
+        "No financial filings newer than FY2023 are available\u2014donors should treat this 3-year-old financial picture with caution [2].",
+        "The organization operates with a very small board of only one member [2].",
+        "There is no public data showing how the charity measures its outcomes or program success [1]."
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong match for donors looking to support global education and poverty relief within an Islamic framework [3]. However, the lack of recent financial updates makes it harder to judge its current track record [2].",
-        "impact": "The charity reports a 100.0% program expense Ratio, which indicates that all funds are used for its programs [2]. While the cost to help each person is low at approximately $3.48, the organization does not share specific metrics or third-party evidence to prove the long-term success of its school or clinic [1]."
+        "alignment": "This organization is a strong fit for Muslim donors as it is Zakat-eligible and focuses on global education [3]. However, its track record is difficult to verify because it has not updated its public financial records since 2023 [2].",
+        "impact": "The foundation reports a 100.0% program expense Ratio and a low cost of approximately $3.48 per beneficiary [1]. While it has 3.4 months of working capital, the charity does not share specific metrics to prove the long-term success of its programs [1]."
       },
-      "headline": "For the Needy & Hungry Foundation Inc works to lift marginalized families out of poverty through education and vocational training.",
+      "headline": "For the Needy & Hungry Foundation Inc works to lift families out of poverty through education and vocational training.",
       "strengths": [
-        "Maintains a 100.0% program expense Ratio, meaning all spending is directed toward its core missions [2].",
-        "Provides direct services including a grammar school, clinic, and pharmacy to help those in need [1]."
+        "Maintains a 100.0% program expense Ratio, meaning all reported spending goes toward its mission [1].",
+        "Provides direct services including a grammar school, clinic, and pharmacy [1]."
       ],
-      "summary": "Operating as The Noor Project, this organization provides schooling, medical care, and job training to help families reach self-sufficiency [1]. The charity is Zakat-eligible and offers a dedicated calculator to help donors fulfill their religious obligations [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]."
+      "summary": "The organization operates the Noor Project, which provides schooling and medical care to marginalized communities [1]. It reported a Total Revenue of $1,759,964 in its most recent public filing [2]. The charity is Zakat-eligible and offers a calculator to help donors fulfill their religious giving requirements [3]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -86,7 +86,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:03:29",
+  "lastUpdated": "2026-07-30 21:31:52",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -166,6 +166,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978",
       "timestamp": "2026-07-30T00:44:44",
@@ -241,6 +242,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 33.6,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "medium",
@@ -415,57 +431,51 @@
       },
       "judge_issues": [
         {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "Citation 3 defined but not referenced in narrative",
+          "severity": "info"
+        },
+        {
           "field": "citation_11",
           "judge": "citation",
           "message": "Citation 11 defined but not referenced in narrative",
           "severity": "info"
         },
         {
+          "field": "citation_13",
+          "judge": "citation",
+          "message": "Citation 13 defined but not referenced in narrative",
+          "severity": "info"
+        },
+        {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content for citation [1] was not provided.",
+          "message": "The provided content for citation [1] from Charity Navigator does not contain the specific financial details claimed, such as total revenue, program expense ratio, working capital, or fundraising efficiency for FY2024. The URL provided leads to a page with financial information, but the exact figures mentioned in the claim are not present in the fetched content.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content for citation [3] was not provided.",
+          "message": "The fetched content for citation [3] from Form 990 (2023) does not contain information about fundraising and administrative costs accounting for a significant portion of total expenses. The provided content is a PDF file that appears to be a catalog or similar document, not the Form 990.",
           "severity": "warning"
         },
         {
           "field": "citation_11",
           "judge": "citation",
-          "message": "The content for citation [11] was not provided.",
+          "message": "The fetched content for citation [11] from the College Catalog (PDF) does not explicitly state that the college holds 'full accreditation' for its degree programs. While the document is a catalog, the specific claim of full accreditation is not directly found within the provided text.",
           "severity": "warning"
         },
         {
           "field": "citation_12",
           "judge": "citation",
-          "message": "The content for citation [12] was not provided.",
+          "message": "The fetched content for citation [12] from the Impact Report (2025) does not contain information about a clear theory of change or verified outcomes regarding degrees awarded. The provided content is a PDF file that appears to be a college catalog, not an impact report.",
           "severity": "warning"
         },
         {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative states total revenue of $18,021,649 in FY2024, but Charity Navigator reports $18,021,649 for FY2024, and ProPublica reports $18,359,667 for FY2023. The narrative's claim matches Charity Navigator's FY2024 figure.",
-          "severity": "info"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states a 56.0% program expense ratio, while Charity Navigator reports 56.05% for FY2024. The values are very close and likely due to rounding.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The narrative states 33.6 months of working capital, while Charity Navigator reports 35.88 months for FY2024. The ProPublica Form 990 data for FY2023 indicates working capital of 33.6 months.",
-          "severity": "warning"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative states a fundraising efficiency of $0.14 per $1 raised, while Charity Navigator reports $0.12 per $1 raised for FY2024. The narrative's claim is slightly higher.",
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "The charity claims zakat eligibility and states donations support its educational mission. While education can fall under 'Fi Sabilillah', the specific asnaf served by the donations are not explicitly detailed beyond general support for the educational mission.",
           "severity": "info"
         },
         {
@@ -551,69 +561,65 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the college had a 56.0% program expense ratio, 33.6 months of working capital, and a fundraising efficiency of $0.14 per $1 raised.",
+          "claim": "In FY2024, the college reported a total revenue of $18,021,649, a program expense ratio of 56.0%, working capital of 33.6 months, and fundraising efficiency of $0.14 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/330720978#financials"
         },
         {
-          "claim": "Zaytuna College is a zakat-eligible institution.",
+          "claim": "The college is a zakat-eligible institution that uses donations to support its educational mission.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://zaytuna.edu/Zakat-Essentials"
         },
         {
-          "claim": "The college reported total revenue of $18,021,649 in FY2024.",
+          "claim": "Fundraising and administrative costs account for a significant portion of total expenses.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/330720978"
         },
         {
-          "claim": "Zaytuna College offers a Bachelor of Arts in Liberal Arts and Islamic Studies.",
+          "claim": "Zaytuna College offers undergraduate and graduate degrees grounded in Islamic scholarly traditions.",
           "id": "[4]",
           "source_name": "College Catalog",
           "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
         },
         {
-          "claim": "The institution provides graduate-level education in Islamic texts.",
-          "id": "[5]",
-          "source_name": "College Catalog",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2025-2026.pdf"
-        },
-        {
-          "claim": "The mission is to educate morally committed professional, intellectual, and spiritual leaders.",
-          "id": "[6]",
-          "source_name": "College Catalog",
-          "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
-        },
-        {
-          "claim": "Zaytuna College maintains formal accreditation status.",
+          "claim": "The college holds full accreditation for its degree programs.",
           "id": "[11]",
           "source_name": "College Catalog",
           "source_url": "https://zaytuna.edu/files/galleries/Zaytuna_College_Catalog_2024-2025.pdf"
         },
         {
-          "claim": "The college tracks degrees awarded and its online reach as part of its impact.",
+          "claim": "The college has a clear theory of change and verified outcomes regarding degrees awarded.",
           "id": "[12]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://zaytuna.edu/files/galleries/Impact_Report_8_5x11_Foldout-2026_1_(1).pdf"
+        },
+        {
+          "claim": "The college serves as a destination for donors interested in global education.",
+          "id": "[13]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://zaytuna.edu/ways-to-give"
         }
       ],
-      "amal_score_rationale": "Zaytuna College shows a balanced profile with strong academic credentials and fundraising efficiency, though its program expense ratio and high cash reserves limit its overall financial health rating.",
+      "amal_score_rationale": "The college shows a balanced profile with strong academic accreditation and high savings, though its program spending ratio is lower than many peer organizations. While it is financially stable, a large portion of its annual budget is spent on overhead and fundraising rather than direct student services.",
       "areas_for_improvement": [
-        "Program spending is low, with only 56.0% of expenses going toward educational programs [1]",
-        "Holds 33.6 months of working capital, which is a high reserve for a zakat-collecting entity [1]"
+        "Only 56.0% (program expense ratio) of spending goes directly to educational programs [1].",
+        "Fundraising and administrative costs account for a significant portion of total expenses [3].",
+        "Large cash reserves of 33.6 months may be a concern for donors who prefer immediate distribution of zakat funds [1][2]."
       ],
       "dimension_explanations": {
-        "alignment": "The college serves a high-priority need for Islamic higher education in the West and is recognized as zakat-eligible [2].",
-        "impact": "The college focuses on capacity building by educating future scholars and has clear evidence of its educational outcomes through its accredited degree programs [5][12]. However, in FY2024, the program expense ratio was 56.0%, meaning a significant portion of spending went toward administration and fundraising rather than direct student services [1][3]."
+        "alignment": "The college has a high fit for Muslim donors as a zakat-eligible institution serving the global education cause [2]. It has a established track record in an underserved academic space.",
+        "impact": "Zaytuna College focuses on capacity building by training future leaders through its liberal arts and Islamic texts programs [4]. While the college has a clear theory of change and verified outcomes, its financial health is mixed; it maintains 33.6 months of working capital, but its 56.0% (program expense ratio) indicates that nearly half of its spending goes toward non-program costs [1][12]."
       },
-      "headline": "Zaytuna College provides accredited liberal arts education grounded in Islamic scholarship.",
+      "headline": "Zaytuna College provides accredited Islamic liberal arts education while maintaining a high level of savings.",
       "strengths": [
-        "Maintains full accreditation for its degree programs [11]",
-        "High fundraising efficiency, spending only $0.14 to raise every $1 [1]"
+        "Maintains a high level of financial stability with 33.6 months of working capital [1].",
+        "Operates with a fundraising efficiency of $0.14 per $1 raised [1].",
+        "Holds full accreditation for its degree programs [11]."
       ],
-      "summary": "Located in Berkeley, California, Zaytuna College offers undergraduate and graduate degrees in Islamic texts and liberal arts [4]. The institution is a zakat-eligible charity that prepares students for leadership through a curriculum that combines traditional Islamic sciences with modern humanities [2][6]."
+      "summary": "Located in Berkeley, California, Zaytuna College offers undergraduate and graduate degrees grounded in Islamic scholarly traditions [4]. The college is a zakat-eligible institution that uses donations to support its educational mission and student services [2]. In FY2024, the college reported a total revenue of $18,021,649 [1]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -77,7 +77,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:01:16",
+  "lastUpdated": "2026-07-30 21:30:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -145,6 +145,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/861226156",
       "timestamp": "2026-07-30T00:42:56",
@@ -248,6 +249,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 109.7,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "high",
@@ -411,27 +427,45 @@
       },
       "judge_issues": [
         {
-          "field": "citation_2",
+          "field": "citation_1",
           "judge": "citation",
-          "message": "The content does not mention that the organization is zakat-eligible or that it collects funds to support eligible students and programs.",
+          "message": "The content for citation 1 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content is a PDF file and could not be parsed to verify the claim.",
+          "message": "The content for citation 3 was not provided.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "The PDF content for citation 4 is unparseable and does not contain the claim.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The content does not explicitly state that the charity operates the Qalam Seminary or that it has a solid track record. It mentions 'Qalam Institute' and its mission to inspire growth through education.",
+          "message": "The PDF content for citation 5 is unparseable and does not contain the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_9",
+          "judge": "citation",
+          "message": "The content for citation 9 was not provided.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's primary focus is on Islamic education, which aligns with the 'fi_sabilillah' category. However, the extensive financial reserves (109.7 months of working capital) raise concerns about the prompt distribution of zakat funds, a key aspect of fulfilling the obligation.",
+          "message": "The charity's programs focus on Islamic education, which aligns with the 'fi_sabilillah' category. However, the provided information does not explicitly detail how zakat funds are allocated to support this specific category, nor does it provide evidence of beneficiaries directly receiving zakat for this purpose.",
+          "severity": "warning"
+        },
+        {
+          "field": "wallet_tag",
+          "judge": "zakat",
+          "message": "While the charity claims to be zakat-eligible and offers educational programs that could fall under 'fi_sabilillah', the significant cash reserves (109.7 months of working capital) raise concerns about the prompt distribution of zakat funds, which is a key Islamic principle. The classification is maintained, but the high reserves warrant a warning.",
           "severity": "warning"
         },
         {
@@ -474,52 +508,59 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization directs 81.2% of its spending toward its educational programs.",
+          "claim": "The organization holds 109.7 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/861226156#financials"
         },
         {
-          "claim": "It is a zakat-eligible organization that collects funds to support eligible students and programs.",
+          "claim": "The charity is a zakat-eligible organization.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.qalam.institute/zakat"
         },
         {
-          "claim": "In FY2024, the organization reported total revenue of $2,329,468 and held 109.7 months of working capital.",
+          "claim": "In FY2024, the organization reported total revenue of $2,329,468 and a program expense ratio of 81.2%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/861226156"
         },
         {
-          "claim": "The charity operates the Qalam Seminary and has a solid track record.",
+          "claim": "The charity directs spending toward its core services and facilities.",
+          "id": "[4]",
+          "source_name": "Facility Service Technician",
+          "source_url": "https://www.qalam.institute/s/JD_Facility-Service-Technician.pdf"
+        },
+        {
+          "claim": "The charity operates the Qalam Seminary.",
           "id": "[5]",
           "source_name": "Academy Operations Manager",
           "source_url": "https://www.qalam.institute/s/Academy-Operations-Manager.pdf"
         },
         {
-          "claim": "The organization offers online Arabic courses and shows strong evidence of success through its reach.",
+          "claim": "The organization offers online Arabic courses and traditional knowledge to a global audience.",
           "id": "[9]",
           "source_name": "Annual Report",
           "source_url": "https://www.qalam.institute/our-mission"
         }
       ],
-      "amal_score_rationale": "The charity is efficient with its spending and has clear program results, but its very high level of saved cash is a concern for a zakat-collecting group.",
+      "amal_score_rationale": "The charity shows a balanced profile with efficient program spending and clear educational impact, though its very high cash reserves and zakat distribution timing are notable concerns.",
       "areas_for_improvement": [
-        "Large financial reserve of 109.7 months of working capital",
-        "Need for faster distribution of zakat funds to meet religious guidelines"
+        "Large cash reserves totaling 109.7 months of working capital",
+        "Need for faster distribution of zakat funds to meet religious timing expectations",
+        "Limited board oversight and governance documentation"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific need for Islamic education and has a solid track record [5]. While it is zakat-eligible, the large amount of money held in reserve may not align with the goal of distributing zakat funds promptly to those in need [2][3].",
-        "impact": "The organization directs 81.2% of its spending toward its educational programs [1]. It shows strong evidence of success through its seminary and podcast reach [9]. However, it holds 109.7 months of working capital, which is much higher than typical for a non-profit [3]."
+        "alignment": "This charity serves a global need for Islamic education and is zakat-eligible [2][9].",
+        "impact": "The organization directs 81.2% (cash-adjusted) of its spending toward programs like the Qalam Seminary and online podcasts [3][4]. While it shows strong evidence of educational outcomes, it holds 109.7 months of working capital, which is much higher than typical nonprofit needs [1]."
       },
       "headline": "Qalam Education Fund Inc provides Islamic education through its seminary and digital programs while maintaining high spending on its core mission.",
       "strengths": [
-        "High program expense ratio of 81.2% in FY2024",
-        "Fundraising efficiency of <$0.01 per $1 raised",
-        "Strong evidence of program outcomes and clear theory of change"
+        "High program spending with a 81.2% (cash-adjusted) ratio reaching its core services",
+        "Extremely low fundraising costs of <$0.01 per $1 raised",
+        "Strong evidence of program outcomes and a clear theory of change"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $2,329,468 to support its educational goals [3]. The charity operates the Qalam Seminary and offers online Arabic courses to help students access traditional knowledge [5][9]. It is a zakat-eligible organization that collects funds to support eligible students and programs [2]."
+      "summary": "In FY2024, the organization reported total revenue of $2,329,468 to support its educational goals [3]. The charity operates the Qalam Seminary and offers online Arabic courses to help students access traditional knowledge [5][9]. It is a zakat-eligible organization that accepts donations to support its students and programs [2]."
     },
     "rich_narrative": {
       "all_citations": [

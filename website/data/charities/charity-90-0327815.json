@@ -32,17 +32,17 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": 147814,
-    "totalExpenses": 155380,
-    "programExpenses": 149320,
-    "adminExpenses": 6060,
-    "fundraisingExpenses": 0,
+    "totalRevenue": 134320,
+    "totalExpenses": 102044,
+    "programExpenses": null,
+    "adminExpenses": null,
+    "fundraisingExpenses": null,
     "programExpenseRatio": "0.9610",
-    "fiscalYear": 2022,
-    "dataSource": "charity_navigator",
+    "fiscalYear": 2023,
+    "dataSource": "propublica",
     "totalAssets": 71946,
     "totalLiabilities": 0,
-    "netAssets": 438537,
+    "netAssets": null,
     "workingCapitalMonths": "8.50",
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
@@ -66,21 +66,15 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:02:57",
+  "lastUpdated": "2026-07-30 21:31:47",
   "sourceAttribution": {
-    "admin_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
-      "timestamp": "2026-07-30T00:44:17",
-      "value": 6060
-    },
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:44:38.731149+00:00",
+        "timestamp": "2026-07-31T04:30:55.562944+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -101,12 +95,6 @@
       "timestamp": "2026-07-23T20:25:27",
       "value": 2004
     },
-    "fundraising_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
-      "timestamp": "2026-07-30T00:44:17",
-      "value": 0
-    },
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://morocco-foundation.org/annual-meeting-2025-registration/",
@@ -119,23 +107,11 @@
       "timestamp": "2026-07-30T00:44:17",
       "value": 0.961
     },
-    "program_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
-      "timestamp": "2026-07-30T00:44:17",
-      "value": 149320
-    },
-    "total_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
-      "timestamp": "2026-07-30T00:44:17",
-      "value": 155380
-    },
     "total_revenue": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/900327815#financials",
+      "source_name": "Form 990 (2023)",
+      "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815",
       "timestamp": "2026-07-30T00:44:17",
-      "value": 147814
+      "value": 134320
     },
     "working_capital_months": {
       "derived_from": [
@@ -143,6 +119,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815",
       "timestamp": "2026-07-30T00:44:17",
@@ -182,7 +159,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:44:38.731149+00:00",
+      "timestamp": "2026-07-31T04:30:55.562944+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -225,6 +202,20 @@
   },
   "keyConcerns": [
     {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Expense breakdown unavailable for FY2023",
+      "detail": "The IRS filing for FY2023 does not break out functional expenses, and Charity Navigator's breakdown is from FY2022 \u2014 too old to present as current.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "field": "income_statement",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2022,
+        "other_source": "charity_navigator",
+        "reason": "alternate_source_is_staler"
+      }
+    },
+    {
       "type": "risk_deduction",
       "severity": "medium",
       "headline": "Latest available financial filing is FY2023 (3 years old)",
@@ -241,7 +232,7 @@
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 29,
-      "data_confidence": 0.21,
+      "data_confidence": 0.26,
       "impact": 38
     },
     "score_details": {
@@ -285,7 +276,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $147,814 (5/5 funding gap)",
+            "evidence": "Revenue: $134,320 (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -300,11 +291,11 @@
       },
       "data_confidence": {
         "badge": "LOW",
-        "data_age_years": 4,
+        "data_age_years": 3,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.21,
-        "recency_factor": 0.7,
+        "overall": 0.26,
+        "recency_factor": 0.85,
         "transparency_label": "NONE",
         "transparency_value": 0,
         "verification_tier": "BASIC",
@@ -313,7 +304,7 @@
       "impact": {
         "components": [
           {
-            "evidence": "$17.49/beneficiary (exceptional for EXTREME_POVERTY)",
+            "evidence": "$11.95/beneficiary (exceptional for EXTREME_POVERTY)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Cost Per Beneficiary",
@@ -376,10 +367,10 @@
             "status": "partial"
           }
         ],
-        "cost_per_beneficiary": 17.492970946579195,
+        "cost_per_beneficiary": 11.954545454545455,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$17.49/beneficiary; Delivery: direct service; Impact 38/50",
+        "rationale": "$11.95/beneficiary; Delivery: direct service; Impact 38/50",
         "rubric_archetype": "DIRECT_SERVICE",
         "score": 38
       },
@@ -387,49 +378,37 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation 1 does not contain information about the program expense ratio or working capital.",
+          "message": "The content of the URL does not contain information about the claim.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for citation 2 does not contain information about total revenue or the availability of financial filings newer than FY2022.",
+          "message": "The content of the URL does not contain information about the claim.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content for citation 3 confirms that the charity accepts donations, but does not specify if 'sadaqah' is accepted or if donations are specifically for rural development programs.",
+          "message": "The content of the URL supports the claim that the foundation offers sadaqah-eligible giving options.",
+          "severity": "info"
+        },
+        {
+          "field": "total_revenue",
+          "judge": "factual",
+          "message": "The reported total revenue of $134,320 for 2023 differs from the source data which shows $134,320 for 2023.",
           "severity": "info"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The program expense ratio of 96.1% is consistent with the source data.",
+          "message": "The program expense ratio of 96.1% is consistent with the source data, allowing for minor rounding differences.",
           "severity": "info"
         },
         {
-          "field": "working_capital",
+          "field": "sadaqah_eligible",
           "judge": "factual",
-          "message": "The working capital of 8.5 months is consistent with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "revenue",
-          "judge": "factual",
-          "message": "The reported total revenue of $147,814 for FY2022 contradicts the source data which shows $50,645 for FY2022 and $134,320 for FY2023.",
-          "severity": "warning"
-        },
-        {
-          "field": "financial_filings_availability",
-          "judge": "factual",
-          "message": "The claim that no financial filings newer than FY2022 are available is partially correct, as FY2023 filings are available.",
-          "severity": "info"
-        },
-        {
-          "field": "donation_types",
-          "judge": "factual",
-          "message": "The charity accepts general donations and sadaqah, as indicated by the website.",
+          "message": "The narrative claims the foundation offers sadaqah-eligible giving options, but the source data indicates the foundation does not explicitly mention accepting zakat donations and the wallet tag is SADAQAH-ELIGIBLE.",
           "severity": "info"
         },
         {
@@ -478,39 +457,41 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation maintains a 96.1% program expense ratio and 8.5 months of working capital.",
+          "claim": "The organization works to reduce poverty and illiteracy in rural Morocco through education and themed caravans.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/900327815#financials"
         },
         {
-          "claim": "Total revenue was $147,814, but no financial filings newer than FY2022 are available.",
+          "claim": "The foundation reported total revenue of $134,320 and a 96.1% program expense Ratio in its latest filing from 2023.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815"
         },
         {
-          "claim": "The charity accepts general donations and sadaqah for its rural development programs.",
+          "claim": "The foundation offers sadaqah-eligible giving options for donors interested in Moroccan development.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.morocco-foundation.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation shows an above-average commitment to direct service and spending efficiency. However, the significant delay in financial reporting prevents a higher assessment of its accountability.",
+      "amal_score_rationale": "The foundation shows efficient spending on direct services, but the lack of recent financial filings and limited outcome data lower its overall standing.",
       "areas_for_improvement": [
-        "Public financial transparency is low, with no tax filings available after 2022 [2]",
-        "Lack of recent data makes it difficult to verify current impact or growth"
+        "Update public financial disclosures, as the latest available data is from 2023",
+        "Provide more public evidence of long-term program outcomes and impact",
+        "Improve transparency regarding organizational governance and leadership"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific cultural and regional need by helping underserved rural populations in Morocco [3]. It is eligible for sadaqah donations, though it lacks the specific religious certifications some donors may look for [3]. Its long track record in this niche area provides a stable option for those interested in Moroccan development [1].",
-        "impact": "The charity spends $147,814 in total revenue on direct services like the ABT-MF Academy and themed caravans [2]. It operates with a very high program expense ratio of 96.1%, meaning nearly all spending goes toward its mission rather than overhead [1]. While the cost per beneficiary is low, there is limited third-party evidence available to prove long-term outcomes [1]."
+        "alignment": "This group serves a specific cultural and religious need for donors interested in Moroccan rural development [3]. It has a steady track record, though the cause is considered less urgent than immediate disaster relief [1].",
+        "impact": "The charity spends $11.95 per person to provide direct services like the ABT-MF Academy [1]. While its 96.1% program expense Ratio is very efficient, there is little public data to prove the long-term success of its programs [2]."
       },
-      "headline": "The Morocco Foundation provides direct aid to rural communities, though its public financial records are several years out of date.",
+      "headline": "The Morocco Foundation provides direct aid to rural communities, but its financial reporting is significantly delayed.",
       "strengths": [
-        "High program expense ratio of 96.1% ensures most funds reach the field [1]",
-        "Maintains 8.5 months of working capital to sustain operations [1]"
+        "High program spending with a 96.1% program expense Ratio",
+        "Low cost of approximately $11.95 per beneficiary",
+        "Strong working capital of 8.5 months to sustain operations"
       ],
-      "summary": "This organization works to reduce poverty and illiteracy in rural Morocco through education and medical caravans [1]. While it maintains a high program spending rate, no financial filings newer than FY2022 are available, so donors should treat this four-year-old financial picture with caution [2]."
+      "summary": "The organization works to reduce poverty and illiteracy in rural Morocco through education and themed caravans [1]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [2]. During that period, the foundation reported total revenue of $134,320 [2]."
     },
     "rich_narrative": {
       "all_citations": [

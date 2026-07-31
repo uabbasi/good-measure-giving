@@ -78,7 +78,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:04:03",
+  "lastUpdated": "2026-07-30 21:32:34",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -92,7 +92,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:50:40.044998+00:00",
+        "timestamp": "2026-07-31T04:31:32.154940+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -161,6 +161,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132",
       "timestamp": "2026-07-30T00:50:26",
@@ -201,7 +202,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:50:40.044998+00:00",
+      "timestamp": "2026-07-31T04:31:32.154940+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -242,7 +243,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 9.1,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "94-3311132",
     "charity_name": "Al-Arqam Islamic School",
@@ -398,91 +415,37 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] is corrupted and cannot be parsed.",
+          "message": "The content for citation 1 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for citation [2] is corrupted and cannot be parsed.",
+          "message": "The content for citation 2 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for citation [3] is corrupted and cannot be parsed.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "The provided content for citation [5] is corrupted and cannot be parsed.",
+          "message": "The PDF content for citation 3 is corrupted and unparseable.",
           "severity": "warning"
         },
         {
           "field": "citation_11",
           "judge": "citation",
-          "message": "The provided content for citation [11] is corrupted and cannot be parsed.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_12",
-          "judge": "citation",
-          "message": "The provided content for citation [12] is corrupted and cannot be parsed.",
+          "message": "The content for citation 11 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_13",
           "judge": "citation",
-          "message": "The content for citation [13] confirms the school is eligible for sadaqah donations, but does not explicitly state it is for the purpose of supporting its mission.",
-          "severity": "info"
+          "message": "The content for citation 13 was not provided.",
+          "severity": "warning"
         },
         {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative claims $4,330,166 in total revenue for FY2024, but the Charity Navigator source reports $4,330,166 for FY2024, which matches.",
-          "severity": "info"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative claims a program expense ratio of 98.1%, and the source data also reports 98.1%.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "factual",
-          "message": "The narrative claims 9.1 months of working capital, and the source data also reports 9.1 months.",
-          "severity": "info"
-        },
-        {
-          "field": "academic_requirements",
-          "judge": "factual",
-          "message": "The narrative claims the school provides structured schooling and clear academic requirements, and the school provides programs through the eighth grade. While supply lists for various grades are provided, they do not explicitly detail 'structured schooling' or 'clear academic requirements'.",
-          "severity": "info"
-        },
-        {
-          "field": "transitional_kindergarten_programs",
-          "judge": "factual",
-          "message": "The narrative claims the school provides programs for transitional kindergarten. The supply lists for TK are available, indicating programs exist, but the specific nature of these programs is not detailed.",
-          "severity": "info"
-        },
-        {
-          "field": "programs_through_eighth_grade",
-          "judge": "factual",
-          "message": "The narrative claims the school provides programs through the eighth grade. Supply lists for 8th grade are available, indicating programs exist, but the specific nature of these programs is not detailed.",
-          "severity": "info"
-        },
-        {
-          "field": "academic_requirements",
-          "judge": "factual",
-          "message": "The narrative claims the school maintains academic requirements for its students. While supply lists for 9th grade are available, they do not explicitly detail 'academic requirements'.",
-          "severity": "info"
-        },
-        {
-          "field": "sadaqah_donations",
-          "judge": "factual",
-          "message": "The narrative states the school is eligible for sadaqah donations, but the source data indicates the school does not accept zakat donations and the donation page does not explicitly mention sadaqah.",
+          "field": "strengths",
+          "judge": "score",
+          "message": "Factual inaccuracy in fundraising costs.",
           "severity": "warning"
         },
         {
@@ -535,64 +498,51 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The school maintains a high program expense ratio of 98.1% and has 9.1 months of working capital.",
+          "claim": "The school serves Muslim children in the Greater Sacramento area.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/943311132#financials"
         },
         {
-          "claim": "In FY2024, the organization managed $4,330,166 in total revenue.",
+          "claim": "In FY2024, the organization managed $4,330,166 in total revenue and spent 98.1% of its budget on programs.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132"
         },
         {
-          "claim": "The school provides structured schooling and clear academic requirements for its students.",
+          "claim": "The school provides programs for elementary students.",
           "id": "[3]",
           "source_name": "1stGrade_SupplyList_2026-2027",
           "source_url": "https://4.files.edl.io/d582/06/02/26/213922-5c139364-3964-48c3-960e-d4cae60ee00a.pdf"
         },
         {
-          "claim": "The school provides programs for transitional kindergarten.",
-          "id": "[5]",
-          "source_name": "TK_ SupplyList_2026-2027",
-          "source_url": "https://4.files.edl.io/2e45/07/13/26/181621-510883ce-702f-4ff5-b40d-4fb5d7bb2c42.pdf"
-        },
-        {
-          "claim": "The school provides programs through the eighth grade.",
+          "claim": "The school provides programs for middle school students up to 8th grade.",
           "id": "[11]",
           "source_name": "8thGrade_SupplyList_2026-2027",
           "source_url": "https://4.files.edl.io/582c/07/07/26/162941-db1f61b4-90c7-4821-9b2b-1a008231897e.pdf"
         },
         {
-          "claim": "The school maintains academic requirements for its students.",
-          "id": "[12]",
-          "source_name": "9thGrade_SupplyList2026-2027",
-          "source_url": "https://4.files.edl.io/3dbe/07/07/26/162941-c3f7126c-7e17-4e2d-af24-3eff8c493f30.pdf"
-        },
-        {
-          "claim": "The school is eligible for sadaqah donations to support its mission.",
+          "claim": "The organization is eligible for general sadaqah donations.",
           "id": "[13]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.alarqamislamicschool.org/apps/pages/index.jsp?uREC_ID=1440031&type=d&pREC_ID=1602841"
         }
       ],
-      "amal_score_rationale": "The school shows above average performance due to its excellent financial health and high spending on student programs, though the cost to serve each student is relatively high.",
+      "amal_score_rationale": "The school shows above average performance due to its excellent spending efficiency and clear educational focus, though the high cost per student limits its overall impact score.",
       "areas_for_improvement": [
-        "High cost per student compared to other educational programs",
-        "Limited geographic reach focused only on the Sacramento area"
+        "High cost per student compared to other educational models",
+        "Limited geographic reach beyond the Sacramento area"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a good fit for donors looking to support Islamic education in California [13]. It has a solid track record of providing structured schooling and clear academic requirements for its students [3][12]. The school is eligible for sadaqah donations to support its mission [13].",
-        "impact": "The school spends 98.1% of its budget on educational programs, which is a very high level of efficiency [1]. While the cost per beneficiary is $9,718.28, the school provides a full curriculum for grades TK through 8 [5][11]. Financial health is strong with 9.1 months of working capital available to sustain operations [1]."
+        "alignment": "This organization is a medium fit for Muslim donors seeking to support local education and is eligible for general sadaqah [13]. It has a proven track record of providing religious and academic instruction in a specific regional area [1][2].",
+        "impact": "The school spends 98.1% of its budget directly on student programs [2]. While the cost per beneficiary is $9,718.28, the school maintains strong governance and a clear theory of change for its TK-8 students [3][11]."
       },
-      "headline": "Al-Arqam Islamic School provides elementary and middle school education with high spending efficiency in the Sacramento area.",
+      "headline": "Al-Arqam Islamic School provides elementary and middle school education while maintaining high financial efficiency.",
       "strengths": [
-        "High spending efficiency with a 98.1% program expense ratio in FY2024",
-        "Low fundraising costs of only $0.06 per $1 raised",
-        "Strong financial stability with 9.1 months of working capital"
+        "High program expense ratio of 98.1% in FY2024",
+        "Efficient fundraising costs of only $0.06 per $1 raised"
       ],
-      "summary": "The school serves Muslim children in the Greater Sacramento area through programs ranging from transitional kindergarten to eighth grade [1][2]. In FY2024, the organization managed $4,330,166 in total revenue to support its educational mission [2]. The school maintains a high program expense ratio of 98.1%, ensuring most funds directly support student learning [1]."
+      "summary": "The school serves Muslim children in the Greater Sacramento area through programs ranging from Transitional Kindergarten to 8th grade [1]. In FY2024, the organization managed $4,330,166 in total revenue to support its educational mission [2]."
     },
     "rich_narrative": {
       "all_citations": [

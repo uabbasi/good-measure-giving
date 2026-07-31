@@ -91,7 +91,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:59:01",
+  "lastUpdated": "2026-07-30 21:28:36",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -105,7 +105,7 @@
         "category": "families_households",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:26:33.080419+00:00",
+        "timestamp": "2026-07-31T04:27:31.553602+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -192,6 +192,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/202714426",
       "timestamp": "2026-07-29T22:42:05",
@@ -286,7 +287,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 3.9,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "20-2714426",
     "charity_name": "UNRWA USA",
@@ -442,97 +459,49 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain the claimed information about the charity's rating, working capital, or fundraising efficiency. The content mentions a Platinum rating from GuideStar and a four-star rating from Charity Navigator, but does not specify the numerical values claimed.",
+          "message": "The provided content for citation [1] does not contain the claimed information about Charity Navigator rating or working capital.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The provided content for citation [2] does not contain the claimed information about the organization being zakat-eligible or following a clear policy for distributing funds.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for citation [3] is a PDF file that could not be parsed to verify the claim about university scholarships and food parcels.",
+          "message": "The provided content for citation [9] is a corrupted PDF and does not contain the claimed information about providing food parcels, university scholarships, and repairs for damaged shelters.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The provided content for citation [4] is a PDF file that could not be parsed to verify the claim about repairing and reconstructing damaged shelters.",
+          "message": "The provided content for citation [11] is a corrupted PDF and does not contain the claimed information about releasing millions of dollars for emergency funds and education in Gaza.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The provided content for citation [5] is a PDF file that could not be parsed to verify the claim about Gaza emergency relief and food assistance.",
+          "message": "The provided content for citation [12] is a corrupted PDF and does not contain the claimed information about raising $51,495,126 and directing 93.4% of spending to programs in FY2024.",
           "severity": "warning"
         },
         {
           "field": "citation_6",
           "judge": "citation",
-          "message": "The provided content for citation [6] is a PDF file that could not be parsed to verify the claim about total revenue and program expense ratio for FY2024.",
+          "message": "The provided content for citation [15] does not contain the claimed information about lifting up the voices of Palestine refugees and providing essential life services.",
           "severity": "warning"
         },
         {
-          "field": "claims_zakat_eligible",
+          "field": "working_capital_months",
           "judge": "factual",
-          "message": "The charity claims to be zakat-eligible, and the wallet tag reflects this.",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative states FY2024 revenue as $51,495,126, which matches the Charity Navigator source for FY2024.",
+          "message": "The narrative states 3.9 months of working capital, while Charity Navigator reports 4.92 months for FY2024.",
           "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states a program expense ratio of 93.4%, which matches the Charity Navigator source for FY2024.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative states a fundraising efficiency of $0.05 per $1 raised, which rounds to the source value of $0.04.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital_months",
-          "judge": "factual",
-          "message": "The narrative states 3.9 months of working capital, which matches the source value.",
-          "severity": "info"
-        },
-        {
-          "field": "overall_score",
-          "judge": "factual",
-          "message": "The narrative states a rating of 91.0/100, which matches the Charity Navigator source value.",
-          "severity": "info"
-        },
-        {
-          "field": "university_scholarships",
-          "judge": "factual",
-          "message": "The narrative states the organization provides university scholarships, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "food_parcels",
-          "judge": "factual",
-          "message": "The narrative states the organization provides food parcels, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "shelter_repair",
-          "judge": "factual",
-          "message": "The narrative states the charity repairs and reconstructs damaged shelters for refugees, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "gaza_emergency_relief",
-          "judge": "factual",
-          "message": "The narrative states funds are released for Gaza emergency relief, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "food_assistance",
-          "judge": "factual",
-          "message": "The narrative states funds are released for food assistance, which is supported by the source data.",
+          "message": "The narrative states 93.4% of spending was directed to programs, while Charity Navigator reports 93.4% for FY2024.",
           "severity": "info"
         },
         {
@@ -585,58 +554,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains a 91.0/100 rating, 3.9 months of working capital, and a fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "The charity maintains a high overall rating of 91.0/100 from Charity Navigator and has 3.9 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/202714426#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories for donations.",
+          "claim": "The organization is zakat-eligible and follows a clear policy for distributing funds.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.unrwausa.org/donate"
         },
         {
-          "claim": "The organization provides university scholarships and food parcels to refugees.",
+          "claim": "The group provides food parcels, university scholarships, and repairs damaged shelters.",
           "id": "[9]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.unrwausa.org/s/UNRWA-2023-Form-990-Public-Disclosure-Copy-1.pdf"
         },
         {
-          "claim": "The charity repairs and reconstructs damaged shelters for refugees.",
-          "id": "[10]",
-          "source_name": "Form 990 (2022)",
-          "source_url": "https://www.unrwausa.org/s/UNRWA-2022-Form-990-Public-Disclosure-Copy.PDF"
-        },
-        {
-          "claim": "Funds are released specifically for Gaza emergency relief and food assistance.",
+          "claim": "The organization has a track record of releasing millions of dollars for emergency funds and education in Gaza.",
           "id": "[11]",
           "source_name": "Financial Statement (2023)",
           "source_url": "https://www.unrwausa.org/s/UNRWA-2023-FS-Final-1.pdf"
         },
         {
-          "claim": "In FY2024, the organization had a total revenue of $51,495,126 and a program expense ratio of 93.4%.",
+          "claim": "In FY2024, the organization raised $51,495,126 and directed 93.4% (cash-adjusted) of spending to programs.",
           "id": "[12]",
           "source_name": "Form 990 (2024)",
           "source_url": "https://www.unrwausa.org/s/2024_UNRWA-USA-Form-990-FILED.pdf"
+        },
+        {
+          "claim": "The organization lifts up the voices of Palestine refugees and provides essential life services.",
+          "id": "[15]",
+          "source_name": "Annual Report",
+          "source_url": "https://www.unrwausa.org/2022-annual-report"
         }
       ],
-      "amal_score_rationale": "This charity earns a high assessment due to its exceptional spending efficiency and direct service delivery to a highly vulnerable population. It demonstrates strong financial health and clear evidence of program success.",
+      "amal_score_rationale": "This charity earns a high assessment due to its exceptional financial efficiency and clear evidence of program outcomes. It shows strong alignment with donor needs through its zakat-eligible programs and direct humanitarian impact.",
       "areas_for_improvement": [
-        "Relatively high cost per beneficiary compared to some other international aid models",
-        "Dependency on a specific geographic region which increases humanitarian urgency"
+        "High cost per beneficiary compared to some other direct-service humanitarian groups",
+        "Reliance on a single primary partner for program implementation"
       ],
       "dimension_explanations": {
-        "alignment": "This group is a strong fit for Muslim donors as it is zakat-eligible and serves a high-priority humanitarian cause [2]. It has a long track record of delivering aid in underserved areas, including repairing damaged shelters and providing school-based support [10][12].",
-        "impact": "The organization operates with a 93.4% program expense ratio, meaning the vast majority of its $51,495,126 in FY2024 revenue went directly to aid [12]. While the cost per beneficiary is $4,083.84, the group provides deep, life-sustaining services like university scholarships and food parcels [9][11]. It maintains 3.9 months of working capital to ensure stability during crises [1]."
+        "alignment": "There is a very strong fit for Muslim donors because the charity is zakat-eligible and addresses an urgent humanitarian cause [2]. The organization has a long track record of releasing millions of dollars for emergency funds and education in Gaza [11]. It serves an underserved population by lifting up the voices of Palestine refugees and providing them with essential life services [15].",
+        "impact": "The organization is highly effective, directing 93.4% (cash-adjusted) of its spending to programs like food parcels and university scholarships in FY2024 [12]. While the cost per beneficiary is $4,083.84, the group maintains excellent financial health with 3.9 months of working capital to ensure stable operations [1]. Its work is backed by clear evidence of success in repairing shelters and providing school-based support [9][12]."
       },
       "headline": "UNRWA USA National Committee provides critical humanitarian aid and education to Palestine refugees through efficient financial management.",
       "strengths": [
-        "High program expense ratio of 93.4% ensures most funds reach refugees [12]",
-        "Excellent fundraising efficiency with only $0.05 spent to raise every $1 [1]",
-        "Strong governance and transparency practices with verified evidence of outcomes [1]"
+        "High program spending with 93.4% (cash-adjusted) of funds going directly to refugee services in FY2024",
+        "Strong fundraising efficiency, spending only $0.05 to raise every $1 in FY2024",
+        "Verified zakat-eligible status for Muslim donors seeking to fulfill religious obligations"
       ],
-      "summary": "In FY2024, the organization raised $51,495,126 to support food assistance, healthcare, and emergency relief [12]. The charity maintains a high overall rating of 91.0/100 from Charity Navigator for its accountability and health [1]. Donors can contribute through zakat-eligible programs that directly fund essential services like education and shelter [2]."
+      "summary": "In FY2024, the organization raised $51,495,126 to support food assistance, healthcare, and schooling for displaced families [12]. The charity maintains a high overall rating of 91.0/100 from Charity Navigator for its accountability and results [1]. Donors can contribute with confidence as the organization is zakat-eligible and follows a clear policy for distributing funds to those in need [2]."
     },
     "rich_narrative": {
       "all_citations": [

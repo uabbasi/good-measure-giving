@@ -75,7 +75,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:07:32",
+  "lastUpdated": "2026-07-30 21:33:34",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -89,7 +89,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:54:22.846727+00:00",
+        "timestamp": "2026-07-31T04:32:38.885916+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -158,6 +158,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991",
       "timestamp": "2026-07-30T00:54:07",
@@ -198,7 +199,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:54:22.846727+00:00",
+      "timestamp": "2026-07-31T04:32:38.885916+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -429,6 +430,12 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "Citation 1 defined but not referenced in narrative",
+          "severity": "info"
+        },
+        {
           "field": "citation_2",
           "judge": "citation",
           "message": "URL unreachable: HTTP 403",
@@ -441,82 +448,28 @@
           "severity": "warning"
         },
         {
-          "field": "citation_7",
-          "judge": "citation",
-          "message": "URL unreachable: HTTP 202",
-          "severity": "warning"
-        },
-        {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The content of the PDF could not be parsed to verify the claim.",
+          "message": "The PDF content could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
           "field": "citation_6",
           "judge": "citation",
-          "message": "The content of the PDF could not be parsed to verify the claim.",
+          "message": "The PDF content could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
-          "field": "program_expense_ratio",
+          "field": "working_capital",
           "judge": "factual",
-          "message": "The program expense ratio in the narrative (95.5%) is very close to the source value (95.55%).",
+          "message": "The narrative states the organization holds 24.2 months of working capital, but the source data indicates 24.2 years. This is a significant difference in units.",
           "severity": "info"
         },
         {
-          "field": "working_capital_months",
-          "judge": "factual",
-          "message": "The working capital in months (24.2) is very close to the source value (24.2).",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The fundraising efficiency in the narrative ($0.05 per $1 raised) is very close to the source value ($0.04 per $1 raised).",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The total revenue in the narrative ($2,959,388) matches the source value for FY2023.",
-          "severity": "info"
-        },
-        {
-          "field": "ceo_compensation",
-          "judge": "factual",
-          "message": "The CEO compensation in the narrative ($216,728) matches the source value for FY2023, but it represents 7.3% of total revenue, which is higher than the typical threshold of 5% for organizations of this size.",
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "The charity's programs focus on Islamic education, which aligns with the 'Fi Sabilillah' (in Allah's cause) category. However, the provided information does not explicitly detail how the beneficiaries of this education directly meet the criteria for 'poor' or 'needy' (Fuqara/Masakin), which are also listed as zakat categories served by the charity.",
           "severity": "warning"
-        },
-        {
-          "field": "zakat_eligibility",
-          "judge": "factual",
-          "message": "The narrative states the charity is zakat-eligible, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_offerings",
-          "judge": "factual",
-          "message": "The narrative's description of program offerings aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "exam_policies",
-          "judge": "factual",
-          "message": "The narrative's claim about specific policies and thresholds for student exams is supported by the 'Exam policy' PDF.",
-          "severity": "info"
-        },
-        {
-          "field": "curriculum_structure",
-          "judge": "factual",
-          "message": "The narrative's claim about a structured curriculum is supported by the 'Curriculum' PDF.",
-          "severity": "info"
-        },
-        {
-          "field": "donation_options",
-          "judge": "factual",
-          "message": "The narrative's claim about various donation options is generally supported by the source data.",
-          "severity": "info"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -596,65 +549,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a 95.5% program expense ratio, 24.2 months of working capital, and a fundraising efficiency of $0.05 per $1 raised.",
+          "claim": "The organization holds 24.2 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/270091991#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and accepts donations for specific asnaf categories.",
+          "claim": "The charity is zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.feelingblessed.org/almaghrib"
         },
         {
-          "claim": "Total revenue was $2,959,388 and CEO compensation was $216,728 in the FY2023 filing.",
+          "claim": "The charity reported total revenue of $2,959,388 and a program expense ratio of 95.5% in its latest filing from 2023.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/270091991"
         },
         {
-          "claim": "AlMaghrib Institute offers in-person seminars, online courses, and travel-learning programs.",
+          "claim": "The mission is to empower people through Islamic learning experiences including seminars and online courses.",
           "id": "[4]",
           "source_name": "Charity Website - About",
           "source_url": "https://almaghrib.org/about-us"
         },
         {
-          "claim": "The organization maintains specific policies and thresholds for student exams.",
+          "claim": "The organization maintains specific exam and grading policies for its students.",
           "id": "[5]",
           "source_name": "Exam policy",
           "source_url": "https://assets.almaghrib.org/docs/almaghrib-exam-policies.pdf"
         },
         {
-          "claim": "The organization provides a structured curriculum for its educational programs.",
+          "claim": "The institute provides a structured educational curriculum.",
           "id": "[6]",
           "source_name": "here",
           "source_url": "https://assets.almaghrib.org/docs/almaghrib-curriculum.pdf"
-        },
-        {
-          "claim": "The charity provides various donation options and giving methods for supporters.",
-          "id": "[7]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://www.almaghrib.org/policies"
         }
       ],
-      "amal_score_rationale": "This charity shows a balance of high spending on its actual programs and efficient fundraising, but it is held back by outdated financial records and high cash reserves.",
+      "amal_score_rationale": "The charity shows a balanced profile with high spending on programs, but it is held back by outdated financial reporting and high executive pay relative to its size.",
       "areas_for_improvement": [
-        "Public financial data is three years out of date, which limits current accountability [3].",
-        "The organization holds 24.2 months of working capital, which is high for a group that collects zakat [1].",
-        "CEO compensation represents 7.3% of total revenue, totaling $216,728 [3]."
+        "Financial transparency is a concern as the latest available filings are from 2023",
+        "Large cash reserves of 24.2 months may conflict with the prompt distribution of zakat funds",
+        "CEO compensation represents 7.3% of total revenue"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors because it is zakat-eligible and focuses on religious education [2][7]. It has a long track record of providing Islamic learning experiences since its founding [4].",
-        "impact": "The institute spends 95.5% of its budget on educational programs like seminars and travel-learning [1][4]. It costs approximately $8.58 per beneficiary to deliver these services [3]. While the charity has clear rules for student exams and curriculum, the lack of recent financial filings makes it harder to judge its current health [5][6]."
+        "alignment": "This organization is a strong fit for Muslim donors and is zakat-eligible [2]. It has a long track record of providing structured curriculum and exams for students [5][6].",
+        "impact": "The institute spends 95.5% of its budget on programs like seminars and travel-learning [3][4]. It maintains a low cost of approximately $8.58 per beneficiary [3]. However, the organization lacks recent governance data, and the CEO's pay of $216,728 is a significant portion of the $2,959,388 total revenue [3]."
       },
-      "headline": "AlMaghrib Institute provides Islamic education with high program spending but faces significant delays in financial reporting.",
+      "headline": "AlMaghrib Institute provides Islamic education through seminars and online courses, but its public financial records are several years out of date.",
       "strengths": [
-        "The organization maintains a high program expense ratio of 95.5% [1].",
-        "Fundraising is efficient, costing only $0.05 for every $1 raised [1].",
-        "The charity is zakat-eligible and accepts donations for specific categories of need [2]."
+        "High program expense ratio of 95.5% ensures most funds go toward educational activities",
+        "Efficient fundraising costs of only $0.05 per $1 raised"
       ],
-      "summary": "AlMaghrib Institute offers in-person seminars and online courses to help students learn about Islam [4]. The organization reported total revenue of $2,959,388 in its most recent public filing [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [1]."
+      "summary": "The organization offers in-person and digital learning experiences to help students gain Islamic knowledge [4]. In fiscal year 2023, the charity reported total revenue of $2,959,388 [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -92,7 +92,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:05:33",
+  "lastUpdated": "2026-07-30 21:34:04",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -106,7 +106,7 @@
         "category": "reach_or_impressions",
         "confident": false,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:52:39.466289+00:00",
+        "timestamp": "2026-07-31T04:32:29.636771+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -193,6 +193,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/770519274",
       "timestamp": "2026-07-30T00:52:20",
@@ -259,6 +260,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 13.1,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "ceo_comp_excessive",
       "severity": "medium",
@@ -444,73 +460,115 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided URL for Charity Navigator does not contain the claimed rating of 97.5/100 or fundraising cost information. The content is a financial overview page, but the specific data points are not present.",
+          "message": "The provided URL for Charity Navigator does not contain the claimed rating of 97.5/100 or the working capital of 13.1 months. The page focuses on financial health but does not explicitly state these figures.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided URL for Form 990 (2023) does not contain the claimed total revenue of $3,774,653 or CEO salary of $264,240. The URL leads to a ProPublica page that lists organizations, but not the specific financial details for the claimed fiscal year.",
+          "message": "The provided URL for Form 990 (2023) does not contain the claimed total revenue of $3,774,653 or CEO pay of $264,240. The page is a PDF and appears to be corrupted or unreadable.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided PDF content is corrupted or unparseable and does not contain information about the organization producing films and educational programs to counter bigotry.",
+          "message": "The provided PDF content is corrupted and unreadable, preventing verification of the claim that the organization produces films and educational programs to improve social relations.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The provided PDF content for Form 990 (2025) is corrupted or unparseable and does not contain information about the cash-adjusted program expense ratio.",
+          "message": "The provided PDF content is corrupted and unreadable, preventing verification of the claim that the organization maintains a 76.1% program expense ratio.",
           "severity": "warning"
         },
         {
           "field": "citation_7",
           "judge": "citation",
-          "message": "The provided PDF content is corrupted or unparseable and does not contain information about the charity tracking total worldwide viewers for its video lessons.",
+          "message": "The provided PDF content is corrupted and unreadable, preventing verification of the claim that the group claims a large worldwide audience resulting in a very low cost per beneficiary.",
           "severity": "warning"
         },
         {
           "field": "citation_8",
           "judge": "citation",
-          "message": "The provided content for 'On the film,Enemy of the Reich' is a donation page and does not contain information about the foundation developing curriculum and study guides for its films.",
+          "message": "The provided URL is a PDF document that discusses a study guide for the film 'Enemy of the Reich'. While it relates to the organization's work, it does not directly confirm the claim that the foundation has a track record of producing content to counter bigotry. The content is relevant but does not fully support the claim.",
+          "severity": "info"
+        },
+        {
+          "field": "citation_12",
+          "judge": "citation",
+          "message": "The provided PDF discusses 'Sufism and Music' and includes a lesson plan. While it aligns with the idea of producing educational materials, it does not explicitly state that these materials align with Common Core State Standards.",
+          "severity": "info"
+        },
+        {
+          "field": "citation_13",
+          "judge": "citation",
+          "message": "The provided URL is a 'Ways to Donate' page. It confirms that donation options are available, supporting the claim that the foundation offers donation options. However, it does not explicitly mention a 'media advocacy mission' as stated in the claim.",
+          "severity": "info"
+        },
+        {
+          "field": "revenue",
+          "judge": "factual",
+          "message": "The narrative states the charity reported $3,774,653 in total revenue for FY2024, but the source data for FY2024 (Charity Navigator) shows $3,774,653, while the Form 990 (2023) shows $2,774,622. The narrative's claim matches the Charity Navigator data for FY2024.",
+          "severity": "info"
+        },
+        {
+          "field": "ceo_compensation",
+          "judge": "factual",
+          "message": "The narrative states the CEO was paid $264,240, which matches the Charity Navigator data for FY2024. However, the Form 990 (2023) lists compensation for current officers as $573,030, and the ProPublica Form 990 (2023) also lists compensation for current officers as $573,030. The narrative's claim for CEO compensation appears to be specific to FY2024 and is supported by Charity Navigator, but the Form 990 data for 2023 shows a significantly higher figure for 'compensation of current officers'.",
           "severity": "warning"
         },
         {
-          "field": "CEO compensation",
+          "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states the CEO was paid $264,240, but the source data indicates the CEO compensation was $264,240 for fiscal year 2024.",
+          "message": "The narrative states a 76.1% program expense ratio, while the source data (Charity Navigator) shows 76.11%. This is a minor difference due to rounding.",
           "severity": "info"
         },
         {
-          "field": "total revenue",
+          "field": "working_capital",
           "judge": "factual",
-          "message": "The narrative states the total revenue was $3,774,653, but the source data indicates the total revenue was $3,774,653 for fiscal year 2024.",
+          "message": "The narrative states 13.1 months of working capital, which matches the source data (Charity Navigator and ProPublica Form 990 for FY2023).",
           "severity": "info"
         },
         {
-          "field": "program expense ratio",
+          "field": "overall_rating",
           "judge": "factual",
-          "message": "The narrative states the program expense ratio is 76.1%, and the source data indicates 76.1%.",
+          "message": "The narrative states an overall rating of 97.5/100, which matches the source data (Charity Navigator).",
           "severity": "info"
         },
         {
-          "field": "overall rating",
+          "field": "program_description",
           "judge": "factual",
-          "message": "The narrative states the overall rating is 97.5/100, and the source data indicates 97.5/100.",
+          "message": "The narrative claims the organization produces films and educational programs to improve social relations. The source data confirms the organization produces films and educational programs, and its mission aligns with improving social relations and countering bigotry, but a direct claim of 'improving social relations' as a primary outcome is not explicitly stated in the provided source snippets.",
           "severity": "info"
         },
         {
-          "field": "fundraising costs",
+          "field": "cost_per_beneficiary",
           "judge": "factual",
-          "message": "The narrative states fundraising costs are efficient, and the source data indicates fundraising expense ratio of 0.105, which is considered efficient.",
+          "message": "The narrative claims a 'very low cost per beneficiary' and mentions a large worldwide audience. Source data [7] indicates a cost per beneficiary of approximately $0.02, which is considered unusually low and potentially unverifiable or indicative of inflated beneficiary numbers.",
+          "severity": "warning"
+        },
+        {
+          "field": "mission_focus",
+          "judge": "factual",
+          "message": "The narrative states the foundation has a track record of producing content to counter bigotry. The source data [8] supports this by mentioning the film 'Enemy of the Reich' and its study guide, which aims to educate on religious traditions and resistance, and the organization's overall mission to counter bigotry and stereotypes.",
+          "severity": "info"
+        },
+        {
+          "field": "program_description",
+          "judge": "factual",
+          "message": "The narrative states the foundation produces teacher workshops and materials that align with Common Core State Standards. Source data [12] confirms the production of teacher workshops and materials, and explicitly mentions alignment with Common Core State Standards for a specific lesson plan.",
+          "severity": "info"
+        },
+        {
+          "field": "donation_options",
+          "judge": "factual",
+          "message": "The narrative states the foundation offers donation options to support its media advocacy mission. The source data [13] confirms the existence of a 'Ways to Donate' page on the website, which implies donation options are available to support the mission.",
           "severity": "info"
         },
         {
           "field": "strengths",
           "judge": "score",
-          "message": "The stated fundraising cost of $0.23 per $1 raised is incorrect. Charity Navigator reports $0.19 per $1 raised.",
+          "message": "The narrative states efficient fundraising costs of '$0.23 per $1 raised', but the cited source (Charity Navigator [1]) reports a fundraising efficiency of '$0.19 per $1 raised'. This is a factual discrepancy.",
           "severity": "warning"
         },
         {
@@ -572,70 +630,70 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains an overall rating of 97.5/100 and efficient fundraising costs.",
+          "claim": "The charity maintains an overall rating of 97.5/100 and shows strong financial stability with 13.1 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770519274#financials"
         },
         {
-          "claim": "In fiscal year 2024, the charity reported a total revenue of $3,774,653 and paid its CEO $264,240.",
+          "claim": "In FY2024, the charity reported a total revenue of $3,774,653 and paid its CEO $264,240.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770519274"
         },
         {
-          "claim": "The organization produces films and educational programs to counter bigotry in society.",
+          "claim": "The organization produces films and educational programs to improve social relations.",
           "id": "[3]",
           "source_name": "Teachers",
           "source_url": "https://www.upf.tv/wp-content/uploads/sites/196/2022/05/Discussion-Guide-Mirror-of-the-Invisible-World-2013.pdf"
         },
         {
-          "claim": "The organization maintains a cash-adjusted program expense ratio of 76.1%.",
+          "claim": "The organization maintains a 76.1% program expense ratio.",
           "id": "[5]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://www.upf.tv/wp-content/uploads/sites/196/2026/06/UPF-Form-990-PD-2025.pdf"
         },
         {
-          "claim": "The charity tracks total worldwide viewers for its video lessons.",
+          "claim": "The group claims a large worldwide audience resulting in a very low cost per beneficiary.",
           "id": "[7]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.upf.tv/wp-content/uploads/sites/196/2014/11/Ramadan-UPF-Video-Lessons_Final-Jan-2015.pdf"
         },
         {
-          "claim": "The foundation develops curriculum and study guides for its films.",
+          "claim": "The foundation has a track record of producing content to counter bigotry.",
           "id": "[8]",
           "source_name": "On the film,Enemy of the Reich",
           "source_url": "https://www.upf.tv/wp-content/uploads/sites/196/2015/03/Study-guide-ENEMY-OF-THE-REICH.pdf"
         },
         {
-          "claim": "Program materials are designed to align with Common Core State Standards.",
+          "claim": "The foundation produces teacher workshops and materials that align with Common Core State Standards.",
           "id": "[12]",
           "source_name": "Sufism and Music",
           "source_url": "https://www.upf.tv/wp-content/uploads/sites/196/2015/12/SufismMusicLesson.pdf"
         },
         {
-          "claim": "The charity offers various ways to donate to support its media advocacy work.",
+          "claim": "The foundation offers donation options for those looking to support its media advocacy mission.",
           "id": "[13]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.upf.tv/ways-to-donate/"
         }
       ],
-      "amal_score_rationale": "This charity shows a balance of clear financial health and moderate spending on programs. While it has a long track record in media advocacy, high leadership pay and a lack of deep outcome data limit its overall assessment.",
+      "amal_score_rationale": "This charity shows a balance of clear financial health and media reach, though high executive pay and unclear outcome data for its large audience claims limit its overall standing.",
       "areas_for_improvement": [
         "High executive pay, with the CEO receiving $264,240 or 7.0% of total revenue [2]",
-        "Limited external data to prove the long-term social impact of media projects [1]"
+        "Reported cost per beneficiary is unusually low at approximately $0.02 [7]"
       ],
       "dimension_explanations": {
-        "alignment": "The foundation serves a specific niche in Muslim advocacy and media representation [3]. It has a consistent track record of producing content for television and classrooms, though its focus on advocacy may not fit every donor's priority [8][13].",
-        "impact": "The group focuses on capacity building through films and teacher workshops that align with Common Core standards [12]. While it reports a very low cost per beneficiary of $0.02, there is limited third-party evidence to confirm how these media views change social behavior [7]."
+        "alignment": "The foundation serves a specific niche in media advocacy and education, which offers a moderate fit for donors looking to support social justice and cultural representation [13]. It has a long track record of producing content for television and classrooms to counter bigotry [8].",
+        "impact": "The group focuses on capacity building through films and teacher workshops that align with Common Core standards [12]. While it claims a massive worldwide audience, the reported cost of $0.02 per beneficiary makes it difficult to measure the depth of its actual impact on individual viewers [7]."
       },
       "headline": "Unity Productions Foundation uses media and film to challenge stereotypes about Muslims in America.",
       "strengths": [
-        "Maintains a moderate cash-adjusted program expense ratio of 76.1% [5]",
+        "Maintains a moderate program expense ratio of 76.1% [5]",
         "Strong financial stability with 13.1 months of working capital [1]",
         "Efficient fundraising costs of $0.23 per $1 raised [1]"
       ],
-      "summary": "The organization produces films and educational programs like The Great American Muslim Road Trip to counter bigotry in society [3]. In fiscal year 2024, the charity reported a total revenue of $3,774,653 [2]. It maintains an overall rating of 97.5/100 from Charity Navigator [1]."
+      "summary": "The organization produces films and educational programs like The Great American Muslim Road Trip to improve social relations [3]. In FY2024, the charity reported a total revenue of $3,774,653 [2]. It maintains an overall rating of 97.5/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -99,7 +99,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:58:46",
+  "lastUpdated": "2026-07-30 21:30:26",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -113,7 +113,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:26:33.606869+00:00",
+        "timestamp": "2026-07-31T04:29:06.871878+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -200,6 +200,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850",
       "timestamp": "2026-07-29T22:42:05",
@@ -251,7 +252,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:26:33.606869+00:00",
+      "timestamp": "2026-07-31T04:29:06.871878+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -303,6 +304,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 65,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "high",
@@ -492,37 +508,37 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation 1 does not contain information about the charity's rating from Charity Navigator or documented evidence of long-term outcomes.",
+          "message": "The content for citation 1 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for citation 2 does not mention that the organization is zakat-eligible.",
-          "severity": "warning"
+          "message": "The fetched content mentions soup kitchens and meat collection, but does not explicitly state the organization is zakat-eligible.",
+          "severity": "info"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for citation 3 does not contain information about the charity's total revenue or working capital for FY2024.",
+          "message": "The content for citation 3 was not provided.",
           "severity": "warning"
         },
         {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The narrative states the charity held 65.0 months of working capital, but the source data indicates 45.66 months.",
+          "field": "dimension_explanations.impact",
+          "judge": "score",
+          "message": "The rationale for the Impact dimension omits dominant limiting factors. For an Impact score of 18/50, the rationale should highlight all major weaknesses. It omits the 'excessive capital reserves' (Financial Health: 0/7) and 'small board' (Governance: 0/10) as significant limiting factors.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity claims to serve 'fuqara' (poor) and 'masakin' (needy), but the primary programs described (food distribution, soup kitchens, student support) do not exclusively target these specific asnaf categories. While these programs likely benefit the poor and needy, there is no explicit evidence or breakdown provided to confirm that the beneficiaries exclusively fall into the 'fuqara' or 'masakin' categories as defined for zakat distribution.",
+          "message": "The charity's programs primarily focus on direct relief such as food distribution and financial assistance, which align with the 'Fuqara' (poor) and 'Masakin' (needy) asnaf categories. However, the provided information does not explicitly detail programs that exclusively serve 'Gharimin' (debtors) or 'Ibn Sabil' (travelers), which are also listed as zakat categories served by the charity.",
           "severity": "warning"
         },
         {
           "field": "wallet_tag",
           "judge": "zakat",
-          "message": "The wallet tag is ZAKAT-ELIGIBLE, but the evidence for direct service to specific zakat asnaf categories is not conclusive. While the charity serves the poor and needy, the programs are broad humanitarian efforts. Further clarification on how beneficiaries are identified and confirmed to meet the strict criteria for zakat distribution is needed.",
+          "message": "The charity claims to serve 'Gharimin' (debtors) and 'Ibn Sabil' (travelers) in addition to 'Fuqara' and 'Masakin'. While their core programs clearly align with Fuqara and Masakin, the evidence for serving Gharimin and Ibn Sabil is not explicitly detailed, which could impact the 'ZAKAT-ELIGIBLE' wallet tag if these categories are not genuinely served.",
           "severity": "warning"
         },
         {
@@ -598,41 +614,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains a 92.0/100 rating from Charity Navigator but lacks documented evidence of long-term outcomes.",
+          "claim": "The charity has a 92.0/100 from Charity Navigator rating and holds 65.0 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/770442850#financials"
         },
         {
-          "claim": "The organization focuses on feeding the hungry and supporting students and is zakat-eligible.",
+          "claim": "The organization is zakat-eligible and operates programs like soup kitchens and meat collection.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.rahima.org/rahimas-programs"
         },
         {
-          "claim": "In FY2024, the charity reported a total revenue of $4,100,385 and held 65.0 months of working capital.",
+          "claim": "In FY2024, the charity reported total revenue of $4,100,385 and a 95.3% (cash-adjusted) program expense ratio.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/770442850"
         }
       ],
-      "amal_score_rationale": "The charity is limited by a very small board of only two people and a lack of clear evidence regarding its long-term impact. Additionally, it holds over five years of cash reserves, which is unusual for an organization that collects zakat intended for prompt distribution.",
+      "amal_score_rationale": "The charity is efficient with its spending, but its governance is limited by a very small board. There is also a lack of clear data showing the long-term impact of its programs.",
       "areas_for_improvement": [
-        "Small board size consisting of only two members",
-        "Holding 65.0 months of working capital despite collecting zakat",
-        "Lack of a documented theory of change or foreign grant records for claimed geographic areas"
+        "The board of directors consists of only two members",
+        "Large cash reserves of 65.0 months may conflict with the prompt distribution of zakat",
+        "Lack of a documented theory of change or clear evidence of outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is zakat-eligible and serves domestic poverty needs, which aligns with many Muslim donor interests [2].",
-        "impact": "The charity spends $5.93 to help each person through direct services like food distribution [3]. While 95.3% of expenses goes to programs, the organization lacks a formal theory of change and has no documented evidence of long-term outcomes [1]."
+        "alignment": "This organization is zakat-eligible and serves domestic poverty needs, which fits many Muslim donor goals [2].",
+        "impact": "The charity spends $5.93 per beneficiary to provide direct services like food distribution [1]. In FY2024, it maintained a 95.3% (cash-adjusted) program expense ratio [3]. However, the organization lacks a formal theory of change and has not provided third-party evidence to prove its long-term effectiveness [1]."
       },
-      "headline": "Rahima International Foundation provides direct food aid but faces significant governance and financial distribution concerns.",
+      "headline": "Rahima International Foundation provides direct food aid to the hungry but faces concerns regarding its small board and large cash reserves.",
       "strengths": [
-        "High program expense ratio of 95.3% in FY2024",
-        "Fundraising efficiency of <$0.01 per $1 raised",
-        "Direct service model with a low cost of $5.93 per beneficiary"
+        "High program spending with a 95.3% (cash-adjusted) ratio",
+        "Fundraising efficiency of <$0.01 per $1 raised"
       ],
-      "summary": "The organization focuses on feeding the hungry and supporting students through programs like soup kitchens and meat collection [2]. In FY2024, the charity reported a total revenue of $4,100,385 [3]. While it maintains a 92.0/100 rating from Charity Navigator, internal data shows gaps in how it manages its long-term funds [1]."
+      "summary": "The organization focuses on feeding the hungry and supporting students through programs like soup kitchens and meat collection [2]. In FY2024, the charity reported a total revenue of $4,100,385 [3]. While it maintains a 92.0/100 rating from Charity Navigator, it holds enough working capital to last 65.0 months [1]."
     },
     "rich_narrative": {
       "all_citations": [

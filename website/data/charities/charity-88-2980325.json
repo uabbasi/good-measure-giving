@@ -68,7 +68,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:00:33",
+  "lastUpdated": "2026-07-30 21:30:00",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -82,7 +82,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:41:50.269239+00:00",
+        "timestamp": "2026-07-31T04:29:06.987571+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -145,6 +145,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/882980325",
       "timestamp": "2026-07-30T00:41:29",
@@ -210,7 +211,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:41:50.269239+00:00",
+      "timestamp": "2026-07-31T04:29:06.987571+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -254,6 +255,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 28.5,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "high_fundraising_ratio",
       "severity": "high",
@@ -421,32 +437,38 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain information about the organization's program expense ratio.",
+          "message": "The program expense ratio of 60.4% could not be verified from the provided Charity Navigator URL.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for citation [3] does not contain information about the organization's total revenue for FY2024.",
+          "message": "The total revenue for FY2024 could not be verified from the provided Form 990 (2023) URL.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The provided content for citation [4] is a corrupted PDF and does not contain verifiable information.",
+          "message": "The PDF content is unparseable and does not allow for verification of the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "The Annual Report URL was not fetched or did not contain the specific information about tracking annual outcomes.",
           "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states the program expense ratio is 60.4%, which matches the source data.",
+          "message": "The narrative states the program expense ratio is 60.4%, which matches the source data when rounded.",
           "severity": "info"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative states total revenue of $848,904 in FY2024, but the source data for Form 990 (2023) reports total revenue of $655,185.",
-          "severity": "warning"
+          "message": "The narrative states total revenue was $848,904 in FY2024, but the source data for FY2023 shows $655,185 and the source data for FY2024 shows $848,904. The narrative's claim matches the FY2024 data.",
+          "severity": "info"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -506,7 +528,7 @@
           "source_url": "https://friendsofkdsp.kindful.com/"
         },
         {
-          "claim": "The organization reported total revenue of $848,904 in FY2024.",
+          "claim": "Total revenue in FY2024 was $848,904.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/882980325"
@@ -518,27 +540,27 @@
           "source_url": "https://www.friendsofkdsp.org/wp-content/uploads/2024/08/FOKDSP_DonorReport2024_Final_0823.pdf"
         },
         {
-          "claim": "The charity offers various donation options for supporters.",
-          "id": "[5]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://friendsofkdsp.org/donate/"
+          "claim": "The organization tracks annual outcomes for its healthcare and education programs.",
+          "id": "[6]",
+          "source_name": "Annual Report",
+          "source_url": "https://friendsofkdsp.org/annual-report/"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a low program expense ratio and high fundraising costs that exceed one-third of total expenses. While the charity has a healthy cash reserve, a smaller portion of donor funds reaches the actual mission compared to higher-rated groups.",
+      "amal_score_rationale": "The organization's assessment is limited by a low program expense ratio and high fundraising costs. While it performs vital capacity-building work, a significant portion of its budget is spent on overhead rather than direct services.",
       "areas_for_improvement": [
-        "High fundraising costs of $0.29 for every $1 raised reduce the amount available for programs",
-        "Program spending is low, with only 60.4% of expenses going toward direct services"
+        "High fundraising costs, spending $0.29 to raise every $1",
+        "Low program spending, with only 60.4% of expenses going toward direct services"
       ],
       "dimension_explanations": {
-        "alignment": "This group addresses an urgent need for global education and disability support in Pakistan [4]. It is eligible for sadaqah but has a lower fit for donors specifically looking for zakat-certified pathways [2][5].",
-        "impact": "The charity spends $123.88 per beneficiary to provide healthcare and early childhood intervention [4]. However, financial health is impacted by a program expense ratio of 60.4%, meaning nearly 40% of spending goes toward administration and fundraising [1]."
+        "alignment": "This group addresses an urgent need for global education and disability support in Pakistan [4]. While it serves a specific underserved community. It maintains a steady track record of facilitating surgeries and medical procedures [4][6].",
+        "impact": "The charity focuses on capacity building through healthcare and early childhood intervention programs [4]. It costs approximately $123.88 per beneficiary to deliver these services [4]. However, financial efficiency is a concern because the program expense ratio is 60.4%, which is below the standard for high-performing charities [1]."
       },
-      "headline": "Friends of Kdsp supports healthcare and education for the Down syndrome community in Pakistan, though high fundraising costs limit its program spending.",
+      "headline": "Friends of Kdsp supports healthcare and early intervention for the Down syndrome community in Pakistan, though high fundraising costs limit its program spending.",
       "strengths": [
-        "Maintains a significant financial cushion with 28.5 months of working capital",
-        "Provides direct medical interventions and school partnerships for children with Down syndrome"
+        "Maintains a high level of working capital at 28.5 months to ensure stability",
+        "Provides direct medical support and school placement for children with Down syndrome"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $848,904 to fund medical and early childhood programs [3]. While it facilitates surgeries and partners with mainstream schools, its program expense ratio is 60.4% [4][1]. Donations to this organization are considered sadaqah-eligible [2]."
+      "summary": "In FY2024, the organization reported $848,904 in total revenue to fund medical procedures and school partnerships [3][4]. While it maintains 28.5 months of working capital, its program expense ratio is 60.4% [1]. Donations to this organization are considered sadaqah-eligible [2]."
     },
     "rich_narrative": {
       "all_citations": [

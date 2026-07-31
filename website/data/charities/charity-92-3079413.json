@@ -78,7 +78,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 13:37:30",
+  "lastUpdated": "2026-07-30 21:33:02",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -146,6 +146,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413",
       "timestamp": "2026-07-30T00:52:01",
@@ -444,6 +445,21 @@
       "data_points": {}
     },
     {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": -6.1,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
       "type": "gik_inflation",
       "severity": "high",
       "headline": "100% of reported revenue appears to be phantom noncash contributions",
@@ -609,26 +625,32 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The fetched content does not contain information about working capital or fundraising efficiency.",
+          "message": "The claim could not be verified from the provided content. The content does not mention working capital.",
           "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The content confirms the charity is zakat-eligible and mentions serving various needs, but does not explicitly list 'asnaf categories'.",
+          "severity": "info"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content does not contain information about total revenue, noncash contributions, or program expense ratio for FY2024.",
+          "message": "The claim mentions FY2024, but the provided content for Citation 3 (Form 990) is for 2023. The revenue and program expense ratio cannot be verified for FY2024 from this content.",
           "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "The content confirms that Humaniti Foundation provides direct services through programs like HEAL and clean water initiatives, but it does not explicitly mention 'Annual Report' as the source for this information.",
+          "severity": "info"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs focus on direct humanitarian aid, which aligns with the 'Fuqara' (poor) and 'Masakin' (needy) asnaf categories. However, the specific 'amil' classification is not directly supported by the program descriptions, which do not indicate activities related to the collection or distribution of zakat itself.",
+          "message": "The claimed asnaf category 'amil' (zakat workers) is not directly supported by the charity's programs. The charity's programs focus on direct humanitarian aid (e.g., clean water, emergency relief, food security) which primarily serve the 'fuqara' (poor) and 'masakin' (needy) asnaf categories. There is no evidence presented that the charity employs individuals specifically to collect or distribute zakat who would then qualify for the 'amil' category.",
           "severity": "warning"
-        },
-        {
-          "field": "wallet_tag",
-          "judge": "zakat",
-          "message": "While the charity claims ZAKAT-ELIGIBLE and its programs align with serving the poor and needy (Fuqara and Masakin), the specific classification as 'amil' is not directly supported. The wallet tag is appropriate given the general alignment with Zakat-eligible categories.",
-          "severity": "info"
         },
         {
           "field": "propublica.expense_ratio",
@@ -700,51 +722,45 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has -6.1 months of working capital and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization reports working capital of -6.1 months.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/923079413#financials"
         },
         {
-          "claim": "The foundation is Zakat-eligible and follows specific religious distribution policies.",
+          "claim": "The charity is zakat-eligible and serves asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://humanitifoundation.org/zakat"
         },
         {
-          "claim": "In FY2024, the organization reported $13,567,039 in total revenue, 100% of which was noncash contributions, and a 95.7% program expense Ratio.",
+          "claim": "In FY2024, the organization reported total revenue of $13,567,039 and a 95.7% program expense Ratio.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/923079413"
         },
         {
-          "claim": "The charity engages youth through its ambassador program.",
-          "id": "[5]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://humanitifoundation.org/youth-in-action-ambassador-program/"
-        },
-        {
-          "claim": "The charity focuses on direct aid programs including HEAL and clean water projects.",
+          "claim": "Humaniti Foundation provides direct services through programs like HEAL and clean water initiatives.",
           "id": "[6]",
           "source_name": "Annual Report",
           "source_url": "https://humanitifoundation.org/financial-reports/"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of cash reserves and a total reliance on noncash goods, despite a high percentage of those goods reaching program services. While it offers direct services and fits Muslim donor needs, the lack of independent governance and financial stability markers lowers the overall standing.",
+      "amal_score_rationale": "The assessment is limited by significant financial risks, including a lack of cash reserves and a total reliance on noncash goods. While the group directs most resources to programs, its negative working capital and lack of independent governance data are concerning.",
       "areas_for_improvement": [
-        "The charity depends 100% on noncash gifts-in-kind, which can make financial health difficult to sustain [3].",
-        "Negative working capital of -6.1 months indicates the organization lacks the cash reserves to cover short-term needs [1]."
+        "The organization reports working capital of -6.1 months, suggesting it lacks enough liquid assets to cover its short-term needs [1].",
+        "All reported revenue comes from noncash goods, which can make it difficult to verify the exact value of the aid provided [3]."
       ],
       "dimension_explanations": {
-        "alignment": "The charity has a high fit for Muslim donors as it is Zakat-eligible and follows specific religious distribution policies [2]. It addresses urgent needs in underserved areas through its youth ambassador and aid programs [5][6]. However, its track record is limited by the fact that 100% of its $13,567,039 revenue comes from noncash contributions rather than a diverse donor base [3].",
-        "impact": "The foundation provides direct services through programs like HEAL and clean water initiatives [6]. In FY2024, it reported a 95.7% program expense Ratio [3]. However, the organization lacks independent governance and has a negative working capital of -6.1 months, which creates risks for long-term service delivery [1]."
+        "alignment": "The charity is zakat-eligible and serves asnaf categories, making it a strong fit for Muslim donors [2]. It focuses on urgent religious and cultural causes, though its track record is limited by its specific funding model [2][6].",
+        "impact": "Humaniti Foundation provides direct services through programs like HEAL and clean water initiatives [6]. In FY2024, it reported a 95.7% program expense Ratio [3]. However, the organization lacks independent governance scores and faces financial health challenges, such as having -6.1 months of working capital [1]."
       },
       "headline": "Humaniti Foundation relies entirely on noncash donations to fund its clean water and medical programs.",
       "strengths": [
-        "High 95.7% program expense Ratio ensures most resources are directed to aid programs [3].",
-        "Maintains a fundraising efficiency of $0.00 per $1 raised, meaning no cash was spent on professional fundraising in FY2024 [1]."
+        "Maintains a 95.7% program expense Ratio, meaning most resources are directed toward its HEAL and clean water programs [3].",
+        "Operates with a fundraising efficiency of $0.00 per $1 raised, indicating no cash was spent on professional fundraising in FY2024 [3]."
       ],
-      "summary": "In FY2024, the organization reported $13,567,039 in total revenue, which consisted entirely of noncash contributions [3]. While the charity maintains a 95.7% program expense Ratio, it faces financial instability with -6.1 months of working capital [1][3]. The foundation is Zakat-eligible and focuses on providing direct aid like HEAL and clean water projects [2][6]."
+      "summary": "In FY2024, the organization reported total revenue of $13,567,039 [3]. While it maintains a 95.7% program expense Ratio, all of its revenue consists of noncash contributions rather than cash donations [3][6]."
     },
     "rich_narrative": {
       "all_citations": [

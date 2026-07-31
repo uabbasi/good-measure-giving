@@ -41,7 +41,7 @@
     "fundraisingExpenses": null,
     "programExpenseRatio": null,
     "fiscalYear": 2023,
-    "dataSource": null,
+    "dataSource": "propublica",
     "totalAssets": 73097,
     "totalLiabilities": 0,
     "netAssets": null,
@@ -70,7 +70,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:00:44",
+  "lastUpdated": "2026-07-30 21:30:55",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
@@ -108,6 +108,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
       "timestamp": "2026-07-30T00:41:27",
@@ -327,55 +328,43 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain information about working capital or program outcomes.",
+          "message": "The provided content does not contain information about the organization's working capital.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched content supports the claim that the organization represents Muslim attorneys in the New York area. The content states: 'Recognizing the unique needs and interests of Muslim attorneys, as well as the special role that Muslim attorneys play in the many communities of New York, a group of lawyers and law students established the Muslim Bar Association of New York in 2006. The objectives of this non-profit professional association are: To organize and represent Muslim attorneys in the New York area and to advance the goals, needs and interests thereof;' and 'The Muslim Bar Association of New York (MuBANY) is a member-driven bar association open to any interested lawyer or law student of any faith or no faith, and those of all ethnicities and affiliations.'",
+          "message": "The claim is supported, but the source is described as 'Charity Website - About' while the URL points to 'mubany.org/about-us'. This is a minor discrepancy.",
           "severity": "info"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content for citation [3] (bylaws) is a PDF file that could not be parsed to verify the claim about programs including professional development, networking, and career support.",
-          "severity": "info"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "The fetched content for citation [4] (bylaws) is a PDF file that could not be parsed to verify the claim about the organization focusing on the goals and interests of the Muslim legal community.",
-          "severity": "info"
+          "message": "The provided content for the bylaws is a PDF file that could not be parsed to verify the claim.",
+          "severity": "warning"
         },
         {
           "field": "citation_7",
           "judge": "citation",
-          "message": "The provided content for citation [7] does not contain information about the process for endorsing judicial and senior political candidates.",
+          "message": "The provided content for the endorsement policy is a PDF file that could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
           "field": "citation_8",
           "judge": "citation",
-          "message": "The provided content for citation [8] does not contain information about the total revenue for FY2023.",
+          "message": "The provided content for Form 990 (2023) is a PDF file that could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
           "field": "working_capital_months",
           "judge": "factual",
-          "message": "The narrative states the organization has 9.0 months of working capital, but the source data indicates 9 months of working capital for FY2023.",
+          "message": "The narrative states the organization maintains 9.0 months of working capital, which matches the source data.",
           "severity": "info"
-        },
-        {
-          "field": "program_outcomes_data",
-          "judge": "factual",
-          "message": "The narrative claims the organization lacks data on program outcomes, but the source data indicates that the organization reports outcomes.",
-          "severity": "warning"
         },
         {
           "field": "total_revenue",
           "judge": "factual",
-          "message": "The narrative states the organization reported total revenue of $93,638 in FY2023, which matches the source data.",
+          "message": "The narrative states total revenue of $93,638 in FY2023, which matches the source data.",
           "severity": "info"
         },
         {
@@ -418,58 +407,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains 9.0 months of working capital but lacks data on program outcomes.",
+          "claim": "The organization maintains 9.0 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/205509305#financials"
         },
         {
-          "claim": "The organization represents Muslim attorneys in the New York area.",
+          "claim": "The organization represents Muslim attorneys in the New York area through professional development and job board services.",
           "id": "[2]",
           "source_name": "Charity Website - About",
           "source_url": "https://mubany.org/about-us"
         },
         {
-          "claim": "Programs include professional development, networking, and career support.",
+          "claim": "The organization focuses on capacity building for the legal community through networking.",
           "id": "[3]",
           "source_name": "bylaws",
           "source_url": "https://www.mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
         },
         {
-          "claim": "The organization focuses on the goals and interests of the Muslim legal community.",
-          "id": "[4]",
-          "source_name": "bylaws",
-          "source_url": "https://mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
-        },
-        {
-          "claim": "The group manages a process for endorsing judicial and senior political candidates.",
+          "claim": "The organization provides endorsements for judicial positions.",
           "id": "[7]",
           "source_name": "MuBANY's Policy and Procedures for Judicial or Senior Political Position Endorsements",
           "source_url": "https://mubany.org/sites/default/files/content-files/MuBANY%20Endorsement%20Policy%20and%20Procedures%20for%20Judicial%20or%20Senior%20Political%20Positions.pdf"
         },
         {
-          "claim": "The organization reported total revenue of $93,638 in FY2023, which is the most recent filing available.",
+          "claim": "The organization reported total revenue of $93,638 in its latest available filing from FY2023.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305"
         }
       ],
-      "amal_score_rationale": "The organization's assessment is limited by a lack of recent financial data and missing evidence regarding the direct impact of its programs. While it maintains a healthy cash reserve, the three-year delay in public filings raises accountability questions.",
+      "amal_score_rationale": "The assessment is limited by a significant lack of recent financial data and a primary focus on member networking rather than direct social services. While the group maintains a stable cash reserve, the three-year gap in public filings raises accountability questions.",
       "areas_for_improvement": [
-        "Financial transparency is a major concern as no public filings have been released since FY2023 [8]",
-        "Lacks public data regarding specific program outcomes and cost per beneficiary [1]",
-        "Governance and evidence-based reporting standards are currently limited [1]"
+        "Financial transparency is a major concern as the latest public filings are from 2023 [8]",
+        "Lack of recent data makes it difficult to verify current program spending or impact [1]",
+        "Limited evidence is available regarding the long-term outcomes of its professional development programs [3]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific niche by representing the interests of Muslim attorneys in New York [2]. It addresses an underserved space in professional advocacy, though its focus is primarily on professional networking rather than direct social services [3][4].",
-        "impact": "The group focuses on capacity building for the legal community through networking and endorsements for judicial positions [3][7]. While it shows good financial health in terms of its 9.0 months of working capital, there is no data available to measure the specific success or cost-effectiveness of its programs [1]."
+        "alignment": "This group serves a specific niche by supporting Muslim legal professionals in New York [2]. It addresses an underserved space in professional advocacy, though its mission is centered on member interests rather than urgent humanitarian needs [3].",
+        "impact": "The organization focuses on capacity building for the legal community through networking and endorsements for judicial positions [3][7]. While it shows stability with 9.0 months of working capital, the lack of recent filings and specific outcome data makes it hard to measure its overall effectiveness [1]."
       },
-      "headline": "The Muslim Bar Association of New York provides professional networking and career support for Muslim attorneys but faces significant transparency gaps.",
+      "headline": "The Muslim Bar Association of New York provides networking and professional support for Muslim legal professionals, but its financial reporting is significantly delayed.",
       "strengths": [
         "Maintains 9.0 months of working capital to cover ongoing operations [1]",
-        "Provides specialized career support and a job board for legal professionals [3]"
+        "Provides specific career support through a dedicated job board for members [2]"
       ],
-      "summary": "The organization serves Muslim legal professionals in the New York area through job boards and professional development programs [2][3]. No financial filings newer than FY2023 are available, meaning donors should treat this three-year-old financial picture with caution [8]. During that period, the group reported total revenue of $93,638 [8]."
+      "summary": "The organization represents Muslim attorneys in the New York area through professional development and job board services [2][3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [8]. During that period, the group reported total revenue of $93,638 [8]."
     },
     "rich_narrative": {
       "all_citations": [

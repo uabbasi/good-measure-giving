@@ -103,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:04:53",
+  "lastUpdated": "2026-07-30 21:33:49",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -117,7 +117,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:53:46.259139+00:00",
+        "timestamp": "2026-07-31T04:32:34.284624+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -204,6 +204,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032",
       "timestamp": "2026-07-30T00:53:22",
@@ -484,6 +485,21 @@
   },
   "keyConcerns": [
     {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 15.3,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
       "type": "ceo_comp_excessive",
       "severity": "medium",
       "headline": "CEO compensation is 5.3% of revenue ($215,980 on $4,069,674)",
@@ -665,45 +681,57 @@
           "severity": "warning"
         },
         {
-          "field": "citation_2",
+          "field": "citation_3",
           "judge": "citation",
           "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
           "severity": "warning"
         },
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The content of the PDF could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The content of the PDF could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content does not mention the 'Muslim Civic Table' program.",
+          "message": "The content of the PDF could not be parsed to verify the claim.",
           "severity": "warning"
         },
         {
-          "field": "citation_6",
+          "field": "citation_7",
           "judge": "citation",
-          "message": "The fetched content does not mention hosting community events to build political power.",
+          "message": "The provided URL for Charity Navigator does not contain the specific financial details claimed.",
           "severity": "warning"
         },
         {
-          "field": "revenue",
-          "judge": "factual",
-          "message": "The narrative states $4,069,674 in total revenue, while Charity Navigator reports $4,069,674 for FY2024. This is a match within acceptable rounding tolerances.",
-          "severity": "warning"
-        },
-        {
-          "field": "claims_zakat_eligible",
-          "judge": "factual",
-          "message": "The narrative does not mention zakat eligibility, and the source data does not provide a definitive claim about zakat eligibility.",
+          "field": "citation_8",
+          "judge": "citation",
+          "message": "The provided URL for Form 990 does not contain the specific financial details claimed for FY2024.",
           "severity": "warning"
         },
         {
           "field": "CEO compensation",
           "judge": "factual",
-          "message": "The narrative states CEO compensation represents 5.3% of total revenue, which aligns with the source data.",
+          "message": "The narrative states the CEO compensation is $215,980, but the source data indicates $215,980 for FY2024, which is a 0% difference. However, the narrative claims this is a high proportion of total revenue for the organization's size, which is a qualitative assessment not directly verifiable from the provided data.",
           "severity": "warning"
         },
         {
-          "field": "foreign grants",
+          "field": "working capital",
           "judge": "factual",
-          "message": "The narrative mentions a lack of reported foreign grants, which is consistent with the source data.",
+          "message": "The narrative states the organization has 15.3 months of working capital, and the source data confirms this value.",
+          "severity": "info"
+        },
+        {
+          "field": "dimension_explanations.impact",
+          "judge": "score",
+          "message": "The impact rationale omits a dominant limiting factor (Governance score of 0/10), making the rationale read more positively than the dimension score warrants.",
           "severity": "warning"
         },
         {
@@ -765,52 +793,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation operates national programs like Million Muslim Votes and the Muslim Civic Table to increase political participation.",
+          "claim": "The organization has a track record of tracking voter turnout increases in engaged counties.",
+          "id": "[1]",
+          "source_name": "Annual Report (2016)",
+          "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2016-Annual-Report.pdf"
+        },
+        {
+          "claim": "The foundation supports legislative efforts and voter registration drives.",
+          "id": "[2]",
+          "source_name": "Annual Report (2017)",
+          "source_url": "https://emgageusa.org/wp-content/uploads/2020/07/Emgage-2017-Annual-Report.pdf"
+        },
+        {
+          "claim": "Emgage manages programs like Million Muslim Votes and tracks positive voter IDs.",
           "id": "[3]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://emgageusa.org/wp-content/uploads/2025/07/Emgage-2024-Annual-Report.pdf"
         },
         {
-          "claim": "Its focus on political systems rather than direct social services results in a lower fit for some traditional charitable givers.",
-          "id": "[4]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://emgageusa.org/donate/"
-        },
-        {
-          "claim": "Its work focuses on systemic change by registering voters and hosting community events to build political power.",
-          "id": "[6]",
-          "source_name": "Annual Report",
-          "source_url": "https://emgageusa.org/impact2020/"
-        },
-        {
-          "claim": "The foundation managed $4,069,674 in total revenue and holds a 97.0/100 rating from Charity Navigator.",
+          "claim": "The organization has a 97.0/100 rating, a 93.3% program expense ratio, and 15.3 months of working capital.",
           "id": "[7]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/261441032#financials"
         },
         {
-          "claim": "The cost per beneficiary is approximately $3.71 based on financial filings.",
+          "claim": "In FY2024, total revenue was $4,069,674 and CEO compensation was $215,980.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/261441032"
         }
       ],
-      "amal_score_rationale": "The organization shows a balanced profile with efficient spending on programs, though its focus on political advocacy may not align with all traditional donor preferences.",
+      "amal_score_rationale": "The foundation shows a balanced profile with high spending efficiency on programs, though its focus on political advocacy may not align with all traditional donor preferences.",
       "areas_for_improvement": [
-        "CEO compensation represents 5.3% of total revenue",
-        "Lack of reported foreign grants despite claiming 14 geographic areas of impact"
+        "CEO compensation represents 5.3% of total revenue, which is a high proportion for the organization's size [8].",
+        "The organization claims to work in 14 geographic areas but does not report foreign grants on its tax filings [8]."
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific niche in Muslim American advocacy and civic leadership [3]. While it has a proven track record in voter turnout, its focus on political systems rather than direct social services results in a lower fit for some traditional charitable givers [4][8].",
-        "impact": "The foundation spends 93.3% of its funds directly on programs, showing a high level of financial efficiency in FY2024 [7]. Its work focuses on systemic change by registering voters and hosting community events to build political power [3][6]. While it maintains strong evidence of its outcomes, the cost per beneficiary is approximately $3.71 [8]."
+        "alignment": "While the group has a solid track record in an underserved advocacy space, it has a lower fit for donors seeking direct humanitarian aid [1][2]. The mission focuses on civic engagement and policy rather than traditional social services [3].",
+        "impact": "The organization operates at a low cost of approximately $3.71 per beneficiary while pursuing systemic change through voter registration and legislative support [3]. It maintains a 93.3% program expense ratio and provides clear evidence of its outcomes in annual reports [3][7]."
       },
       "headline": "Emgage Foundation focuses on Muslim American civic engagement through voter mobilization and leadership training.",
       "strengths": [
-        "High program spending with a 93.3% program expense Ratio in FY2024",
-        "Strong short-term financial health with 15.3 months of working capital",
-        "High fundraising efficiency of $0.01 per $1 raised"
+        "High program expense ratio of 93.3% ensures most funds reach core advocacy and education work [7].",
+        "Strong fundraising efficiency with a cost of only $0.01 per $1 raised [7].",
+        "Maintains 15.3 months of working capital, indicating a stable financial cushion [7]."
       ],
-      "summary": "In FY2024, the organization managed $4,069,674 in total revenue to support its mission of informing and mobilizing voters [7]. The foundation operates national programs like Million Muslim Votes and the Muslim Civic Table to increase political participation [3]. It currently holds a 97.0/100 rating from Charity Navigator for its overall performance [7]."
+      "summary": "In FY2024, the organization reported total revenue of $4,069,674 to support its national non-partisan mission [8]. The foundation manages programs like Million Muslim Votes and Emerging Leaders to increase political participation [3]. It currently holds a 97.0/100 rating from Charity Navigator [7]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -94,7 +94,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:59:50",
+  "lastUpdated": "2026-07-30 21:30:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -108,7 +108,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:27:48.357052+00:00",
+        "timestamp": "2026-07-31T04:29:06.864914+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -195,6 +195,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/412046295",
       "timestamp": "2026-07-29T22:43:39",
@@ -357,7 +358,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:27:48.357052+00:00",
+      "timestamp": "2026-07-31T04:29:06.864914+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -404,7 +405,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 4.7,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "41-2046295",
     "charity_name": "The Citizens Foundation USA",
@@ -558,52 +575,52 @@
       },
       "judge_issues": [
         {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 404",
+          "severity": "warning"
+        },
+        {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain the claimed information about revenue, program expense ratio, or Charity Navigator rating. The content appears to be a PDF file that could not be fully parsed.",
+          "message": "The provided content for citation 1 does not contain the claimed information about revenue, program expense ratio, working capital, or rating.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for citation [2] does not explicitly state that the charity is Zakat-eligible. While it discusses Zakat and how to donate it, it does not contain a direct confirmation of eligibility.",
+          "message": "The provided content for citation 2 does not explicitly state that the charity is Zakat-eligible. While it discusses Zakat and provides donation options, it does not contain a direct confirmation of eligibility.",
           "severity": "warning"
         },
         {
-          "field": "citation_3",
+          "field": "citation_7",
           "judge": "citation",
-          "message": "The provided content for citation [7] does not explicitly state that the organization follows specific Islamic giving and Zakat policies. While it discusses Zakat and its compliance, it does not detail the specific policies.",
+          "message": "The provided content for citation 7 does not explicitly state that the organization follows specific Islamic giving policies for Zakat. While it discusses Zakat and provides donation options, it does not contain a direct confirmation of specific policies.",
           "severity": "warning"
         },
         {
-          "field": "citation_4",
+          "field": "citation_8",
           "judge": "citation",
-          "message": "The provided content for citation [8] is a PDF file that could not be fully parsed to verify the claim that the organization provides access to basic education in underserved areas.",
+          "message": "The provided content for citation 8 (Annual Report 2025) is a PDF that could not be parsed to verify the claim about program focus.",
           "severity": "warning"
         },
         {
-          "field": "citation_5",
+          "field": "citation_15",
           "judge": "citation",
-          "message": "The provided content for citation [15] is a PDF file that could not be fully parsed to verify the claim that the charity has a track record of empowering alumni to enroll in tertiary education.",
+          "message": "The provided content for citation 15 (Annual Report 2022) is a PDF that could not be parsed to verify the claim about tracking matriculation and alumni enrollment.",
           "severity": "warning"
         },
         {
-          "field": "revenue",
-          "judge": "factual",
-          "message": "The narrative states the charity managed $21,703,144 in revenue, while the source data shows $21,703,144.",
+          "field": "citation_18",
+          "judge": "citation",
+          "message": "The provided content for citation 18 (Annual Report 2025) is a PDF that could not be parsed to verify the claim about a proven track record of program highlights and financial transparency.",
           "severity": "warning"
         },
         {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states the charity has an 89.5% program expense ratio, while the source data shows 89.46%.",
-          "severity": "info"
-        },
-        {
-          "field": "charity_navigator_rating",
-          "judge": "factual",
-          "message": "The narrative states the charity holds a 99.3/100 rating, while the source data shows 99.33333333333333.",
-          "severity": "info"
+          "field": "strengths",
+          "judge": "score",
+          "message": "The stated fundraising efficiency of '$0.10 to raise every $1' is factually incorrect. According to Charity Navigator, the fundraising efficiency is $0.09 to raise every $1.",
+          "severity": "warning"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -661,7 +678,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity managed $21,703,144 in revenue, has an 89.5% program expense ratio, and holds a 99.3/100 rating.",
+          "claim": "The charity managed $21,703,144 in revenue, has an 89.5% program expense ratio, 4.7 months of working capital, and a 99.3/100 rating.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/412046295#financials"
@@ -673,39 +690,45 @@
           "source_url": "https://www.tcfusa.org/zakat/"
         },
         {
-          "claim": "The organization follows specific Islamic giving and Zakat policies.",
+          "claim": "The organization follows specific Islamic giving policies for Zakat.",
           "id": "[7]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.tcfusa.org/zakat/donate-zakat"
         },
         {
-          "claim": "The organization provides access to basic education in underserved areas.",
+          "claim": "Programs focus on providing access to basic education.",
           "id": "[8]",
           "source_name": "Annual Report (2025)",
           "source_url": "https://www.tcfusa.org/wp-content/uploads/2026/01/TCF-Annual-Report-Zakat-Eng-25-26-1.pdf"
         },
         {
-          "claim": "The charity has a track record of empowering alumni to enroll in tertiary education.",
+          "claim": "The charity tracks matriculation and alumni enrollment in tertiary education.",
           "id": "[15]",
           "source_name": "Annual Report (2022)",
           "source_url": "https://tcfusa.org/annual_reports/2022_Annual_Report.pdf"
+        },
+        {
+          "claim": "The organization has a proven track record of program highlights and financial transparency.",
+          "id": "[18]",
+          "source_name": "Annual Report",
+          "source_url": "https://www.tcfusa.org/annual-report-2025"
         }
       ],
-      "amal_score_rationale": "This charity demonstrates exceptional financial health and a clear theory of change. It uses funds efficiently to provide direct services with proven outcomes for students.",
+      "amal_score_rationale": "This charity demonstrates exceptional financial efficiency and a clear theory of change. It provides direct services with a very low cost per student, making it a highly effective choice for donors.",
       "areas_for_improvement": [
-        "Increase working capital beyond the current 4.7 months to improve long-term stability"
+        "Increasing the number of alumni who enroll in higher education after graduation"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a strong fit for Muslim donors as it is Zakat-eligible and follows specific Islamic giving policies [2][7]. It addresses an urgent global need for education in underserved areas and has a long history of successful operations [8][15].",
-        "impact": "The organization operates with high efficiency, spending $55.37 per beneficiary to provide direct educational services [1]. In FY2024, it maintained an 89.5% program expense ratio, ensuring the vast majority of funds reached students [1]. Its programs have a strong track record of empowering alumni to enroll in higher education [15]."
+        "alignment": "This charity is a strong fit for Muslim donors as it is Zakat-eligible and follows specific Islamic giving policies [2][7]. It addresses an urgent need for global education and has a proven track record of empowering students in Pakistan [15][18].",
+        "impact": "The organization operates with high efficiency, directing 89.5% of its funds to programs in FY2024 [1]. It provides direct services at a cost of approximately $55.37 per beneficiary, supported by strong evidence of student outcomes and clear governance [8][15]."
       },
       "headline": "The Citizens Foundation USA provides high-quality education to underprivileged children in Pakistan through a vast network of schools.",
       "strengths": [
-        "High program spending with an 89.5% program expense ratio in FY2024",
-        "Strong fundraising efficiency of $0.10 per $1 raised",
-        "Direct service model with a low cost of $55.37 per beneficiary"
+        "High program efficiency with 89.5% of spending going directly to educational services",
+        "Strong financial health with 4.7 months of working capital available",
+        "Excellent fundraising efficiency, spending only $0.10 to raise every $1"
       ],
-      "summary": "In FY2024, the organization managed $21,703,144 in total revenue to support its mission of building civil society [1]. The charity is Zakat-eligible and maintains a 99.3/100 rating from Charity Navigator [1][2]."
+      "summary": "In FY2024, the organization managed $21,703,144 in total revenue to support its mission of building civil society [1]. The charity is Zakat-eligible and maintains a 99.3/100 rating from Charity Navigator [1][2]. Its programs focus on building and supporting schools to ensure basic education is accessible to those in need [8]."
     },
     "rich_narrative": {
       "all_citations": [

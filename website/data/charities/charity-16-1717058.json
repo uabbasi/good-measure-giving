@@ -96,7 +96,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:03:25",
+  "lastUpdated": "2026-07-30 21:32:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -110,7 +110,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:50:32.085175+00:00",
+        "timestamp": "2026-07-31T04:31:00.527784+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -191,6 +191,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/161717058",
       "timestamp": "2026-07-30T00:50:17",
@@ -529,7 +530,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:50:32.085175+00:00",
+      "timestamp": "2026-07-31T04:31:00.527784+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -554,7 +555,7 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://www.sams-usa.net/zakat (Source: https://www.sams-usa.net/zakat)"
   ],
-  "archetype": null,
+  "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
@@ -575,6 +576,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 4.6,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "geographic_mismatch",
       "severity": "medium",
@@ -746,81 +762,33 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
+          "field": "citation_2",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not mention the program expense ratio.",
+          "message": "The claim states the organization managed $61,395,982 in total revenue and maintained a 95.6% program expense ratio in FY2024. The provided PDF content is not parsable and does not contain this information.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not mention the total revenue for FY2024.",
+          "message": "The claim states the organization provides direct medical care and mental health support for children affected by conflict. The provided PDF content is not parsable and does not contain this information.",
           "severity": "warning"
         },
         {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not explicitly state that SAMS provides medical services inside Syria and addresses urgent health needs.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_6",
-          "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not state that the organization has a track record of providing millions of medical services.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_7",
-          "judge": "citation",
-          "message": "The claim could not be verified from the provided content. The content does not state that the organization tracks outcomes for children support group participants.",
+          "field": "total_revenue",
+          "judge": "factual",
+          "message": "The narrative states the total revenue for FY2024 was $61,395,982, but the source data from Charity Navigator for FY2024 shows $61,395,982. The ProPublica Form 990 data for FY2023 shows $99,929,862.",
           "severity": "warning"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states a program expense ratio of 95.6%, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative states total revenue of $61,395,982 for FY2024, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "claims_zakat_eligible",
-          "judge": "factual",
-          "message": "The narrative states the charity is zakat-eligible, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_description",
-          "judge": "factual",
-          "message": "The narrative states the organization provides psychosocial support and tracks medical services, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_description",
-          "judge": "factual",
-          "message": "The narrative states SAMS provides medical services inside Syria and addresses urgent health needs, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "impact_claim",
-          "judge": "factual",
-          "message": "The narrative states the organization has a track record of providing millions of medical services, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_description",
-          "judge": "factual",
-          "message": "The narrative states the organization tracks outcomes for children support group participants, which is supported by the source data.",
+          "message": "The narrative states a program expense ratio of 95.6%, while the source data from Charity Navigator shows 0.9561, which is equivalent after accounting for percentage conversion.",
           "severity": "info"
         },
         {
           "field": "strengths",
           "judge": "score",
-          "message": "The narrative states 'spending only $0.01 to raise every $1' for fundraising efficiency, but source data (Charity Navigator and rich narrative citations) indicates $0.02 per $1 raised.",
+          "message": "The stated fundraising cost of $0.01 per $1 raised is factually incorrect.",
           "severity": "warning"
         },
         {
@@ -882,64 +850,52 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains a 95.6% program expense ratio.",
-          "id": "[1]",
-          "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/161717058#financials"
-        },
-        {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories.",
+          "claim": "The charity is zakat-eligible and follows specific zakat policies.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.sams-usa.net/zakat"
         },
         {
-          "claim": "The organization managed $61,395,982 in total revenue in FY2024.",
+          "claim": "In FY2024, the organization managed $61,395,982 in total revenue and maintained a 95.6% program expense Ratio.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/161717058"
         },
         {
-          "claim": "The organization provides psychosocial support and tracks medical services provided.",
+          "claim": "The organization provides direct medical care and mental health support for children affected by conflict.",
           "id": "[4]",
           "source_name": "Human Devastation Syndrome: The Impact of Conflict on Mental Health",
           "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
         },
         {
-          "claim": "SAMS provides medical services inside Syria and addresses urgent health needs.",
-          "id": "[5]",
-          "source_name": "ead",
-          "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-16.pdf"
-        },
-        {
-          "claim": "The organization has a track record of providing millions of medical services.",
-          "id": "[6]",
-          "source_name": "R",
-          "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
-        },
-        {
-          "claim": "The organization tracks outcomes for children support group participants.",
+          "claim": "The group provides specialized mental health and psychosocial support for children in crisis zones.",
           "id": "[7]",
           "source_name": "the Report Here",
           "source_url": "https://sams-usa.net/wp-content/uploads/2018/11/Mental-health-report-17.pdf"
+        },
+        {
+          "claim": "The organization addresses urgent global health needs and maintains a solid track record of service delivery.",
+          "id": "[9]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://sams-usa.net/programs/"
         }
       ],
-      "amal_score_rationale": "This charity demonstrates high financial efficiency and a strong track record of direct service delivery in urgent global health settings. It maintains excellent transparency regarding its spending and zakat policies.",
+      "amal_score_rationale": "This charity shows high performance due to its exceptional spending efficiency and direct impact on patient health. It successfully directs almost all of its funding to medical programs while maintaining low overhead costs.",
       "areas_for_improvement": [
         "Lack of a documented theory of change to explain long-term strategy",
-        "Discrepancy between reported geographic reach and foreign grant documentation"
+        "Discrepancy between reported geographic areas and foreign grant documentation"
       ],
       "dimension_explanations": {
-        "alignment": "SAMS is a strong fit for Muslim donors as it is zakat-eligible and follows specific asnaf categories for distribution [2]. The group addresses urgent global health needs in underserved conflict zones and has a proven track record of providing millions of medical services [5][6].",
-        "impact": "The organization operates with a 95.6% program expense ratio, ensuring the vast majority of funds reach patients [1]. It provides direct medical services at a cost of approximately $63.48 per beneficiary and maintains high standards for evidence and outcomes in its mental health programs [4][7]."
+        "alignment": "This charity is a strong fit for Muslim donors as it is zakat-eligible and follows specific zakat policies [2]. It addresses urgent global health needs in underserved areas and maintains a solid track record of service delivery [9].",
+        "impact": "The organization is highly effective, spending approximately $63.48 per beneficiary to provide direct medical care [4]. In FY2024, it maintained a 95.6% program expense Ratio, ensuring the vast majority of funds reached patients [3]. The group also provides specialized mental health and psychosocial support for children in crisis zones [7]."
       },
       "headline": "The Syrian American Medical Society Foundation provides life-saving medical care and mental health support to vulnerable patients regardless of their background.",
       "strengths": [
-        "High program efficiency with 95.6% of spending going directly to medical services",
-        "Strong financial health with 4.6 months of working capital available",
-        "Excellent fundraising efficiency, spending only $0.01 to raise every $1"
+        "High financial efficiency with a 95.6% program expense Ratio in FY2024",
+        "Low fundraising costs of just $0.01 per $1 raised",
+        "Strong track record of providing direct medical services and mental health support"
       ],
-      "summary": "In FY2024, the organization managed $61,395,982 in total revenue to fund primary and specialty health centers [3]. The charity is zakat-eligible and directs funds toward medical missions and psychosocial support for those affected by conflict [2][4]."
+      "summary": "In FY2024, the organization managed $61,395,982 in total revenue to fund primary and specialty health care centers [3]. The charity is zakat-eligible and focuses on direct medical services, including mental health support for children affected by conflict [2][4]."
     },
     "rich_narrative": {
       "all_citations": [

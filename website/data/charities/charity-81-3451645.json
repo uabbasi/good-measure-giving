@@ -46,7 +46,7 @@
     "fundraisingExpenses": null,
     "programExpenseRatio": null,
     "fiscalYear": 2023,
-    "dataSource": null,
+    "dataSource": "propublica",
     "totalAssets": 5638,
     "totalLiabilities": 0,
     "netAssets": null,
@@ -76,7 +76,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:01:38",
+  "lastUpdated": "2026-07-30 21:31:14",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -84,7 +84,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:43:20.311133+00:00",
+        "timestamp": "2026-07-31T04:30:16.115432+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -129,6 +129,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645",
       "timestamp": "2026-07-30T00:43:07",
@@ -168,7 +169,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:43:20.311133+00:00",
+      "timestamp": "2026-07-31T04:30:16.115432+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -401,117 +402,75 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
+          "field": "citation_2",
           "judge": "citation",
-          "message": "Citation 1 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
-          "field": "citation_6",
-          "judge": "citation",
-          "message": "Citation 6 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
-          "field": "citation_8",
-          "judge": "citation",
-          "message": "Citation 8 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
-          "field": "citation_9",
-          "judge": "citation",
-          "message": "URL unreachable: HTTP 404",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The URL for citation [1] did not resolve to content that could be analyzed.",
+          "message": "The source URL for citation 2 is missing from the provided fetched content.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The URL for citation [3] did not resolve to content that could be analyzed.",
+          "message": "The provided PDF content for citation 3 is unparseable and does not contain the claimed financial information.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The PDF content for citation [4] is corrupted and could not be parsed.",
+          "message": "The provided PDF content for citation 4 is unparseable and does not contain the claimed information about congressional advocacy training or cost per beneficiary.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The PDF content for citation [5] is corrupted and could not be parsed.",
+          "message": "The provided PDF content for citation 5 is unparseable and does not contain the claimed information about zakat eligibility.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_6",
+          "judge": "citation",
+          "message": "The provided PDF content for citation 6 is unparseable and does not contain the claimed information about direct educational services and toolkits.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_7",
+          "judge": "citation",
+          "message": "The provided PDF content for citation 7 is unparseable and does not contain the claimed information about guides for office visits.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_8",
+          "judge": "citation",
+          "message": "The provided PDF content for citation 8 is unparseable and does not contain the claimed information about urgent education regarding civil rights and federal policies.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_9",
+          "judge": "citation",
+          "message": "The provided PDF content for citation 9 is unparseable and does not contain the claimed information about addressing the impact of Supreme Court decisions.",
           "severity": "warning"
         },
         {
           "field": "working_capital_months",
           "judge": "factual",
-          "message": "The narrative states the organization has 0.5 months of working capital, but the source data indicates 0.5 months of working capital.",
+          "message": "The narrative states the organization has 0.5 months of working capital, but the source data indicates 0.5 months.",
           "severity": "info"
         },
         {
-          "field": "zakat_eligibility",
+          "field": "revenue",
           "judge": "factual",
-          "message": "The narrative states the organization is zakat-eligible, and the source data confirms this.",
+          "message": "The narrative states revenue was $32,150, but the source data for FY2023 shows $32,150.",
           "severity": "info"
         },
         {
-          "field": "total_revenue",
+          "field": "expenses",
           "judge": "factual",
-          "message": "The narrative states total revenue was $32,150, which matches the source data for FY2023.",
-          "severity": "info"
-        },
-        {
-          "field": "total_expenses",
-          "judge": "factual",
-          "message": "The narrative states expenses were $131,029, which matches the source data for FY2023.",
-          "severity": "info"
-        },
-        {
-          "field": "services",
-          "judge": "factual",
-          "message": "The narrative states Poligon provides congressional advocacy training and action alerts, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "services",
-          "judge": "factual",
-          "message": "The narrative states the organization provides town hall guides, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "services",
-          "judge": "factual",
-          "message": "The narrative states the organization provides guides for visiting legislative offices, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "services",
-          "judge": "factual",
-          "message": "The narrative states the organization publishes factsheets on legislative and judicial decisions, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "volunteer_opportunities",
-          "judge": "factual",
-          "message": "The narrative states the organization offers opportunities to become a trainer for constituent advocacy, which is supported by the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "zakat_eligibility",
-          "judge": "factual",
-          "message": "The narrative states the charity is recognized as zakat-eligible, which is confirmed by the source data.",
+          "message": "The narrative states expenses were $131,029, but the source data for FY2023 shows $131,029.",
           "severity": "info"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity claims zakat eligibility and identifies its cause as 'fisabilillah' (religious/educational causes). While the charity provides educational resources and advocacy training, the direct link to religious or educational causes as defined by 'fisabilillah' is not explicitly clear from the provided program descriptions. The primary focus appears to be civic engagement and advocacy.",
+          "message": "The charity claims zakat eligibility and is tagged as ZAKAT-ELIGIBLE, but the specific asnaf category is not explicitly stated in the provided information. While 'fisabilillah' is mentioned in one source, it's not directly linked to the overall zakat eligibility claim or the charity's primary programs.",
           "severity": "warning"
         },
         {
@@ -586,77 +545,71 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has 0.5 months of working capital.",
-          "id": "[1]",
-          "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/813451645#financials"
-        },
-        {
-          "claim": "The organization is zakat-eligible.",
+          "claim": "The group is zakat-eligible and focuses on educating the community on legislative issues.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://poligonnational.org/donate"
         },
         {
-          "claim": "Total revenue was $32,150 and expenses were $131,029 in FY2023.",
+          "claim": "No financial filings newer than FY2023 are available; expenses were $131,029 against $32,150 in revenue with 0.5 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813451645"
         },
         {
-          "claim": "Poligon provides congressional advocacy training and action alerts.",
+          "claim": "The organization offers congressional advocacy training and has a low cost per beneficiary.",
           "id": "[4]",
           "source_name": ".",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
         },
         {
-          "claim": "The charity is recognized as zakat-eligible.",
+          "claim": "The organization maintains zakat eligibility for donors.",
           "id": "[5]",
           "source_name": "zakat eligible",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_zakat_eligibility_.pdf"
         },
         {
-          "claim": "The organization provides town hall guides.",
+          "claim": "The organization provides direct educational services and toolkits for civic engagement.",
           "id": "[6]",
           "source_name": "Town Hall How-to Guide",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_town_hall_how-to_guide.pdf"
         },
         {
-          "claim": "The organization provides guides for visiting legislative offices.",
+          "claim": "Poligon produces guides for office visits to engage with government officials.",
           "id": "[7]",
           "source_name": "Office Visit How-to Guide",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/poligon_office_visit_how-to_guide.pdf"
         },
         {
-          "claim": "The organization publishes factsheets on legislative and judicial decisions.",
+          "claim": "The organization focuses on urgent education regarding civil rights and federal policies.",
           "id": "[8]",
           "source_name": "View \"SCOTUS Decision on the Muslim Ban: What Happened? What Can Congress Do?\"",
           "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/scotus_muslim_ban_decision_factsheet__image___1_-2.pdf"
         },
         {
-          "claim": "The organization offers opportunities to become a trainer for constituent advocacy.",
-          "id": "[11]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://www.poligonnational.org/become-a-trainer.html"
+          "claim": "Poligon addresses the impact of Supreme Court decisions on the community.",
+          "id": "[9]",
+          "source_name": "View \"Justice Kennedy Announces Retirement: What Happens Next\"",
+          "source_url": "https://www.poligonnational.org/uploads/8/2/8/6/82865960/final_-_justice_anthony_kennedy_announces_retirement__what_happens_next__boxed_-2.pdf"
         }
       ],
-      "amal_score_rationale": "The organization provides useful direct services for civic engagement, but its financial sustainability is a major concern. High spending relative to low revenue and outdated public filings suggest a need for better fiscal stability.",
+      "amal_score_rationale": "This charity provides useful civic resources but shows signs of financial instability and outdated public reporting. While its mission is clear, the large gap between spending and revenue creates a high risk for donors.",
       "areas_for_improvement": [
-        "Public financial reporting is three years out of date, with the latest data from FY2023 [3]",
+        "Financial transparency is a major concern as the latest public filing is from FY2023 [3]",
         "Spending significantly exceeded income in the last reported year, with $131,029 in expenses against $32,150 in revenue [3]",
-        "Working capital is critically low at only 0.5 months of working capital [1]"
+        "The organization has critically low working capital, holding only 0.5 months of cash reserves [3]"
       ],
       "dimension_explanations": {
-        "alignment": "The charity serves a specific need for Muslim donor fit within the global education and advocacy space [2][5]. However, its track record is difficult to verify fully because the most recent available financial data is from 2023 [3].",
-        "impact": "Poligon delivers direct services by training volunteers to interact with government offices [7][11]. While it provides a clear theory of change for civic education, its financial health is weak due to expenses being 4.1 times higher than its $32,150 revenue [3]."
+        "alignment": "The organization aligns with Muslim donor interests by offering zakat-eligible programs that address civil rights and legislative advocacy [2][5]. It tackles urgent issues like the impact of Supreme Court decisions and federal policies on the community [8][9]. While it has a clear track record of producing guides for town halls and office visits, the lack of recent financial data limits a full assessment of its current reach [6][7].",
+        "impact": "Poligon delivers direct services with a low cost of approximately $10.92 per beneficiary [4]. However, financial health is a serious weakness because expenses were 4.1 times higher than the $32,150 in total revenue reported in FY2023 [3]. The group also lacks a long-term cash cushion, maintaining only 0.5 months of working capital [3]."
       },
       "headline": "Poligon Education Fund provides civic training and advocacy resources for Muslim Americans but faces significant financial hurdles.",
       "strengths": [
-        "Provides specific educational tools like town hall guides and legislative factsheets [6][8]",
-        "Maintains a clear focus on direct service through constituent training programs [4][11]",
-        "Offers clear guidance for zakat-eligible giving [2]"
+        "Provides direct educational services and toolkits for civic engagement [6][7]",
+        "Maintains zakat eligibility for donors seeking to fulfill religious obligations [2][5]",
+        "Focuses on urgent global and domestic education regarding civil rights [8][9]"
       ],
-      "summary": "The organization offers congressional advocacy training and action alerts to help constituents engage with the government [4]. It is recognized as zakat-eligible for donors who wish to support its educational mission [2][5]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]."
+      "summary": "The organization offers congressional advocacy training and action alerts to help constituents engage with the government [4]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]. The group is zakat-eligible and focuses on educating the community on legislative issues [2][5]."
     },
     "rich_narrative": {
       "all_citations": [

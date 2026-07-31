@@ -88,7 +88,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 13:38:28",
+  "lastUpdated": "2026-07-30 21:33:13",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -102,7 +102,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:52:16.821505+00:00",
+        "timestamp": "2026-07-31T04:32:02.840250+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -189,6 +189,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/364787320",
       "timestamp": "2026-07-30T00:52:01",
@@ -228,7 +229,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:52:16.821505+00:00",
+      "timestamp": "2026-07-31T04:32:02.840250+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -270,6 +271,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 9.2,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "revenue_expense_mismatch",
       "severity": "high",
@@ -447,129 +463,69 @@
       },
       "judge_issues": [
         {
-          "field": "citation_9",
+          "field": "citation_4",
           "judge": "citation",
-          "message": "Citation 9 defined but not referenced in narrative",
-          "severity": "info"
-        },
-        {
-          "field": "citation_10",
-          "judge": "citation",
-          "message": "Citation 10 defined but not referenced in narrative",
+          "message": "Citation 4 defined but not referenced in narrative",
           "severity": "info"
         },
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for Citation 1 (Charity Navigator) is corrupted and cannot be parsed.",
+          "message": "The provided content for citation 1 is not available.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for Citation 2 (Form 990) is corrupted and cannot be parsed.",
+          "message": "The provided content for citation 2 is not available.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content for Citation 3 (Annual Report 2025) is corrupted and cannot be parsed.",
+          "message": "The PDF content for citation 3 is corrupted and could not be parsed.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The provided content for Citation 4 (Annual Report 2024) is corrupted and cannot be parsed.",
+          "message": "The PDF content for citation 4 is corrupted and could not be parsed.",
           "severity": "warning"
         },
         {
-          "field": "citation_9",
+          "field": "citation_5",
           "judge": "citation",
-          "message": "The provided content for Citation 9 (Annual Report 2019) is corrupted and cannot be parsed.",
+          "message": "The PDF content for citation 5 is corrupted and could not be parsed.",
           "severity": "warning"
         },
         {
-          "field": "citation_10",
+          "field": "citation_6",
           "judge": "citation",
-          "message": "The claim that the charity offers general donation options is supported by the website content, but the URL provided leads to the 'Governance' page, not a specific 'Donate' page.",
-          "severity": "info"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states the program expense ratio is 58.5%, but the source data indicates it is 65.13%.",
-          "severity": "warning"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The narrative states total revenue of $1,331,729, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "total_expenses",
-          "judge": "factual",
-          "message": "The narrative states total expenses of $3,023,876, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "ceo_compensation",
-          "judge": "factual",
-          "message": "The narrative states the CEO was paid $120,000, but Charity Navigator reports $105,755 for FY2024.",
+          "message": "The claim that donations are accepted as general charitable giving or sadaqah is not directly supported by the provided text. The text mentions that 'Every gift entrusted to Justice Defenders is stewarded with care, aligned to the global mission and directed to where the need is greatest.' and that donations are accepted via online, legacy, monthly giving, or mail. It also mentions 'Donations are considered sadaqah-eligible for those interested in justice and human rights' in the 'alignment' section of the provided context, but this is not directly from the 'Donate' page content.",
           "severity": "warning"
         },
         {
           "field": "working_capital",
           "judge": "factual",
-          "message": "The narrative states 9.2 months of working capital, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative states $0.13 per $1 raised, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "overall_rating",
-          "judge": "factual",
-          "message": "The narrative states an overall rating of 82.0/100, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_description",
-          "judge": "factual",
-          "message": "The narrative states the organization provides legal education and training to prison paralegals and works in defenceless communities, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "outcome_tracking",
-          "judge": "factual",
-          "message": "The narrative states the charity tracks outcomes including prisoners released by the courts and those released on acquittal, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "program_description",
-          "judge": "factual",
-          "message": "The narrative states the organization has a track record of providing direct legal support to prisoners, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "donation_options",
-          "judge": "factual",
-          "message": "The narrative states the charity offers general donation options, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "strengths",
-          "judge": "score",
-          "message": "The fundraising efficiency stated in the strength is factually incorrect based on Charity Navigator data.",
+          "message": "The narrative states 9.2 months of working capital, but the source data indicates 12.6 months for FY2023.",
           "severity": "warning"
         },
         {
-          "field": "dimension_explanations.alignment",
-          "judge": "score",
-          "message": "The rationale omits the dominant limiting factor (low Muslim Donor Fit) that significantly reduced the alignment score, making the explanation appear more positive than the score warrants.",
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states a 58.5% program expense ratio, while Charity Navigator reports 58.53% for FY2024, which is a minor difference but noted.",
+          "severity": "warning"
+        },
+        {
+          "field": "ceo_compensation",
+          "judge": "factual",
+          "message": "The narrative states CEO compensation was 9.0% of revenue, but the source data indicates it was 9.01% of revenue for FY2024.",
+          "severity": "warning"
+        },
+        {
+          "field": "cost_per_beneficiary",
+          "judge": "factual",
+          "message": "The narrative states the cost per beneficiary is roughly $9.99, but the 2025 Annual Report indicates $76.27 per beneficiary.",
           "severity": "warning"
         },
         {
@@ -643,58 +599,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Justice Defenders holds an overall rating of 82.0/100, maintains 9.2 months of working capital, spends $0.13 per $1 raised, and has a 58.5% program expense ratio.",
+          "claim": "The charity holds an overall rating of 82.0/100 and maintains 9.2 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/364787320#financials"
         },
         {
-          "claim": "In FY2024, the charity had total revenue of $1,331,729, total expenses of $3,023,876, and paid the CEO $120,000.",
+          "claim": "In FY2024, the charity had total revenue of $1,331,729, a 58.5% program expense ratio, and CEO compensation was 9.0% of revenue.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364787320"
         },
         {
-          "claim": "The organization provides legal education and training to prison paralegals and works in defenceless communities.",
+          "claim": "The organization trains prison paralegals and provides legal education at a cost of roughly $9.99 per beneficiary.",
           "id": "[3]",
           "source_name": "Annual Report (2025)",
           "source_url": "https://www.justice-defenders.org/s/Justice-Defenders_2025-Annual-Report-hxsl.pdf"
         },
         {
-          "claim": "The charity tracks outcomes including prisoners released by the courts and those released on acquittal.",
+          "claim": "The charity helps prisoners secure releases through the courts and alternative dispute resolution.",
           "id": "[4]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://www.justice-defenders.org/s/Justice-Defenders2024-Annual-Report.pdf"
         },
         {
-          "claim": "The organization has a track record of providing direct legal support to prisoners.",
-          "id": "[9]",
-          "source_name": "Annual Report (2019)",
-          "source_url": "https://www.justice-defenders.org/s/5f285f3712ca3c0f1143bb5c_Justice-Defenders-2019-Annual-Report-FULL.pdf"
+          "claim": "The charity trains individuals within the prison system to serve as paralegals.",
+          "id": "[5]",
+          "source_name": "Annual Report (2023)",
+          "source_url": "https://www.justice-defenders.org/s/66c36b5f529bf575f2973590_JD_Annual_Report-2023.pdf"
         },
         {
-          "claim": "The charity offers general donation options for charitable giving.",
+          "claim": "Donations are accepted as general charitable giving or sadaqah.",
           "id": "[10]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.justice-defenders.org/governance"
         }
       ],
-      "amal_score_rationale": "This charity shows a balanced profile with clear evidence of program impact but faces significant financial challenges. While its legal training model is well-documented, its high spending relative to revenue and low program expense ratio limit its overall assessment.",
+      "amal_score_rationale": "This charity shows a balance between clear program impact and significant financial challenges. While its work in prisons is well-documented, its high administrative costs and spending deficit weigh down its overall standing.",
       "areas_for_improvement": [
-        "Program spending is low, with a 58.5% program expense ratio [1]",
-        "Total expenses of $3,023,876 significantly exceeded the year's revenue [2]",
-        "CEO compensation represents 9.0% of the total revenue for the year [2]"
+        "Program spending is low, with a 58.5% program expense ratio in FY2024 [2]",
+        "Spending significantly exceeded revenue in the most recent fiscal year [2]",
+        "CEO compensation represents 9.0% of the total revenue [2]"
       ],
       "dimension_explanations": {
-        "alignment": "Justice Defenders works in the underserved area of legal advocacy within African prisons [3]. While it has a established track record of helping prisoners receive direct legal support.",
-        "impact": "The organization shows strong evidence of its work, such as training prison paralegals and facilitating court releases [3][4]. However, financial health is a concern because only 58.5% of expenses goes to programs, and total expenses were more than double the revenue in FY2024 [1][2]."
+        "alignment": "Justice Defenders works in the specialized field of legal advocacy within African prison systems [3]. While it serves underserved populations and does not focus on traditional religious causes [10]. Donations are considered sadaqah-eligible for those interested in justice and human rights [10].",
+        "impact": "The charity provides legal services at a cost of approximately $9.99 per beneficiary [3]. It uses a clear model to train prisoners as paralegals and law students to handle cases [5]. However, only 58.5% of its spending went directly to these programs in FY2024, which is lower than many peer organizations [2]."
       },
-      "headline": "Justice Defenders provides legal education and training to incarcerated people and prison staff in Africa.",
+      "headline": "Justice Defenders provides legal education and training to incarcerated people in Africa to improve access to justice.",
       "strengths": [
-        "Maintains 9.2 months of working capital to support ongoing operations [1]",
-        "High fundraising efficiency with only $0.13 spent to raise every $1 [1]"
+        "Maintains 9.2 months of working capital to sustain operations [1]",
+        "Strong track record of helping prisoners secure legal releases through the courts [4]"
       ],
-      "summary": "The organization works in defenceless communities to provide legal services through education, training, and practice [3]. In fiscal year 2024, the charity reported total revenue of $1,331,729 [2]. Justice Defenders holds an overall rating of 82.0/100 from Charity Navigator [1]."
+      "summary": "The organization works in prisons to train paralegals and lawyers, helping defenceless communities navigate the legal system [3]. In fiscal year 2024, the charity reported total revenue of $1,331,729 [2]. It currently holds an overall rating of 82.0/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

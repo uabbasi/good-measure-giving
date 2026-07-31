@@ -94,7 +94,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:00:48",
+  "lastUpdated": "2026-07-30 21:31:00",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -108,7 +108,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-30T07:43:21.363922+00:00",
+        "timestamp": "2026-07-31T04:30:00.104329+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -195,6 +195,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101",
       "timestamp": "2026-07-30T00:42:57",
@@ -1792,7 +1793,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-30T07:43:21.363922+00:00",
+      "timestamp": "2026-07-31T04:30:00.104329+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -2019,32 +2020,74 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content for citation [1] does not contain the claimed information about Charity Navigator rating, working capital, fundraising efficiency, or cash-adjusted program expense ratio.",
+          "message": "The content for citation 1 could not be verified. The provided content is a PDF file that could not be parsed.",
           "severity": "warning"
         },
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided content for citation [2] (Form 990) does not contain the claimed total revenue of $286,205,684 for FY2023 or the percentage of noncash contributions.",
+          "message": "The content for citation 2 could not be verified. The provided content is a PDF file that could not be parsed.",
           "severity": "warning"
         },
         {
-          "field": "citation_5",
+          "field": "citation_6",
           "judge": "citation",
-          "message": "The provided content for citation [5] (Annual Report) does not explicitly state that the organization provides grants and assistance to help people access food, although it implies food assistance.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_11",
-          "judge": "citation",
-          "message": "The provided content for citation [11] (Charity Website - Donate) does not contain the claimed information about accepting general donations and providing various ways to give for hunger relief.",
+          "message": "The content for citation 6 could not be verified. The provided content is a PDF file that could not be parsed.",
           "severity": "warning"
         },
         {
           "field": "citation_13",
           "judge": "citation",
-          "message": "The provided content for citation [13] (Annual Report) does not explicitly state that the organization has a long track record of providing food assistance and reporting on program highlights, although it implies a track record through its reporting.",
+          "message": "The content for citation 13 could not be verified. The provided content is a PDF file that could not be parsed.",
           "severity": "warning"
+        },
+        {
+          "field": "working_capital_months",
+          "judge": "factual",
+          "message": "The narrative claims 9.5 months of working capital, but the source data indicates 9.5 months of working capital for fiscal year 2023.",
+          "severity": "info"
+        },
+        {
+          "field": "total_revenue",
+          "judge": "factual",
+          "message": "The narrative claims total revenue of $286,205,684, which matches the source data for fiscal year 2023.",
+          "severity": "info"
+        },
+        {
+          "field": "cash_adjusted_program_ratio",
+          "judge": "factual",
+          "message": "The narrative claims a cash-adjusted program expense ratio of 78.1%, but the source data indicates 78.1% for fiscal year 2023.",
+          "severity": "warning"
+        },
+        {
+          "field": "fundraising_efficiency",
+          "judge": "factual",
+          "message": "The narrative claims fundraising efficiency of $0.03 per $1 raised, which matches the source data for fiscal year 2023.",
+          "severity": "info"
+        },
+        {
+          "field": "program_description",
+          "judge": "factual",
+          "message": "The narrative states the organization works with school districts and community partners to provide meals, which is generally supported by the source data.",
+          "severity": "info"
+        },
+        {
+          "field": "donation_options",
+          "judge": "factual",
+          "message": "The narrative claims the charity provides options for general charitable giving and donations, which is supported by the website.",
+          "severity": "info"
+        },
+        {
+          "field": "cost_per_beneficiary",
+          "judge": "factual",
+          "message": "The narrative claims a cost per beneficiary of approximately $528.78, but the source data indicates $510.30 for fiscal year 2021/2022.",
+          "severity": "info"
+        },
+        {
+          "field": "overall_rating",
+          "judge": "factual",
+          "message": "The narrative claims a 100.0/100 rating from Charity Navigator, which matches the source data.",
+          "severity": "info"
         },
         {
           "field": "website.ein",
@@ -2117,53 +2160,53 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 100.0/100 from Charity Navigator rating, 9.5 months of working capital, a fundraising efficiency of $0.03 per $1 raised, and a cash-adjusted program expense ratio of 78.1%.",
+          "claim": "The charity maintains a 100.0/100 rating and 9.5 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/942614101#financials"
         },
         {
-          "claim": "Total revenue was $286,205,684 in FY2023, which is the latest available filing; 74% of revenue is noncash contributions.",
+          "claim": "Total revenue was $286,205,684 with a cash-adjusted program expense ratio (gifts-in-kind excluded) of 78.1% and fundraising efficiency of $0.03 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/942614101"
         },
         {
-          "claim": "The organization provides grants and assistance to help people access food.",
-          "id": "[5]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://www.shfb.org/wp-content/uploads/2025/05/SHSV-2023-Form-990-Public-Disclosure-filing.pdf.pdf"
+          "claim": "The organization works with school districts and community partners to provide meals.",
+          "id": "[6]",
+          "source_name": "Affirmation of 501(c)(3) status",
+          "source_url": "https://www.shfb.org/wp-content/uploads/2019/09/501c3-determination-letter-new-name.pdf"
         },
         {
-          "claim": "The charity accepts general donations and provides various ways to give for hunger relief.",
+          "claim": "The charity provides options for general charitable giving and donations.",
           "id": "[11]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.shfb.org/give-help/donate-money/"
         },
         {
-          "claim": "The organization has a long track record of providing food assistance and reporting on program highlights.",
+          "claim": "The charity reports a cost per beneficiary of approximately $528.78 and addresses food insecurity.",
           "id": "[13]",
           "source_name": "Annual Report",
           "source_url": "https://www.shfb.org/about-us/governance-and-financial/annual-report-2021-2022/"
         }
       ],
-      "amal_score_rationale": "This charity is an above-average choice for sadaqah because it provides essential direct services and shows high fundraising efficiency, though its public financial reporting is significantly delayed.",
+      "amal_score_rationale": "This charity is rated as above average because it shows strong results in feeding the hungry and has excellent fundraising efficiency. Its score is held back by outdated financial filings and a heavy reliance on non-cash donations.",
       "areas_for_improvement": [
-        "Public financial data is outdated, with no filings available more recent than FY2023 [2]",
-        "A large portion of revenue, approximately 74%, comes from noncash gifts-in-kind rather than cash [2]",
-        "The cash-adjusted program expense ratio (gifts-in-kind excluded) is 78.1%, which is considered moderate [1]"
+        "Public financial data is outdated, with the most recent available IRS filings from 2023 [2].",
+        "A large portion of revenue, approximately 74%, comes from non-cash gifts-in-kind rather than cash donations [2].",
+        "The organization has a moderate cash-adjusted program expense ratio (gifts-in-kind excluded) of 78.1% [2]."
       ],
       "dimension_explanations": {
-        "alignment": "This organization addresses the urgent cause of extreme poverty and food insecurity with a long track record of service [13]. It is a suitable fit for donors looking to give sadaqah to local hunger relief, though it does not have a specific focus on the Muslim community [11].",
-        "impact": "The charity spends $528.78 per beneficiary to provide direct food services [1][2]. While it maintains a moderate cash-adjusted program expense ratio (gifts-in-kind excluded) of 78.1%, it demonstrates strong governance and clear evidence of program outcomes [1][13]."
+        "alignment": "This organization addresses the urgent cause of extreme poverty and food insecurity in Silicon Valley [13]. While it offers a path for sadaqah giving, it has a medium fit for donors specifically seeking Muslim-led or specialized underserved community projects [11].",
+        "impact": "The charity provides direct services with a cost of approximately $528.78 per beneficiary [13]. It maintains a moderate cash-adjusted program expense ratio (gifts-in-kind excluded) of 78.1% and has 9.5 months of working capital available [1][2]."
       },
-      "headline": "Second Harvest of Silicon Valley provides direct food assistance to families through a moderate spending model and high fundraising efficiency.",
+      "headline": "Second Harvest of Silicon Valley provides direct food assistance to families through a moderate spending model and efficient fundraising.",
       "strengths": [
-        "Maintains an overall rating of 100.0/100 from Charity Navigator [1]",
-        "High fundraising efficiency with a cost of only $0.03 per $1 raised [1]",
-        "Strong savings with 9.5 months of working capital available [1]"
+        "Maintains a perfect 100.0/100 rating from Charity Navigator for overall performance [1].",
+        "High fundraising efficiency, spending only $0.03 to raise every $1 [2].",
+        "Strong evidence of outcomes and a clear theory of change for its food programs [13]."
       ],
-      "summary": "The organization works with school districts and community partners to provide federally funded meals and groceries to the local community [2][11]. In fiscal year 2023, the charity reported total revenue of $286,205,684 [2]. Donors should treat this three-year-old financial picture with caution, as no financial filings newer than FY2023 are available to the public [2][5]."
+      "summary": "The organization works with school districts and community partners to provide federally funded meals and groceries to the local community [6]. In fiscal year 2023, the charity reported total revenue of $286,205,684 [2]. However, no financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [1][2]."
     },
     "rich_narrative": {
       "all_citations": [

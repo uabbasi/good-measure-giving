@@ -82,7 +82,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:01:27",
+  "lastUpdated": "2026-07-30 21:30:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -156,6 +156,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163",
       "timestamp": "2026-07-30T00:41:30",
@@ -226,6 +227,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 177.7,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "medium",
@@ -389,54 +405,6 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The provided Form 990 (2023) URL did not contain the claimed information about FY2024 total revenue and program expense ratio.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "The provided Charity Navigator URL did not contain the claimed information about the charity's rating, working capital, and spending per dollar raised.",
-          "severity": "warning"
-        },
-        {
-          "field": "revenue",
-          "judge": "factual",
-          "message": "The narrative states the total revenue for FY2024 was $633,502, but the source data for the same fiscal year (2024) shows $633,502 from Form 990 grants and $778,560 from ProPublica's Form 990 for tax year 2023. The Charity Navigator data for FY2024 shows $633,502 in total revenue. There is a discrepancy between the ProPublica Form 990 (tax year 2023) and Charity Navigator (FY2024).",
-          "severity": "warning"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The narrative states a program expense ratio of 77.0%, which matches the source data from Charity Navigator for FY2024.",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The narrative states the charity holds 177.7 months of working capital, but the source data from Charity Navigator indicates 177.7 months of working capital, which is a direct match. However, the ProPublica Form 990 data for tax year 2023 implies approximately 177.7 months of working capital (calculated as (Total Assets - Total Liabilities) / (Total Expenses / 12) = (4329061 - 4236) / (292029 / 12) = 177.7 months). The discrepancy is in the interpretation of the source data, as the narrative's claim aligns with Charity Navigator's figure.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative states the charity spends $0.02 per $1 raised, which aligns with the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "The narrative claims the charity spends $0.02 per $1 raised, but Charity Navigator data shows a fundraising expense ratio of approximately 0.096, meaning $0.096 per $1 raised.",
-          "severity": "info"
-        },
-        {
-          "field": "charity_navigator_score",
-          "judge": "factual",
-          "message": "The narrative states the charity has a 64.0/100 rating, which matches the Charity Navigator score.",
-          "severity": "info"
-        },
-        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -488,45 +456,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the organization managed $633,502 in total revenue and maintained a 77.0% program expense ratio.",
+          "claim": "In FY2024, the organization managed $633,502 in total revenue to fund its helpline and shelter programs.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/260906163"
         },
         {
-          "claim": "The charity has a 64.0/100 rating, holds 177.7 months of working capital, and spends $0.02 per $1 raised.",
+          "claim": "It maintains an overall score of 64.0/100 from Charity Navigator and holds 177.7 months of working capital.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/260906163#financials"
         },
         {
-          "claim": "The organization provides a help line and shelter services funded through donations like sadaqah.",
+          "claim": "Donors can contribute through various methods, including general charitable giving known as sadaqah.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://asknisa.org/donate/"
         },
         {
-          "claim": "The charity offers engagement opportunities such as board nominations and volunteering.",
+          "claim": "It offers opportunities for community members to get involved through board nominations and volunteering.",
           "id": "[4]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://asknisa.org/nominations-for-the-board-of-directors/"
         }
       ],
-      "amal_score_rationale": "The charity shows a balanced profile with moderate spending on direct services and very low fundraising costs. However, its overall assessment is affected by holding an unusually large amount of cash reserves relative to its yearly spending.",
+      "amal_score_rationale": "This charity shows a balanced profile with a clear mission and efficient fundraising, but its very high level of idle cash reserves limits its overall assessment.",
       "areas_for_improvement": [
-        "Holds 177.7 months of working capital, which is significantly higher than standard reserve needs [2]",
-        "Limited geographic reach as a domestic service provider [1]"
+        "Extremely high cash reserves of 177.7 months without a clear endowment plan",
+        "Limited geographic reach for its specialized services"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific need within the community by addressing domestic poverty and safety [1]. It offers various ways for supporters to contribute through sadaqah and general donations, though it lacks a broad international track record [3][4].",
-        "impact": "The organization focuses on direct service delivery through counseling and shelter programs [3]. While it shows moderate financial efficiency with a 77.0% program expense ratio, it maintains 177.7 months of working capital, which suggests funds are being saved rather than immediately deployed for growth [2]."
+        "alignment": "NISA serves a specific need within the community by focusing on domestic violence advocacy and counseling [1]. It offers opportunities for community members to get involved through board nominations and volunteering [4].",
+        "impact": "The group spends 77.0% of its budget on programs like the NISA Home and a help line [1][2]. While it has strong evidence of its outcomes, its financial health is impacted by holding 177.7 months of working capital [2]."
       },
       "headline": "The North-American Islamic Shelter Forthe Abused provides confidential support and shelter for victims of domestic violence.",
       "strengths": [
-        "Maintains a moderate program expense ratio of 77.0% [1]",
-        "Highly efficient fundraising costs of only $0.02 per $1 raised [2]"
+        "Low fundraising costs of $0.02 per $1 raised",
+        "Strong track record of providing direct services and shelter",
+        "Moderate program spending with 77.0% of funds reaching services"
       ],
-      "summary": "In FY2024, the organization managed $633,502 in total revenue to fund its crisis services [1]. It operates a dedicated help line and the NISA Home to offer safety and advocacy for those in need [3]. The charity currently holds a 64.0/100 rating from Charity Navigator [2]."
+      "summary": "In FY2024, the organization managed $633,502 in total revenue to fund its helpline and shelter programs [1]. It maintains an overall score of 64.0/100 from Charity Navigator [2]. Donors can contribute through various methods, including general charitable giving known as sadaqah [3]."
     },
     "rich_narrative": {
       "all_citations": [

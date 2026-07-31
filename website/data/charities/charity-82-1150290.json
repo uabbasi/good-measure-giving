@@ -67,7 +67,7 @@
   },
   "trustSignals": null,
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-30 00:59:11",
+  "lastUpdated": "2026-07-30 21:29:55",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -135,6 +135,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290",
       "timestamp": "2026-07-29T22:42:04",
@@ -378,61 +379,19 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The fetched content for citation [1] does not contain information about the Charity Navigator score, working capital, or fundraising efficiency. Therefore, the claim cannot be verified.",
+          "message": "The content for citation 1 was not provided.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content for citation [3] does not contain information about total revenue or program expense ratio. Therefore, the claim cannot be verified.",
+          "message": "The content for citation 3 does not contain the claimed information.",
           "severity": "warning"
         },
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The fetched content for citation [4] does not contain information about the charity accepting general donations and sadaqah through its website. Therefore, the claim cannot be verified.",
-          "severity": "warning"
-        },
-        {
-          "field": "Charity Navigator score",
-          "judge": "factual",
-          "message": "The Charity Navigator score of 58.0/100 matches the source.",
-          "severity": "info"
-        },
-        {
-          "field": "working capital",
-          "judge": "factual",
-          "message": "The working capital of 48.4 months matches the source.",
-          "severity": "info"
-        },
-        {
-          "field": "fundraising efficiency",
-          "judge": "factual",
-          "message": "The narrative states a fundraising efficiency of $0.00 per $1 raised, but the source data indicates it is not available or is $0.00 due to zero fundraising expenses.",
-          "severity": "warning"
-        },
-        {
-          "field": "total revenue",
-          "judge": "factual",
-          "message": "The total revenue of $824,033 matches the source.",
-          "severity": "info"
-        },
-        {
-          "field": "program expense ratio",
-          "judge": "factual",
-          "message": "The program expense ratio of 70.2% matches the source.",
-          "severity": "info"
-        },
-        {
-          "field": "donation methods",
-          "judge": "factual",
-          "message": "The claim that the charity accepts general donations and sadaqah through its website is supported by the source.",
-          "severity": "info"
-        },
-        {
-          "field": "dimension_explanations.impact",
-          "judge": "score",
-          "message": "The impact dimension rationale omits dominant limiting factors, making it read more positively than the actual score warrants.",
+          "message": "The content for citation 4 was not provided.",
           "severity": "warning"
         },
         {
@@ -494,39 +453,41 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization has a Charity Navigator score of 58.0/100, 48.4 months of working capital, and a fundraising efficiency of $0.00 per $1 raised.",
+          "claim": "The organization has a 58.0/100 rating, a 70.2% program expense ratio, $0.00 fundraising costs, and 48.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/821150290#financials"
         },
         {
-          "claim": "Total revenue was $824,033 with a program expense ratio of 70.2% in the latest available filing from 2023.",
+          "claim": "Total revenue was $824,033 in fiscal year 2023, which is the latest available filing.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/821150290"
         },
         {
-          "claim": "The charity accepts general donations and sadaqah through its website.",
+          "claim": "The organization accepts general donations and sadaqah for its academy and masjid programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://imamsacademy.org/donate/"
         }
       ],
-      "amal_score_rationale": "The academy receives an average rating because it shows clear program goals and evidence of outcomes, but its outdated financial filings and high cash reserves limit its transparency.",
+      "amal_score_rationale": "This charity receives an average assessment because it shows clear program goals and efficient fundraising, but it is significantly behind on public financial reporting. The large amount of idle cash and the age of the data suggest a need for better financial transparency.",
       "areas_for_improvement": [
-        "Public financial data is three years out of date, raising accountability concerns [3]",
-        "Holds 48.4 months of working capital without a clear explanation for such high reserves [1]"
+        "Public financial data is outdated, with no filings available after fiscal year 2023 [1]",
+        "The organization holds over four years of cash reserves without a clear endowment or long-term investment plan [1]",
+        "Overall Charity Navigator rating is 58.0/100, which is lower than many peer organizations [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a specific niche in global education and religious capacity building [3]. It offers various ways to give general charity.",
-        "impact": "The charity spends 70.2% of its budget on its academy and masjid programs [3]. While it provides clear evidence of its work and has a solid theory of change, its overall Charity Navigator score is 58.0/100 [1]."
+        "alignment": "This organization serves a specific niche in global education and religious training [3]. It is eligible for general charitable giving or sadaqah, but it may have a lower fit for donors looking for high-urgency or underserved cause areas [4].",
+        "impact": "The academy focuses on capacity building through religious education and masjid operations [3]. While it spends a moderate 70.2% of its budget on these programs, the lack of recent data makes it difficult to verify current effectiveness [1]."
       },
-      "headline": "American Imams Academy focuses on religious education but faces significant delays in financial reporting.",
+      "headline": "American Imams Academy focuses on religious education and masjid programs with moderate spending efficiency.",
       "strengths": [
-        "Maintains a moderate program expense ratio of 70.2% [3]",
-        "Operates with a fundraising efficiency of $0.00 per $1 raised [1]"
+        "Maintains a moderate program expense ratio of 70.2% [1]",
+        "Operates with high fundraising efficiency, spending $0.00 per $1 raised [1]",
+        "Holds 48.4 months of working capital, providing a significant financial cushion [1]"
       ],
-      "summary": "The organization manages religious programs and an academy with a total revenue of $824,033 [3]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]. Donations to this group are considered sadaqah-eligible [4]."
+      "summary": "The organization reported total revenue of $824,033 in its most recent public filing [3]. It operates the American Imams Academy and masjid programs to provide religious training and community services [3][4]. No financial filings newer than FY2023 are available, so donors should treat this three-year-old financial picture with caution [3]."
     },
     "rich_narrative": {
       "all_citations": [

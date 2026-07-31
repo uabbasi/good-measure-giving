@@ -95,7 +95,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 00:59:54",
+  "lastUpdated": "2026-07-30 21:30:43",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -175,6 +175,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665",
       "timestamp": "2026-07-30T00:41:04",
@@ -251,6 +252,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 40.9,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "high",
@@ -424,7 +440,13 @@
       },
       "judge_issues": [
         {
-          "field": "citation_8",
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "Citation 4 defined but not referenced in narrative",
+          "severity": "info"
+        },
+        {
+          "field": "citation_7",
           "judge": "citation",
           "message": "URL unreachable: HTTP 404",
           "severity": "warning"
@@ -432,56 +454,50 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The content for citation 1 was not provided.",
+          "message": "The provided content for citation 1 does not contain information about the charity's program expense ratio or working capital.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The content for citation 3 was not provided.",
+          "message": "The provided content for citation 3 (Form 990) does not contain the reported total revenue for FY2024. The content appears to be a PDF that could not be fully parsed.",
           "severity": "warning"
         },
         {
           "field": "citation_5",
           "judge": "citation",
-          "message": "The provided PDF content for citation 5 is corrupted or unparseable and does not contain the claimed information.",
+          "message": "The provided content for citation 5 is a PDF that could not be parsed to extract specific information about specialized medical interventions and food parcels.",
           "severity": "warning"
         },
         {
           "field": "citation_6",
           "judge": "citation",
-          "message": "The provided PDF content for citation 6 is corrupted or unparseable and does not contain the claimed information.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_8",
-          "judge": "citation",
-          "message": "The content for citation 8 was not provided.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_10",
-          "judge": "citation",
-          "message": "The content for citation 10 was not provided.",
+          "message": "The provided content for citation 6 is a PDF that could not be parsed to extract specific information about specialized medical interventions and food parcels.",
           "severity": "warning"
         },
         {
           "field": "revenue",
           "judge": "factual",
-          "message": "The narrative states the total revenue for FY2024 was $94,873,840, but the source data (Charity Navigator) reports $94,873,840 for FY2024, which matches the claim.",
+          "message": "The narrative states the organization reported $94,873,840 in FY2024 revenue, but the source data for FY2024 shows $94,873,840.",
           "severity": "info"
         },
         {
           "field": "program_expense_ratio",
           "judge": "factual",
-          "message": "The narrative states a program expense ratio of 88.1%, and the source data (Charity Navigator) reports 88.1%, which matches.",
+          "message": "The narrative states a program expense ratio of 88.1%, while the source data shows 88.1%. The values match.",
           "severity": "info"
         },
         {
           "field": "working_capital_months",
           "judge": "factual",
-          "message": "The narrative states the charity holds 40.9 months of working capital, and the source data (Charity Navigator) reports 48 months, which is a difference of 7.1 months. However, the ProPublica Form 990 data calculates working capital as 40.9 months, which matches the claim.",
+          "message": "The narrative states the charity holds 40.9 months of working capital, and the source data confirms this value.",
           "severity": "info"
+        },
+        {
+          "field": "dimension_explanations.impact",
+          "judge": "score",
+          "message": "The rationale states 'strong financial health' but the Financial Health component within the Impact dimension scored 0/7 due to excessive working capital (40.9 months). This is a misleading statement.",
+          "severity": "warning"
         },
         {
           "field": "discovered.outcomes.confidence",
@@ -548,7 +564,7 @@
           "source_url": "https://www.charitynavigator.org/ein/931057665#financials"
         },
         {
-          "claim": "The charity is recognized as zakat-eligible.",
+          "claim": "The charity is zakat-eligible and follows specific zakat policies.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.pcrf.net/zakat-fund"
@@ -560,19 +576,13 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
         },
         {
-          "claim": "The charity provides medical care regardless of religion or politics.",
+          "claim": "The mission is to provide medical care to children in the Middle East regardless of religion or politics.",
           "id": "[4]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.pcrf.net/about-us"
         },
         {
-          "claim": "The organization manages various healthcare and student education programs.",
-          "id": "[5]",
-          "source_name": "Annual Report (2024)",
-          "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
-        },
-        {
-          "claim": "The charity provides specialized medical interventions and food parcels.",
+          "claim": "The organization provides specialized medical interventions and food parcels.",
           "id": "[6]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2025/10/27/02-final-pages-q3-design-1761565903.pdf"
@@ -584,34 +594,28 @@
           "source_url": "https://www.pcrf.net/cached_uploads/download/2025/10/22/pcrf-report-design-edited-1761121896.pdf"
         },
         {
-          "claim": "Donors can choose specific giving methods including zakat.",
+          "claim": "Donors have specific options for giving zakat through the website.",
           "id": "[8]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.pcrf.net/zakat"
-        },
-        {
-          "claim": "The charity documents its annual outcomes and program highlights in public reports.",
-          "id": "[10]",
-          "source_name": "Annual Report",
-          "source_url": "https://www.pcrf.net/impact-reports"
         }
       ],
-      "amal_score_rationale": "The charity earns an above-average assessment due to its high spending efficiency and direct impact on child health, though its very high cash reserves and reporting gaps regarding international grants are notable caveats.",
+      "amal_score_rationale": "The charity earns an above-average rating due to its high spending efficiency and clear mission, though its very high cash reserves and reporting gaps on international grants are notable caveats.",
       "areas_for_improvement": [
         "Large financial reserves totaling 40.9 months of working capital may delay the prompt distribution of zakat funds",
-        "Discrepancy between reported geographic reach and the lack of foreign grants listed on tax filings"
+        "Discrepancy between reported global operations and the lack of foreign grants listed on tax filings"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a high fit for Muslim donors as it is zakat-eligible and serves a high-urgency cause area in global health [2][8]. It has a long track record of service since its founding, though it faces a small gap in reporting specific foreign grant data despite operating in multiple regions [4][5].",
-        "impact": "The organization focuses on direct services, including critical medical interventions and mobile clinic consultations [7]. While it shows strong financial health with a program expense ratio of 88.1%, the charity holds 40.9 months of working capital, which is unusually high for a group collecting zakat [1]. Its programs are backed by a clear theory of change and documented outcomes in annual reports [6][10]."
+        "alignment": "This charity is a high fit for Muslim donors as it is zakat-eligible and addresses urgent global health needs [2][8]. It has a long track record of service.",
+        "impact": "The organization focuses on direct services, including critical medical interventions and mobile clinic consultations [7]. While it shows strong financial health with a program expense ratio of 88.1%, the cost per beneficiary is not fully defined in current data [1]."
       },
-      "headline": "The Palestine Children's Relief Fund provides essential medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
+      "headline": "The Palestine Children's Relief Fund provides critical medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
       "strengths": [
         "High spending efficiency with a program expense ratio of 88.1% in FY2024",
         "Strong fundraising efficiency, spending only $0.02 to raise every $1",
-        "Direct service model providing specialized medical interventions and hot meals"
+        "Direct service model providing specialized medical care and hot meals"
       ],
-      "summary": "In FY2024, the organization reported a total revenue of $94,873,840 to support its medical and infrastructure projects [3]. The charity maintains a program expense ratio of 88.1%, ensuring the majority of funds directly support child health and urgent response [1]. It is recognized as zakat-eligible, allowing donors to fulfill religious obligations through its humanitarian programs [2]."
+      "summary": "In FY2024, the organization reported a total revenue of $94,873,840 to support its medical and infrastructure projects [3]. The charity maintains a program expense ratio of 88.1%, ensuring the majority of funds go directly to services like specialized medical interventions and food aid [1][6]. It is also recognized as zakat-eligible, allowing Muslim donors to fulfill their religious obligations through its humanitarian programs [2]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -86,7 +86,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:03:18",
+  "lastUpdated": "2026-07-30 21:32:29",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -160,6 +160,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/204097808",
       "timestamp": "2026-07-30T00:50:28",
@@ -232,6 +233,21 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 23.6,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "medium",
@@ -418,33 +434,15 @@
           "severity": "warning"
         },
         {
-          "field": "total revenue",
-          "judge": "factual",
-          "message": "The narrative states the total revenue for FY2024 was $497,120, but the source data for FY2024 shows a total revenue of $497,120. The ProPublica Form 990 data for FY2023 shows a total revenue of $850,837.",
-          "severity": "info"
-        },
-        {
-          "field": "expenses vs revenue",
-          "judge": "factual",
-          "message": "The narrative states that expenses were 1.7 times higher than revenue in FY2024. The source data shows total expenses of $856,282 and total revenue of $497,120 for FY2024, resulting in expenses being approximately 1.72 times higher than revenue. This is a minor difference and within acceptable rounding tolerances.",
-          "severity": "info"
-        },
-        {
-          "field": "Charity Navigator rating",
-          "judge": "factual",
-          "message": "The narrative states an overall rating of 90.0/100 from Charity Navigator, which matches the source data.",
-          "severity": "info"
-        },
-        {
-          "field": "dimension_explanations.alignment",
+          "field": "amal_score_rationale",
           "judge": "score",
-          "message": "The rationale for 'alignment' includes a financial risk factor (large reserves) which is not directly related to the alignment dimension. While a valid point, its placement is a minor categorization issue.",
-          "severity": "info"
+          "message": "The narrative states the charity holds '23.6 months of working capital' as a concern, but the ground truth score details indicate '28 months of reserves' as the basis for the risk deduction.",
+          "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The claimed asnaf category 'amil' is not directly supported by the provided program descriptions. The charity's programs focus on research, education, and community wellness, which align more closely with 'fisabilillah'. There is no information indicating the organization employs individuals specifically for zakat collection or distribution.",
+          "message": "The charity's programs focus on research, education, and capacity building in mental health for the Muslim community. While this can be argued as 'Fi Sabilillah' (in Allah's cause) due to its educational and community empowerment nature, there is no direct evidence presented that the programs specifically serve the other zakat categories (Fuqara, Masakin, Gharimin, etc.).",
           "severity": "warning"
         },
         {
@@ -518,47 +516,45 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains an overall rating of 90.0/100 from Charity Navigator.",
+          "claim": "The charity has a 90.0/100 rating, an 84.0% program expense ratio, $0.09 fundraising efficiency, and 23.6 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/204097808#financials"
         },
         {
-          "claim": "In FY2024, the charity reported a total revenue of $497,120 and expenses were 1.7 times higher than revenue.",
+          "claim": "In FY2024, the charity had total revenue of $497,120 and total expenses of $856,282.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/204097808"
         },
         {
-          "claim": "The organization focuses on youth development and family wellness through research-backed programs.",
+          "claim": "The organization focuses on youth development and research-led community education.",
           "id": "[5]",
           "source_name": "Annual Report",
           "source_url": "https://thefyi.org/annual-reports/"
         },
         {
-          "claim": "This charity is a high fit for Muslim donors and is zakat-eligible.",
+          "claim": "The charity is zakat-eligible and serves the Muslim community.",
           "id": "[6]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://thefyi.org/zakat"
         }
       ],
-      "amal_score_rationale": "The charity shows a balance between efficient program spending and financial risks, as its yearly expenses are much higher than its income. While it is a strong fit for Muslim donors, its focus on capacity building and advocacy makes direct impact harder to measure.",
+      "amal_score_rationale": "The charity shows a balance between efficient program spending and financial risks, as its yearly expenses were significantly higher than its total revenue. While it has a strong track record with Muslim donors, its large cash reserves are unusual for a zakat-collecting group.",
       "areas_for_improvement": [
-        "Annual expenses of $856,282 significantly exceeded the $497,120 in revenue for the year",
-        "Large financial reserves of 28 months may conflict with the prompt distribution of zakat funds",
-        "Limited data available regarding specific long-term outcomes and impact metrics"
+        "Spending exceeded revenue in the most recent fiscal year [2]",
+        "Holding 23.6 months of working capital may delay the distribution of zakat funds [1][6]"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a high fit for Muslim donors and is zakat-eligible [6]. It works in the advocacy and mental health space, which is often underserved [5]. It has a solid track record of providing resources for the community, though its large reserves of 28 months are a point of note for donors who prefer zakat to be used quickly [6].",
-        "impact": "The organization spends 84.0% of its budget on programs like mental health research and community education [1][2]. While it has a clear theory of change for strengthening families, there is limited third-party evidence to prove specific outcomes [5]. Financial health is mixed because while it has 23.6 months of working capital, its FY2024 expenses were 1.7 times higher than its revenue [2]."
+        "alignment": "This organization has a high fit for Muslim donors and addresses the underserved space of mental health advocacy [6]. It holds an overall Charity Navigator score of 90.0/100 [1].",
+        "impact": "The charity directs a high percentage of its funds to services, with a Program Expense Ratio: 84.0% [1]. However, its overall financial health is impacted because FY2024 expenses reached $856,282, which was 1.7 times its revenue of $497,120 [2]. Its work focuses on capacity building and providing a theory of change for community mental health [5]."
       },
-      "headline": "The Family and Youth Institute provides mental health research and community education for Muslim families.",
+      "headline": "The Family and Youth Institute provides research-based mental health education and community support for Muslim families.",
       "strengths": [
-        "High program expense ratio of 84.0% ensures most funds reach community services",
-        "Efficient fundraising costs of only $0.09 per $1 raised",
-        "Strong cash position with 23.6 months of working capital"
+        "Maintains a high Program Expense Ratio: 84.0% [1]",
+        "Efficient fundraising costs of only $0.09 per $1 raised [1]"
       ],
-      "summary": "The organization focuses on youth development and family wellness through research-backed programs [5]. In FY2024, the charity reported a total revenue of $497,120 [2]. It maintains an overall rating of 90.0/100 from Charity Navigator [1]."
+      "summary": "The organization focuses on youth development and community education through research-led programs [5]. In FY2024, the charity reported a Total Revenue of $497,120 and is recognized as ZAKAT-ELIGIBLE [2][6]."
     },
     "rich_narrative": {
       "all_citations": [

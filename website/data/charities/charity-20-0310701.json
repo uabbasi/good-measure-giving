@@ -82,7 +82,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-30 01:02:10",
+  "lastUpdated": "2026-07-30 21:31:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -150,6 +150,7 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2020,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701",
       "timestamp": "2026-07-30T00:41:20",
@@ -403,25 +404,43 @@
         {
           "field": "citation_1",
           "judge": "citation",
-          "message": "The provided content does not contain information about the program expense ratio.",
+          "message": "The provided content does not contain information about the organization's program expense ratio, spending per dollar raised, or months of working capital.",
           "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The content mentions that donations can be designated as Zakat/Sadaqa, but does not explicitly state the organization is zakat-eligible or detail specific zakat policies.",
+          "severity": "info"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The provided content does not contain information about the total revenue or working capital for fiscal year 2020.",
+          "message": "The provided content does not contain information about the organization's total revenue for 2020.",
+          "severity": "warning"
+        },
+        {
+          "field": "rich_narrative.summary",
+          "judge": "score",
+          "message": "The rich narrative summary states a working capital ratio of 1.2 months, which contradicts the ground truth used for scoring and other narrative sections that indicate 25.1 months of working capital.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs primarily focus on religious education and outreach, which aligns with the 'fi_sabilillah' category. However, there is no explicit evidence presented that directly supports the classification of beneficiaries within the 'muallaf' (new Muslims) category, which is also claimed in the 'zakat_categories_served' field.",
+          "message": "The charity's programs align with 'fi_sabilillah' (religious/educational causes), but there is no explicit evidence provided that directly supports beneficiaries falling into the 'muallaf' (new Muslims) category, which is also claimed.",
           "severity": "warning"
         },
         {
-          "field": "wallet_tag",
+          "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The wallet tag is 'ZAKAT-ELIGIBLE', which is supported by the 'fi_sabilillah' classification. However, the 'muallaf' claim within the zakat categories served lacks direct program evidence, which could warrant a 'POTENTIALLY-ZAKAT-ELIGIBLE' tag if 'fi_sabilillah' was not strongly supported.",
+          "message": "The charity has a significant amount of working capital (25.1 months), which may be contrary to the principle of prompt zakat distribution.",
+          "severity": "warning"
+        },
+        {
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "There is a significant gap in financial reporting, with the most recent filings being from 2020. This lack of up-to-date financial transparency raises concerns about the current allocation and use of zakat funds.",
           "severity": "warning"
         },
         {
@@ -508,52 +527,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The foundation shows efficient financial health with an 85.0% program expense ratio.",
+          "claim": "The organization maintains an 85.0% program expense ratio, spends $0.02 per $1 raised, and holds 25.1 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/200310701#financials"
         },
         {
-          "claim": "This charity is ZAKAT-ELIGIBLE and serves the Muslim community through religious and cultural education.",
+          "claim": "The organization is zakat-eligible and follows specific zakat policies.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://furqaan.org/"
         },
         {
-          "claim": "In fiscal year 2020, the charity reported a total revenue of $3,249,437 and held 25.1 months of working capital.",
+          "claim": "The charity reported a total revenue of $3,249,437 in 2020, which is the most recent filing available.",
           "id": "[3]",
           "source_name": "Form 990 (2020)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/200310701"
-        },
-        {
-          "claim": "It offers various ways to give, including direct donations.",
-          "id": "[4]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://furqaan.org/donate/"
-        },
-        {
-          "claim": "The organization offers volunteer opportunities.",
-          "id": "[5]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://furqaan.org/donate/"
         }
       ],
-      "amal_score_rationale": "The charity shows efficient spending on programs and strong evidence of outcomes, but its overall assessment is lowered by outdated financial data and a lack of clear governance documentation. While it is zakat-eligible, the large amount of cash held in reserve may concern donors who prefer prompt distribution of religious funds.",
+      "amal_score_rationale": "The charity shows efficient spending on its programs, but the lack of recent financial data and high cash reserves lower its overall standing. While it provides clear evidence of its outcomes, the six-year gap in public filings is a significant accountability risk.",
       "areas_for_improvement": [
-        "The organization has not released public financial filings in six years, which limits transparency",
-        "It holds 25.1 months of working capital, which is unusually high for a group that collects zakat",
-        "There is no documented theory of change to explain how its activities lead to specific long-term results"
+        "Financial transparency is a concern as there are no public filings available after 2020 [3].",
+        "The organization holds 25.1 months of working capital, which is a long time to hold onto zakat funds that should be distributed promptly [1][2].",
+        "There is no documented theory of change to explain how specific activities lead to long-term goals [1]."
       ],
       "dimension_explanations": {
-        "alignment": "This charity is ZAKAT-ELIGIBLE and serves the Muslim community through religious and cultural education [2]. It offers various ways to give, including direct donations and volunteering [4][5].",
-        "impact": "The foundation shows efficient financial health with an 85.0% program expense ratio [1]. It provides strong evidence of its outcomes through its educational programs and masjid activities [1]. However, it lacks a formal theory of change and has not updated its public financial records since 2020 [3]."
+        "alignment": "This charity is zakat-eligible and serves a specific religious and cultural niche in the United States [2].",
+        "impact": "The foundation directs 85.0% of its spending toward programs like its academy and masjid [1]. It has strong evidence of its outcomes, but it lacks a formal governance structure and a clear theory of change to guide its work [1]."
       },
       "headline": "Al-Furqaan Foundation focuses on Islamic education and outreach through its schools and media projects.",
       "strengths": [
-        "Maintains an 85.0% program expense ratio, showing that most spending goes toward its mission",
-        "Operates with high fundraising efficiency, spending only $0.02 per $1 raised"
+        "Maintains an 85.0% program expense ratio, ensuring most funds reach its core missions [1].",
+        "Operates with high fundraising efficiency, spending only $0.02 per $1 raised [1]."
       ],
-      "summary": "The organization works to educate the public about Islam and counter negative media through its Furqaan Project and Furqaan Academy [1]. In fiscal year 2020, the charity reported a total revenue of $3,249,437 [3]. Donors should note that no financial filings newer than FY2020 are available, making this six-year-old data the most recent public record [3]."
+      "summary": "The organization works to educate the public about Islam through programs like the Furqaan Project and Furqaan Academy [1]. In fiscal year 2020, the charity reported a total revenue of $3,249,437 [3]. Donors should note that no financial filings newer than FY2020 are available, making this six-year-old data the most recent public record [3]."
     },
     "rich_narrative": {
       "all_citations": [
