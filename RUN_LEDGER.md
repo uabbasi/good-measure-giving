@@ -1207,3 +1207,77 @@ populate a field — bigger than a patch, and left for a decision.
 5. **MedGlobal + 75-2352043.** Both wait on the same decision about whether the
    required-source gate should read stored usable content rather than the
    success flag.
+
+## Both follow-ups closed (2026-07-31, later)
+
+### The derived-metric gap — closed
+
+"The narrative states a cost per beneficiary of $76,612.48, but the source data
+has no such figure." Literally true. The figure is **program_expenses
+68,185,104 over beneficiaries_served_annually 890, to the cent** — arithmetic
+on two columns we publish.
+
+The published-value rule resolves a judge's field name to a column, and a
+computed metric has no column, so the rule never fired. It now reconciles
+derived figures against the components they divide out of. Several numerators
+are accepted, because which expense line to divide by is an editorial choice
+(precedent: the program ratio has carried both a filed and a cash-adjusted
+basis since the GIK fix); a figure reconciling to none of them still blocks.
+
+Recorded 2026-07-30, blocked 20-0942434 twice, and was the objection that made
+gemini-3.1-flash-lite unusable. **Baitulmaal now exports.**
+
+### ICNAB — closed, and it was three problems
+
+1. **Narrative locations.** Blocked on `baseline_narrative.summary` for
+   reporting the FY2025 revenue we publish. "summary" names a place in the
+   page, not a datum, so there was no column to compare and the rule stayed
+   silent. Such fields now match against the figures we published.
+
+2. **The rule reached only one judge.** ICNAB was blocked by the SCORE judge,
+   which had never heard of the published-value rule — a finding the factual
+   judge would have waved through. It was never the factual judge's rule:
+   which source supplies a field is settled for the whole pipeline before any
+   judge runs. Lifted out and shared.
+
+3. **The trend behind the headline.** The real fix the user asked for.
+   Electing the filing moved the income statement to FY2025 while the trend the
+   rich narrative discusses still ended at FY2024 — the headline a year ahead
+   of the series behind it, which the judge was right to call a contradiction
+   even though both figures were true.
+
+   The series already existed and was being thrown away: `_irs_filings` pulls
+   three filings and the parser read each one's financials, then kept the
+   newest and discarded the rest. It now emits `annual_financials`, published
+   **only when the filing also won the income statement**, so a trend can never
+   come from a source that lost it.
+
+   ICNAB now publishes FY2025 $3,851,438 above a series of
+   **2025 / 2024 / 2023 = 3,851,438 / 4,243,273 / 4,520,145** — the exact two
+   figures the judge cited as contradictory, now carried as the trend they
+   always were. **Exports.**
+
+The strictness that matters is kept by test: a field that DOES resolve is still
+checked against its own column, so quoting the expenses figure under "revenue"
+remains an error.
+
+ICNAB's one remaining objection (a zakat citation) did not reproduce on a
+second roll — roll variance, not a finding.
+
+### 88-0405956 Islamic Foundation of Nevada — a SOURCE LIST error, not a bug
+
+The judge was right and the cause is upstream of the pipeline. `pilot_charities.txt:153`
+lists the website as **`https://ifnv.org`**, which belongs to the **Ivy
+Foundation of Northern Virginia** — the Cooley-Moore Scholarship Luncheon and
+fashion show the verdict described. The IRS record for this EIN is "Islamic
+Foundation Of Nevada A Nevada Non Profit Corporation, 485 E Eldorado Ln, Las
+Vegas NV".
+
+A second collision: `claims_zakat_eligible` is cited to
+`https://www.islamicfoundation.org/donate`, which is the Islamic Foundation of
+Villa Park, Illinois. So the page carries claims sourced from **two unrelated
+organisations**, both matched on the initialism/name.
+
+Not fixed here: correcting a curated list entry is the user's call, and the
+right URL should be verified rather than guessed. The February 2026 verdict
+caught the same confusion, so this has been live for months.
