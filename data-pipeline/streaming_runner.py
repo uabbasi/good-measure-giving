@@ -445,6 +445,24 @@ def lookup_charity_by_ein(ein: str) -> dict | None:
     return None
 
 
+def website_for_ein(db_website: str | None, file_website: str | None) -> str | None:
+    """Which website to use for a single-EIN run.
+
+    pilot_charities.txt is the documented source of truth, but the --ein path
+    read the website from the DATABASE and consulted the file only when that
+    came back empty — the same "only fill blanks" mistake as the sync below,
+    one level up. A stored-but-wrong URL was therefore never compared against
+    the curated file at all, so a correction could not even reach the sync.
+    EIN 88-0405956 kept crawling the Ivy Foundation of Northern Virginia
+    through two corrected runs.
+
+    The file wins where it has an answer; the database fills in where it does
+    not.
+    """
+    curated = (file_website or "").strip()
+    return curated or db_website
+
+
 def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
     """Sync websites from charities list to the charities table.
 
@@ -481,6 +499,17 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
         if isinstance(changed, int) and changed > 0:
             updated += 1
             logger.info(f"Website for {ein} corrected from the charities file: {website}")
+            # The stored page came from the OLD address. A raw_scraped_data row
+            # records no URL, and freshness is judged on scraped_at age alone,
+            # so without this the page fetched from the wrong site stays
+            # "fresh" and even --force-phase crawl re-uses it. Clearing the
+            # timestamp is what makes it stale; the content stays until a
+            # successful crawl replaces it, per the non-destructive rule.
+            execute_query(
+                "UPDATE raw_scraped_data SET scraped_at = NULL "
+                "WHERE charity_ein = %s AND source = 'website'",
+                (ein,),
+            )
 
     if updated > 0:
         logger.info(f"Synced {updated} websites from charities file to database")
@@ -1685,17 +1714,23 @@ def main():
             # Fallback: charity not in DB yet, will be fetched during crawl
             charities = [{"name": args.ein, "ein": normalized_ein, "website": None}]
 
-        # If website is missing from DB, check pilot_charities.txt
-        if not charities[0].get("website"):
-            pilot_file = Path(__file__).parent / "pilot_charities.txt"
-            if pilot_file.exists():
-                from src.utils.charity_loader import load_charity_entries
+        # The curated file wins over whatever the database happens to hold --
+        # it is consulted even when the database has an answer, because the
+        # answer it has may be the one being corrected.
+        pilot_file = Path(__file__).parent / "pilot_charities.txt"
+        if pilot_file.exists():
+            from src.utils.charity_loader import load_charity_entries
 
-                for entry in load_charity_entries(str(pilot_file)):
-                    if entry.ein == normalized_ein and entry.website:
-                        charities[0]["website"] = entry.website
-                        logger.info(f"Found website for {normalized_ein} in pilot_charities.txt: {entry.website}")
-                        break
+            for entry in load_charity_entries(str(pilot_file)):
+                if entry.ein == normalized_ein:
+                    chosen = website_for_ein(charities[0].get("website"), entry.website)
+                    if chosen != charities[0].get("website"):
+                        logger.info(
+                            f"Website for {normalized_ein} taken from pilot_charities.txt: "
+                            f"{chosen} (database had {charities[0].get('website')!r})"
+                        )
+                    charities[0]["website"] = chosen
+                    break
     else:
         charities = load_charities_from_file(args.charities, logger)
 
