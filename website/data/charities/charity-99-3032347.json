@@ -31,18 +31,18 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": null,
-    "totalExpenses": null,
-    "programExpenses": null,
+    "totalRevenue": 84465,
+    "totalExpenses": 13363,
+    "programExpenses": 4662,
     "adminExpenses": null,
     "fundraisingExpenses": null,
-    "programExpenseRatio": null,
-    "fiscalYear": null,
-    "dataSource": "propublica",
+    "programExpenseRatio": "0.3489",
+    "fiscalYear": 2024,
+    "dataSource": "irs_990",
     "totalAssets": null,
     "totalLiabilities": null,
     "netAssets": null,
-    "workingCapitalMonths": null,
+    "workingCapitalMonths": "0.00",
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
@@ -68,18 +68,18 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-28 20:46:22",
+  "lastUpdated": "2026-08-02 12:25:26",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://antipalestinianracism.org/donate/",
+      "source_url": "https://antipalestinianracism.org/about/",
       "timestamp": "2026-07-23T13:06:22",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/993032347",
-      "timestamp": "2026-07-23T14:56:57",
+      "timestamp": "2026-08-02T12:24:36",
       "value": 2024
     },
     "has_audited_financials": {
@@ -91,8 +91,35 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/993032347",
-      "timestamp": "2026-07-23T14:56:57",
+      "timestamp": "2026-08-02T12:24:36",
       "value": "R20"
+    },
+    "program_expenses": {
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 4662
+    },
+    "total_expenses": {
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 13363
+    },
+    "total_revenue": {
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 84465
+    },
+    "working_capital_months": {
+      "derived_from": [
+        "total_assets",
+        "total_liabilities",
+        "total_expenses"
+      ],
+      "fiscal_year": 2024,
+      "source_name": "Calculated from Form 990",
+      "source_url": "https://projects.propublica.org/nonprofits/organizations/993032347",
+      "timestamp": "2026-08-02T12:24:36",
+      "value": 0
     }
   },
   "primaryCategory": "RESEARCH_POLICY",
@@ -111,7 +138,7 @@
     "research-policy"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "The 'About' page on the Institute for the Understanding of Anti-Palestinian Racism (IUAPR) website describes 'The APR Project.' This project outlines the organization's strategic approach to addressing anti-Palestinian racism, including aims such as broadening conversations, bringing about institutional change, creating educational resources, and empowering community engagement. These aims function as a program strategy, detailing how their activities lead to their goals of combating anti-Palestinian racism.",
+  "theoryOfChange": "By empirically researching, educating and advocating on the impact of anti-Palestinian racism, the organization aims to end racism against Palestinians and their allies.",
   "grantsData": null,
   "evaluationTrack": "NEW_ORG",
   "foundedYear": 2024,
@@ -152,7 +179,22 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "medium",
+      "headline": "Expense components don't sum to total (>10% difference)",
+      "detail": "Financial data may be inconsistent across sources or reporting periods.",
+      "data_points": {}
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Program expense ratio critically low: 35%",
+      "detail": "Source: Form 990",
+      "data_points": {}
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "99-3032347",
     "charity_name": "Institute for Understanding Anti-Palestinian Racism",
@@ -161,9 +203,9 @@
     "evaluation_date": "2026-01-25 20:22:22",
     "rubric_version": "5.3.0",
     "confidence_scores": {
-      "alignment": 16,
-      "data_confidence": 0.1,
-      "impact": 16
+      "alignment": 18,
+      "data_confidence": 0.3,
+      "impact": 14
     },
     "score_details": {
       "alignment": {
@@ -206,30 +248,30 @@
             "status": "partial"
           },
           {
-            "evidence": "Revenue: unknown (moderate gap assumed)",
+            "evidence": "Revenue: $84,465 (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 3,
-            "status": "partial"
+            "scored": 5,
+            "status": "full"
           }
         ],
         "muslim_donor_fit_level": "LOW",
-        "rationale": "Alignment 16/50: LOW Muslim donor fit, advocacy cause area",
-        "score": 16
+        "rationale": "Alignment 18/50: LOW Muslim donor fit, advocacy cause area",
+        "score": 18
       },
       "data_confidence": {
         "badge": "LOW",
-        "data_age_years": null,
+        "data_age_years": 2,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.1,
+        "overall": 0.3,
         "recency_factor": 1,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "NONE",
-        "verification_value": 0
+        "verification_tier": "BASIC",
+        "verification_value": 0.4
       },
       "impact": {
         "components": [
@@ -261,13 +303,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Program expense ratio: unknown",
+            "evidence": "Program expense ratio: 35%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 7,
             "scored": 0,
-            "status": "missing"
+            "status": "full"
           },
           {
             "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
@@ -279,13 +321,13 @@
             "status": "missing"
           },
           {
-            "evidence": "Theory of change: CLEAR",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Theory of change: DEVELOPING",
+            "improvement_suggestion": "Document a clear theory of change with an explicit causal pathway.",
+            "improvement_value": 2,
             "name": "Theory of Change",
             "possible": 7,
-            "scored": 7,
-            "status": "full"
+            "scored": 5,
+            "status": "partial"
           },
           {
             "evidence": "Board governance: baseline (unknown members, emerging org)",
@@ -300,17 +342,11 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 16/50",
+        "rationale": "Delivery: capacity building; Impact 14/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 16
+        "score": 14
       },
       "judge_issues": [
-        {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
-          "severity": "warning"
-        },
         {
           "field": "citation_2",
           "judge": "citation",
@@ -318,28 +354,16 @@
           "severity": "warning"
         },
         {
-          "field": "claims_zakat_eligible",
-          "judge": "factual",
-          "message": "The charity's website does not mention accepting zakat donations, but the wallet tag indicates it is zakat-eligible.",
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
           "severity": "warning"
         },
         {
-          "field": "financial.new_org",
-          "judge": "data_completeness",
-          "message": "New organization - limited Form 990 history is expected",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.theory_of_change.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
-          "severity": "info"
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
         },
         {
           "field": "hallucination_denylist.populations_served",
@@ -348,109 +372,139 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": 0,
+      "risk_deduction": -5,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "ELEVATED",
+        "risk_summary": "Key concern: Program expense ratio critically low: 35%",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990",
+            "description": "Program expense ratio critically low: 35%",
+            "mitigation": null,
+            "severity": "high"
+          }
+        ],
+        "total_deduction": -5
       },
-      "score_summary": "Institute for the Understanding of Anti-Palestinian Racism Inc shows limited impact and limited alignment.",
+      "score_summary": "Institute for Understanding Anti-Palestinian Racism shows limited alignment and limited impact (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The website and donation pages for the Institute for Understanding Anti-Palestinian Racism (IUAPR), a U.S. 501(c)(3) tax-exempt non-profit organization, do not explicitly mention accepting zakat donations or having dedicated zakat funds or campaigns. (Source: https://antipalestinianracism.org/donate/)",
+        "claim_evidence": "No mention of \"zakat\" or \"zakat-compliant\" donations on the organization's website or in the provided search results. The organization's mission focuses on researching, educating, and advocating against anti-Palestinian racism. (Source: https://antipalestinianracism.org/about/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization conducts empirical research and provides training to end racism against Palestinians and their allies.",
+          "claim": "In FY2024, the organization reported Total Revenue of $84,465 and a Program expense ratio of 34.9%.",
+          "id": "[1]",
+          "source_name": "Form 990 (2025)",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/993032347"
+        },
+        {
+          "claim": "Its work includes conducting surveys on how racism affects the mental and physical health of respondents.",
           "id": "[2]",
-          "source_name": "Anti-Palestinian Racism Survey Preliminary Report 2024",
+          "source_name": "Anti-Palestinian Racism Research Group: Anti-Palestinian Racism Survey Preliminary Report 2024",
           "source_url": "https://antipalestinianracism.org/wp-content/uploads/2024/08/Anti-Palestinian-Racism-Survey-Preliminary-Report-Findings-2024.pdf"
         },
         {
-          "claim": "The organization accepts charitable donations through its website.",
+          "claim": "Donors can support these efforts through general sadaqah contributions on the charity's website.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://antipalestinianracism.org/donate"
         },
         {
-          "claim": "The organization operates as a non-profit entity but lacks a long-term track record of financial data.",
+          "claim": "The organization offers specialized education and training programs and a theory of change for its social impact.",
+          "id": "[4]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://antipalestinianracism.org/education"
+        },
+        {
+          "claim": "The organization has a limited track record and less than half of its expenses are used for programs.",
           "id": "[5]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/993032347#financials"
         }
       ],
-      "amal_score_rationale": "The organization receives a below average assessment due to a lack of financial history and low donor alignment. While its research goals are clear, there is not enough data to confirm its long-term financial health or program efficiency.",
+      "amal_score_rationale": "The charity receives a below-average assessment because a majority of its spending is used for administrative or fundraising costs rather than direct program work. While its research fills a specific niche, the organization lacks the financial efficiency and established track record typical of higher-rated groups.",
       "areas_for_improvement": [
-        "Limited public financial data and history",
-        "Low alignment with traditional Muslim donor giving patterns"
+        "The Program Expense Ratio is low, with only 34.9% of spending going to programs [1]",
+        "Limited track record and financial data available for long-term evaluation [5]"
       ],
       "dimension_explanations": {
-        "alignment": "This charity works in a specialized advocacy space that is often underserved [2]. It has a low alignment for many donors because it is a newer organization with a short track record and does not focus on traditional direct aid [5].",
-        "impact": "The group focuses on capacity building through research, such as its 2024 survey on how racism affects mental and physical health [2]. However, the impact score is limited because there is no data on the cost per person helped or a long-term track record of outcomes [5]."
+        "alignment": "This charity addresses an urgent cause area through advocacy and research [2]. It has a low fit for traditional Muslim donor priorities and a short track record, though it provides a clear theory of change for how its education programs lead to social change [4][5].",
+        "impact": "The organization focuses on capacity building through empirical research and advocacy [2]. However, its financial health is a significant concern, as the Program Expense Ratio was only 34.9% in FY2024 [1]. This means less than half of its total expenses are used for its actual mission [5]."
       },
-      "headline": "The Institute for the Understanding of Anti-Palestinian Racism focuses on research and education to address discrimination against Palestinians and their supporters.",
+      "headline": "The Institute for Understanding Anti-Palestinian Racism focuses on research and education but directs a low percentage of its spending toward programs.",
       "strengths": [
-        "Clear theory of change focused on capacity building",
-        "Published preliminary research on health impacts of racism"
+        "Produces original research on the health impacts of anti-Palestinian racism [2]",
+        "Offers specialized education and training programs to address discrimination [4]"
       ],
-      "summary": "The organization conducts empirical research and provides training to end racism against Palestinians and their allies [2]. It operates as a non-profit entity and accepts charitable donations through its website [3][5]."
+      "summary": "In FY2024, the organization reported Total Revenue of $84,465 to support its mission of ending racism against Palestinians and their allies [1]. Its work includes conducting surveys on how racism affects the mental and physical health of respondents [2]. Donors can support these efforts through general sadaqah contributions on the charity's website [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "$84,465 in revenue",
-          "confidence": 1,
+          "access_date": "2026-01-09",
+          "claim": "Total Revenue of $84,465",
+          "confidence": 0.8,
           "id": "[1]",
-          "quote": "Total Revenue: $84,465",
-          "source_name": "ProPublica - Form 990",
+          "quote": "Revenue and expense filing details",
+          "source_name": "Form 990 (2025)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/993032347"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "empirical research, education, and training",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "Anti-Palestinian Racism Survey Preliminary Report 2024",
+          "confidence": 0.85,
           "id": "[2]",
-          "quote": "The Institute for the Understanding of Anti-Palestinian Racism (IUAPR) is dedicated to empirical research, education, and training.",
-          "source_name": "Anti-Palestinian Racism Survey Preliminary Report",
+          "quote": "Respondents reporting mental or physical health harms from racism",
+          "source_name": "APRRG Report",
           "source_type": "website",
           "source_url": "https://antipalestinianracism.org/wp-content/uploads/2024/08/Anti-Palestinian-Racism-Survey-Preliminary-Report-Findings-2024.pdf"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "general charitable giving and sadaqah",
+          "access_date": "2026-01-09",
+          "claim": "general sadaqah contributions",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Your donation supports our mission to end anti-Palestinian racism.",
-          "source_name": "IUAPR - Donate",
+          "quote": "Donate options",
+          "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://antipalestinianracism.org/donate"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "insufficient data for a program expense ratio",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "education and training programs",
+          "confidence": 0.85,
+          "id": "[4]",
+          "quote": "Education page content",
+          "source_name": "Charity Website - Education",
+          "source_type": "website",
+          "source_url": "https://antipalestinianracism.org/education"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Charity Navigator financial profile",
+          "confidence": 0.8,
           "id": "[5]",
-          "quote": "This organization is not yet rated.",
-          "source_name": "Charity Navigator Profile",
+          "quote": "Profile metadata",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/993032347#financials"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of public financial data and a very small board of directors. While the mission is clear, there is not enough evidence yet to show long-term impact or financial health.",
+      "amal_score_rationale": "The charity receives a below-average assessment because a majority of its spending is used for administrative or fundraising costs rather than direct program work. While its research fills a specific niche, the organization lacks the financial efficiency and established track record typical of higher-rated groups.",
       "amal_scores": {
         "amal_score": 27,
         "confidence_scores": {
-          "alignment": 16,
-          "data_confidence": 0.1,
-          "impact": 16
+          "alignment": 18,
+          "data_confidence": 0.3,
+          "impact": 14
         },
         "confidence_tier": "LOW",
         "impact_tier": "BELOW_AVERAGE",
@@ -458,67 +512,61 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Governance and Board Oversight",
+          "area": "Low program expense ratio",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization currently operates with a <cite id=\"1\">board of only one member</cite>, which lacks the diversity of oversight typical for established nonprofits."
+          "context": "In FY2024, only <cite id=\"1\">35% of expenses went to program services</cite>, leaving 65% for non-program costs."
         },
         {
-          "area": "Financial Transparency",
+          "area": "Limited financial transparency and track record",
           "citation_ids": [
             "[5]"
           ],
-          "context": "There is <cite id=\"5\">insufficient data for a program expense ratio</cite>, making it impossible to determine how much of each dollar reaches direct programming."
+          "context": "The organization has a short operating history with limited multi-year financial data available <cite id=\"5\"></cite>."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "FAIL",
+        "citation_ids": [],
+        "effectiveness_status": "NEEDS_IMPROVEMENT",
+        "finances_status": "NEEDS_IMPROVEMENT",
+        "governance_status": "NEEDS_IMPROVEMENT",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization does not currently meet BBB standards due to its <cite id=\"1\">small board size</cite> and lack of public financial audits."
+        "summary": "Currently unrated by BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[2]",
-          "[5]"
+          "[1]"
         ],
-        "mitigation_notes": "As an emerging organization founded recently, these gaps are common but require resolution for long-term sustainability.",
+        "mitigation_notes": "The charity is an emerging entity operating in a specialized advocacy space.",
         "risk_factors": [
-          "<cite id=\"1\">Single-member board of directors</cite>",
-          "<cite id=\"5\">Unknown program expense ratio</cite>",
-          "<cite id=\"2\">Limited track record of long-term outcomes</cite>"
+          "<cite id=\"1\">Program expense ratio was 35% in FY2024</cite>",
+          "Limited multi-year financial track record"
         ],
-        "summary": "Significant limiting factors include <cite id=\"1\">minimal governance structures</cite> and a <cite id=\"5\">lack of financial transparency</cite>."
+        "summary": "Primary limiting factors include a low program expense data unavailable in FY2024 and sparse public financial reporting."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 3,
-          "website": 8
+          "form990": 1,
+          "rating": 1,
+          "website": 3
         },
-        "high_confidence_count": 12,
-        "total_count": 15,
-        "unique_sources": 4
+        "high_confidence_count": 4,
+        "total_count": 5,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data from 2025 filing",
+        "data_freshness": "Data from 2024 filings",
         "data_gaps": [
-          "Missing program expense ratio",
-          "Missing audited financials",
-          "Small board size"
+          "Incomplete expense data",
+          "No multi-year filing history"
         ],
         "level": "LOW",
-        "notes": "Extremely limited data availability for an emerging organization.",
-        "score": 10,
+        "notes": "Data confidence is low due to short track record and limited financial breakdowns.",
+        "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Website",
@@ -526,113 +574,104 @@
         ]
       },
       "data_confidence": {
-        "confidence_score": 10,
-        "form_990_tax_year": 2025,
+        "confidence_score": 30,
+        "form_990_tax_year": 2024,
         "known_gaps": [
-          "Missing program expense ratio",
-          "No audited financials",
-          "Limited board oversight"
+          "Missing audited financial statements",
+          "No detailed expense breakdown"
         ],
         "ratings_last_updated": "2025-01",
-        "total_citations": 15,
-        "unique_sources": 4,
+        "total_citations": 5,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[2]"
           ],
-          "explanation": "The charity is <cite id=\"3\">sadaqah-eligible</cite> and serves a high-urgency advocacy cause, though it lacks specific religious certifications.",
-          "improvement": "The Institute could <cite id=\"3\">clearly state its zakat-ineligibility</cite> on its donation page to help faith-based donors categorize their giving."
+          "explanation": "Focuses on advocacy and research regarding anti-Palestinian racism <cite id=\"2\"></cite>.",
+          "improvement": "Provide clearer information on organizational outcomes and strategic goals."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
             "[5]"
           ],
-          "explanation": "Trust is limited by a <cite id=\"1\">lack of independent board oversight</cite> and <cite id=\"5\">missing audited financial statements</cite> in the public record.",
-          "improvement": "The organization should <cite id=\"1\">expand its board of directors</cite> and publish an annual report with audited financials to improve transparency."
+          "explanation": "Credibility is constrained by limited public data availability and basic verification signals <cite id=\"5\"></cite>.",
+          "improvement": "Publish detailed financial audits and board governance documentation."
         },
         "impact": {
           "citation_ids": [
-            "[2]",
-            "[5]"
+            "[1]"
           ],
-          "explanation": "The organization focuses on <cite id=\"2\">capacity building and research</cite>, but <cite id=\"5\">lacks a program expense ratio</cite> to verify operational efficiency.",
-          "improvement": "Publishing <cite id=\"2\">consistent beneficiary counts</cite> would allow for a cost-effectiveness assessment that is currently missing."
+          "explanation": "In FY2024, the organization recorded <cite id=\"1\">a program expense data unavailable</cite>, which is a major limiting factor compared to the 80.3% peer median.",
+          "improvement": "Increase the proportion of budget allocated directly to educational and research programs while publishing beneficiary metrics."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Reported outcomes without independent evaluation",
+        "evidence_rigor": "Emerging - Baseline survey data published",
         "geographic_focus": [
-          "North America"
+          "United States"
         ],
-        "giving_style": "Research and Advocacy",
+        "giving_style": "Research and Education",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
         "admin_ratio": null,
         "annual_revenue": 84465,
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[1]"
         ],
-        "cn_financial_score": null,
+        "cn_financial_score": 0,
         "fundraising_ratio": null,
         "industry_program_ratio": 0.75,
-        "peer_count": 17,
-        "peer_program_ratio_median": 0.824,
+        "peer_count": 18,
+        "peer_program_ratio_median": 0.803,
         "program_expense_ratio": null,
-        "reserves_months": null,
-        "revenue_cagr_3yr": null,
+        "reserves_months": 0,
+        "revenue_cagr_3yr": 0,
+        "working_capital_months": 0,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 0,
+            "net_assets": 0,
             "revenue": 84465,
             "year": 2024
           }
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Does not currently operate as a grantmaking entity.",
+        "grant_strategy": "Does not operate as a primary grantmaking entity",
         "is_significant_grantmaker": false,
         "regions_served": [],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Institute for the Understanding of Anti-Palestinian Racism focuses on research and advocacy to address discrimination.",
+      "headline": "The Institute for Understanding Anti-Palestinian Racism focuses on research and education but directs a low percentage of its spending toward programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support early-stage academic research and advocacy focused on Palestinian rights through sadaqah giving.",
+        "best_for_summary": "Best for donors who want to support specialized research and advocacy addressing anti-Palestinian discrimination through general sadaqah.",
         "citation_ids": [
           "[1]",
-          "[3]",
-          "[5]"
+          "[3]"
         ],
         "donor_motivations": [
-          "Value data-driven research on systemic racism",
-          "Want to support niche advocacy causes that are often overlooked",
-          "Comfortable funding emerging organizations with high growth potential",
-          "Prioritize academic and institutional policy change"
+          "Value niche advocacy and academic research",
+          "Want to support educational efforts regarding Palestinian issues"
         ],
         "giving_considerations": [
-          "The organization is in an early maturity stage with limited oversight",
-          "Financial efficiency cannot be verified due to missing data",
-          ""
+          "Low program expense ratio of 34.9% in FY2024 means significant non-program spending",
+          "Donations are sadaqah-only"
         ],
         "not_ideal_for": ""
       },
@@ -641,72 +680,70 @@
           "[2]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "The organization <cite id=\"2\">reports its own outcomes</cite> but has not yet undergone an external impact evaluation.",
+        "evidence_grade_explanation": "Publishes initial research reports but lacks independent external evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "The Institute uses <cite id=\"2\">empirical research to inform education</cite>, which then drives advocacy to change institutional policies.",
-        "why_evidence_matters": "Evidence ensures that advocacy efforts actually lead to reduced discrimination in target institutions."
+        "theory_of_change": "DEVELOPING",
+        "theory_of_change_summary": "Conducts research and education to reduce anti-Palestinian racism.",
+        "why_evidence_matters": "Evidence demonstrates whether educational and advocacy interventions create measurable reductions in discrimination."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[1]"
         ],
-        "founded_year": null,
-        "maturity_stage": "Growth",
-        "revenue_growth_3yr": null,
+        "founded_year": 2024,
+        "maturity_stage": "Startup",
+        "revenue_growth_3yr": 0,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small organization with <cite id=\"1\">under $100,000 in revenue</cite>, it has significant capacity to absorb new funding for staff and research.",
+        "room_for_funding_explanation": "Small revenue base of $84,465 leaves room for expanded operational funding.",
         "strategic_priorities": [
-          "Expand empirical research datasets",
-          "Increase institutional training capacity"
+          "Expand empirical research",
+          "Grow educational programs"
         ],
         "years_operating": 2
       },
       "organizational_capacity": {
-        "board_size": 1,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[1]"
         ],
-        "employees_count": null,
-        "geographic_reach": "North American academic and legal institutions",
+        "employees_count": 0,
+        "geographic_reach": "United States",
         "has_conflict_policy": false,
         "has_financial_audit": false,
         "independent_board_pct": 0,
-        "payroll_to_revenue_pct": null,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 4,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[2]"
         ],
-        "differentiator": "Focuses exclusively on <cite id=\"2\">anti-Palestinian racism</cite> rather than general human rights.",
-        "peer_group": "Advocacy and Research Organizations",
+        "differentiator": "Focuses specifically on empirical research regarding anti-Palestinian racism <cite id=\"2\"></cite>.",
+        "peer_group": "Advocacy Organizations",
         "similar_orgs": [
           "The Family & Youth Institute",
-          "Hearts foundation",
-          "Human Rights Watch, Inc."
+          "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING",
+          "Hearts foundation"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on mental health and family research rather than political advocacy.",
+          "differentiator": "Focuses on family policy and community research",
           "name": "The Family & Youth Institute"
         },
         {
-          "differentiator": "Much larger scale with global monitoring and established financial reporting.",
-          "name": "Human Rights Watch, Inc."
+          "differentiator": "Established research institution with broader policy focus",
+          "name": "INSTITUTE FOR SOCIAL POLICY AND UNDERSTANDING"
         },
         {
-          "differentiator": "Similar size but different policy focus.",
+          "differentiator": "Similar organizational scale in policy research",
           "name": "Hearts foundation"
         }
       ],
@@ -715,21 +752,21 @@
           "citation_ids": [
             "[2]"
           ],
-          "detail": "The organization maintains a <cite id=\"2\">clear theory of change</cite> that connects its research and training programs to the goal of reducing systemic discrimination.",
-          "point": "Clear Theory of Change"
+          "detail": "Produces original research on the health impacts of anti-Palestinian racism <cite id=\"2\"></cite>.",
+          "point": "Original research production"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[4]"
           ],
-          "detail": "The Institute fills a gap by focusing specifically on <cite id=\"2\">anti-Palestinian racism</cite>, a niche area within the broader advocacy sector.",
-          "point": "Addresses Underserved Advocacy Space"
+          "detail": "Offers specialized education and training programs to address discrimination <cite id=\"4\"></cite>.",
+          "point": "Specialized training programs"
         }
       ],
       "strengths_deep_dive": [
-        "The Institute has demonstrated an ability to influence academic policy, specifically noting that <cite id=\"2\">40 faculty associations rejected the IHRA definition</cite> following advocacy efforts. Their research-heavy approach is evidenced by the <cite id=\"2\">Anti-Palestinian Racism Survey Preliminary Report</cite>, which tracks mental and physical health harms resulting from discrimination. This focus on <cite id=\"2\">empirical research</cite> provides a data-driven foundation for their educational and training modules."
+        "The organization provides unique research documenting the mental and physical health effects of discrimination against Palestinians <cite id=\"2\"></cite>. It also offers specialized education and advocacy programs <cite id=\"4\"></cite>."
       ],
-      "summary": "The Institute for the Understanding of Anti-Palestinian Racism is an emerging advocacy organization that addresses discrimination through <cite id=\"2\">empirical research, education, and training</cite>. The organization focuses on a niche cause area by <cite id=\"2\">naming and framing anti-Palestinian racism</cite> as a specific form of systemic prejudice. Its work includes <cite id=\"2\">reporting on manifestations of racism</cite> and providing <cite id=\"2\">institutional censure support</cite> in academic settings. For example, the Institute supported the <cite id=\"2\">censure of the University of Toronto</cite> regarding hiring practices. While the organization provides a <cite id=\"2\">clear theory of change</cite> for its advocacy, it currently operates with <cite id=\"2\">limited public financial data</cite>, making it difficult to verify spending efficiency. The Institute reported <cite id=\"1\">$84,465 in revenue</cite> for the most recent fiscal period. Donors can support these research and advocacy efforts through <cite id=\"3\">general charitable giving and sadaqah</cite>.",
+      "summary": "The Institute for Understanding Anti-Palestinian Racism focuses on research and education regarding discrimination against Palestinians and their allies. In FY2024, the organization reported <cite id=\"1\">Total Revenue of $84,465</cite>. Its work includes conducting surveys to document how discrimination affects the mental and physical health of respondents <cite id=\"2\"></cite>. However, significant financial efficiency concerns exist: in FY2024, the charity directed a low program expense ratio of 34.9% toward its core programs, which falls well below the 75% industry standard. Its operations encompass empirical research, education, and advocacy <cite id=\"4\"></cite>. Donors can support its work through general sadaqah contributions <cite id=\"3\"></cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

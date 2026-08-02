@@ -68,12 +68,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-28 18:28:41",
+  "lastUpdated": "2026-08-02 11:46:41",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 1150018
     },
     "beneficiaries_served_annually": {
@@ -81,8 +81,8 @@
       "semantics": {
         "category": "annual_people_served",
         "confident": true,
-        "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-29T00:50:01.152501+00:00",
+        "model": "gemini-3.5-flash-lite",
+        "timestamp": "2026-08-02T18:45:47.992584+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -94,7 +94,7 @@
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#ratings",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 40
     },
     "claims_zakat_eligible": {
@@ -112,7 +112,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 12935
     },
     "has_audited_financials": {
@@ -124,25 +124,25 @@
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 0.11710000000000001
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 271263
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 1434218
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/721528691#financials",
-      "timestamp": "2026-07-24T00:19:50",
+      "timestamp": "2026-08-02T11:45:27",
       "value": 1371252
     }
   },
@@ -153,11 +153,7 @@
   },
   "causeTags": [
     "faith-based",
-    "fisabilillah",
-    "fuqara",
-    "masakin",
     "medical",
-    "muallaf",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -169,7 +165,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2005,
-  "scoreSummary": "Taleef Collective shows good impact and good alignment, with zakat compliance (significant risk deductions applied).",
+  "scoreSummary": "Ta'leef Collective shows good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -180,8 +176,8 @@
     "semantics": {
       "category": "annual_people_served",
       "confident": true,
-      "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-29T00:50:01.152501+00:00",
+      "model": "gemini-3.5-flash-lite",
+      "timestamp": "2026-08-02T18:45:47.992584+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -199,9 +195,7 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
-      "Grant (DAFgiving360)",
-      "Grant (Fidelity Investments Charitable Gift Fund)",
-      "Grant (American Online Giving Foundation)"
+      "Featured in 5 Fast Minutes (American Muslim Community Foundation)"
     ],
     "receivesFoundationGrants": null
   },
@@ -213,7 +207,7 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Context Dependent",
+    "assessment_label": "Limited Basis",
     "archetype_code": "RESILIENCE",
     "archetype_label": "Community Resilience",
     "evidence_stage": "Early",
@@ -221,14 +215,39 @@
       "evidence": "Strong",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
-      "risk": "Moderate"
+      "risk": "Limited"
     },
-    "recommendation_cue": "Mixed Signals",
-    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
+    "recommendation_cue": "Limited Match",
+    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FYNone Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "field": "working_capital_months",
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "high",
+      "headline": "CEO compensation is 12.5% of revenue ($171,667 on $1,371,252)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 171667,
+        "comp_ratio": 0.1252,
+        "threshold": 0.05,
+        "total_revenue": 1371252
+      }
+    },
     {
       "type": "risk_deduction",
       "severity": "high",
@@ -247,14 +266,14 @@
   "amalEvaluation": {
     "charity_ein": "72-1528691",
     "charity_name": "Ta'leef Collective",
-    "amal_score": 55,
+    "amal_score": 39,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:29:30",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.3,
-      "impact": 31
+      "impact": 15
     },
     "score_details": {
       "alignment": {
@@ -343,13 +362,13 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 5.2 months (RESILIENT)",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Working capital: unknown (UNKNOWN)",
+            "improvement_suggestion": "Publish current reserve levels and a board-approved reserve policy (often 3-12 months for most nonprofits).",
+            "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 6,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           },
           {
             "evidence": "Program expense ratio: 12%",
@@ -379,21 +398,21 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: STRONG (10 members)",
+            "evidence": "Board: unknown members, but For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny. \u2014 oversight concern",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           }
         ],
         "cost_per_beneficiary": 2170.104,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$2170.10/beneficiary; Delivery: capacity building; Impact 31/50",
+        "rationale": "$2170.10/beneficiary; Delivery: capacity building; Impact 15/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 31
+        "score": 15
       },
       "judge_issues": [
         {
@@ -411,7 +430,7 @@
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity's programs primarily focus on religious education, community building, and support for converts. While 'muallaf' is listed as a served asnaf category, the direct evidence linking program activities to this specific category is not explicit in the provided descriptions. The 'Convert Care' program and general support for new Muslims align with the 'muallaf' category, but more detailed information on how these programs specifically address the needs of 'muallaf' would strengthen the classification.",
+          "message": "The charity classified as muallaf (new Muslims), but their core activities and programs span general educational classes, community gatherings, and direct financial assistance. While they have a Convert Care program, the broad scope suggests potential overlap with Fi Sabilillah or Fuqara/Masakin.",
           "severity": "warning"
         },
         {
@@ -457,11 +476,18 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
+          },
+          {
+            "category": "operational",
+            "data_source": "Reconciliation",
+            "description": "CEO compensation is 12.5% of revenue ($171,667 on $1,371,252)",
+            "mitigation": null,
+            "severity": "high"
           }
         ],
         "total_deduction": -6
       },
-      "score_summary": "Taleef Collective shows good impact and good alignment, with zakat compliance (significant risk deductions applied).",
+      "score_summary": "Ta'leef Collective shows good alignment and limited impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -473,72 +499,71 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Ta'leef Collective is zakat-eligible and accepts these funds to support its mission.",
+          "claim": "The charity is ZAKAT-ELIGIBLE for donors looking to fulfill their religious obligations.",
           "id": "[1]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://taleefcollective.org/donate/zakat"
         },
         {
-          "claim": "The charity maintains 5.2 months of working capital and shows high marks for governance.",
+          "claim": "The group currently lacks a documented theory of change to measure its success.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/721528691#financials"
         },
         {
-          "claim": "In fiscal year 2024, the charity reported total revenue of $1,371,252 and a program expense ratio of 11.7%.",
+          "claim": "In FY2024, the charity reported Total Revenue of $1,371,252 and a Program expense ratio of 11.7%, with CEO pay at $171,667.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/721528691"
         },
         {
-          "claim": "The organization offers programs like Convert Care and Inheritors to help people understand and practice Islam.",
+          "claim": "The organization offers programs like Convert Care and Inheritors to help people understand and embrace Islam.",
           "id": "[5]",
           "source_name": "Annual Report",
           "source_url": "https://www.taleefcollective.org/about"
         }
       ],
-      "amal_score_rationale": "Ta'leef Collective shows a balanced profile with strong governance and clear program outcomes, but its overall rating is limited by a very low percentage of spending on direct programs. While the organization is financially stable, only a small portion of its total revenue reached its core services in the most recent filings.",
+      "amal_score_rationale": "The charity has a low overall rating due to a very small percentage of funds reaching its programs and high administrative costs. While it provides valued community services, its financial health and lack of a clear strategy for long-term impact are major concerns.",
       "areas_for_improvement": [
-        "Increase the program expense ratio, which was 11.7% in FY2024 [3]",
-        "Develop and document a formal theory of change to guide long-term impact",
-        "Lower the cost per beneficiary to improve spending efficiency"
+        "Increase the portion of spending that goes directly to programs",
+        "Reduce high executive pay relative to the total budget",
+        "Develop and share a formal theory of change to explain how activities lead to results"
       ],
       "dimension_explanations": {
-        "alignment": "Ta'leef Collective serves a specific need in the Muslim community by focusing on converts and religious education [5]. It has a solid track record and fills a unique gap in social services [2]. Donors can contribute via zakat, which the organization processes according to specific religious guidelines [1].",
-        "impact": "The charity spends $2,170.10 per beneficiary, which is a high cost for its capacity-building work [2]. While it has earned high marks for governance and outcome evidence, its program expense ratio was only 11.7% in FY2024 [3]. This means a large portion of funds went toward administrative or other non-program costs [2]."
+        "alignment": "Ta'leef Collective fits the needs of Muslim donors by focusing on religious education and is ZAKAT-ELIGIBLE [1]. However, the CEO's pay of $171,667 represents 12.5% of the total revenue, which may concern donors looking for high financial efficiency [3].",
+        "impact": "The charity spends a high amount of $2,170.10 per person served, and its Program Expense Ratio was only 11.7% in FY2024 [3]. This means a large part of the budget goes to costs other than direct services, and the group currently lacks a documented theory of change to measure its success [2]."
       },
-      "headline": "Ta'leef Collective provides a space for people to learn about and embrace Islam through community support and education.",
+      "headline": "Ta'leef Collective provides religious education and community support but faces significant financial efficiency challenges.",
       "strengths": [
-        "Maintains 5.2 months of working capital to cover operations [2]",
-        "Strong governance and documented evidence of program outcomes [2]",
-        "Provides specialized support for converts and youth through dedicated programs [5]"
+        "Provides specialized support for new Muslims through the Convert Care program",
+        "Maintains a clear track record of offering religious and cultural content"
       ],
-      "summary": "The organization offers programs like Convert Care and Inheritors to help people understand and practice Islam [5]. In fiscal year 2024, the charity reported total revenue of $1,371,252 [3]. Ta'leef Collective is zakat-eligible and accepts these funds to support its mission [1]."
+      "summary": "The organization offers programs like Convert Care and Inheritors to help people understand and embrace Islam [5]. In FY2024, the charity reported Total Revenue of $1,371,252 [3]. It is recognized as ZAKAT-ELIGIBLE for donors looking to fulfill their religious obligations [1]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-20",
-          "claim": "zakat-eligible",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "zakat eligibility",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Ta'leef Collective is a Zakat-eligible organization.",
-          "source_name": "Ta'leef Collective - Zakat",
+          "quote": "Zakat accepted for eligible programs",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://taleefcollective.org/donate/zakat"
         },
         {
-          "access_date": "2025-01-20",
-          "claim": "40/100 overall score from Charity Navigator",
-          "confidence": 1,
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 11.7%",
+          "confidence": 0.95,
           "id": "[2]",
-          "quote": "Overall Score: 40/100",
-          "source_name": "Charity Navigator - Ta'leef Collective",
+          "quote": "Program Expense Ratio: 11.7%",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/721528691#financials"
         },
         {
-          "access_date": "2025-01-20",
+          "access_date": "2026-01-09",
           "claim": "total revenue of $1,397,233",
           "confidence": 1,
           "id": "[3]",
@@ -548,112 +573,143 @@
           "source_url": "https://projects.propublica.org/nonprofits/organizations/721528691"
         },
         {
-          "access_date": "2025-01-20",
+          "access_date": "2026-01-09",
           "claim": "donation options",
           "confidence": 0.9,
           "id": "[4]",
-          "quote": "Support our mission through one-time or monthly gifts.",
-          "source_name": "Ta'leef Collective - Donate",
+          "quote": "Support our core operations and programs",
+          "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://www.taleefcollective.org/donate"
         },
         {
-          "access_date": "2025-01-20",
-          "claim": "founded in 2005",
-          "confidence": 1,
+          "access_date": "2026-01-09",
+          "claim": "101 shahadas in 2023",
+          "confidence": 0.9,
           "id": "[5]",
-          "quote": "founded in 2005 to provide a space for healthy understanding of Islam.",
-          "source_name": "Ta'leef Collective - About",
+          "quote": "Shahadas facilitated: 101",
+          "source_name": "Annual Report",
           "source_type": "website",
           "source_url": "https://www.taleefcollective.org/about"
         }
       ],
-      "amal_score_rationale": "The charity receives an average rating because its strong financial stability and fundraising efficiency are offset by a very low percentage of funds reaching its actual programs.",
+      "amal_score_rationale": "The charity has a low overall rating due to a very small percentage of funds reaching its programs and high administrative costs. While it provides valued community services, its financial health and lack of a clear strategy for long-term impact are major concerns.",
       "amal_scores": {
-        "amal_score": 55,
+        "amal_score": 39,
         "confidence_scores": {
           "alignment": 30,
           "data_confidence": 0.3,
-          "impact": 31
+          "impact": 15
         },
         "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
+        "impact_tier": "BELOW_AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Low Program Expense Ratio",
+          "area": "Low Program Spending Efficiency",
           "citation_ids": [
             "[2]"
           ],
-          "context": "Only <cite id=\"2\">12% of total expenses</cite> are directed toward programs, which is a major concern for financial efficiency."
+          "context": "The organization's <cite id=\"2\">program expense ratio is 12%</cite>, leaving 88% directed toward non-program overhead."
         },
         {
-          "area": "High Cost Per Beneficiary",
+          "area": "Governance and Transparency Deficits",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The charity meets <cite id=\"2\">0 out of 20 BBB Wise Giving Alliance standards</cite> and lacks documented reserve policies."
+        },
+        {
+          "area": "High Executive Compensation Relative to Revenue",
           "citation_ids": [
             "[3]"
           ],
-          "context": "The current model results in a <cite id=\"3\">cost of $2,170.10 per beneficiary</cite>, reflecting a high-overhead service delivery style."
+          "context": "Executive pay of <cite id=\"3\">$171,667 to CEO Ali Dia</cite> represents over 12% of total revenue in FY2024."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
+        "citation_ids": [
+          "[2]"
+        ],
+        "effectiveness_status": "FAIL",
         "finances_status": "FAIL",
-        "governance_status": "UNKNOWN",
+        "governance_status": "FAIL",
         "meets_all_standards": false,
         "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "The organization does not currently have a BBB Wise Giving Alliance accreditation."
+        "standards_not_met": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "summary": "Does not meet BBB Wise Giving Alliance standards for accountability."
       },
       "case_against": {
         "citation_ids": [
           "[2]",
           "[3]"
         ],
-        "mitigation_notes": "The organization maintains a high-touch, resource-intensive model for wellness and re-entry.",
+        "mitigation_notes": "The organization continues to report direct service outputs such as convert care events and community gatherings.",
         "risk_factors": [
-          "<cite id=\"2\">Critically low program spending</cite>",
-          "<cite id=\"3\">High executive compensation relative to program output</cite>"
+          "<cite id=\"2\">Program expense ratio of 11.7% in FY2024 filings</cite>",
+          "<cite id=\"2\">0/20 standards met with BBB Wise Giving Alliance</cite>",
+          "<cite id=\"3\">CEO compensation ($171,667) exceeds 12% of overall annual revenue</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"2\">program expense ratio of 11.7%</cite>, which is far below the 75% benchmark. This means only a small fraction of donations directly funds services."
+        "summary": "Primary limiting factors include an extremely low <cite id=\"2\">program expense ratio of 11.7%</cite>, zero compliance with <cite id=\"2\">BBB accountability standards</cite>, and high executive pay relative to revenue."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 5,
-          "website": 6
+          "form990": 1,
+          "rating": 1,
+          "website": 3
         },
-        "high_confidence_count": 12,
-        "total_count": 15,
-        "unique_sources": 5
+        "high_confidence_count": 5,
+        "total_count": 5,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023/2024",
+        "data_freshness": "Data from 2023 and 2024 filings",
         "data_gaps": [
-          "Missing 2024 audited financials",
-          "Low transparency ratings"
+          "Incomplete expense metrics",
+          "Lack of board oversight verification"
         ],
         "level": "LOW",
-        "notes": "Low data confidence due to poor accountability scores and limited financial transparency.",
+        "notes": "Low data confidence due to transparency gaps and low evaluation scores",
         "score": 30,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Website"
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing audited financials",
-          "Low transparency score"
+          "Missing detailed expense breakdown for 2024",
+          "Unverified board composition"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 5,
+        "total_citations": 5,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
@@ -661,42 +717,39 @@
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "The organization is a <cite id=\"1\">zakat-eligible</cite> entity that serves <cite id=\"1\">converts and underserved Muslim populations</cite> in the US.",
-          "improvement": "Clarify <cite id=\"1\">zakat allocation policies</cite> and specific eligible use categories to better inform religious donors."
+          "explanation": "The organization offers moderate alignment for Muslim donors by providing <cite id=\"1\">zakat-eligible community programs</cite> and specialized convert outreach.",
+          "improvement": "Clarifying exact zakat allocation formulas and eligible distribution categories will improve donor confidence."
         },
         "credibility": {
           "citation_ids": [
-            "[2]",
-            "[5]"
+            "[2]"
           ],
-          "explanation": "Credibility is supported by a <cite id=\"2\">10-member board</cite> and a long <cite id=\"5\">operating history since 2005</cite>, though data confidence is limited by a <cite id=\"2\">low accountability score of 40/100</cite>.",
-          "improvement": "The charity should improve transparency by publishing more detailed financial audits and <cite id=\"2\">addressing accountability gaps</cite> noted by third-party evaluators."
+          "explanation": "Credibility is heavily limited due to low governance transparency. The charity holds a <cite id=\"2\">Charity Navigator score of 40.0/100</cite> and satisfies <cite id=\"2\">0 of 20 BBB Wise Giving Alliance standards</cite>. Data confidence remains low due to missing financial health disclosures.",
+          "improvement": "To strengthen credibility, the organization needs to publish independent board minutes, establish formal reserve policies, and meet standard BBB governance criteria."
         },
         "impact": {
           "citation_ids": [
-            "[2]",
-            "[5]"
+            "[2]"
           ],
-          "explanation": "Impact is focused on capacity building, yet the <cite id=\"2\">12% program ratio</cite> suggests that most spending stays within administrative functions.",
-          "improvement": "To strengthen impact, the organization should <cite id=\"5\">document a clear theory of change</cite> with an explicit causal pathway for its wellness programs."
+          "explanation": "Impact is constrained by low spending efficiency, as seen in a <cite id=\"2\">program expense ratio of 11.7%</cite> in FY2024 filings. Financial data shows a high <cite id=\"2\">cost per beneficiary of $2,170.10</cite>.",
+          "improvement": "The organization must redirect spending toward primary programs to improve its program expense ratio above the 75% benchmark."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "RELIGIOUS CULTURAL",
+        "cause_area": "Religious Cultural",
         "citation_ids": [
-          "1",
-          "5"
+          "[1]",
+          "[5]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but no independent evaluation",
+        "evidence_rigor": "Grade C - Internal outcome metrics published",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Community Infrastructure",
+        "giving_style": "Direct service and capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
-          "masakin (needy)",
-          "muallaf (reconciling hearts)"
+          "masakin (needy)"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -709,12 +762,12 @@
         ],
         "cn_financial_score": 21,
         "cn_overall_score": 40,
-        "fundraising_ratio": 0.01,
+        "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": 0.75,
         "program_expense_ratio": 0.11710000000000001,
-        "reserves_months": 5.2,
+        "reserves_months": 0,
         "revenue_cagr_3yr": 22.2,
         "yearly_financials": [
           {
@@ -736,7 +789,7 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service provider",
+        "grant_strategy": "Direct program delivery rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
@@ -744,58 +797,54 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Ta'leef Collective provides a welcoming space for Muslims but faces challenges with high overhead costs.",
+      "headline": "Ta'leef Collective provides religious education and community support but faces significant financial efficiency challenges.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value specialized community spaces for converts and are comfortable funding high-overhead, high-touch spiritual mentorship.",
+        "best_for_summary": "Best for donors who prioritize specialized convert integration and are willing to accept low financial efficiency metrics to support local community spaces.",
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[1]",
+          "[2]"
         ],
         "donor_motivations": [
-          "Want to support the specific needs of new Muslims",
-          "Value the creation of 'third spaces' for the Muslim community",
-          "Prioritize long-term spiritual wellness over immediate material aid"
+          "Seek to support convert care initiatives specifically",
+          "Value relational community programming over financial efficiency metrics",
+          "Want to fulfill zakat through specialized education initiatives"
         ],
         "giving_considerations": [
-          "High administrative costs are a permanent feature of this model",
-          "Impact is measured in spiritual growth and community belonging",
-          "Financial efficiency is significantly lower than humanitarian peers"
+          "Only 12 cents of every dollar in FY2024 went directly to program expenses",
+          "Governance structures do not currently meet BBB accountability standards"
         ],
-        "not_ideal_for": "Donors who prioritize high program-to-overhead ratios or those seeking large-scale international humanitarian impact."
+        "not_ideal_for": "Donors seeking high financial efficiency, rigorous independent evaluations, or low overhead ratios"
       },
       "impact_evidence": {
         "citation_ids": [
           "[5]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "The charity tracks basic outputs like <cite id=\"5\">shahadas and weekly attendance</cite>, but lacks rigorous third-party impact evaluations.",
-        "external_evaluations": [
-          "None"
-        ],
-        "outcome_tracking_years": 3,
+        "evidence_grade_explanation": "Grade C reflects self-reported output metrics without third-party evaluation.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 1,
         "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Ta'leef provides companionship and content to foster a healthy Muslim identity, though a formal causal pathway is not published.",
-        "why_evidence_matters": "Evidence ensures that the high cost per beneficiary translates into meaningful life changes for participants."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Provides educational classes and social support spaces to facilitate convert retention and community development.",
+        "why_evidence_matters": "Outcome tracking verifies whether spending produces durable social and educational benefits for beneficiaries."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
           "[5]"
         ],
         "founded_year": 2005,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 22.2,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "With <cite id=\"3\">revenue growth of 22%</cite>, the organization is expanding but needs to improve efficiency to attract larger institutional grants.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Small annual budget base allows additional funding absorption, though overall financial practices need improvement.",
         "strategic_priorities": [
           "Convert Care expansion",
-          "Wellness programs"
+          "Ta'leef Academy expansion"
         ],
         "years_operating": 21
       },
       "organizational_capacity": {
-        "board_size": 10,
+        "board_size": 0,
         "ceo_compensation": 171667,
         "ceo_compensation_pct_revenue": 12.52,
         "ceo_name": "Ali Dia",
@@ -804,10 +853,10 @@
           "[3]"
         ],
         "employees_count": 0,
-        "geographic_reach": "California, USA",
-        "has_conflict_policy": true,
+        "geographic_reach": "United States",
+        "has_conflict_policy": false,
         "has_financial_audit": false,
-        "independent_board_pct": 1,
+        "independent_board_pct": 0,
         "payroll_to_revenue_pct": 0,
         "programs_count": 5,
         "staff_per_million_revenue": 0,
@@ -815,56 +864,45 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[5]"
+          "[2]"
         ],
-        "differentiator": "Focuses on <cite id=\"5\">convert care and spiritual wellness</cite> rather than traditional humanitarian aid.",
-        "peer_group": "Religious Cultural Organizations",
+        "differentiator": "Focuses on convert care and youth fellowship, but severely lags peers in spending efficiency with a <cite id=\"2\">12% program ratio</cite>.",
+        "peer_group": "Religious and Cultural Nonprofits",
         "similar_orgs": [
-          "CelebrateMercy",
-          "Islamic Networks Group (ING)"
+          "Muslim Educational Organizations",
+          "Community Outreaches"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "More focus on prophet-centric education",
-          "name": "CelebrateMercy"
+          "differentiator": "Focuses specifically on convert care and youth outreach",
+          "name": "Local Islamic Educational Centers"
         },
         {
-          "differentiator": "Focus on interfaith advocacy",
-          "name": "ING"
-        },
-        {
-          "differentiator": "Higher program efficiency and domestic aid focus",
-          "name": "ICNA Relief"
+          "differentiator": "Operates physical community hubs",
+          "name": "National Convert Care Support Networks"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[2]"
+            "[5]"
           ],
-          "detail": "The organization maintains <cite id=\"2\">5.2 months of working capital</cite>, ensuring it can sustain operations during funding fluctuations.",
-          "point": "Strong Financial Resilience"
-        },
-        {
-          "citation_ids": [
-            "[2]"
-          ],
-          "detail": "Ta'leef spends only <cite id=\"2\">$0.01 to raise every $1</cite>, which is an exceptionally lean fundraising cost.",
-          "point": "High Fundraising Efficiency"
+          "detail": "Offers dedicated services including Convert Care and Inheritors to assist new Muslims, facilitating <cite id=\"5\">101 shahadas in 2023</cite>.",
+          "point": "Specialized Convert Care Support"
         },
         {
           "citation_ids": [
             "[5]"
           ],
-          "detail": "The charity tracked <cite id=\"5\">101 facilitated shahadas</cite> and <cite id=\"5\">30 facilitated nikkahs</cite> in its most recent annual reporting.",
-          "point": "Verified Program Outcomes"
+          "detail": "Has provided community spaces and religious educational programming continuously since <cite id=\"5\">its founding in 2005</cite>.",
+          "point": "Established Operational History"
         }
       ],
       "strengths_deep_dive": [
-        "Ta'leef Collective demonstrates a strong ability to engage its community through media and events, reaching <cite id=\"5\">1,300 weekly beneficiaries</cite>. This engagement is supported by a <cite id=\"2\">Leadership score of 100/100</cite> from Charity Navigator, reflecting a clear organizational vision. Their <cite id=\"3\">revenue growth of 22.2%</cite> over three years suggests increasing donor trust in their niche mission of spiritual wellness and convert support."
+        "Ta'leef Collective serves a niche population by delivering specialized programming for converts and youth. In 2023, the organization facilitated <cite id=\"5\">101 shahadas and 30 nikkahs</cite>, while reaching roughly <cite id=\"5\">1,300 weekly beneficiaries</cite> across events and media channels. Established in <cite id=\"5\">2005</cite>, its track record shows sustained community presence in religious and cultural programming."
       ],
-      "summary": "Ta'leef Collective is a California-based organization <cite id=\"5\">founded in 2005</cite> that focuses on providing a welcoming space for Muslims, particularly converts and those seeking a healthy understanding of Islam. The organization operates several core initiatives, including <cite id=\"5\">Convert Care, Inheritors, and the Ta'leef Re-entry program</cite> for formerly incarcerated individuals. While the charity provides unique social and spiritual services, its financial profile presents a balanced mix of operational strengths and significant efficiency gaps. In FY2024, Ta'leef reported <cite id=\"3\">total revenue of $1,397,233</cite>, representing a <cite id=\"3\">three-year compound annual growth rate of 22.2%</cite>. However, the organization currently holds a <cite id=\"2\">40/100 overall score from Charity Navigator</cite>, largely due to its spending structure. A neutral evaluation of the charity reveals a high-touch service model that results in a <cite id=\"2\">program expense ratio of 11.7%</cite>, which is significantly below the 75% industry benchmark. This indicates that a large portion of funds is directed toward administrative and overhead costs rather than direct program delivery. Despite these financial concerns, the organization maintains <cite id=\"2\">5.2 months of working capital</cite>, providing a level of short-term financial resilience. Ta'leef is <cite id=\"1\">zakat-eligible</cite> and serves specific categories including the poor (fuqara) and those whose hearts are to be reconciled (muallaf).",
+      "summary": "Ta'leef Collective provides religious education, community support, and specialized convert care, but faces severe financial efficiency issues. Founded in 2005, the organization offers programs such as <cite id=\"5\">Convert Care, Inheritors, and Ta'leef Academy</cite> to assist individuals in their understanding of Islam. In FY2024, the charity reported a <cite id=\"3\">total revenue of $1,397,233</cite>, reflecting growth from <cite id=\"3\">$626,510 in 2020</cite>. While the organization fulfills a niche social role and is <cite id=\"1\">zakat-eligible</cite>, significant operational limitations exist. Specifically, the organization allocates a <cite id=\"2\">program expense ratio of 11.7%</cite> according to tax and rating data, which is well below the 75% sector benchmark. Additionally, third-party governance oversight is lacking, as demonstrated by a <cite id=\"2\">0/20 standard rating from the BBB Wise Giving Alliance</cite> and an <cite id=\"2\">overall score of 40.0/100 from Charity Navigator</cite>. Consequently, prospective donors face significant spending efficiency concerns despite the charity's active programming.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

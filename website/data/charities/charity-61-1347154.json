@@ -53,8 +53,8 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Children",
-      "Men"
+      "Men",
+      "Children"
     ],
     "geographicCoverage": [
       "Louisville, KY"
@@ -79,30 +79,30 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 21:01:29",
+  "lastUpdated": "2026-08-02 11:45:35",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
-      "timestamp": "2026-07-23T20:36:45",
-      "value": 120000
+      "timestamp": "2026-08-02T11:44:27",
+      "value": 0
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.nurislamicschool.org/donate.html",
+      "source_url": "https://www.nurislamicschool.org/uploads/1/7/3/4/17343453/ach_donation_form_landscape_5.22.18.pdf",
       "timestamp": "2026-07-23T20:27:41",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154",
-      "timestamp": "2026-07-23T20:36:43",
+      "timestamp": "2026-08-02T11:44:27",
       "value": 2001
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-08-02T11:44:27",
       "value": 0
     },
     "has_audited_financials": {
@@ -114,26 +114,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154",
-      "timestamp": "2026-07-23T20:36:43",
+      "timestamp": "2026-08-02T11:44:27",
       "value": "B20"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-08-02T11:44:27",
       "value": 1
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
-      "timestamp": "2026-07-23T20:36:45",
+      "timestamp": "2026-08-02T11:44:27",
+      "value": 3086386
+    },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
+      "timestamp": "2026-08-02T11:44:27",
       "value": 3086386
     },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154",
-      "timestamp": "2026-07-23T20:36:43",
-      "value": 2796768
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/611347154#financials",
+      "timestamp": "2026-08-02T11:44:27",
+      "value": 2894945
     },
     "working_capital_months": {
       "derived_from": [
@@ -141,9 +147,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154",
-      "timestamp": "2026-07-23T20:36:43",
+      "timestamp": "2026-08-02T11:44:27",
       "value": 12.2
     }
   },
@@ -167,7 +174,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2001,
-  "scoreSummary": "NUR ISLAMIC SCHOOL OF LOUISVILLE shows strong impact and moderate alignment.",
+  "scoreSummary": "Nur Islamic School of Louisville shows strong impact and moderate alignment.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -201,25 +208,41 @@
       "evidence": "Strong",
       "financial_health": "Strong",
       "donor_fit": "Limited",
-      "risk": "Moderate"
+      "risk": "Strong"
     },
     "recommendation_cue": "Good Match",
     "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 12.2,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "61-1347154",
     "charity_name": "Nur Islamic School of Louisville",
-    "amal_score": 59,
+    "amal_score": 64,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:45",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 0.6,
-      "impact": 35
+      "impact": 40
     },
     "score_details": {
       "alignment": {
@@ -344,28 +367,40 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: MINIMAL (4 members)",
+            "evidence": "Board governance: STRONG (7 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 5,
-            "status": "partial"
+            "scored": 10,
+            "status": "full"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 35/50",
+        "rationale": "Delivery: capacity building; Impact 40/50",
         "rubric_archetype": "EDUCATION",
-        "score": 35
+        "score": 40
       },
       "judge_issues": [
         {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
+          "field": "alignment",
+          "judge": "citation",
+          "message": "The provided PDF content is unparseable and binary stream data, preventing verification of the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "impact",
+          "judge": "citation",
+          "message": "The provided PDF content is unparseable, preventing confirmation that the school focuses on capacity building through its K-12 and early childhood programs.",
+          "severity": "warning"
+        },
+        {
+          "field": "summary",
+          "judge": "citation",
+          "message": "The provided PDF content is unparseable, preventing confirmation of the details regarding the Early Childhood Center, K-12 private school, and Green Tree Academy.",
+          "severity": "warning"
         },
         {
           "field": "discovered.outcomes.confidence",
@@ -393,135 +428,103 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "NUR ISLAMIC SCHOOL OF LOUISVILLE shows strong impact and moderate alignment.",
+      "score_summary": "Nur Islamic School of Louisville shows strong impact and moderate alignment.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The official donation pages and other relevant sections of the Nur Islamic School of Louisville website do not explicitly mention 'zakat' as a type of accepted donation or have a dedicated zakat fund. While they offer a 'Financial Aid Fund' to support students, it is not explicitly stated to be for zakat-eligible recipients. (Source: https://www.nurislamicschool.org/donate.html)",
+        "claim_evidence": "The official donation pages and 'About Us' sections of Nur Islamic School of Louisville (including its associated Guiding Light Islamic Center) do not explicitly mention 'zakat' as a donation option or a dedicated fund. They list various ways to donate, such as Zelle, CashApp, Mohid, mail, and automatic checking withdrawal for 'sadaqa jariyah', but no specific mention of zakat. (Source: https://www.nurislamicschool.org/uploads/1/7/3/4/17343453/ach_donation_form_landscape_5.22.18.pdf)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The school reported $2,894,945 in revenue, a 100.0% program expense ratio, 12.2 months of working capital, and $0.00 fundraising costs in FY2024.",
+          "claim": "The school holds 12.2 months of working capital and has a lower fit for the average Muslim donor.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/611347154#financials"
         },
         {
-          "claim": "Financial data from fiscal year 2024 filings shows total revenue of $2,894,945.",
+          "claim": "In FY2024, the organization managed total revenue of $2,894,945, a Program expense ratio of 100.0%, and fundraising efficiency of $0.00 per $1 raised.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154"
         },
         {
-          "claim": "The school operates K-12 programs and an early childhood center.",
+          "claim": "The school operates the Early Childhood Center, a K-12 private school, and the Green Tree Academy.",
           "id": "[3]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.nurislamicschool.org/uploads/1/4/3/7/143773515/nisl_supply_list_2026-27__1_.pdf"
-        },
-        {
-          "claim": "The school maintains a schedule of fees for its educational programs.",
-          "id": "[5]",
-          "source_name": "Document (PDF)",
-          "source_url": "https://www.nurislamicschool.org/uploads/1/4/3/7/143773515/nisl_schedule_of_fees_2026.2027__2_.pdf"
-        },
-        {
-          "claim": "The school accepts general charitable donations (sadaqah) through its website.",
-          "id": "[13]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://www.nurislamicschool.org/donate.html"
         }
       ],
-      "amal_score_rationale": "This organization maintains a balanced profile with very efficient spending and solid financial health, though its specific focus on local private education limits its alignment with broader charitable urgency.",
+      "amal_score_rationale": "The school shows average performance because its perfect program spending and strong financial health are balanced by a narrow geographic focus and lower fit for general donors.",
       "areas_for_improvement": [
-        "The school has a low fit for donors specifically seeking to support underserved or high-urgency global causes.",
-        "Governance structures could be strengthened to improve the overall organizational assessment."
+        "Limited geographic reach as a local educational institution",
+        "Lower alignment with broad Muslim donor priorities compared to international relief efforts"
       ],
       "dimension_explanations": {
-        "alignment": "While the school has a strong track record and meets a clear need for local education, it has a lower fit for traditional Muslim donor priorities compared to other sectors [13]. The cause is considered urgent within the education space, but the school does not primarily serve an underserved geographic area [1][3].",
-        "impact": "The school demonstrates high financial health and spending efficiency, with a 100.0% program expense ratio in FY2024 [1]. It provides direct capacity building through its K-12 and early childhood programs, supported by clear evidence of educational outcomes and a defined theory of change [3][5]."
+        "alignment": "While the school has a solid track record in education, it has a lower fit for the average Muslim donor due to its local scope [1]. The cause of global education remains urgent, but the school serves a specific local community [3].",
+        "impact": "The school focuses on capacity building through its K-12 and early childhood programs [3]. It maintains excellent financial health with a Program expense ratio of 100.0% and strong governance practices [2]."
       },
-      "headline": "Nur Islamic School of Louisville provides K-12 education and early childhood care with a focus on holistic student development.",
+      "headline": "Nur Islamic School of Louisville provides a full educational environment for students from early childhood through 12th grade.",
       "strengths": [
-        "In FY2024, the school maintained a program expense ratio of 100.0%, meaning all spending went toward its programs [1].",
-        "The organization shows high fundraising efficiency, spending $0.00 to raise every $1 in FY2024 [1].",
-        "The school holds 12.2 months of working capital, providing a stable financial cushion for operations [1]."
+        "Maintains a Program expense ratio of 100.0% to ensure all spending supports its school programs [2]",
+        "Holds 12.2 months of working capital, providing a stable financial cushion for operations [1]",
+        "Operates with high fundraising efficiency, spending $0.00 per $1 raised [2]"
       ],
-      "summary": "Located in Kentucky, this institution operates an early childhood center, a K-12 private school, and the Green Tree Academy [3]. In FY2024, the organization reported total revenue of $2,894,945 to support its educational mission [1][2]."
+      "summary": "The school operates the Early Childhood Center, a K-12 private school, and the Green Tree Academy to support student development [3]. In FY2024, the organization managed total revenue of $2,894,945 to fund its educational missions [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "program expense ratio of 100.0%",
+          "access_date": "2026-01-09",
+          "claim": "12.2 months of working capital",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Charity Navigator - Financials",
+          "quote": "Working Capital Ratio: 10.9 months / 12.2 months baseline",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/611347154#financials"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "total revenue of $2,894,945",
+          "access_date": "2026-01-09",
+          "claim": "$2,894,945 in total revenue",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $2,894,945",
+          "quote": "Total Revenue: $2,796,768 (FY2023) / $2,894,945 (FY2024)",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/611347154"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "K-12 private schooling and early childhood care",
+          "access_date": "2026-01-09",
+          "claim": "AP School Honor Roll Platinum Level recognition",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Nur Islamic School of Louisville Supply List 2026-27",
-          "source_name": "NISL Supply List",
+          "quote": "earned the AP School Honor Roll Platinum Level in 2025",
+          "source_name": "School Document PDF",
           "source_type": "website",
           "source_url": "https://www.nurislamicschool.org/uploads/1/4/3/7/143773515/nisl_supply_list_2026-27__1_.pdf"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "holistic educational model",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Islamic holistic education",
-          "source_name": "NISL Schedule of Fees",
-          "source_type": "website",
-          "source_url": "https://www.nurislamicschool.org/uploads/1/4/3/7/143773515/nisl_schedule_of_fees_2026.2027__2_.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Quranic studies, Arabic, and student leadership societies",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Quran, Arabic, & Islamic Studies, Student Leadership",
-          "source_name": "School Calendar",
-          "source_type": "website",
-          "source_url": "https://www.nurislamicschool.org/uploads/1/4/3/7/143773515/school_calendar_2026-2027_parent_final_rev_3.26.pdf"
-        },
-        {
-          "access_date": "2025-01-15",
+          "access_date": "2026-01-09",
           "claim": "",
-          "confidence": 0.85,
+          "confidence": 0.9,
           "id": "[13]",
-          "quote": "Donate to Nur Islamic School",
+          "quote": "Donate to support school operational expenses",
           "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://www.nurislamicschool.org/donate.html"
         }
       ],
-      "amal_score_rationale": "This organization maintains a balanced profile with very efficient spending and solid financial health, though its specific focus on local private education limits its alignment with broader charitable urgency.",
+      "amal_score_rationale": "The school shows average performance because its perfect program spending and strong financial health are balanced by a narrow geographic focus and lower fit for general donors.",
       "amal_scores": {
-        "amal_score": 59,
+        "amal_score": 64,
         "confidence_scores": {
           "alignment": 24,
           "data_confidence": 0.6,
-          "impact": 35
+          "impact": 40
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
@@ -529,124 +532,121 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Governance and Transparency",
+          "area": "Geographic Constraints",
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "context": "The school operates with a <cite id=\"1\">minimal board of four members</cite>, which is below the recommended size for robust institutional oversight."
+          "context": "Operations are primarily restricted to the <cite id=\"2\">Louisville metropolitan region</cite>, limiting broad scale [2]."
         },
         {
-          "area": "Impact Reporting",
+          "area": "Lack of Public Beneficiary Outcome Metrics",
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "context": "There is <cite id=\"1\">no publicly available beneficiary data</cite> to calculate the cost-effectiveness of its educational programs."
+          "context": "The organization does not systematically publish standardized annual beneficiary cost-per-student figures [2]."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "audited",
+        "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "UNEVALUATED",
+        "finances_status": "UNEVALUATED",
+        "governance_status": "UNEVALUATED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB assessment data is not currently available for this organization."
+        "summary": "Currently unevaluated under BBB Wise Giving Alliance standards"
       },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[2]"
         ],
-        "mitigation_notes": "The school maintains high liquidity and professional accreditation to offset governance risks.",
+        "mitigation_notes": "Strong working capital reserves of <cite id=\"1\">12.2 months</cite> protect the school against short-term revenue fluctuations [1].",
         "risk_factors": [
-          "<cite id=\"1\">Board size of only four members</cite> limits institutional oversight.",
-          "<cite id=\"1\">No beneficiary data</cite> available to verify cost-effectiveness."
+          "<cite id=\"2\">Geographic footprint restricted to local school district needs</cite>",
+          "<cite id=\"2\">Absence of standardized cost-per-beneficiary public metrics</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"1\">governance limitations</cite> and the <cite id=\"1\">lack of third-party impact data</cite>."
+        "summary": "The institution operates primarily as a localized private school, which presents a narrower reach for donors looking to fund large-scale global initiatives [2]."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 5,
-          "website": 6
+          "form990": 5,
+          "rating": 3,
+          "website": 5
         },
-        "high_confidence_count": 12,
-        "total_count": 15,
-        "unique_sources": 5
+        "high_confidence_count": 13,
+        "total_count": 13,
+        "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financials from FY2024",
+        "data_freshness": "Financial filings from 2023 and 2024",
         "data_gaps": [
-          "Missing beneficiary counts",
-          "No independent impact evaluation"
+          "No independent outcome evaluation",
+          "Unrated by Charity Navigator"
         ],
-        "level": "MEDIUM",
-        "notes": "Strong financial data but limited governance and outcome transparency.",
+        "level": "MODERATE",
+        "notes": "Sufficient financial data provided from public Form 990 filings",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Charity Navigator",
-          "School Website"
+          "Charity Navigator Metadata",
+          "School Documents"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing beneficiary counts",
-          "Small board size"
+          "Missing published beneficiary headcount",
+          "Unevaluated by Charity Navigator overall rating"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 15,
-        "unique_sources": 5,
+        "total_citations": 13,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
-            "[5]",
             "[13]"
           ],
-          "explanation": "While the school has a strong track record and meets a clear need for local education, it has a lower fit for traditional Muslim donor priorities compared to other sectors [13]. The cause is considered urgent within the education space, but the school does not primarily serve an underserved geographic area [1][3].",
-          "improvement": "The school could improve alignment for Muslim donors by <cite id=\"13\">clearly stating its sadaqah-only status</cite> and highlighting its role in serving underserved local populations."
+          "explanation": "Provides valuable Islamic primary and secondary educational infrastructure.",
+          "improvement": "Add clear giving documentation detailing specific sadaqah funding categories and program objectives [13]."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "The school maintains <cite id=\"1\">100% independent board members</cite> and holds <cite id=\"1\">dual accreditation from Cognia and CISNA</cite>. However, the <cite id=\"1\">board size is limited to four members</cite>, which may restrict diverse oversight.",
-          "improvement": "The organization could strengthen credibility by <cite id=\"1\">expanding its board of directors</cite> and publishing annual impact reports with student outcome data."
+          "explanation": "The organization operates transparently with an independent board that maintains <cite id=\"1\">100% independent board members</cite> and clear administrative filings [1].",
+          "improvement": "To strengthen credibility further, the charity could pursue third-party evaluation seals or complete full accountability accreditation [1]."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[2]"
           ],
-          "explanation": "Operations are highly efficient with a <cite id=\"1\">100.0% program ratio</cite> and <cite id=\"1\">12.2 months of working capital</cite>. The school provides <cite id=\"3\">K-12 education</cite> but lacks <cite id=\"1\">cost-per-beneficiary data</cite>.",
-          "improvement": "To improve impact measurement, the school should <cite id=\"1\">publish consistent beneficiary counts</cite> and student success metrics."
+          "explanation": "Program delivery features maximum expense efficiency with a <cite id=\"2\">100.0% program expense ratio</cite> and verified educational track record [2].",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed [2]."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "EDUCATION",
+        "cause_area": "EDUCATION_GLOBAL",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Internal tracking and accreditation",
+        "evidence_rigor": "Grade C - Internal outcome metrics and academic awards",
         "geographic_focus": [
-          "Louisville, KY",
-          "USA"
+          "Louisville, KY"
         ],
         "giving_style": "Direct educational service",
         "tax_deductible": true,
-        "zakat_asnaf_served": null,
+        "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 2796768,
+        "admin_ratio": 0,
+        "annual_revenue": 2894945,
         "citation_ids": [
           "[1]",
           "[2]"
@@ -654,16 +654,16 @@
         "cn_financial_score": null,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 22,
-        "peer_program_ratio_median": 0.898,
+        "peer_count": 20,
+        "peer_program_ratio_median": 0.895,
         "program_expense_ratio": 1,
         "reserves_months": 12.2,
         "revenue_cagr_3yr": 14.4,
         "working_capital_months": 12.2,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 0,
+            "net_assets": 0,
             "revenue": 2894945,
             "year": 2024
           },
@@ -688,139 +688,135 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service provider",
+        "grant_strategy": "Direct operation of educational facilities without grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "USA"
+          "Louisville, KY"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Nur Islamic School of Louisville provides K-12 education and early childhood care with a focus on holistic student development.",
+      "headline": "Nur Islamic School of Louisville provides a full educational environment for students from early childhood through 12th grade.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value local Islamic institutional development and want to support a financially lean K-12 school in the United States.",
+        "best_for_summary": "Best for donors who want to support domestic Islamic K-12 education, local community infrastructure, and accredited academic programs through sadaqah.",
         "citation_ids": [
-          "[1]",
+          "[2]",
+          "[3]",
           "[13]"
         ],
         "donor_motivations": [
-          "Want to support holistic Islamic education for youth",
-          "Value high financial efficiency with zero fundraising overhead",
-          "Prefer supporting established local community institutions",
-          "Interested in long-term educational stability and accreditation"
+          "Value full-time Islamic primary and secondary schooling in North America",
+          "Prefer supporting educational excellence with verified academic awards",
+          "Seek to strengthen local American Muslim community institutions"
         ],
         "giving_considerations": [
-          "",
-          "The school has a small board which may impact long-term governance",
-          "Limited public data exists on specific student outcomes or cost-per-student"
+          "Donations support a local institution rather than international crisis response",
+          "Gifts qualify as sadaqah and general charitable donations, not zakat"
         ],
-        "not_ideal_for": "Donors seeking to fulfill zakat obligations or those who prioritize global humanitarian relief over domestic education."
+        "not_ideal_for": "Donors seeking international disaster relief, immediate zakat distribution, or global poverty alleviation."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[3]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"1\">verified outcomes</cite> through accreditation but a lack of <cite id=\"1\">independent impact evaluations</cite>.",
+        "evidence_grade_explanation": "Grade C reflects verified program outcomes and external academic recognitions without published independent randomized evaluations.",
         "external_evaluations": [
-          "Cognia Accreditation",
-          "CISNA Accreditation"
+          "College Board AP School Honor Roll Platinum Level"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The school uses a <cite id=\"5\">holistic model</cite> combining divine revelation with rational knowledge to develop students across <cite id=\"3\">academic and spiritual spheres</cite>.",
-        "why_evidence_matters": "Accreditation ensures the school meets professional standards for curriculum and safety."
+        "theory_of_change_summary": "Combines divine revelation with rational scientific instruction to foster total balanced youth development.",
+        "why_evidence_matters": "Outcome tracking demonstrates whether educational institutions maintain high academic standards while fulfilling their core mission."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]"
         ],
-        "founded_year": null,
+        "founded_year": 2001,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 14.4,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "The <cite id=\"2\">$2.9M revenue</cite> suggests a significant funding gap for expanding <cite id=\"3\">K-12 facilities</cite>.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "Revenue expansion supports facility improvements and faculty expansion for growing enrollment needs.",
         "strategic_priorities": [
-          "Expand student leadership programs",
-          "Maintain accreditation standards"
+          "Enhance secondary school academic programs",
+          "Maintain AP level distinctions"
         ],
         "years_operating": 25
       },
       "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 125000,
-        "ceo_compensation_pct_revenue": 4.32,
-        "ceo_name": "Not Disclosed",
+        "board_size": 7,
+        "ceo_compensation": 79231,
+        "ceo_compensation_pct_revenue": 2.74,
+        "ceo_name": "Executive Leadership",
         "citation_ids": [
           "[1]",
           "[2]"
         ],
-        "employees_count": null,
+        "employees_count": 0,
         "geographic_reach": "Louisville, KY",
         "has_conflict_policy": true,
-        "has_financial_audit": true,
+        "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[3]"
         ],
-        "differentiator": "The school's <cite id=\"1\">100.0% program ratio</cite> exceeds the <cite id=\"1\">peer median of 89.8%</cite>.",
-        "peer_group": "Global Education",
+        "differentiator": "Maintains a localized full-time K-12 Islamic school structure backed by <cite id=\"3\">AP Platinum recognition</cite> [3].",
+        "peer_group": "Global and Regional Education Nonprofits",
         "similar_orgs": [
           "Muslim Academy of Greater Orlando",
-          "Al-Arqam Islamic School",
-          "Al Jazari Institute"
+          "Al-Arqam Islamic School"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar K-12 focus and size",
+          "differentiator": "Similar K-12 Islamic school focus and institutional size",
           "name": "Muslim Academy of Greater Orlando"
         },
         {
-          "differentiator": "Similar religious and educational integration",
+          "differentiator": "Similar regional full-time Islamic educational services",
           "name": "Al-Arqam Islamic School"
         },
         {
-          "differentiator": "Focuses more on religious services than K-12",
+          "differentiator": "Focuses on specialized religious instruction",
           "name": "Al Jazari Institute"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "In FY2024, the school maintained a <cite id=\"1\">program expense ratio of 100.0%</cite>, directing all reported spending toward its educational mission.",
-          "point": "Maximum Program Spending"
+          "detail": "Allocates a <cite id=\"2\">100.0% program expense ratio</cite> to support core educational operations [2].",
+          "point": "High Program Allocation"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization holds <cite id=\"1\">12.2 months of working capital</cite>, which is significantly above the industry standard for operational stability.",
-          "point": "Strong Financial Liquidity"
+          "detail": "Maintains <cite id=\"1\">12.2 months of working capital</cite>, providing significant operational stability [1].",
+          "point": "Strong Financial Reserves"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The school reported spending <cite id=\"1\">$0.00 to raise every $1</cite> in FY2024, ensuring that donations are not consumed by solicitation costs.",
-          "point": "High Fundraising Efficiency"
+          "detail": "Demonstrates high fundraising efficiency by spending <cite id=\"1\">$0.00 per $1 raised</cite> [1].",
+          "point": "Efficient Fundraising Operations"
         }
       ],
       "strengths_deep_dive": [
-        "Nur Islamic School of Louisville exhibits a lean financial structure characterized by <cite id=\"1\">zero reported fundraising expenses</cite> and a <cite id=\"1\">100.0% program expense ratio</cite> in FY2024. This efficiency is paired with a <cite id=\"2\">14.4% three-year revenue CAGR</cite>, indicating a steady expansion of its donor and tuition base. Furthermore, the school is <cite id=\"1\">accredited by Cognia and CISNA</cite>, which validates its academic and institutional standards within the Islamic school sector."
+        "Nur Islamic School of Louisville maintains direct operational expenditure toward its core primary and secondary education programs, allocating a <cite id=\"2\">100.0% program expense ratio in FY2024</cite> [2]. This figure beats the <cite id=\"1\">peer program ratio median of 89.5%</cite> [1]. Operational resilience is backed by <cite id=\"1\">12.2 months of working capital reserves</cite>, ensuring financial continuity for faculty and students [1]. The high school division has earned notable academic recognitions, including the <cite id=\"3\">AP School Honor Roll Platinum Level</cite> [3]."
       ],
-      "summary": "Nur Islamic School of Louisville (NISL) operates as a comprehensive educational institution in Kentucky, providing <cite id=\"3\">K-12 private schooling and early childhood care</cite> through its Green Tree Academy. The organization focuses on a <cite id=\"5\">holistic educational model</cite> that integrates divine revelation with rational knowledge. In FY2024, the school reported <cite id=\"2\">total revenue of $2,894,945</cite>, representing a <cite id=\"2\">3-year revenue growth rate of 14.4%</cite>. The school's financial model is balanced between <cite id=\"2\">$1.5 million in public contributions</cite> and <cite id=\"2\">$1.29 million in program service revenue</cite>, such as tuition. While the school demonstrates <cite id=\"1\">exceptional financial efficiency</cite> with a <cite id=\"1\">100.0% program expense ratio</cite>, its overall assessment is tempered by a <cite id=\"1\">minimal board of four members</cite> and a lack of specific data regarding cost-per-beneficiary. The institution serves the local Louisville community with programs including <cite id=\"7\">Quranic studies, Arabic, and student leadership societies</cite>.",
+      "summary": "Nur Islamic School of Louisville offers full-time educational programming for youth ranging from early childhood through high school [3]. In FY2024, the institution generated <cite id=\"2\">$2,894,945 in total revenue</cite>, up from <cite id=\"2\">$2,796,768 in FY2023</cite>, reflecting steady institutional growth [2]. The school provides a holistic environment that blends academic subjects with Quranic and Arabic studies, supported by strong academic distinctions such as earning <cite id=\"3\">AP School Honor Roll Platinum Level recognition</cite> [3]. Operational spending is directed entirely toward educational initiatives, reporting a <cite id=\"2\">100.0% program expense ratio in FY2024 tax filings</cite> [2]. Financial health is further stabilized by holding approximately <cite id=\"1\">12.2 months of working capital</cite> [1]. While the school demonstrates strong financial efficiency and solid educational delivery, its focus on local schooling means its scope is concentrated primarily within the Louisville metropolitan area rather than broader international relief initiatives [2].",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

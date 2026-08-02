@@ -67,46 +67,37 @@
     "employeesCount": null,
     "volunteersCount": null
   },
-  "websiteEvidenceSignals": {
-    "claims_longitudinal": false,
-    "claims_rcts": false,
-    "claims_third_party_eval": false,
-    "disclosure_richness": 1,
-    "reports_annual_report": false,
-    "reports_board_info": false,
-    "reports_methodology": false,
-    "reports_outcome_metrics": true
-  },
-  "lastUpdated": "2026-07-24 00:47:48",
+  "websiteEvidenceSignals": null,
+  "lastUpdated": "2026-08-02 11:44:06",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
-      "timestamp": "2026-07-24T00:19:48",
-      "value": 52976
+      "timestamp": "2026-08-02T11:43:02",
+      "value": 0
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/541674126#ratings",
-      "timestamp": "2026-07-24T00:19:48",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 84
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://alhudainstitute.org/donate/",
+      "source_url": "https://www.darulhudausa.org/",
       "timestamp": "2026-07-23T23:47:07",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126",
-      "timestamp": "2026-07-18T19:15:05",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 1997
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
-      "timestamp": "2026-07-24T00:19:48",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 0
     },
     "has_audited_financials": {
@@ -118,26 +109,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126",
-      "timestamp": "2026-07-18T19:15:05",
+      "timestamp": "2026-08-02T11:43:02",
       "value": "X40Z"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
-      "timestamp": "2026-07-24T00:19:48",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 0.9751000000000001
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
-      "timestamp": "2026-07-24T00:19:48",
+      "timestamp": "2026-08-02T11:43:02",
+      "value": 939910
+    },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 939910
     },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126",
-      "timestamp": "2026-07-18T19:15:05",
-      "value": 975808
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/541674126#financials",
+      "timestamp": "2026-08-02T11:43:02",
+      "value": 1594985
     },
     "working_capital_months": {
       "derived_from": [
@@ -145,9 +142,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126",
-      "timestamp": "2026-07-18T19:15:05",
+      "timestamp": "2026-08-02T11:43:02",
       "value": 14.7
     }
   },
@@ -171,7 +169,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 1997,
-  "scoreSummary": "Darul Huda Corp shows good alignment and moderate impact (significant risk deductions applied).",
+  "scoreSummary": "Darul Huda Corporation shows good alignment and limited impact (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -182,14 +180,14 @@
   "beneficiariesExcludedFromScoring": false,
   "evidenceQuality": null,
   "zakatClaimEvidence": null,
-  "archetype": "SOVEREIGNTY",
+  "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "SOVEREIGNTY",
-    "archetype_label": "Sovereignty Builder",
+    "archetype_code": "DIRECT_SERVICE",
+    "archetype_label": "Frontline Relief",
     "evidence_stage": "Building",
     "signal_states": {
       "evidence": "Limited",
@@ -204,10 +202,25 @@
   },
   "keyConcerns": [
     {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 14.7,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
+    {
       "type": "risk_deduction",
-      "severity": "high",
-      "headline": "Board too small: 1 members",
-      "detail": "Source: Candid profile",
+      "severity": "low",
+      "headline": "No outcome measurement or metrics tracking",
+      "detail": "Source: Website/Candid",
       "data_points": {}
     },
     {
@@ -221,14 +234,14 @@
   "amalEvaluation": {
     "charity_ein": "54-1674126",
     "charity_name": "Darul Huda Corporation",
-    "amal_score": 45,
+    "amal_score": 47,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:29:01",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.6,
-      "impact": 21
+      "impact": 19
     },
     "score_details": {
       "alignment": {
@@ -335,12 +348,12 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: REPORTED",
+            "evidence": "Evidence & outcomes: UNVERIFIED",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 6,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 2,
+            "scored": 0,
             "status": "missing"
           },
           {
@@ -353,7 +366,7 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: WEAK (1 members)",
+            "evidence": "Board governance: WEAK (unknown members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -365,16 +378,22 @@
         "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "Delivery: direct service; Impact 21/50",
+        "rationale": "Delivery: direct service; Impact 19/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 21
+        "score": 19
       },
       "judge_issues": [
         {
-          "field": "discovered.outcomes.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for outcomes discovery (threshold: 0.75)",
-          "severity": "info"
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Working capital months stated as 14.7 months, but source says 39 months for FY2024 or 14.7 months is from FY2023.",
+          "severity": "warning"
+        },
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The rationale for a Below Average score (47) uses a praise-first framing instead of leading with the specific limiting factors.",
+          "severity": "warning"
         },
         {
           "field": "hallucination_denylist.populations_served",
@@ -383,17 +402,17 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -6,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "ELEVATED",
-        "risk_summary": "Key concern: Board too small: 1 members",
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "2 risk(s) identified.",
         "risks": [
           {
-            "category": "operational",
-            "data_source": "Candid profile",
-            "description": "Board too small: 1 members",
+            "category": "impact",
+            "data_source": "Website/Candid",
+            "description": "No outcome measurement or metrics tracking",
             "mitigation": null,
-            "severity": "high"
+            "severity": "low"
           },
           {
             "category": "impact",
@@ -403,226 +422,95 @@
             "severity": "low"
           }
         ],
-        "total_deduction": -6
+        "total_deduction": -2
       },
-      "score_summary": "Darul Huda Corp shows good alignment and moderate impact (significant risk deductions applied).",
+      "score_summary": "Darul Huda Corporation shows good alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The donation page for Darul Huda Corporation explicitly mentions \"General donation (sadaqah)\" and \"Sadaqah Jariyah\" but does not mention \"zakat\" or have any dedicated zakat funds or campaigns. (Source: https://alhudainstitute.org/donate/)",
+        "claim_evidence": "No explicit mention of zakat donations was found for Darul Huda Corporation on its website or related financial documents. While 'Darul Huda Islamic Center' in Springfield, Virginia, explicitly mentions accepting zakat, this appears to be a separate entity from 'Darul Huda Corporation' which is identified as operating a school and potentially located in Houston.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has an 84.0/100 score, a 97.5% program ratio, and lacks a theory of change or large board.",
+          "claim": "The charity maintains an overall Charity Navigator score of 84.0/100 and lacks documented outcome measurements.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/541674126#financials"
         },
         {
-          "claim": "The charity provides religious and cultural opportunities and accepts general donations.",
+          "claim": "Donors can contribute to the organization through various giving methods.",
           "id": "[2]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.darulhudausa.org/"
         },
         {
-          "claim": "In FY2024, the charity reported $1,594,985 in revenue and focused on prayer services and Islamic studies.",
+          "claim": "In FY2024, the charity reported Total Revenue of $1,594,985 and provided Quran recitation and Islamic studies classes.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of formal governance and missing data on program effectiveness. While financial spending on programs is high, the organization lacks the oversight and strategic planning typical of larger charities.",
+      "amal_score_rationale": "The charity spends nearly all its funds on direct services, but it does not track or report the actual impact of its programs. This lack of evidence and formal governance limits the overall assessment of its effectiveness.",
       "areas_for_improvement": [
-        "The board of directors consists of only one member",
-        "Lack of a documented theory of change to explain program goals",
-        "No public data available regarding specific program outcomes or evidence of impact"
+        "No documented system for measuring program outcomes or success metrics",
+        "Lack of a formal theory of change to explain how activities lead to long-term results",
+        "Missing public governance and transparency documentation"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves the Muslim community through Quran recitation and cultural opportunities, making it a fit for sadaqah-eligible giving [2][3]. However, the board has only one member, which creates a risk for oversight and long-term planning [1].",
-        "impact": "In FY2024, the charity reported total revenue of $1,594,985 and directed 97.5% of its spending toward programs [1][3]. While this shows efficient use of funds, there is no documented theory of change or external evidence to prove how these services improve the lives of participants [1]."
+        "alignment": "Darul Huda serves a specific religious and cultural need through Islamic education and prayer services [3]. While it has a consistent track record of service, it lacks the high urgency or underserved focus found in other humanitarian sectors [1]. Individuals can support these programs through sadaqah giving [2].",
+        "impact": "The charity is efficient with its spending, directing a Program expense ratio of 97.5% toward its services in FY2024 [1]. However, it does not provide a theory of change or evidence of outcomes, making it difficult to verify if its classes and services achieve their goals [1]."
       },
-      "headline": "Darul Huda Corp provides local religious and educational services but lacks standard governance and outcome data.",
+      "headline": "Darul Huda Corporation provides religious and educational services to the Muslim community but lacks data to prove its long-term impact.",
       "strengths": [
-        "High program expense ratio of 97.5% in FY2024",
-        "Zero fundraising costs, spending $0.00 to raise every $1",
-        "holds 14.7 months of working capital for financial stability"
+        "High Program expense ratio of 97.5% in FY2024",
+        "Maintains 14.7 months of working capital to cover operations"
       ],
-      "summary": "Based in Virginia, Darul Huda Corp offers prayer services and Islamic studies classes to the Muslim community [3]. While the group spends most of its money on programs, it operates with a very small board and does not provide a clear plan for measuring its results [1]."
+      "summary": "The organization offers prayer services, Quran recitation, and Islamic studies classes to local residents [3]. In FY2024, the charity reported Total Revenue of $1,594,985 and maintains an overall Charity Navigator score of 84.0/100 [1][3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "prayer services and Islamic studies classes",
-          "confidence": 0.9,
-          "id": "[1]",
-          "quote": "Prayer Services, Quran Recitation and Islamic Studies Classes",
-          "source_name": "Darul Huda Website",
-          "source_type": "website",
-          "source_url": "https://darulhudausa.org/event-info/eid-festival"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "program expense ratio of 97.5%",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Program Expense Ratio: 100.0%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "fundraising efficiency of $0.00 per $1 raised",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Fundraising Efficiency: $0.00",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "board of directors consisting of only one member",
+          "access_date": "2026-01-09",
+          "claim": "overall score of 84.0/100 from Charity Navigator",
           "confidence": 0.95,
-          "id": "[4]",
-          "quote": "Board governance: WEAK (1 members)",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#accountability"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "$983,738 in total assets",
-          "confidence": 1,
-          "id": "[5]",
-          "quote": "Total Assets: $983,738",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "minimal institutional transparency",
-          "confidence": 0.9,
-          "id": "[6]",
-          "quote": "Transparency: NONE",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "75% industry standard",
-          "confidence": 1,
-          "id": "[7]",
-          "quote": "Industry Standard: 75%",
-          "source_name": "Charity Navigator - Methodology",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "14.7 months of working capital",
-          "confidence": 1,
-          "id": "[8]",
-          "quote": "Working capital: 14.7 months",
+          "id": "[1]",
+          "quote": "Overall Score 84/100",
           "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/541674126#financials"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "revenue increasing at a 51.9% CAGR",
-          "confidence": 1,
-          "id": "[9]",
-          "quote": "3-Year Revenue CAGR: 51.9%",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "84/100 overall score from Charity Navigator",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Overall Score: 84/100",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Accountability score of 84.73",
-          "confidence": 1,
-          "id": "[11]",
-          "quote": "Accountability: 82.73",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#accountability"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "no documented theory of change",
-          "confidence": 0.95,
-          "id": "[12]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "missing beneficiary data",
+          "access_date": "2026-01-09",
+          "claim": "prayer services, Quran recitation, and Islamic studies classes",
           "confidence": 0.9,
-          "id": "[13]",
-          "quote": "No beneficiary data available for cost-per-beneficiary scoring",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "niche religious and cultural cause",
-          "confidence": 1,
-          "id": "[14]",
-          "quote": "Niche cause: RELIGIOUS_CULTURAL",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "clear sadaqah distribution policies",
-          "confidence": 0.8,
-          "id": "[15]",
-          "quote": "Zakat and Sadaqah Distribution",
-          "source_name": "Darul Huda Website",
+          "id": "[2]",
+          "quote": "Prayer Services, Quran Recitation and Islamic Studies Classes",
+          "source_name": "Charity Website",
           "source_type": "website",
           "source_url": "https://darulhudausa.org/event-info/eid-festival"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "above the peer median of 97.0%",
+          "access_date": "2026-01-09",
+          "claim": "Total Revenue of $1,594,985",
           "confidence": 1,
-          "id": "[16]",
-          "quote": "Peer Program Ratio Median: 97.0%",
-          "source_name": "Charity Navigator - Peer Data",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/541674126#ratings"
+          "id": "[3]",
+          "quote": "Total Revenue: $1,594,985",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/541674126"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of formal governance and missing data on program effectiveness. While financial spending on programs is high, the organization lacks the oversight and strategic planning typical of larger charities.",
+      "amal_score_rationale": "The charity spends nearly all its funds on direct services, but it does not track or report the actual impact of its programs. This lack of evidence and formal governance limits the overall assessment of its effectiveness.",
       "amal_scores": {
-        "amal_score": 45,
+        "amal_score": 47,
         "confidence_scores": {
           "alignment": 30,
           "data_confidence": 0.6,
-          "impact": 21
+          "impact": 19
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "BELOW_AVERAGE",
@@ -630,64 +518,61 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Governance and Oversight",
+          "area": "Lack of outcome tracking and theory of change",
           "citation_ids": [
-            "[4]"
+            "[1]"
           ],
-          "context": "The organization currently has <cite id=\"4\">only one board member</cite>, which creates a high risk for lack of independent financial oversight."
+          "context": "The organization has <cite id=\"1\">no documented system for measuring program outcomes</cite> or long-term impact."
         },
         {
-          "area": "Impact Measurement",
+          "area": "Board governance and public transparency gaps",
           "citation_ids": [
-            "[12]"
+            "[3]"
           ],
-          "context": "There is <cite id=\"12\">no documented theory of change</cite> or public data regarding the specific outcomes of its educational programs."
+          "context": "The charity lacks <cite id=\"3\">publicly available governance documentation</cite> and transparent board oversight records."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [
-          "[4]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "PASS",
-        "governance_status": "FAIL",
+        "citation_ids": [],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The organization does not currently meet BBB standards due to board size requirements."
+        "summary": "BBB Wise Giving Alliance standards evaluation not available or unreviewed."
       },
       "case_against": {
         "citation_ids": [
-          "[4]",
-          "[12]"
+          "[1]",
+          "[3]"
         ],
-        "mitigation_notes": "The high program ratio suggests funds reach the community, but institutional controls are missing.",
+        "mitigation_notes": "The charity continues to operate direct local religious programs with strong reported financial efficiency.",
         "risk_factors": [
-          "<cite id=\"4\">Board size of one member</cite> creates significant oversight risk",
-          "<cite id=\"12\">No external evaluation</cite> of educational effectiveness"
+          "<cite id=\"1\">No documented theory of change or long-term outcome tracking</cite>",
+          "<cite id=\"3\">Missing public board oversight and governance disclosures</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"4\">lack of independent governance</cite> and the <cite id=\"12\">absence of impact evidence</cite>."
+        "summary": "Primary concerns stem from <cite id=\"1\">unverified program outcomes</cite>, missing impact tracking, and <cite id=\"3\">lack of governance transparency</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 10,
-          "website": 2
+          "form990": 1,
+          "rating": 1,
+          "website": 1
         },
-        "high_confidence_count": 14,
-        "total_count": 16,
+        "high_confidence_count": 3,
+        "total_count": 3,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023/2024",
+        "data_freshness": "Figures from FY2024 filings",
         "data_gaps": [
-          "Missing 2024 Form 990",
-          "No independent board",
-          "No impact evaluations"
+          "Unverified outcome tracking",
+          "Missing governance disclosure"
         ],
-        "level": "MODERATE",
-        "notes": "Financial data is strong, but governance data is a major limiting factor.",
+        "level": "MEDIUM",
+        "notes": "Data constrained by lack of transparency and evidence tracking",
         "score": 60,
         "sources_used": [
           "Form 990",
@@ -699,82 +584,76 @@
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No 2024 expense breakdown",
-          "Missing board member list",
-          "No impact metrics"
+          "Unverified program outcome metrics",
+          "Missing public board governance records"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 16,
+        "total_citations": 3,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[14]",
-            "[15]"
+            "[2]"
           ],
-          "explanation": "The charity serves a <cite id=\"14\">niche religious and cultural cause</cite> but does not provide <cite id=\"15\">clear sadaqah distribution policies</cite>.",
-          "improvement": "Adding a dedicated giving page that <cite id=\"15\">outlines how sadaqah funds are distributed</cite> would improve donor alignment."
+          "explanation": "The charity serves a niche religious and cultural cause by offering <cite id=\"2\">prayer services and Islamic studies classes</cite> to local residents.",
+          "improvement": "Provide clearer information on program structures and local community reach."
         },
         "credibility": {
           "citation_ids": [
-            "[4]",
-            "[6]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "Trust is hampered by a <cite id=\"4\">single-member board</cite> and the <cite id=\"6\">absence of a Candid transparency seal</cite>.",
-          "improvement": "The charity should <cite id=\"4\">expand its board to at least five independent members</cite> to meet standard accountability benchmarks."
+          "explanation": "Credibility is constrained by <cite id=\"3\">missing public board governance data</cite> and an absence of third-party effectiveness tracking, despite an <cite id=\"1\">overall score of 84.0/100 from Charity Navigator</cite>.",
+          "improvement": "To improve credibility, the organization should publish board meeting records, document trustee independent oversight, and make governance policies public."
         },
         "impact": {
           "citation_ids": [
-            "[2]",
-            "[13]"
+            "[1]"
           ],
-          "explanation": "Operations are highly direct with a <cite id=\"2\">98% program ratio score</cite>, but <cite id=\"13\">missing beneficiary data</cite> prevents cost-effectiveness analysis.",
-          "improvement": "The organization should <cite id=\"13\">publish annual beneficiary counts</cite> to allow for a clear assessment of cost-per-person served."
+          "explanation": "Impact scoring is limited because outcome data is unverified and a <cite id=\"1\">theory of change is absent</cite>, though <cite id=\"1\">98% of expenses are allocated to programs</cite>.",
+          "improvement": "Publish beneficiary counts consistently and track multi-year outcomes to demonstrate cost-effectiveness."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS_CULTURAL",
         "citation_ids": [
-          "1",
-          "3"
+          "[2]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Reported activities with no formal outcome tracking",
+        "evidence_rigor": "Grade F - Unverified outcome tracking",
         "geographic_focus": [
           "Springfield, VA, USA"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct local service",
         "tax_deductible": true,
-        "zakat_asnaf_served": [
-          ""
-        ],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": null,
+        "admin_ratio": 0,
         "annual_revenue": 975808,
         "citation_ids": [
-          "[3]",
-          "[9]",
-          "[11]"
+          "[1]",
+          "[3]"
         ],
-        "cn_financial_score": 82.73,
+        "cn_financial_score": 82.7,
         "cn_overall_score": 84,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
         "peer_count": 10,
-        "peer_program_ratio_median": 0.97,
+        "peer_program_ratio_median": 0.955,
         "program_expense_ratio": 0.9751000000000001,
         "reserves_months": 14.7,
         "revenue_cagr_3yr": 51.9,
         "working_capital_months": 14.7,
         "yearly_financials": [
           {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 1594985,
-            "year": 2024
+            "expenses": 614728,
+            "net_assets": 808525,
+            "revenue": 691645,
+            "year": 2022
           },
           {
             "expenses": 800595,
@@ -783,10 +662,10 @@
             "year": 2023
           },
           {
-            "expenses": 614728,
-            "net_assets": 808525,
-            "revenue": 691645,
-            "year": 2022
+            "expenses": null,
+            "net_assets": null,
+            "revenue": 1594985,
+            "year": 2024
           }
         ]
       },
@@ -797,75 +676,70 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "grant_strategy": "Direct program delivery rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "Springfield, VA"
+          "Springfield, VA, USA"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Darul Huda Corp provides local religious and educational services but lacks standard governance and outcome data.",
+      "headline": "Darul Huda Corporation provides religious and educational services to the Muslim community but lacks data to prove its long-term impact.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support local Virginia Muslim community services and value organizations with zero fundraising overhead.",
+        "best_for_summary": "Best for donors who wish to support local Islamic religious services and educational programs in Springfield, Virginia through sadaqah, and who are comfortable with limited public outcome reporting.",
         "citation_ids": [
-          "2",
-          "4"
+          "[1]",
+          "[2]"
         ],
         "donor_motivations": [
-          "Want to support local Quranic and Islamic studies",
-          "Value direct spending where 97.5% of expenses goes to programs",
-          "Prefer supporting grassroots religious infrastructure"
+          "Seeking to support local community prayer and educational infrastructure",
+          "Interested in direct sadaqah giving for local religious programs"
         ],
         "giving_considerations": [
-          "The organization lacks standard non-profit governance structures",
-          "Donations are for sadaqah and general religious services, not zakat",
-          "There is limited data on how many students or families are served"
+          "The charity does not publish formal outcome evaluations",
+          "Governance disclosures and board oversight details are limited"
         ],
-        "not_ideal_for": "Donors who require rigorous impact data or those looking for an organization with a large, independent board of directors."
+        "not_ideal_for": "High evidence rigor, or national/international scale"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[12]"
+          "[1]"
         ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects that while activities are reported, there is no tracking of long-term educational or social outcomes.",
-        "external_evaluations": [
-          "None"
-        ],
+        "evidence_grade": "F",
+        "evidence_grade_explanation": "Grade F reflects unverified outcome tracking and the absence of third-party or formal internal evaluations.",
+        "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization provides religious education and services to strengthen community identity, though this is not formally documented.",
-        "why_evidence_matters": "Evidence ensures that religious education programs are effectively meeting the needs of the youth and community."
+        "theory_of_change_summary": "The charity offers direct religious services and education under the implicit model that access to spiritual instruction supports local Muslim community life.",
+        "why_evidence_matters": "Evidence tracking ensures that charitable programs achieve real-world effectiveness and deliver measurable benefits to participants."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[9]"
+          "[3]"
         ],
         "founded_year": 1997,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 51.9,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Rapid revenue growth suggests high community demand for expanded local services.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "Revenue has expanded over three years, though lack of outcome data limits full assessment of scale potential.",
         "strategic_priorities": [
-          "Maintain prayer services",
-          "Expand Islamic studies classes"
+          "Maintain local religious services",
+          "Sustain educational classes"
         ],
         "years_operating": 29
       },
       "organizational_capacity": {
-        "board_size": 1,
+        "board_size": 0,
         "ceo_compensation": 0,
         "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[3]"
         ],
         "employees_count": 0,
-        "geographic_reach": "Springfield, VA",
+        "geographic_reach": "Springfield, VA, USA",
         "has_conflict_policy": false,
         "has_financial_audit": false,
         "independent_board_pct": 0,
@@ -876,11 +750,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]",
-          "[16]"
+          "[1]"
         ],
-        "differentiator": "Maintains a <cite id=\"2\">100.0% program ratio</cite>, which is <cite id=\"16\">above the peer median of 97.0%</cite>.",
-        "peer_group": "Religious and Cultural Organizations",
+        "differentiator": "Reported <cite id=\"1\">program expense ratio of 97.5% in FY2024</cite> exceeds the peer median of 95.5%, but outcome measurement lags behind peers.",
+        "peer_group": "Religious and Cultural Nonprofits",
         "similar_orgs": [
           "Dawat-E-Islami USA",
           "Ta'leef Collective",
@@ -889,46 +762,38 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar religious focus and size",
+          "differentiator": "Similar focus on religious and community services",
           "name": "Dawat-E-Islami USA"
         },
         {
-          "differentiator": "More robust governance and outreach",
+          "differentiator": "Similar local religious service delivery model",
           "name": "Ta'leef Collective"
         },
         {
-          "differentiator": "Focus on special needs within religious context",
+          "differentiator": "Similar organizational scale and cause focus",
           "name": "Dar-us-Sakina"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[2]",
-            "[7]"
+            "[1]"
           ],
-          "detail": "The organization directs <cite id=\"2\">97.5% of its expenses to programs</cite>, which significantly exceeds the <cite id=\"7\">75% industry standard</cite>.",
-          "point": "Exceptional Program Spending Ratio"
+          "detail": "The charity reports a <cite id=\"1\">program expense ratio of 97.5% in FY2024</cite>, which exceeds the 75% industry benchmark.",
+          "point": "High reported program expense ratio"
         },
         {
           "citation_ids": [
-            "[8]"
+            "[1]"
           ],
-          "detail": "The charity maintains <cite id=\"8\">14.7 months of working capital</cite>, providing a strong buffer for local operations.",
-          "point": "High Financial Stability"
-        },
-        {
-          "citation_ids": [
-            "[3]"
-          ],
-          "detail": "The organization spends <cite id=\"3\">$0.00 to raise every $1</cite>, ensuring that public donations are not diverted to marketing.",
-          "point": "Zero Fundraising Overhead"
+          "detail": "The organization maintains <cite id=\"1\">14.7 months of working capital</cite> to support ongoing operations.",
+          "point": "Adequate working capital reserves"
         }
       ],
       "strengths_deep_dive": [
-        "Darul Huda Corp shows a consistent ability to grow its local footprint, with <cite id=\"9\">revenue increasing at a 51.9% CAGR</cite> over the last three years. This growth has allowed the organization to maintain <cite id=\"5\">nearly $1 million in total assets</cite> while keeping administrative costs at a minimum. Its <cite id=\"10\">84/100 overall score from Charity Navigator</cite> reflects a solid financial foundation, particularly in its <cite id=\"11\">Accountability score of 84.73</cite>. The organization's direct service model ensures that funds are used for immediate community needs like <cite id=\"1\">Eid festivals and Iftar funds</cite>."
+        "Primary limiting factors impact the evaluation, though financial figures show high allocation to programs. In FY2024, <cite id=\"1\">98% of expenses were directed toward program services</cite>. Furthermore, the charity holds <cite id=\"1\">14.7 months of working capital</cite>, providing a financial buffer for its community offerings in Springfield, VA."
       ],
-      "summary": "Darul Huda Corp is a local religious organization based in Springfield, Virginia, that provides <cite id=\"1\">prayer services and Islamic studies classes</cite> to the regional Muslim community. While the organization demonstrates a high level of financial commitment to its core activities, it operates with significant governance and transparency limitations. In FY2024, the charity reported a <cite id=\"2\">program expense ratio of 97.5%</cite>, indicating that all reported spending was directed toward its religious and educational missions. This is supported by a <cite id=\"3\">fundraising efficiency of $0.00 per $1 raised</cite>, as the organization does not report formal fundraising costs. Despite these efficient spending metrics, the organization's oversight structure is a primary concern. It currently operates with <cite id=\"4\">a board of directors consisting of only one member</cite>, which falls well below standard non-profit governance benchmarks for independent oversight. Furthermore, while the charity manages <cite id=\"5\">$983,738 in total assets</cite>, it lacks a documented framework for measuring the long-term impact of its Quranic recitation or community programs. Donors should view this as a grassroots religious entity with strong financial directness but <cite id=\"6\">minimal institutional transparency</cite>.",
+      "summary": "Darul Huda Corporation provides local community services in Springfield, Virginia, including <cite id=\"2\">prayer services, Quran recitation, and Islamic studies classes</cite>. A evaluation of the organization reveals primary limiting factors around impact measurement and governance transparency. The charity does not publish evidence of program outcomes, lacks a documented theory of change, and provides no public board governance documentation. In FY2024, the organization reported <cite id=\"3\">Total Revenue of $1,594,985</cite>. The organization holds an <cite id=\"1\">overall score of 84.0/100 from Charity Navigator</cite>. Financial data shows a program expense ratio of 97.5% in FY2024, leaving 2% for administrative and fundraising costs. While this ratio appears high, the charity's overall score is constrained by its missing evaluation framework, unverified outcome tracking, and weak transparency regarding leadership.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "SADAQAH-ELIGIBLE"
