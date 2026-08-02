@@ -67,30 +67,30 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-31 12:15:21",
+  "lastUpdated": "2026-07-31 14:49:04",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 286230
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://ibnaljazariinstitute.com/donations/",
+      "source_url": "https://aljazari.org/",
       "timestamp": "2026-07-23T20:25:47",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-07-31T12:14:44",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 2014
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 256787
     },
     "has_audited_financials": {
@@ -102,31 +102,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-07-31T12:14:44",
+      "timestamp": "2026-07-31T14:48:22",
       "value": "Y99"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 0.6861
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 1874070
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 2417087
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/455134951#financials",
-      "timestamp": "2026-07-31T12:14:43",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 2330141
     },
     "working_capital_months": {
@@ -138,7 +138,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951",
-      "timestamp": "2026-07-31T12:14:44",
+      "timestamp": "2026-07-31T14:48:22",
       "value": 3
     }
   },
@@ -173,7 +173,15 @@
   "beneficiariesSource": null,
   "beneficiariesConfidence": null,
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": null,
+    "evaluationSources": [
+      "Foundation Grant (Human Development Fund)"
+    ],
+    "receivesFoundationGrants": null
+  },
   "zakatClaimEvidence": null,
   "archetype": "RESILIENCE",
   "ui_signals_v1": {
@@ -212,17 +220,6 @@
       }
     },
     {
-      "type": "high_fundraising_ratio",
-      "severity": "medium",
-      "headline": "Fundraising costs are 28% of total expenses",
-      "detail": "High fundraising spend reduces funds available for programs.",
-      "data_points": {
-        "fundraising_expense_ratio": 0.28,
-        "fundraising_expenses": 256787,
-        "total_expenses": 2417087
-      }
-    },
-    {
       "type": "risk_deduction",
       "severity": "low",
       "headline": "No outcome measurement or metrics tracking",
@@ -240,7 +237,7 @@
   "amalEvaluation": {
     "charity_ein": "45-5134951",
     "charity_name": "Al Jazari Institute",
-    "amal_score": 48,
+    "amal_score": 50,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:14:47",
     "rubric_version": "5.3.0",
@@ -390,6 +387,12 @@
       },
       "judge_issues": [
         {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "source_attribution.has_audited_financials.source_url",
           "judge": "synthesize_quality",
           "message": "Website citation for 'has_audited_financials' uses homepage URL; deep link preferred",
@@ -402,10 +405,10 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -4,
+      "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "3 risk(s) identified.",
+        "risk_summary": "2 risk(s) identified.",
         "risks": [
           {
             "category": "impact",
@@ -420,57 +423,49 @@
             "description": "No documented theory of change",
             "mitigation": null,
             "severity": "low"
-          },
-          {
-            "category": "financial",
-            "data_source": "Reconciliation",
-            "description": "Fundraising costs are 28% of total expenses",
-            "mitigation": null,
-            "severity": "medium"
           }
         ],
-        "total_deduction": -4
+        "total_deduction": -2
       },
       "score_summary": "AL Jazari Institute shows good alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The official website and donation pages for the US-based Al Jazari Institute (Minneapolis, MN) do not explicitly mention accepting zakat donations. Information regarding zakat acceptance and specific zakat-eligible categories was found on a page associated with 'Ibn Al Jazari Institute\u00ae Birmingham UK' (jazari.co.uk/zakat), which is an international affiliate and not the specific US organization being evaluated. (Source: https://ibnaljazariinstitute.com/donations/)",
+        "claim_evidence": "The official website for Al-Jazari Institute in Minneapolis, MN, US and its association with Dar Al-Farooq Center do not explicitly mention accepting zakat donations. Information regarding zakat payments and options was found for 'Ibn Al Jazari Institute\u00ae Birmingham UK' and 'Jazari Education' with a '.co.uk' email address and '@jazariuk' social media, which are international affiliates and not the specific US organization being evaluated.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization provides Islamic education, maintains 3.0 months of working capital, and has a 68.6% program expense ratio.",
+          "claim": "The institute focuses its work on teaching Qur'anic and Islamic sciences to individuals and families.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/455134951#financials"
         },
         {
-          "claim": "In FY2024, the institute reported total revenue of $2,330,141.",
+          "claim": "In FY2024, the organization reported total revenue of $2,330,141 and a program expense ratio of 68.6%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/455134951"
         }
       ],
-      "amal_score_rationale": "The institute's assessment is limited by a lack of data on program effectiveness and a moderate program expense ratio. High fundraising costs and the absence of a clear strategy for measuring impact also weigh down the overall evaluation.",
+      "amal_score_rationale": "The institute shows a balanced profile with moderate spending on programs and efficient fundraising. However, the lack of public data regarding program outcomes and long-term strategy limits the overall assessment.",
       "areas_for_improvement": [
-        "Increase the portion of spending that goes directly to programs",
-        "Establish clear methods to measure and report student learning outcomes",
-        "Reduce fundraising costs which currently account for 28% of total expenses"
+        "Does not currently track or report specific outcome metrics or impact data",
+        "Lacks a documented theory of change to explain how activities lead to long-term results"
       ],
       "dimension_explanations": {
-        "alignment": "The institute serves a clear need for global Islamic education and fits the interests of donors looking for educational causes [1]. However, its track record is difficult to fully assess because it does not document a formal theory of change for its community work [1].",
-        "impact": "The organization spends a moderate 68.6% on its programs, meaning nearly one-third of its budget goes to overhead and fundraising [1]. While it builds community capacity through education, it does not yet provide third-party evidence or specific metrics to prove the effectiveness of its teaching [1][2]."
+        "alignment": "The institute serves a clear need for global Islamic education and religious capacity building [1]. It fits the profile for donors seeking to support educational causes through sadaqah, though it lacks a detailed track record of measurable community results [2].",
+        "impact": "The organization spends 68.6% of its budget on its primary programs [2]. While it maintains 3.0 months of working capital, there is currently no public evidence or third-party tracking to measure the actual effectiveness of its educational services [1]."
       },
-      "headline": "AL Jazari Institute focuses on Islamic education and community programs but faces challenges with high overhead and limited outcome tracking.",
+      "headline": "AL Jazari Institute provides Islamic education and community programs with a focus on religious sciences.",
       "strengths": [
-        "Maintains 3.0 months of working capital to cover immediate needs [1]",
-        "Moderate fundraising efficiency of $0.16 per $1 raised [1]"
+        "Maintains a moderate program expense ratio of 68.6% [2]",
+        "Operates with a fundraising efficiency of $0.16 per $1 raised [2]"
       ],
-      "summary": "The organization provides education in Qur'anic and Islamic sciences to individuals and families [1]. In FY2024, the institute reported total revenue of $2,330,141 [2]. While it offers civic engagement programs, it currently lacks a documented theory of change or public metrics to track its results [1]."
+      "summary": "In FY2024, the organization reported total revenue of $2,330,141 to support its mission of offering Islamic and civic engagement programs [2]. The institute focuses its work on teaching Qur'anic and Islamic sciences to individuals and families [1]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -64,21 +64,21 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Communities",
+      "Refugees",
+      "Victims",
+      "Immigrants",
+      "Families",
+      "Orphans",
       "Survivors",
       "Men",
-      "Victims",
-      "Orphans",
-      "Immigrants",
-      "Refugees",
-      "Families"
+      "Communities"
     ],
     "geographicCoverage": [
-      "South America",
       "Europe",
-      "Asia",
+      "United States",
       "Africa",
-      "United States"
+      "South America",
+      "Asia"
     ]
   },
   "trustSignals": {
@@ -100,24 +100,24 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-31 12:12:19",
+  "lastUpdated": "2026-07-31 14:45:52",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 3461594
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": null,
-      "timestamp": "2026-07-31T12:11:31",
+      "timestamp": "2026-07-31T14:44:58",
       "value": "platinum"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#ratings",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 97
     },
     "claims_zakat_eligible": {
@@ -135,7 +135,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 27387518
     },
     "has_audited_financials": {
@@ -147,37 +147,37 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": "Q123"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 0.8033
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 124179919
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 155029031
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/954453134#financials",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 147232658
     },
     "transparency_score": {
       "source_name": "Candid Platinum Seal",
       "source_url": null,
-      "timestamp": "2026-07-31T12:11:31",
+      "timestamp": "2026-07-31T14:44:58",
       "value": 100
     },
     "working_capital_months": {
@@ -189,7 +189,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134",
-      "timestamp": "2026-07-31T12:11:33",
+      "timestamp": "2026-07-31T14:45:00",
       "value": 18
     }
   },
@@ -7066,13 +7066,7 @@
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
-      "Charity Navigator",
-      "Candid/GuideStar",
-      "BBB Wise Giving Alliance",
-      "Independent Auditor",
-      "Muslim Philanthropy Initiative (MPI) at the Indiana University Lilly Family School of Philanthropy",
-      "4-star rating (Charity Navigator)",
-      "Platinum Seal of Transparency (Candid/GuideStar)"
+      "Charity Navigator"
     ],
     "receivesFoundationGrants": null
   },
@@ -7305,9 +7299,15 @@
           "severity": "info"
         },
         {
-          "field": "discovered.awards.confidence",
+          "field": "discovered.theory_of_change.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "message": "Low confidence (0.00) for theory_of_change discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.theory_of_change",
+          "judge": "discover_quality",
+          "message": "Theory of change URL found but description not extracted",
           "severity": "info"
         },
         {
@@ -7336,58 +7336,57 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity currently holds a 97.0/100 overall score from Charity Navigator and has 18.0 months of working capital.",
+          "claim": "The charity maintains an overall rating of 97.0/100 and spends $0.16 per $1 raised on fundraising.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/954453134#financials"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific policies to distribute these funds to those in need.",
+          "claim": "The charity is zakat-eligible and follows specific religious guidelines to distribute aid.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://irusa.org/zakat"
         },
         {
-          "claim": "In FY2024, the organization managed $147,232,658 in total revenue and maintained a program expense ratio of 80.3%.",
+          "claim": "In FY2024, the organization managed $147,232,658 in total revenue.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/954453134"
         },
         {
-          "claim": "Islamic Relief USA focuses on direct services like providing hot meals and medical care.",
+          "claim": "The charity focuses on direct services like food parcels and restoring health services.",
           "id": "[4]",
           "source_name": "Download \ud83d\udce5",
           "source_url": "https://irusa.org/wp-content/uploads/2026/03/2026-Zakat-Catalog-IRUSA-Ramadan_Web.pdf"
         },
         {
-          "claim": "The organization provides clear options for religious giving.",
+          "claim": "The charity provides many ways for donors to give.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://irusa.org/donate/"
         },
         {
-          "claim": "The organization allows supporters to get involved through various volunteer opportunities.",
+          "claim": "The charity offers opportunities for supporters to volunteer.",
           "id": "[6]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://irusa.org/volunteer"
         }
       ],
-      "amal_score_rationale": "The charity is an above-average choice for donors because it spends money efficiently on direct services and has a long history of humanitarian work. While its financial health and program evidence are excellent, there is room to improve its formal governance scores.",
+      "amal_score_rationale": "The organization shows an above-average performance due to its efficient spending and clear evidence of program outcomes, though some governance gaps limit its total assessment.",
       "areas_for_improvement": [
         "Governance policies could be strengthened to meet all internal assessment standards",
-        "High costs associated with reaching specific beneficiaries in certain regions"
+        "High costs associated with reaching certain beneficiaries in difficult regions"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a high fit for Muslim donors as it is zakat-eligible and provides clear options for religious giving [2][5]. It addresses urgent humanitarian needs and allows supporters to get involved through various volunteer opportunities [6].",
-        "impact": "Islamic Relief USA focuses on direct services like providing hot meals and medical care [4]. In FY2024, it maintained a program expense ratio of 80.3%, meaning the majority of its $147,232,658 revenue went toward helping people [3]. The group is financially stable with 18.0 months of working capital available to keep programs running [1]."
+        "alignment": "This group is a strong fit for Muslim donors because it is zakat-eligible and addresses urgent humanitarian needs [2]. It has a long track record of working in underserved areas and provides many ways for donors to give or volunteer [5][6].",
+        "impact": "The charity focuses on direct services like food parcels and restoring health services [4]. It spends $0.16 per $1 raised on fundraising, which shows efficient use of donor money [1]. While it has strong evidence of its impact and a clear theory of change, its governance scores are lower than its program results [1]."
       },
-      "headline": "Islamic Relief USA provides direct humanitarian aid and food assistance while maintaining a high overall rating for financial health.",
+      "headline": "Islamic Relief USA provides direct humanitarian aid and food assistance to vulnerable families worldwide.",
       "strengths": [
-        "High program expense ratio of 80.3% ensures most funds reach those in need",
-        "Strong financial stability with 18.0 months of working capital",
-        "Proven track record in delivering food parcels and restoring health services"
+        "High program spending with an 80.3% program expense Ratio",
+        "Strong financial stability with 18.0 months of working capital"
       ],
-      "summary": "In FY2024, the organization managed $147,232,658 in total revenue to support international and domestic programs for vulnerable families [3]. The charity is zakat-eligible and follows specific policies to distribute these funds to those in need [2]. It currently holds a 97.0/100 overall score from Charity Navigator [1]."
+      "summary": "In FY2024, the organization managed $147,232,658 in total revenue to support international and domestic relief programs [3]. The charity is zakat-eligible and follows specific religious guidelines to distribute aid to those in need [2]. It maintains an overall rating of 97.0/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -72,18 +72,18 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-31 12:27:20",
+  "lastUpdated": "2026-07-31 14:52:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 977336
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#ratings",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 61
     },
     "claims_zakat_eligible": {
@@ -101,7 +101,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 297531
     },
     "has_audited_financials": {
@@ -113,31 +113,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 0.1364
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 281685
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 1556552
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471365228#financials",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 3647357
     },
     "working_capital_months": {
@@ -149,7 +149,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228",
-      "timestamp": "2026-07-31T12:26:09",
+      "timestamp": "2026-07-31T14:51:28",
       "value": 63
     }
   },
@@ -189,25 +189,24 @@
     "evaluationSources": [
       "Charity Navigator",
       "Candid/GuideStar",
-      "Independent auditor",
-      "2/4 Star Rating (Charity Navigator)",
-      "Grant (American Online Giving Foundation)",
+      "Grant (National Philanthropic Trust)",
       "Grant (United Mission For Relief & Development (UMR))",
+      "Grant (American Online Giving Foundation)",
       "Grant (Oothala Foundation)"
     ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": [
-    "The Sachse Muslim Society website explicitly lists \"Zakat\" as a donation option under the \"DONATE NOW\" section."
+    "On their website, under the 'DONATE NOW' section, there is an explicit option to 'Donate For. Zakat.'"
   ],
-  "archetype": "RESILIENCE",
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Well Documented Low Score",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -420,15 +419,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "The source mentions donating Zakat, but does not explicitly mention that the organization is zakat-eligible and accepts these funds for community support in a way that confirms the exact claim text beyond standard masjid donations.",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.strengths",
+          "field": "baseline_narrative.amal_score_rationale",
           "judge": "score",
-          "message": "The baseline narrative lists low fundraising costs of $0.11 per $1 raised as a strength, which contradicts the Charity Navigator source data of $0.08 per $1 raised.",
+          "message": "The baseline narrative states a program expense ratio of 13.6% for FY2024, but the rich narrative states the FY2023 revenue is $2,799,757 and the program expense ratio is 13.6%. More importantly, the baseline narrative's strengths section lists 'Low fundraising costs of $0.11 per $1 raised' while the rich narrative and source data show fundraising efficiency is $0.08 per $1 raised.",
           "severity": "warning"
         },
         {
@@ -447,6 +440,18 @@
           "field": "discovered.awards.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[0].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.evaluators[1].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'vertexaisearch.cloud.google.com' is not a known trusted evaluator",
           "severity": "info"
         },
         {
@@ -503,47 +508,47 @@
         "asnaf_category": "fi_sabilillah",
         "bonus_points": 0,
         "charity_claims_zakat": true,
-        "claim_evidence": "The Sachse Muslim Society website explicitly lists \"Zakat\" as a donation option under the \"DONATE NOW\" section.",
+        "claim_evidence": "On their website, under the 'DONATE NOW' section, there is an explicit option to 'Donate For. Zakat.'",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported total revenue of $3,647,357, a 13.6% program expense ratio, and 63.0 months of working capital.",
+          "claim": "In FY2024, the charity reported total revenue of $3,647,357 and a program expense ratio of 13.6%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471365228#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and accepts these funds for community support.",
+          "claim": "The organization is zakat-eligible and accepts these funds for its operations.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://sachsemasjid.madinasites.com/"
         },
         {
-          "claim": "The organization was founded in 2014 and operates Hifdh programs for religious education.",
+          "claim": "Founded in 2014, the organization focuses on religious education through full-time and part-time Hifdh programs in Sachse, Texas.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a very low percentage of spending on direct programs and a lack of documented outcome tracking. While it has significant financial reserves, the slow distribution of funds and missing governance documents lower its overall standing.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and the absence of clear metrics to track the success of its educational programs. While the charity is financially stable, most of its spending is not currently directed toward its core services.",
       "areas_for_improvement": [
-        "Increase the program expense ratio, as only 13.6% of spending currently goes to programs",
-        "Distribute zakat funds more promptly rather than holding them in long-term reserves",
-        "Develop and share a formal theory of change and outcome metrics to track program success"
+        "Only 13.6% of spending goes directly to programs",
+        "High cash reserves may conflict with the prompt distribution of zakat funds",
+        "Lack of a documented theory of change or outcome tracking"
       ],
       "dimension_explanations": {
-        "alignment": "The charity serves a specific religious and cultural need for the Muslim community in Sachse [3].",
-        "impact": "The organization provides direct services like Hifdh programs, but its financial health is impacted by a 13.6% program expense ratio [1]. While it shows evidence of program delivery, it lacks a documented theory of change and formal governance metrics to measure long-term effectiveness [1]."
+        "alignment": "The organization serves a specific religious and cultural need in the Sachse area [3].",
+        "impact": "The charity spends 13.6% on its programs, which is a significant concern for direct service delivery [1]. While it successfully runs Hifdh programs, there is no public data on cost per beneficiary or a formal theory of change to measure long-term effectiveness [3]."
       },
       "headline": "Sachse Muslim Society provides religious education and community services while maintaining high cash reserves.",
       "strengths": [
         "Maintains a very high level of working capital at 63.0 months",
-        "Operates with low fundraising costs of $0.11 per $1 raised"
+        "Low fundraising costs of $0.11 per $1 raised"
       ],
-      "summary": "Founded in 2014, the organization focuses on religious education through full-time and part-time Hifdh programs in Sachse, Texas [3]. In FY2024, the charity reported total revenue of $3,647,357 [1]. The organization is zakat-eligible and accepts these funds for community support [2]."
+      "summary": "Founded in 2014, the organization focuses on religious education through full-time and part-time Hifdh programs in Sachse, Texas [3]. In FY2024, the charity reported total revenue of $3,647,357 [1]. The organization is zakat-eligible and accepts these funds for its operations [2]."
     },
     "rich_narrative": {
       "all_citations": [

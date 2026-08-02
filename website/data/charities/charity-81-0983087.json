@@ -82,24 +82,24 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-31 12:17:41",
+  "lastUpdated": "2026-07-31 14:50:27",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 827602
     },
     "candid_seal": {
       "source_name": "Candid",
       "source_url": null,
-      "timestamp": "2026-07-31T12:16:31",
+      "timestamp": "2026-07-31T14:49:28",
       "value": "bronze"
     },
     "charity_navigator_score": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#ratings",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 94
     },
     "claims_zakat_eligible": {
@@ -111,13 +111,13 @@
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 2016
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 742373
     },
     "has_audited_financials": {
@@ -129,37 +129,37 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": "T12"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 0.7426
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 4593139
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 6163114
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/810983087#financials",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 5966431
     },
     "transparency_score": {
       "source_name": "Candid Bronze Seal",
       "source_url": null,
-      "timestamp": "2026-07-31T12:16:31",
+      "timestamp": "2026-07-31T14:49:28",
       "value": 50
     },
     "working_capital_months": {
@@ -171,7 +171,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087",
-      "timestamp": "2026-07-31T12:16:33",
+      "timestamp": "2026-07-31T14:49:30",
       "value": 20.7
     }
   },
@@ -182,8 +182,7 @@
   },
   "causeTags": [
     "faith-based",
-    "fuqara",
-    "masakin",
+    "fisabilillah",
     "muslim-led"
   ],
   "programFocusTags": [
@@ -1094,15 +1093,21 @@
       },
       "judge_issues": [
         {
-          "field": "baseline_narrative.areas_for_improvement",
-          "judge": "score",
-          "message": "The baseline narrative states that fundraising efficiency is $0.31 per $1 raised, which contradicts the source data from Charity Navigator showing a fundraising efficiency of $0.15.",
+          "field": "all_citations",
+          "judge": "citation",
+          "message": "The fetched PDF content is unparseable/binary stream, so the claim could not be confirmed.",
           "severity": "warning"
         },
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity focuses on arts, media, and narrative change programs through grants and fellowships, which requires careful justification under the fi sabilillah category rather than direct relief for fuqara or masakin.",
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "The fetched PDF content is unparseable binary data, so the claim could not be verified.",
+          "severity": "warning"
+        },
+        {
+          "field": "baseline_narrative.all_citations",
+          "judge": "score",
+          "message": "The fundraising efficiency is stated as $0.31 per $1 raised, but the source data from Charity Navigator shows a fundraising efficiency of 0.15 ($0.15 per $1 raised).",
           "severity": "warning"
         },
         {
@@ -1175,59 +1180,64 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Pillars Fund has a 94.0/100 from Charity Navigator rating and a 74.3% program expense ratio.",
+          "claim": "The charity maintains an overall rating of 94.0/100, a 74.3% program expense ratio, 20.7 months of working capital, and a fundraising efficiency of $0.31 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/810983087#financials"
         },
         {
-          "claim": "The charity is zakat-eligible.",
+          "claim": "The organization is zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muslimciviccoalition.org/contribute-zakatinformation"
         },
         {
-          "claim": "In FY2024, Pillars Fund reported total revenue of $5,966,431.",
+          "claim": "In FY2024, the charity reported total revenue of $5,966,431 and CEO compensation of $257,228.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/810983087"
         },
         {
-          "claim": "Pillars Fund supports nonprofit organizations that amplify the talents of American Muslims.",
+          "claim": "Pillars Fund supports programs like Pillars Bylines and the Pillars Artist Fellowship to amplify Muslim voices.",
           "id": "[4]",
           "source_name": "Give",
           "source_url": "https://www.pillarsfund.org/s/2025-_-Pillars-Donation-Instructions.pdf"
         },
         {
-          "claim": "The organization supports scholarly and creative contributions to the Muslim narrative.",
+          "claim": "The charity focuses on scholarly and creative contributions to the Muslim narrative.",
           "id": "[7]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.pillarsfund.org/s/KHAYAL.pdf"
         },
         {
-          "claim": "The organization supports cohorts of fellows in its artist programs.",
+          "claim": "The organization supports cohorts of fellows.",
           "id": "[9]",
           "source_name": "Read",
           "source_url": "https://www.pillarsfund.org/s/KHAYAL.pdf"
+        },
+        {
+          "claim": "The organization provides various giving methods for donors.",
+          "id": "[10]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://www.pillarsfund.org/givinginstructions"
         }
       ],
-      "amal_score_rationale": "Pillars Fund shows a balance of stable financial health and clear program goals, though high executive pay relative to its budget and moderate spending on programs affect its overall standing.",
+      "amal_score_rationale": "Pillars Fund shows a balanced performance with moderate spending on programs and clear evidence of its work, though high executive pay relative to its size is a notable factor.",
       "areas_for_improvement": [
-        "Executive compensation is $257,228, which represents 4.3% of total revenue",
-        "The organization lacks a formal governance score in recent assessments",
-        "Fundraising efficiency is $0.31 per $1 raised, which is higher than some peer groups"
+        "Executive pay is high, with the CEO earning $257,228, which is 4.3% of total revenue [3]",
+        "The organization lacks a formal governance score in recent assessments [1]"
       ],
       "dimension_explanations": {
-        "alignment": "The organization serves a specific cultural need by supporting Muslim narratives in media and arts [7]. It has a established track record of funding cohorts of fellows and creative contributors [9]. While it fits the needs of many Muslim donors, its focus on cultural capacity building is a specialized area of philanthropy [4].",
-        "impact": "In FY2024, the charity directed a moderate 74.3% of its spending toward programs [1]. While it successfully builds capacity for Muslim artists and leaders through fellowships, the cost to reach each person is not yet fully reported [9]. The group maintains strong financial health with $0.31 per $1 raised in fundraising efficiency [1]."
+        "alignment": "This organization is zakat-eligible and serves a specific cultural and religious niche for Muslim donors [2]. It has a established track record of supporting cohorts of fellows and creative contributors [9]. However, the urgency of its cause is viewed as moderate compared to humanitarian aid groups [10].",
+        "impact": "The charity focuses on capacity building by investing in Muslim creators and scholars [7]. It operates with moderate financial efficiency, spending $0.31 per $1 raised [1]. While it provides strong evidence of its outcomes, its direct impact is limited by its focus on supporting other organizations and individuals rather than direct service [4]."
       },
-      "headline": "Pillars Fund supports American Muslim creators and leaders to shape cultural narratives through grants and fellowships.",
+      "headline": "Pillars Fund supports American Muslim leaders and artists to change how their communities are seen in the United States.",
       "strengths": [
-        "Maintains a 94.0/100 overall rating from Charity Navigator",
-        "Holds 20.7 months of working capital, showing high financial stability",
-        "Provides clear evidence of program outcomes and a defined theory of change"
+        "Maintains a moderate program expense ratio of 74.3% [1]",
+        "Holds 20.7 months of working capital to ensure long-term stability [1]",
+        "Provides clear evidence of program outcomes and a theory of change [4]"
       ],
-      "summary": "The organization invests in nonprofit groups and artists to amplify Muslim voices across the United States [4]. In fiscal year 2024, Pillars Fund reported total revenue of $5,966,431 to support its mission [3]. The charity is zakat-eligible, allowing donors to fulfill their religious giving obligations [2]."
+      "summary": "The organization provides grants and fellowships to amplify Muslim voices through programs like Pillars Bylines and the Pillars Artist Fellowship [4]. In fiscal year 2024, the charity reported total revenue of $5,966,431 [3]. It maintains an overall rating of 94.0/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [

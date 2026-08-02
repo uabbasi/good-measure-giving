@@ -89,12 +89,12 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-31 12:17:54",
+  "lastUpdated": "2026-07-31 14:50:47",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 486699
     },
     "beneficiaries_served_annually": {
@@ -103,7 +103,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-07-31T19:17:08.601869+00:00",
+        "timestamp": "2026-07-31T21:50:09.819752+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -127,7 +127,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 276829
     },
     "has_audited_financials": {
@@ -139,31 +139,31 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": "T30"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 0.9501000000000001
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 13631314
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 14394842
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/770502583#financials",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 14190451
     },
     "working_capital_months": {
@@ -175,7 +175,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/770502583",
-      "timestamp": "2026-07-31T12:16:54",
+      "timestamp": "2026-07-31T14:49:55",
       "value": 3.5
     }
   },
@@ -209,7 +209,7 @@
   ],
   "programFocusTags": [
     "humanitarian-relief",
-    "community-services"
+    "education-k12"
   ],
   "hideFromCurated": null,
   "theoryOfChange": "Belief that education is the primary answer to poverty, but must be supported by social welfare (food, health) so a child is in a position to learn.",
@@ -514,7 +514,7 @@
   ],
   "evaluationTrack": "STANDARD",
   "foundedYear": 1999,
-  "scoreSummary": "HIDAYA FOUNDATION shows strong impact and strong alignment, with zakat compliance.",
+  "scoreSummary": "HIDAYA FOUNDATION shows strong impact and strong alignment, with zakat compliance (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -526,7 +526,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-07-31T19:17:08.601869+00:00",
+      "timestamp": "2026-07-31T21:50:09.819752+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -542,12 +542,7 @@
     "hasMultiYearMetrics": 1,
     "thirdPartyEvaluated": 1,
     "evaluationSources": [
-      "Charity Navigator",
-      "Independent Auditor",
-      "Candid/GuideStar",
-      "BBB Wise Giving Alliance",
-      "3-Star Rating (Charity Navigator)",
-      "Sitara-i-Eisaar (Star of Sacrifice) (Government of Pakistan)"
+      "Charity Navigator"
     ],
     "receivesFoundationGrants": null
   },
@@ -589,12 +584,23 @@
         "other_source": "charity_navigator",
         "reason": "derived_from_a_different_filing_year"
       }
+    },
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "medium",
+      "headline": "Fundraising costs are 26% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 0.26,
+        "fundraising_expenses": 276829,
+        "total_expenses": 14394842
+      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "77-0502583",
     "charity_name": "Hidaya Foundation",
-    "amal_score": 80,
+    "amal_score": 78,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:26:41",
     "rubric_version": "5.3.0",
@@ -752,14 +758,20 @@
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched PDF content is unparseable or binary-encoded, so the financial claims could not be verified.",
+          "message": "The provided PDF financial statement content is unparseable binary/stream data, preventing verification of the specific financial metrics.",
           "severity": "warning"
         },
         {
-          "field": "fundraising_costs",
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The fetched content for citation 3 does not contain the specific claims regarding cost per beneficiary or long track record.",
+          "severity": "warning"
+        },
+        {
+          "field": "cost_per_beneficiary",
           "judge": "factual",
-          "message": "Narrative claims low fundraising costs of $0.02 per $1 raised, but Charity Navigator / Form 990 data show fundraising expense ratio is 0.0097 (approx $0.01 per $1 raised).",
-          "severity": "info"
+          "message": "The cost per beneficiary of approximately $45.44 cannot be directly verified from the provided source data.",
+          "severity": "warning"
         },
         {
           "field": "discovered.evaluations.confidence",
@@ -774,26 +786,28 @@
           "severity": "info"
         },
         {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
         }
       ],
-      "risk_deduction": 0,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "LOW",
-        "risk_summary": "No significant risks identified.",
-        "risks": [],
-        "total_deduction": 0
+        "overall_risk_level": "MODERATE",
+        "risk_summary": "1 risk(s) identified.",
+        "risks": [
+          {
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Fundraising costs are 26% of total expenses",
+            "mitigation": null,
+            "severity": "medium"
+          }
+        ],
+        "total_deduction": -2
       },
-      "score_summary": "HIDAYA FOUNDATION shows strong impact and strong alignment, with zakat compliance.",
+      "score_summary": "HIDAYA FOUNDATION shows strong impact and strong alignment, with zakat compliance (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": "fuqara",
         "bonus_points": 0,
@@ -805,40 +819,40 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization is Zakat-eligible and focuses on direct service delivery for those in need.",
+          "claim": "The organization is Zakat-eligible and follows specific policies to distribute these funds to those in need.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.hidaya.org/zakat"
         },
         {
-          "claim": "In FY2024, the foundation managed $14,190,451 in total revenue and maintained a 95.0% program expense ratio.",
+          "claim": "In FY2024, the foundation managed $14,190,451 in total revenue, maintained a 95.0% program expense Ratio, and had 3.5 months of working capital.",
           "id": "[6]",
           "source_name": "Financial Statement (2024)",
           "source_url": "https://www.hidaya.org/wp-content/uploads/documents/financials/HF_FS_2024.pdf"
         },
         {
-          "claim": "The foundation addresses urgent humanitarian needs and provides evidence of program outcomes.",
+          "claim": "The foundation delivers direct services at a low cost per beneficiary and has a long track record in underserved areas.",
           "id": "[12]",
           "source_name": "Annual Report",
           "source_url": "https://www.hidaya.org/about-us/financials/annual-reports/"
         }
       ],
-      "amal_score_rationale": "The foundation shows strong financial health and high efficiency, ensuring almost all funds reach those in need. It provides clear evidence of its impact through direct services and maintains a solid track record in humanitarian aid.",
+      "amal_score_rationale": "This charity shows above-average performance due to its high program spending and low cost per beneficiary, though high fundraising costs relative to total expenses are a notable factor.",
       "areas_for_improvement": [
-        "Strengthening governance policies to match the high level of program success",
-        "Expanding the theory of change documentation to better show long-term goals"
+        "Fundraising costs represent 26% of total expenses",
+        "Governance structures could be further strengthened to match industry best practices"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors as it is Zakat-eligible and follows specific Zakat policies [2]. It addresses urgent humanitarian needs in underserved areas and has a proven track record of service [12].",
-        "impact": "The charity is highly efficient, maintaining a 95.0% program expense ratio in FY2024 [6]. It delivers direct services at a low cost of about $45.44 per beneficiary, supported by strong evidence of program outcomes [12]."
+        "alignment": "Hidaya Foundation has a high fit for Muslim donors as it is Zakat-eligible and focuses on urgent humanitarian needs [2]. It has a long track record of working in underserved areas to provide education and social welfare assistance [12].",
+        "impact": "The foundation delivers direct services at a cost of approximately $45.44 per beneficiary, showing strong efficiency in its mission [12]. In FY2024, it maintained a 95.0% program expense Ratio, ensuring the vast majority of funds reached its programs [6]. The organization also keeps 3.5 months of working capital on hand to sustain its operations [6]."
       },
-      "headline": "Hidaya Foundation provides direct humanitarian aid and education to economically depressed areas with high financial efficiency.",
+      "headline": "Hidaya Foundation provides direct humanitarian aid to economically depressed areas with a focus on education and social welfare.",
       "strengths": [
-        "High program efficiency with a 95.0% program expense ratio in FY2024",
-        "Low fundraising costs of only $0.02 per $1 raised",
-        "Direct service model with a low cost of approximately $45.44 per beneficiary"
+        "High spending efficiency with a 95.0% program expense Ratio in FY2024",
+        "Strong fundraising efficiency of $0.02 per $1 raised",
+        "Direct service delivery with a low cost of approximately $45.44 per beneficiary"
       ],
-      "summary": "In FY2024, the foundation managed $14,190,451 in total revenue to support its global welfare programs [6]. The organization is Zakat-eligible and focuses on direct service delivery for those in need [2]. It maintains a strong financial position with 3.5 months of working capital available to sustain its operations [6]."
+      "summary": "In FY2024, the foundation managed $14,190,451 in total revenue to support its global programs [6]. The organization is Zakat-eligible and follows specific policies to distribute these funds to those in need [2]. It maintains a lean operation, spending only $0.02 to raise every $1 in donations [6]."
     },
     "rich_narrative": {
       "all_citations": [
