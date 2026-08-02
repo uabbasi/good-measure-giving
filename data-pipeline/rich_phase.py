@@ -77,7 +77,12 @@ def generate_rich_for_pipeline(
     try:
         generator = RichNarrativeGenerator()
 
-        rich_narrative = generator.generate(ein, force=force)
+        # Reaching here means either the caller forced this phase or the
+        # re-entrancy check above judged the stored narrative stale. Either way
+        # the decision is already made, and generator.generate has its own
+        # existence check that would hand the stale copy straight back if asked
+        # with force=False -- discarding the verdict we just reached.
+        rich_narrative = generator.generate(ein, force=True)
 
         # Always capture cost (even on failure - LLM calls cost money)
         result["cost_usd"] = generator.last_generation_cost
