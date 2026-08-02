@@ -1295,9 +1295,13 @@ class TestForceSourcesOverride:
 
     @staticmethod
     def _terminal_failure_row():
+        # CRAWL_MAX_RETRIES, not 1: a challenge is provisional until it has
+        # repeated that many times, so a single sighting no longer describes a
+        # terminal block. This row means the site has refused us repeatedly,
+        # which is what the test is about.
         return {
             "success": False,
-            "retry_count": 1,
+            "retry_count": CRAWL_MAX_RETRIES,
             "last_failure_reason": "CAPTCHA_BLOCKED: challenge page (HTTP 200)",
             "scraped_at": (datetime.now(timezone.utc) - timedelta(days=1)).isoformat(),
         }
@@ -1700,10 +1704,18 @@ class TestForcingTheCrawlPhaseRetriesASourceWeBroke:
         o = self._orchestrator(True, row)
         assert o._should_skip_failed_source("36-4476244", "form990_grants") == (False, "")
 
-    def test_forcing_the_crawl_does_not_reopen_a_captcha_block(self):
-        """EIN 75-2352043 sits behind a CAPTCHA on purpose. Forcing a crawl
-        must not start knocking on that door again."""
-        o = self._orchestrator(True, self._recent_failure("CAPTCHA_BLOCKED"))
+    def test_forcing_the_crawl_does_not_reopen_a_confirmed_captcha_block(self):
+        """A site that has refused us repeatedly is never re-knocked, whatever
+        the operator asks for.
+
+        The row must show a CONFIRMED block: a challenge seen fewer than
+        CRAWL_MAX_RETRIES times is provisional and is deliberately retryable,
+        because one sighting of an under-attack page is not evidence that a
+        publisher decided anything.
+        """
+        row = self._recent_failure("CAPTCHA_BLOCKED")
+        row["retry_count"] = CRAWL_MAX_RETRIES
+        o = self._orchestrator(True, row)
         skip, reason = o._should_skip_failed_source("75-2352043", "website")
         assert skip and "terminal" in reason
 

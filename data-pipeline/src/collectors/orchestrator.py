@@ -13,6 +13,7 @@ from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
     DATA_FULL_CONFIDENCE_MAX_AGE_YEARS,
+    DEFENSIVE_FAILURE_MARKERS,
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
@@ -445,6 +446,12 @@ class DataCollectionOrchestrator:
             str(row.get(f) or "") for f in ("last_failure_reason", "error_message")
         )
         terminal_marker = classify_failure(failure_text)
+        # A defence is not a verdict until it repeats. Seen once, a challenge
+        # page is indistinguishable from a rate-limit heuristic having a bad
+        # minute, so it drops through to the ordinary backoff below and gets
+        # re-checked within hours instead of six months.
+        if terminal_marker in DEFENSIVE_FAILURE_MARKERS and retry_count < CRAWL_MAX_RETRIES:
+            terminal_marker = None
         if terminal_marker:
             if attempted_dt:
                 failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
