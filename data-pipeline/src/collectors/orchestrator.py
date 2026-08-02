@@ -26,6 +26,7 @@ from ..db.dolt_client import execute_query
 from ..db.repository import Charity
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from ..utils.charity_loader import normalize_website_url
+from ..utils.freshness import _age as source_age
 from ..utils.logger import PipelineLogger
 from .bbb_collector import BBBCollector
 from .candid_beautifulsoup import CandidCollector
@@ -394,7 +395,9 @@ class DataCollectionOrchestrator:
 
         # Get TTL for this source
         ttl_days = SOURCE_TTL_DAYS.get(source, 30)  # Default 30 days
-        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+        age = source_age(scraped_dt)
+        if age is None:
+            return False
 
         return age < timedelta(days=ttl_days)
 
@@ -455,7 +458,7 @@ class DataCollectionOrchestrator:
             terminal_marker = None
         if terminal_marker:
             if attempted_dt:
-                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                failure_age = source_age(attempted_dt) or timedelta(0)
                 if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
                     return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
                 self.raw_data_repo.reset_retry_count(ein, source)
@@ -475,7 +478,7 @@ class DataCollectionOrchestrator:
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
             if attempted_dt:
-                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                failure_age = source_age(attempted_dt) or timedelta(0)
                 if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
                     # Failure is stale — reset retry_count so source can be re-fetched
                     self.raw_data_repo.reset_retry_count(ein, source)
@@ -491,7 +494,7 @@ class DataCollectionOrchestrator:
 
         # Get backoff hours for this retry count
         backoff_hours = RETRY_BACKOFF_HOURS.get(retry_count, 24)
-        age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+        age = source_age(attempted_dt) or timedelta(0)
 
         if age < timedelta(hours=backoff_hours):
             remaining = timedelta(hours=backoff_hours) - age
@@ -1765,23 +1768,8 @@ class DataCollectionOrchestrator:
         row = self.raw_data_repo.get_by_source(ein, source)
         if not row or not row.get("success") or not row.get("parsed_json"):
             return False
-        age = self._age_of(row.get("scraped_at"))
+        age = source_age(row.get("scraped_at"))
         return age is not None and age < timedelta(days=STALE_SOURCE_GRACE_DAYS)
-
-    @staticmethod
-    def _age_of(stamp: Any) -> Optional[timedelta]:
-        """Age of a stored timestamp, or None if it cannot be dated."""
-        if not stamp:
-            return None
-        if isinstance(stamp, str):
-            try:
-                stamp = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
-            except ValueError:
-                return None
-        try:
-            return datetime.now(stamp.tzinfo) - stamp
-        except (AttributeError, TypeError):
-            return None
 
     def _is_website_infra_failure(self, ein: str, report: Dict[str, Any]) -> bool:
         """Return True when website failed due to anti-bot/infra issues."""

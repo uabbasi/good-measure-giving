@@ -10,9 +10,50 @@ the age math lives in one place.
 
 from datetime import datetime, timedelta
 
+_SERVER_OFFSET: timedelta | None = None
+
+
+def _reset_server_offset() -> None:
+    """Forget the cached offset. For tests, and after a connection change."""
+    global _SERVER_OFFSET
+    _SERVER_OFFSET = None
+
+
+def _server_offset() -> timedelta:
+    """How far the database's clock sits from this host's, measured once.
+
+    scraped_at and last_attempt_at are written as CURRENT_TIMESTAMP: naive,
+    in the SERVER's timezone. Comparing them against datetime.now() applies
+    whatever gap exists between that zone and this host's — a 23-minute-old
+    failure measured as 1h23m on 2026-07-31, and a 4-hour backoff reporting
+    2.7h left instead of 3.6h. The gap is not a constant to correct for; it is
+    whatever the two clocks disagree by at that moment, and from a UTC host it
+    would be seven hours, defeating the 1h and 4h windows outright.
+
+    Falls back to zero — the old behaviour — if the database cannot be reached.
+    Age math must never depend on the database being up.
+    """
+    global _SERVER_OFFSET
+    if _SERVER_OFFSET is None:
+        try:
+            from src.db.client import execute_query
+
+            row = execute_query("SELECT NOW() AS now", fetch="one")
+            server = row["now"] if isinstance(row, dict) else None
+            if isinstance(server, str):
+                server = datetime.fromisoformat(server)
+            _SERVER_OFFSET = (server - datetime.now()) if server else timedelta(0)
+        except Exception:
+            _SERVER_OFFSET = timedelta(0)
+    return _SERVER_OFFSET
+
 
 def _age(ts) -> timedelta | None:
-    """Tz-aware age (now - ts) for a scraped_at/last_attempt_at-style timestamp.
+    """Age (now - ts) measured on the clock that wrote ts.
+
+    A naive timestamp came from the database and is in the SERVER's zone, so
+    "now" for it is this host's clock shifted by _server_offset(). A timestamp
+    that carries its own zone needs no correction.
 
     Returns None if ts is missing or unparseable — callers fail closed.
     """
@@ -23,8 +64,10 @@ def _age(ts) -> timedelta | None:
             dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
         else:
             dt = ts
-        return datetime.now(dt.tzinfo) - dt
-    except (ValueError, TypeError):
+        if dt.tzinfo is not None:
+            return datetime.now(dt.tzinfo) - dt
+        return (datetime.now() + _server_offset()) - dt
+    except (ValueError, TypeError, AttributeError):
         return None
 
 
