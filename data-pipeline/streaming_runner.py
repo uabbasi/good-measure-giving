@@ -463,6 +463,23 @@ def website_for_ein(db_website: str | None, file_website: str | None) -> str | N
     return curated or db_website
 
 
+def _update_rows(sql: str, params: tuple) -> int:
+    """Run a write and return how many rows actually changed.
+
+    execute_query cannot answer this: it returns cursor.fetchall(), which for
+    an UPDATE is an empty list whatever happened. The original sync read that
+    as "did not raise" and counted every attempt as a success, so a run that
+    changed nothing still reported "Synced 1 websites" — and a first attempt to
+    fix it by type-checking the return value never fired at all, because the
+    return value is never a number. Neither version could tell what changed.
+    """
+    from src.db.client import get_cursor
+
+    with get_cursor() as cursor:
+        cursor.execute(sql, params)
+        return cursor.rowcount or 0
+
+
 def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
     """Sync websites from charities list to the charities table.
 
@@ -480,8 +497,6 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
     Returns:
         Number of charities whose website actually changed.
     """
-    from src.db.dolt_client import execute_query
-
     updated = 0
     for charity in charities:
         website = normalize_website_url(charity.get("website"))
@@ -492,11 +507,11 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
         # "the query did not raise", so a run that changed nothing still
         # reported "Synced 1" -- the one signal a curator would check to see
         # whether their correction took.
-        changed = execute_query(
+        changed = _update_rows(
             "UPDATE charities SET website = %s WHERE ein = %s AND website <=> %s IS FALSE",
             (website, ein, website),
         )
-        if isinstance(changed, int) and changed > 0:
+        if changed > 0:
             updated += 1
             logger.info(f"Website for {ein} corrected from the charities file: {website}")
             # The stored page came from the OLD address. A raw_scraped_data row
@@ -505,7 +520,7 @@ def sync_websites_to_db(charities: list[dict], logger: PipelineLogger) -> int:
             # "fresh" and even --force-phase crawl re-uses it. Clearing the
             # timestamp is what makes it stale; the content stays until a
             # successful crawl replaces it, per the non-destructive rule.
-            execute_query(
+            _update_rows(
                 "UPDATE raw_scraped_data SET scraped_at = NULL "
                 "WHERE charity_ein = %s AND source = 'website'",
                 (ein,),

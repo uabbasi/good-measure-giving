@@ -37,6 +37,7 @@ class _Recorder:
         self.statements = []
 
     def __call__(self, sql, params=None):
+        """Stands in for _update_rows: returns rows changed, as it does."""
         self.statements.append((" ".join(sql.split()), params))
         if len(params) == 1:  # the invalidation statement
             return 1
@@ -51,7 +52,7 @@ def _sync(charities, stored):
     from unittest.mock import MagicMock
 
     recorder = _Recorder(stored)
-    with patch("src.db.dolt_client.execute_query", recorder):
+    with patch("streaming_runner._update_rows", recorder):
         count = sync_websites_to_db(charities, MagicMock())
     return count, recorder
 
