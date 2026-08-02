@@ -1758,15 +1758,24 @@ class DataCollectionOrchestrator:
         carried 320KB parsed into 45 usable fields from March and was frozen on
         a single bad request.
 
-        Three conditions, each of which stops this from becoming a way to
-        publish nothing: the row must come from a crawl that SUCCEEDED (content
-        stored by a failed one is a challenge page, not a profile), it must
-        have parsed into something, and it must be datable and inside
+        Asked of the CONTENT, not of today's attempt. `success` describes the
+        most recent fetch; RawDataRepository.upsert_raw_data deliberately
+        preserves parsed_json and scraped_at from the last good crawl when a
+        fetch fails, "because a PRIOR failure already flips success to False".
+        Requiring success here therefore re-broke exactly what this method
+        exists to prevent: on 2026-08-02 four charities failed their crawl
+        outright while holding 5-30KB of good March content, all four blocked
+        by a CAPTCHA challenge — the failure class already ruled provisional
+        rather than terminal for this very reason.
+
+        Two conditions keep this from becoming a way to publish nothing: the
+        row must have parsed into something, and it must be datable and inside
         STALE_SOURCE_GRACE_DAYS — past that, a page is no longer evidence of
-        what the organisation is doing now.
+        what the organisation is doing now. The age is read off scraped_at, the
+        data-age clock, which only advances when new content is written.
         """
         row = self.raw_data_repo.get_by_source(ein, source)
-        if not row or not row.get("success") or not row.get("parsed_json"):
+        if not row or not row.get("parsed_json"):
             return False
         age = source_age(row.get("scraped_at"))
         return age is not None and age < timedelta(days=STALE_SOURCE_GRACE_DAYS)

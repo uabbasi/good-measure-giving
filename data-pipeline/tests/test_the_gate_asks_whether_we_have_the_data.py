@@ -81,5 +81,17 @@ class TestItMustActuallyBeData:
         assert not _orch(row)._has_usable_stored_data("x", "website")
 
     def test_a_never_successful_row_is_not_data(self):
-        """Content stored by a failed crawl is a challenge page, not a profile."""
-        assert not _orch(_row(30, success=0))._has_usable_stored_data("x", "website")
+        """A row that has only ever failed carries nothing to carry forward.
+
+        What excludes it is the absent content, not the success flag. The
+        flag cannot do this job: it reports the most recent ATTEMPT, so it
+        reads 0 both for a row that never worked and for one holding good
+        March content behind a failed re-fetch. Gating on it froze four real
+        charities on 2026-08-02 — see
+        test_the_success_flag_is_about_today_not_the_content.py.
+        """
+        assert not _orch(_row(30, success=0, parsed=False))._has_usable_stored_data("x", "website")
+
+    def test_a_failed_refetch_over_good_content_is_still_data(self):
+        """The real Islamic Services Foundation row: success=0, 30KB from March."""
+        assert _orch(_row(146, success=0))._has_usable_stored_data("75-2352043", "website")
