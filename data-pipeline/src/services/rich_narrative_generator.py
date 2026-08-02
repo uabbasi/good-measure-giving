@@ -530,14 +530,37 @@ class RichNarrativeGenerator:
         propublica_data = self._get_raw_source(ein, "propublica")
         if propublica_data:
             p990 = propublica_data.get("propublica_990", {})
+
+            # Same fiscal-year rule as CN below. ProPublica used to be the
+            # source that decided the year; since the IRS filing became
+            # canonical it is just another source, and a charity can elect
+            # FY2025 while ProPublica is still on FY2023. Handing both to one
+            # prompt — with the elected year framed as "the" fiscal year by
+            # data_vintage_note — is how ICNAB published ProPublica's FY2023
+            # $4,520,145 as an FY2025 figure, contradicting its own baseline.
+            _elected_year = (self.charity_data_repo.get(ein) or {}).get("financial_data_tax_year")
+            pp_financials_publishable = self._financials_match_elected_year(
+                p990.get("tax_year"), _elected_year
+            )
+            if not pp_financials_publishable:
+                logger.info(
+                    f"Withholding ProPublica income-statement figures from narrative prompt "
+                    f"for {ein}: ProPublica tax_year={p990.get('tax_year')} != elected "
+                    f"tax_year={_elected_year}"
+                )
+
+            def _pp_fy_bound(value: Any) -> Any:
+                """Fiscal-year-bound ProPublica figure: offered only if it won the year."""
+                return value if pp_financials_publishable else None
+
             data["form_990"] = {
                 "tax_year": p990.get("tax_year"),
                 "employees_count": p990.get("employees_count"),
                 "volunteers_count": p990.get("volunteers_count"),
                 "compensation_current_officers": p990.get("compensation_current_officers"),
                 "other_salaries_wages": p990.get("other_salaries_wages"),
-                "total_revenue": p990.get("total_revenue"),
-                "total_expenses": p990.get("total_expenses"),
+                "total_revenue": _pp_fy_bound(p990.get("total_revenue")),
+                "total_expenses": _pp_fy_bound(p990.get("total_expenses")),
                 "net_assets": p990.get("net_assets"),
                 "subsection_code": p990.get("subsection_code"),
                 # NEW: Revenue breakdown
@@ -632,7 +655,7 @@ class RichNarrativeGenerator:
             # fiscal-year election, and remains unexplained. This guard closes
             # a real adjacent hole; it does not close that one.
             _elected = self.charity_data_repo.get(ein) or {}
-            cn_financials_publishable = self._cn_financials_match_elected_year(
+            cn_financials_publishable = self._financials_match_elected_year(
                 cn.get("fiscal_year"), _elected.get("financial_data_tax_year")
             )
             if not cn_financials_publishable:
@@ -710,24 +733,30 @@ class RichNarrativeGenerator:
         return data
 
     @staticmethod
-    def _cn_financials_match_elected_year(cn_fiscal_year: Any, elected_tax_year: Any) -> bool:
-        """Whether CN's income-statement figures describe the year we publish.
+    def _financials_match_elected_year(source_fiscal_year: Any, elected_tax_year: Any) -> bool:
+        """Whether a source's income-statement figures describe the year we publish.
 
         The aggregator elects income-statement fields from ONE fiscal-year-
-        coherent source. When ProPublica wins and CN reports a different year,
-        CN's revenue/expense figures and every ratio derived from them belong
+        coherent source. When another source reports a different year, its
+        revenue/expense figures and every ratio derived from them belong
         to a year absent from the published record — so they must not reach the
         narrative prompt, or the LLM will write a correctly-cited claim about a
         number the pipeline deliberately declined to use.
+
+        Applies to ProPublica as much as to Charity Navigator. Once the IRS
+        filing became canonical, ProPublica stopped being the source that
+        decides the year, and ICNAB (81-2169685) published "total revenue of
+        $4,520,145 in FY2025" — ProPublica's FY2023 amount under the elected
+        FY2025 label — while its baseline narrative correctly said $3,851,438.
 
         Permissive when either year is unknown: only a *provable* mismatch
         withholds data, matching the equivalent guard in
         ``baseline.sanitize_narrative_metrics``.
         """
-        if cn_fiscal_year is None or elected_tax_year is None:
+        if source_fiscal_year is None or elected_tax_year is None:
             return True
         try:
-            return int(cn_fiscal_year) == int(elected_tax_year)
+            return int(source_fiscal_year) == int(elected_tax_year)
         except (TypeError, ValueError):
             return True
 

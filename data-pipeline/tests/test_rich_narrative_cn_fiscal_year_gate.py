@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.services.rich_narrative_generator import RichNarrativeGenerator
 
-_match = RichNarrativeGenerator._cn_financials_match_elected_year
+_match = RichNarrativeGenerator._financials_match_elected_year
 
 
 class TestCnFiscalYearGate:
