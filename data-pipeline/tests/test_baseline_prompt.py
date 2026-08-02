@@ -27,7 +27,7 @@ def _fake_scores(wallet_tag="ZAKAT-ELIGIBLE"):
 
 def test_baseline_prompt_file_is_v2():
     info = load_prompt("baseline_narrative", check_version=False)
-    assert info.version == "2.5.0"
+    assert info.version == "2.6.0"
     assert "{charity_name}" in info.content
     assert "{zakat_constraint_text}" in info.content
     # v1.1.0 style rules survived the merge
@@ -45,7 +45,7 @@ def test_template_placeholders_match_format_kwargs(sample_charity_metrics):
 
 def test_build_baseline_prompt_renders_cleanly(sample_charity_metrics):
     prompt, info = build_baseline_prompt(sample_charity_metrics, _fake_scores(), 3, "[1] Charity Navigator")
-    assert info.version == "2.5.0"
+    assert info.version == "2.6.0"
     assert "Test Charity" in prompt
     assert "{charity_name}" not in prompt          # all placeholders resolved
     assert '"headline"' in prompt                   # JSON braces rendered as literals
@@ -5226,3 +5226,26 @@ class TestCnSubScoreProvenanceGuard:
     def test_correction_path_is_idempotent_across_five_passes(self):
         metrics = _metrics(cn_accountability_score=85.5, cn_score_provenance="published_beacon")
         _five_passes(self.TEXT, metrics)
+
+
+def test_the_mandatory_values_block_carries_no_inline_instructions():
+    """EIN 47-5165837 published our own prompt text.
+
+    Its impact explanation contained, verbatim: "(use this exact percentage
+    everywhere, and describe it using this exact label — do not restate it as
+    the plain 'program expense ratio' if the label says cash-adjusted)". The
+    instruction sat in parentheses immediately after the value on the same
+    line, so the model copied it along with the value it was attached to. The
+    score judge caught it, correctly — that text was one gate away from a
+    donor-facing page.
+
+    Instructions now live above the list; every line in it is data.
+    """
+    body = load_prompt("baseline_narrative", check_version=False).content
+    block = body.split("## MANDATORY VALUES", 1)[1].split("If a value is", 1)[0]
+    values = [ln for ln in block.splitlines() if ln.strip().startswith("- ")]
+
+    assert values, "the mandatory values list disappeared"
+    for line in values:
+        assert "(" not in line, f"instruction left inside a value line: {line}"
+        assert "use this exact" not in line.lower(), line
