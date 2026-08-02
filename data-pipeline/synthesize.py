@@ -1341,6 +1341,24 @@ def realign_income_statement_attribution(
     Mutates source_attribution in place.
     """
     financial_data_source = getattr(metrics, "financial_data_source", None)
+
+    # The IRS filing is a third winner, added when it became canonical. The
+    # aggregator already recorded provenance for every field it elected
+    # (_track(field, "irs_990", value)), so carry what it recorded rather than
+    # minting a fresh claim here. Skipping this left EIN 99-3032347 publishing
+    # total_revenue=84465 with no attribution at all -- nothing else reported
+    # that figure, so no other source supplied one -- and the synthesize
+    # quality gate correctly refused it.
+    if financial_data_source == "irs_990":
+        elected = getattr(metrics, "source_attribution", None) or {}
+        for field in INCOME_STATEMENT_COLUMNS:
+            if getattr(metrics, field, None) is None:
+                continue
+            entry = elected.get(field)
+            if entry:
+                source_attribution[field] = entry
+        return
+
     if financial_data_source not in {"charity_navigator", "mixed"}:
         return
 
