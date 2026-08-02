@@ -22,11 +22,33 @@ Fixing the check itself (rather than the streaming_runner call site) means every
 caller benefits, including rich_phase.py's standalone entry point.
 """
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+import pytest
+import rich_phase
 from rich_phase import generate_rich_for_pipeline
 
 EIN = "23-2202414"
+
+
+@pytest.fixture(autouse=True)
+def _no_live_generation():
+    """Keep these tests off the real database.
+
+    eval_repo is mocked, but RichNarrativeGenerator was not: it loads the
+    baseline through its OWN repository and writes what it generates. While
+    the stale path asked for force=False the generator's existence check made
+    that a harmless read. Once the stale path started forcing (as it must, or
+    the staleness verdict is discarded), the suite began regenerating EIN
+    23-2202414's rich narrative for real — rewriting live content without the
+    judge re-running, so the content hash no longer matched and the export
+    gate dropped a published charity out of the index.
+    """
+    generator = Mock()
+    generator.generate.return_value = {"all_citations": []}
+    generator.last_generation_cost = 0.0
+    with patch.object(rich_phase, "RichNarrativeGenerator", return_value=generator):
+        yield generator
 
 
 def _eval_repo(existing):
