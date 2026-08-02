@@ -1381,3 +1381,85 @@ benchmarks and the HARD DATA section).
 3. **The required-source gate** reads the `success` flag rather than whether we
    hold usable content. Less urgent now that the CAPTCHA freeze is fixed, but
    it is why a charity with 320KB parsed can still fail its crawl.
+
+---
+
+# batch86 — the last 87 stale charities (2026-08-02)
+
+87, not 86: the 86 never run through a batch, plus Islamic Services
+Foundation (75-2352043), whose page still predated the fixes.
+
+**Result: 87/87 exported.** Index 166/166, nothing excluded, every detail
+page dated 2026-08-02, no published page predating the 2026-07-29 fixes.
+
+## Cost
+
+| run | scope | result |
+|---|---|---|
+| pilot | 5 | 4/5 — CARE USA gate-blocked; $2.96 ($0.5917/charity) |
+| main | 87, force rich | 82 done / 5 failed, 80 exported, 2 gate-skipped; **FINISHED** $33.57 of $65 |
+| fix | 7 failures | 7/7, $1.86 |
+| irs | 11 re-cited | 11/11, $3.95 |
+| irs2 | 2 outside the 87 | 1/2 — ICNAB gate-blocked; $1.01 |
+| icnab | 1 | 1/1, $0.12 |
+
+~$45 total against a $65 cap approved after the pilot measured 2x the
+earlier estimate. Judge is 80-97% of every run; rich regeneration is
+$0.0476/charity, which is why it was cheap to stop skipping it.
+
+## Six defects, each masking the next
+
+1. **The narrative called the charity by a name we do not publish.**
+   `metrics.name` is rebuilt Candid-first every synth run, so the system
+   carried two independent names — `charities.name` ("CARE USA"), used by
+   the index, the page header and the judge's ground truth, and
+   `metrics_json.name` ("CAREHQ"), read only by the narrative prompt. 84 of
+   169 disagreed; most harmlessly, several not ("Oxfam AmericaHQ",
+   "Feeding AmericaHQ", "Muslim Bar Association of New Yorkinc").
+
+2. **A staleness verdict was discarded before it took effect.**
+   `generate_rich_for_pipeline` detected a stale rich narrative and then
+   called the generator with `force=False`, whose own existence check handed
+   the stale copy straight back. The existing test asserted only that
+   `skipped` was unset — never set on that path — so it passed either way.
+
+3. **The suite was generating against the live database.** Fixing (2) turned
+   a harmless read into a real write: `test_rich_reentrancy_staleness.py`
+   mocks eval_repo but constructed a real RichNarrativeGenerator. Running
+   the suite rewrote EIN 23-2202414's rich narrative, the judge did not
+   re-run, the content hash stopped matching, and the export gate silently
+   dropped a published charity — 166 to 165, no error anywhere. Restored
+   from Dolt HEAD~1; the restored content reproduces hash aac98722f2d383b0.
+   The suite went 62s -> 24s, which was the tell.
+
+4. **The crawl gate read a flag about today instead of the content in hand.**
+   `_has_usable_stored_data` required `row["success"]`, reasoning that a
+   failed crawl stores a challenge page. The raw layer never writes such a
+   row — `upsert_raw_data` preserves parsed_json and scraped_at on failure,
+   "because a PRIOR failure already flips success to False". Four charities
+   failed outright holding good March content inside the 180-day window,
+   all four on CAPTCHA, the failure class already ruled provisional. The
+   prior test passed because its fixture defaulted `success=1`, a row shape
+   the failing charities never had.
+
+5. **The IRS election had no provenance.** `realign_income_statement_attribution`
+   knew two winners and returned early for anything else; making the IRS
+   filing canonical added a third and never told it. EIN 99-3032347 reached
+   the synthesize gate with total_revenue=84465 and no attribution at all —
+   nothing else published that figure — and was refused, correctly.
+
+6. **A figure from one source under another source's year label.**
+   The rich prompt fiscal-year-bound CN's income statement but handed over
+   ProPublica's unguarded — right while ProPublica decided the year, wrong
+   once the IRS filing became canonical. ICNAB published "total revenue of
+   $4,520,145 in FY2025" (ProPublica's FY2023 amount) while its own baseline
+   said $3,851,438. The score judge caught the contradiction between tiers.
+
+## Still open
+
+- **83-1171525 (Link Outside)** carries 1 judge error and is unpublished. It
+  is a commented-out line in `pilot_charities.txt` with a documented reason
+  (CN/ProPublica FY2023 revenue diverge 87%). Pre-existing, not a regression.
+- `synthesize.py:2491` assigns an unused `logger` in `main()`. Pre-existing;
+  left alone.
+- Nothing pushed. Suite 2225 green.
