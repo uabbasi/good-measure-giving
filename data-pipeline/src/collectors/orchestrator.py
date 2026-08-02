@@ -17,6 +17,7 @@ from ..constants import (
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
+    STALE_SOURCE_GRACE_DAYS,
     TERMINAL_FAILURE_MARKERS,
     TERMINAL_FAILURE_TTL_DAYS,
 )
@@ -1080,6 +1081,7 @@ class DataCollectionOrchestrator:
             required_sources.remove("website")
             report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        missing_sources = self._carry_stored_sources(ein, missing_sources, report)
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
             self.logger.error(f"Crawl incomplete for {ein}: required sources failed/missing: {details}")
@@ -1412,6 +1414,7 @@ class DataCollectionOrchestrator:
             report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
 
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        missing_sources = self._carry_stored_sources(ein, missing_sources, report)
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
             self.logger.error(f"Collection incomplete for {ein}: required sources failed/missing: {details}")
@@ -1723,6 +1726,62 @@ class DataCollectionOrchestrator:
             if "not found" in lower and "bbb" in lower:
                 return True
         return False
+
+    def _carry_stored_sources(self, ein: str, missing: List[str], report: Dict[str, Any]) -> List[str]:
+        """Drop from `missing` any source whose data we already hold.
+
+        Reported, never silent: "complete" must not quietly come to mean
+        "complete as of March". Called from both gates so the two cannot drift.
+        """
+        remaining = []
+        for src in missing:
+            if self._has_usable_stored_data(ein, src):
+                report.setdefault("sources_carried", []).append(src)
+                self.logger.info(
+                    f"Carrying stored {src} data for {ein}: today's fetch failed, but the "
+                    f"last successful crawl is within {STALE_SOURCE_GRACE_DAYS}d"
+                )
+            else:
+                remaining.append(src)
+        return remaining
+
+    def _has_usable_stored_data(self, ein: str, source: str) -> bool:
+        """Do we already hold this source's data, whatever today's fetch did?
+
+        The gate asks whether every required source SUCCEEDED this run, so a
+        charity with a complete parsed source in the database fails outright
+        when one re-fetch trips over a challenge page — and the export gate
+        then drops a page it would have republished unchanged. EIN 75-2352043
+        carried 320KB parsed into 45 usable fields from March and was frozen on
+        a single bad request.
+
+        Three conditions, each of which stops this from becoming a way to
+        publish nothing: the row must come from a crawl that SUCCEEDED (content
+        stored by a failed one is a challenge page, not a profile), it must
+        have parsed into something, and it must be datable and inside
+        STALE_SOURCE_GRACE_DAYS — past that, a page is no longer evidence of
+        what the organisation is doing now.
+        """
+        row = self.raw_data_repo.get_by_source(ein, source)
+        if not row or not row.get("success") or not row.get("parsed_json"):
+            return False
+        age = self._age_of(row.get("scraped_at"))
+        return age is not None and age < timedelta(days=STALE_SOURCE_GRACE_DAYS)
+
+    @staticmethod
+    def _age_of(stamp: Any) -> Optional[timedelta]:
+        """Age of a stored timestamp, or None if it cannot be dated."""
+        if not stamp:
+            return None
+        if isinstance(stamp, str):
+            try:
+                stamp = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        try:
+            return datetime.now(stamp.tzinfo) - stamp
+        except (AttributeError, TypeError):
+            return None
 
     def _is_website_infra_failure(self, ein: str, report: Dict[str, Any]) -> bool:
         """Return True when website failed due to anti-bot/infra issues."""

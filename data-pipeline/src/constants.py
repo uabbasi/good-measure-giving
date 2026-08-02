@@ -98,6 +98,15 @@ TERMINAL_FAILURE_MARKERS = ("captcha_blocked", "challenge page", "not found", "n
 # for every site that really is refusing us, and only for those.
 DEFENSIVE_FAILURE_MARKERS = ("captcha_blocked", "challenge page")
 
+# How long content we already hold can stand in for a fetch that failed.
+# The crawl gate used to ask "did this run fetch every required source?", so a
+# charity with a complete parsed source in the database failed outright when
+# today's re-fetch tripped over a challenge page: EIN 75-2352043 carried 320KB
+# parsed into 45 usable fields from March and was frozen on one bad request.
+# Beyond this the content stops standing in, because a page that old is no
+# longer evidence of what the organisation is doing now.
+STALE_SOURCE_GRACE_DAYS = 180
+
 # Blocker 2A: the streaming runner's implicit re-crawl trigger skips a
 # stale-but-successful website re-attempted within this many days, so a
 # soft-failed (thin-content) re-observation doesn't force a full re-crawl on
