@@ -493,6 +493,22 @@ def build_charity_metrics(
 
     logger = logging.getLogger(__name__)
 
+    def _apply_curated_name(metrics: CharityMetrics) -> CharityMetrics:
+        """Name the organisation the way the rest of the site names it.
+
+        CharityMetricsAggregator rebuilds metrics.name Candid-first on every
+        synth run, so the blob can disagree with charities.name — the name the
+        index, the page header and the judge's ground truth all use. Candid
+        yields "CAREHQ" for CARE USA, and the judge (correctly) refuses to
+        publish a narrative that calls it that. The curated record wins, as it
+        does for the website URL. Rows whose name is a placeholder have nothing
+        to contribute, so they defer to whatever the sources found.
+        """
+        curated = (charity or {}).get("name") or ""
+        if curated.strip() and curated not in (ein, f"EIN {ein}", "Unknown"):
+            metrics.name = curated
+        return metrics
+
     def _apply_synth_overrides(metrics: CharityMetrics, data: dict | None) -> CharityMetrics:
         """Apply scorer-relevant fields from synthesized charity_data.
 
@@ -526,7 +542,7 @@ def build_charity_metrics(
     if charity_data and charity_data.get("metrics_json"):
         try:
             metrics = CharityMetrics(**charity_data["metrics_json"])
-            return _apply_synth_overrides(metrics, charity_data)
+            return _apply_curated_name(_apply_synth_overrides(metrics, charity_data))
         except Exception as e:
             logger.warning(f"Failed to deserialize metrics_json for {ein}: {e}, falling back to re-aggregation")
 
@@ -551,7 +567,7 @@ def build_charity_metrics(
         discovered_profile=discovered_data.get("discovered_profile", discovered_data) if discovered_data else None,
     )
 
-    return _apply_synth_overrides(metrics, charity_data)
+    return _apply_curated_name(_apply_synth_overrides(metrics, charity_data))
 
 
 _ZAKAT_CONSTRAINT_SADAQAH = (
