@@ -1281,3 +1281,103 @@ organisations**, both matched on the initialism/name.
 Not fixed here: correcting a curated list entry is the user's call, and the
 right URL should be verified rather than guessed. The February 2026 verdict
 caught the same confusion, so this has been live for months.
+
+---
+
+# Final state (2026-08-01)
+
+## batch80: 40/40 in the index
+
+The last four cleared after the batch run, each for a different reason:
+
+| EIN | charity | cause |
+|---|---|---|
+| 20-4423661 | Muslim Association of Puget Sound | transient SSL handshake to the discovery service |
+| 20-0942434 | Baitulmaal | derived-metric gap (`cost_per_beneficiary` = program_expenses / beneficiaries, to the cent) |
+| 81-2169685 | ICNAB | headline a year ahead of its own trend, plus the published-value rule reaching only one judge |
+| 47-5165837 | Penny Appeal USA | **our own prompt instruction published inside the narrative** |
+| 88-0405956 | Islamic Foundation of Nevada | another organisation's website, wrong at four layers |
+
+### Penny Appeal: prompt leakage
+
+Its impact explanation contained, verbatim: *"(use this exact percentage
+everywhere, and describe it using this exact label — do not restate it as the
+plain 'program expense ratio' if the label says cash-adjusted)"*. The
+instruction sat in parentheses immediately after the value, on the value's own
+line, so the model copied it along with the thing it was attached to. The score
+judge blocked it — one gate away from a donor-facing page. Instructions moved
+above the list; a test forbids a parenthetical in any value line. Prompt
+2.5.0 -> 2.6.0.
+
+### Islamic Foundation of Nevada: four layers on one wrong URL
+
+`ifnv.org` is the Ivy Foundation of Northern Virginia. The IRS record is
+"Islamic Foundation Of Nevada, 485 E Eldorado Ln, Las Vegas NV"; the real site
+is lvislamicacademy.org (Omar Haikal Islamic Academy, same street address).
+Its zakat claim was separately sourced to islamicfoundation.org, Villa Park,
+Illinois — one page carrying claims from two unrelated organisations.
+
+Correcting the list did nothing, four times over:
+
+1. **The SQL** wrote only when the stored website was NULL/empty/not-a-URL —
+   precisely the wrong half, since a WRONG value looks like a good URL.
+2. **The `--ein` path** read the website from the DATABASE and consulted the
+   file only `if not charities[0].get("website")`, so the correction never
+   reached that SQL.
+3. **The stored page stayed fresh.** A raw_scraped_data row records no URL and
+   `_is_data_fresh` judges on `scraped_at` age alone, so the 2026-07-18 fetch
+   from ifnv.org survived `--force-phase crawl` twice.
+4. **The rowcount.** `execute_query` returns `cursor.fetchall()` — an empty
+   list for an UPDATE. The original read that as success (hence "Synced 1
+   websites" while nothing moved); my first fix type-checked for an int, which
+   never fires, so the UPDATE landed while the invalidation hanging off it did
+   not. A false positive traded for a false negative. `_update_rows` now
+   returns real rowcount.
+
+The pattern: the file is documented as the source of truth, and at every actual
+decision point the stored value won.
+
+## The 180-day CAPTCHA sentence — fixed
+
+MedGlobal and Islamic Services Foundation were both frozen on
+`CAPTCHA_BLOCKED: challenge page (HTTP 202)`, seen ONCE each, TTL 180 days —
+skipped until January 2027. On 2026-08-01 both sites answered a plain
+`requests.get` with HTTP 200 and 401KB / 330KB of ordinary content. **Neither
+was blocking us**, and there was no mechanism by which we could have noticed.
+
+There is no CAPTCHA-solving code and there should not be; what exists is
+curl_cffi impersonation plus challenge DETECTION, and the detection was right
+about what it saw. The error was treating one sighting as a six-month fact.
+
+`TERMINAL_FAILURE_MARKERS` conflated two kinds of evidence. "not found" is a
+fact about the resource and keeps the full TTL. A challenge is a DEFENCE —
+HTTP 202 is Cloudflare's under-attack mode, triggered by load as often as by
+any decision about us. Defensive markers are now provisional below
+CRAWL_MAX_RETRIES sightings (ordinary backoff, re-checked in hours) and
+terminal at or above it (never re-knocked, not even under `--force-phase
+crawl`, by test).
+
+## Fleet status
+
+| | |
+|---|---|
+| published index | **166** |
+| regenerated since the fixes landed (2026-07-29) | **78** |
+| predating them | 88 |
+| blocked right now | **0** |
+| curated list but unpublished | **0** |
+
+Of the 88 stale: 46 are curated charities never run through a batch (the real
+remaining work, ~$12-14), and 40 are outside the curated pool (hidden
+benchmarks and the HARD DATA section).
+
+## Still open
+
+1. **46 unbatched curated charities** — pages predate every fix in this pass.
+2. **The backoff clock** — `last_attempt_at` is written by the Dolt server in
+   PDT and compared against the host's local clock, so ages come out over by
+   the timezone gap. Errs toward retrying too soon; from a UTC host the 1h and
+   4h windows would be defeated outright. Not blocking.
+3. **The required-source gate** reads the `success` flag rather than whether we
+   hold usable content. Less urgent now that the CAPTCHA freeze is fixed, but
+   it is why a charity with 320KB parsed can still fail its crawl.
