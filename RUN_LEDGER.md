@@ -1463,3 +1463,42 @@ $0.0476/charity, which is why it was cheap to stop skipping it.
 - `synthesize.py:2491` assigns an unused `logger` in `main()`. Pre-existing;
   left alone.
 - Nothing pushed. Suite 2225 green.
+
+## Correction: when rich narratives were actually generated
+
+An earlier summary of this run said rich narratives "had never regenerated in
+any batch". That is wrong. Traced through `dolt_history_evaluations` on the
+prose itself (headline + summary, which only change on a real generation —
+the whole blob also moves when `amal_scores` is re-stamped from the
+evaluation, so the blob is not evidence of an LLM call):
+
+| rich prose last written | charities |
+|---|---|
+| 2026-08-02 (this run) | 89 |
+| 2026-07-31 | 16 |
+| 2026-07-30 | 6 |
+| 2026-07-29 | 4 |
+| 2026-07-28 | 6 |
+| 2026-07-27 | 2 |
+| 2026-07-24 | 43 |
+| 2026-07-23 | 1 |
+| 2026-06-28 | 1 — 39-2713494, **not published** |
+| 2026-03-10 | 1 — 58-1956686, **not published** |
+
+Earlier batches did generate rich prose. What is true, and is what CARE USA
+demonstrated, is narrower: **rich does not regenerate because baseline
+re-ran.** The generator skips whenever a narrative exists, so a charity being
+re-run keeps its old rich prose unless forced. CARE came through a full clean
+run with Rich at $0.0000 and "Rich narrative already exists" logged, keeping
+"CAREHQ" in the tier logged-in donors read while its baseline was corrected.
+
+Log-confirmed for this session: 89 unique EINs had rich actually generated
+("Generating rich narrative for …"), and the pilot run — the one launched
+without `--force-phase rich` — skipped all 5.
+
+Quality check across all 166 published charities, both tiers: **0** corrupted
+names remain. 9 charities use their legal name in rich prose where the site
+publishes a curated short name ("Muslim Hands Inc" vs "Muslim Hands USA",
+"Human Appeal Inc" vs "Human Appeal USA"). Defensible editorially, but
+inconsistent with the page header — untouched, and listed here rather than
+silently changed.
