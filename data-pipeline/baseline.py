@@ -493,6 +493,22 @@ def build_charity_metrics(
 
     logger = logging.getLogger(__name__)
 
+    def _apply_curated_name(metrics: CharityMetrics) -> CharityMetrics:
+        """Name the organisation the way the rest of the site names it.
+
+        CharityMetricsAggregator rebuilds metrics.name Candid-first on every
+        synth run, so the blob can disagree with charities.name — the name the
+        index, the page header and the judge's ground truth all use. Candid
+        yields "CAREHQ" for CARE USA, and the judge (correctly) refuses to
+        publish a narrative that calls it that. The curated record wins, as it
+        does for the website URL. Rows whose name is a placeholder have nothing
+        to contribute, so they defer to whatever the sources found.
+        """
+        curated = (charity or {}).get("name") or ""
+        if curated.strip() and curated not in (ein, f"EIN {ein}", "Unknown"):
+            metrics.name = curated
+        return metrics
+
     def _apply_synth_overrides(metrics: CharityMetrics, data: dict | None) -> CharityMetrics:
         """Apply scorer-relevant fields from synthesized charity_data.
 
@@ -526,7 +542,7 @@ def build_charity_metrics(
     if charity_data and charity_data.get("metrics_json"):
         try:
             metrics = CharityMetrics(**charity_data["metrics_json"])
-            return _apply_synth_overrides(metrics, charity_data)
+            return _apply_curated_name(_apply_synth_overrides(metrics, charity_data))
         except Exception as e:
             logger.warning(f"Failed to deserialize metrics_json for {ein}: {e}, falling back to re-aggregation")
 
@@ -551,7 +567,7 @@ def build_charity_metrics(
         discovered_profile=discovered_data.get("discovered_profile", discovered_data) if discovered_data else None,
     )
 
-    return _apply_synth_overrides(metrics, charity_data)
+    return _apply_curated_name(_apply_synth_overrides(metrics, charity_data))
 
 
 _ZAKAT_CONSTRAINT_SADAQAH = (
@@ -678,6 +694,40 @@ def _format_fundraising_efficiency(fundraising_expenses, total_contributions) ->
     return f"{ratio} per $1 raised" if ratio else "N/A"
 
 
+# A filed-vs-cash-adjusted gap this wide means gifts-in-kind are materially
+# inflating the filed ratio, so the filed figure would mislead a donor. Below it
+# the two figures are close enough that the filed one is still fair to publish.
+_GIK_MATERIAL_RATIO_GAP = 0.05
+
+
+def _effective_program_ratio(metrics: "CharityMetrics") -> float | None:
+    """The program ratio the pipeline actually stands behind.
+
+    When gifts-in-kind inflate the filed ratio, the scorer scores the
+    cash-adjusted figure instead and labels the component "Cash-adjusted program
+    ratio" (see v2_scorers). Handing the narrative the FILED ratio meanwhile made
+    the two contradict each other: United Muslim Relief (EIN 27-3175543) filed
+    96.5% against a measured 48% cash-adjusted ratio, scored 0/5 on Program
+    Ratio, and had publication blocked because the narrative sold the 96.5% as a
+    strength in four separate fields.
+
+    Both the prompt and the metric sanitizer must read this same value, or the
+    sanitizer stamps the inflated ratio back over the narrative after generation.
+
+    Only a MATERIAL gap substitutes. A charity with trivial gifts-in-kind has a
+    cash-adjusted ratio a hair off its filed one, and swapping there would shift
+    published percentages for no benefit. `getattr` because callers legitimately
+    pass metric-likes that predate this field.
+    """
+    filed = getattr(metrics, "program_expense_ratio", None)
+    adjusted = getattr(metrics, "cash_adjusted_program_ratio", None)
+    if adjusted is None or filed is None:
+        return filed
+    if filed - adjusted >= _GIK_MATERIAL_RATIO_GAP:
+        return adjusted
+    return filed
+
+
 def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: int, sources_list: str) -> dict:
     """Build the .format() kwargs for the baseline_narrative prompt template.
 
@@ -685,7 +735,18 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     (drift-guarded by tests/test_baseline_prompt.py).
     """
     revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
-    ratio_str = f"{metrics.program_expense_ratio:.1%}" if metrics.program_expense_ratio else "N/A"
+    _eff_ratio = _effective_program_ratio(metrics)
+    ratio_str = f"{_eff_ratio:.1%}" if _eff_ratio else "N/A"
+    # The label travels with the number. Handing over a GIK-adjusted figure still
+    # labelled "Program Expense Ratio" just relocates the misstatement, which the
+    # score judge caught: "presenting the cash-adjusted ratio as the general
+    # 'program expense ratio' without qualification is misleading."
+    _filed_ratio = getattr(metrics, "program_expense_ratio", None)
+    ratio_label = (
+        "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)"
+        if _eff_ratio is not None and _filed_ratio is not None and _eff_ratio != _filed_ratio
+        else "Program Expense Ratio"
+    )
     cn_score_str = f"{round(metrics.cn_overall_score, 1)}/100" if metrics.cn_overall_score else "N/A"
     programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
@@ -725,6 +786,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         "programs": programs_str,
         "revenue": revenue_str,
         "ratio": ratio_str,
+        "ratio_label": ratio_label,
         "cn_score": cn_score_str,
         "working_capital": working_capital_str,
         "fundraising_efficiency": fundraising_efficiency_str,
@@ -2163,8 +2225,9 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
     # Program expense ratio
     # LLM variants: "directs X% to programs", "allocates X% to programmatic",
     # "X% of expenses go to programs", "X% of its budget", "program ratio of X%"
-    if metrics.program_expense_ratio is not None:
-        pct = metrics.program_expense_ratio * 100
+    _eff_program_ratio = _effective_program_ratio(metrics)
+    if _eff_program_ratio is not None:
+        pct = _eff_program_ratio * 100
         correct_ratio = f"{pct:.1f}%"
         # Pattern 1: <number>% program expense/spending
         rules.append(

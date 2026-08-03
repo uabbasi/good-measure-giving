@@ -13,9 +13,11 @@ from ..constants import (
     CRAWL_INITIAL_BACKOFF_SECONDS,
     CRAWL_MAX_RETRIES,
     DATA_FULL_CONFIDENCE_MAX_AGE_YEARS,
+    DEFENSIVE_FAILURE_MARKERS,
     FAILURE_TTL_DAYS,
     RETRY_BACKOFF_HOURS,
     SOURCE_TTL_DAYS,
+    STALE_SOURCE_GRACE_DAYS,
     TERMINAL_FAILURE_MARKERS,
     TERMINAL_FAILURE_TTL_DAYS,
 )
@@ -24,6 +26,7 @@ from ..db.dolt_client import execute_query
 from ..db.repository import Charity
 from ..parsers.charity_metrics_aggregator import CharityMetrics, CharityMetricsAggregator
 from ..utils.charity_loader import normalize_website_url
+from ..utils.freshness import _age as source_age
 from ..utils.logger import PipelineLogger
 from .bbb_collector import BBBCollector
 from .candid_beautifulsoup import CandidCollector
@@ -265,6 +268,7 @@ class DataCollectionOrchestrator:
         logger: Optional[PipelineLogger] = None,
         max_pdf_downloads: int = 0,
         skip_sources: Optional[List[str]] = None,
+        retry_failed_sources: bool = False,
     ):
         """
         Initialize orchestrator.
@@ -275,9 +279,14 @@ class DataCollectionOrchestrator:
             logger: Logger instance
             max_pdf_downloads: Max PDFs to download per charity (default 0 = disabled)
             skip_sources: List of source names to skip (e.g., ['causeiq', 'website'])
+            retry_failed_sources: Ignore the retry backoff for sources that
+                previously failed. Set when the operator forces the crawl
+                phase, i.e. asserts the client has changed. Terminal failures
+                (CAPTCHA, not-found) are unaffected.
         """
         self.logger = logger or PipelineLogger(name="orchestrator")
         self.skip_sources = set(skip_sources or [])
+        self.retry_failed_sources = retry_failed_sources
 
         # H5: CAPTCHA/anti-bot blocked sites collected for the run-end report
         self.blocked_sites: List[Dict[str, Any]] = []
@@ -386,7 +395,9 @@ class DataCollectionOrchestrator:
 
         # Get TTL for this source
         ttl_days = SOURCE_TTL_DAYS.get(source, 30)  # Default 30 days
-        age = datetime.now(scraped_dt.tzinfo) - scraped_dt
+        age = source_age(scraped_dt)
+        if age is None:
+            return False
 
         return age < timedelta(days=ttl_days)
 
@@ -439,18 +450,35 @@ class DataCollectionOrchestrator:
             str(row.get(f) or "") for f in ("last_failure_reason", "error_message")
         )
         terminal_marker = classify_failure(failure_text)
+        # A defence is not a verdict until it repeats. Seen once, a challenge
+        # page is indistinguishable from a rate-limit heuristic having a bad
+        # minute, so it drops through to the ordinary backoff below and gets
+        # re-checked within hours instead of six months.
+        if terminal_marker in DEFENSIVE_FAILURE_MARKERS and retry_count < CRAWL_MAX_RETRIES:
+            terminal_marker = None
         if terminal_marker:
             if attempted_dt:
-                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                failure_age = source_age(attempted_dt) or timedelta(0)
                 if failure_age < timedelta(days=TERMINAL_FAILURE_TTL_DAYS):
                     return True, f"terminal failure ({terminal_marker}), TTL {TERMINAL_FAILURE_TTL_DAYS}d"
                 self.raw_data_repo.reset_retry_count(ein, source)
                 return False, ""
 
+        # The backoff distrusts a source that failed, but it cannot tell OUR
+        # bug from theirs: when a collector is fixed, every charity it broke is
+        # still serving its sentence. --force-phase crawl is the operator
+        # saying the client changed, so the window and the retry count no
+        # longer describe anything. Deliberately below the terminal check --
+        # CAPTCHA and not-found are the publisher's decision, not our defect,
+        # and re-knocking on a door that was shut on purpose is the one thing
+        # that TTL exists to stop.
+        if self.retry_failed_sources:
+            return False, ""
+
         # FIX #10: Permanent failure with TTL — after FAILURE_TTL_DAYS, reset and allow retry
         if retry_count >= CRAWL_MAX_RETRIES:
             if attempted_dt:
-                failure_age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+                failure_age = source_age(attempted_dt) or timedelta(0)
                 if failure_age >= timedelta(days=FAILURE_TTL_DAYS):
                     # Failure is stale — reset retry_count so source can be re-fetched
                     self.raw_data_repo.reset_retry_count(ein, source)
@@ -466,7 +494,7 @@ class DataCollectionOrchestrator:
 
         # Get backoff hours for this retry count
         backoff_hours = RETRY_BACKOFF_HOURS.get(retry_count, 24)
-        age = datetime.now(attempted_dt.tzinfo) - attempted_dt
+        age = source_age(attempted_dt) or timedelta(0)
 
         if age < timedelta(hours=backoff_hours):
             remaining = timedelta(hours=backoff_hours) - age
@@ -603,6 +631,13 @@ class DataCollectionOrchestrator:
             return False
 
         if source == "form990_grants" and content == Form990GrantsCollector.NO_XML_SENTINEL:
+            return True
+
+        # "BBB does not review this charity" is a verified negative, and its
+        # payload is far below the bbb floor below by design. Judging it on
+        # length rejected it as empty/shell, which re-failed bbb as a required
+        # source and took the whole crawl down — H12 again, just one layer later.
+        if source == "bbb" and BBBCollector.is_not_reviewed_sentinel(content):
             return True
 
         # Minimum content length thresholds by type
@@ -1049,6 +1084,7 @@ class DataCollectionOrchestrator:
             required_sources.remove("website")
             report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        missing_sources = self._carry_stored_sources(ein, missing_sources, report)
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
             self.logger.error(f"Crawl incomplete for {ein}: required sources failed/missing: {details}")
@@ -1381,6 +1417,7 @@ class DataCollectionOrchestrator:
             report.setdefault("sources_optional_missing", []).append(f"website:infra:{website_error}")
 
         missing_sources = sorted(src for src in required_sources if src not in report["sources_succeeded"])
+        missing_sources = self._carry_stored_sources(ein, missing_sources, report)
         if missing_sources:
             details = {src: report.get("sources_failed", {}).get(src, "missing/unsuccessful") for src in missing_sources}
             self.logger.error(f"Collection incomplete for {ein}: required sources failed/missing: {details}")
@@ -1692,6 +1729,56 @@ class DataCollectionOrchestrator:
             if "not found" in lower and "bbb" in lower:
                 return True
         return False
+
+    def _carry_stored_sources(self, ein: str, missing: List[str], report: Dict[str, Any]) -> List[str]:
+        """Drop from `missing` any source whose data we already hold.
+
+        Reported, never silent: "complete" must not quietly come to mean
+        "complete as of March". Called from both gates so the two cannot drift.
+        """
+        remaining = []
+        for src in missing:
+            if self._has_usable_stored_data(ein, src):
+                report.setdefault("sources_carried", []).append(src)
+                self.logger.info(
+                    f"Carrying stored {src} data for {ein}: today's fetch failed, but the "
+                    f"last successful crawl is within {STALE_SOURCE_GRACE_DAYS}d"
+                )
+            else:
+                remaining.append(src)
+        return remaining
+
+    def _has_usable_stored_data(self, ein: str, source: str) -> bool:
+        """Do we already hold this source's data, whatever today's fetch did?
+
+        The gate asks whether every required source SUCCEEDED this run, so a
+        charity with a complete parsed source in the database fails outright
+        when one re-fetch trips over a challenge page — and the export gate
+        then drops a page it would have republished unchanged. EIN 75-2352043
+        carried 320KB parsed into 45 usable fields from March and was frozen on
+        a single bad request.
+
+        Asked of the CONTENT, not of today's attempt. `success` describes the
+        most recent fetch; RawDataRepository.upsert_raw_data deliberately
+        preserves parsed_json and scraped_at from the last good crawl when a
+        fetch fails, "because a PRIOR failure already flips success to False".
+        Requiring success here therefore re-broke exactly what this method
+        exists to prevent: on 2026-08-02 four charities failed their crawl
+        outright while holding 5-30KB of good March content, all four blocked
+        by a CAPTCHA challenge — the failure class already ruled provisional
+        rather than terminal for this very reason.
+
+        Two conditions keep this from becoming a way to publish nothing: the
+        row must have parsed into something, and it must be datable and inside
+        STALE_SOURCE_GRACE_DAYS — past that, a page is no longer evidence of
+        what the organisation is doing now. The age is read off scraped_at, the
+        data-age clock, which only advances when new content is written.
+        """
+        row = self.raw_data_repo.get_by_source(ein, source)
+        if not row or not row.get("parsed_json"):
+            return False
+        age = source_age(row.get("scraped_at"))
+        return age is not None and age < timedelta(days=STALE_SOURCE_GRACE_DAYS)
 
     def _is_website_infra_failure(self, ein: str, report: Dict[str, Any]) -> bool:
         """Return True when website failed due to anti-bot/infra issues."""

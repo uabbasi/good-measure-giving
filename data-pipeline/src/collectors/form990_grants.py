@@ -39,6 +39,16 @@ from .irs_990_source import (
 # Default cache directory for 990 XML files
 DEFAULT_CACHE_DIR = Path.home() / ".amal-metric-data" / "990_xml_cache"
 
+# Which return to keep when an organisation filed more than one for a tax
+# period. Form 990-T is the unrelated-business-income return: no Schedule I,
+# no functional expenses, nothing parsed here. It is ranked last rather than
+# dropped, so a period that has only a 990-T still counts as a filing.
+_RETURN_TYPE_RANK = {"990": 0, "990EZ": 1, "990PF": 2}
+
+
+def _return_rank(ref: FilingRef) -> int:
+    return _RETURN_TYPE_RANK.get((ref.return_type or "").upper(), 9)
+
 
 class Form990GrantsCollector(BaseCollector):
     """
@@ -133,8 +143,12 @@ class Form990GrantsCollector(BaseCollector):
         for year in range(current_year, current_year - self.INDEX_YEARS_BACK, -1):
             for ref in self._load_index_year(year).get(ein_clean, []):
                 # An amended or re-released filing can appear in more than one
-                # submission year; keep one entry per tax period.
-                found.setdefault(ref.tax_period, ref)
+                # submission year; keep one entry per tax period, preferring
+                # the informational return. Ties keep the incumbent, so the
+                # newest submission year still wins a genuine re-release.
+                current = found.get(ref.tax_period)
+                if current is None or _return_rank(ref) < _return_rank(current):
+                    found[ref.tax_period] = ref
 
         ordered = sorted(found.values(), key=lambda r: r.tax_period, reverse=True)
         return ordered[:max_filings]
@@ -355,8 +369,23 @@ class Form990GrantsCollector(BaseCollector):
                 ".//irs:GrantsToDomesticOrgsGrp/irs:TotalAmt",
             ],
             "total_revenue": [".//irs:CYTotalRevenueAmt", ".//irs:TotalRevenueAmt"],
-            "total_expenses": [".//irs:CYTotalExpensesAmt", ".//irs:TotalFunctionalExpensesAmt"],
-            "program_expenses": [".//irs:CYProgramServiceExpenseAmt"],
+            "total_expenses": [
+                ".//irs:TotalFunctionalExpensesGrp/irs:TotalAmt",
+                ".//irs:CYTotalExpensesAmt",
+                ".//irs:TotalExpensesAmt",
+                ".//irs:TotalFunctionalExpensesAmt",
+            ],
+            # Part IX's totals row. Every line item in Part IX repeats these
+            # same four tag names, so these paths MUST stay scoped to the
+            # totals group -- an unscoped .//irs:ManagementAndGeneralAmt
+            # returns the first line item, and $38,852 of legal fees would be
+            # published as the organisation's entire administrative expense.
+            "program_expenses": [
+                ".//irs:TotalFunctionalExpensesGrp/irs:ProgramServicesAmt",
+                ".//irs:TotalProgramServiceExpensesAmt",
+            ],
+            "admin_expenses": [".//irs:TotalFunctionalExpensesGrp/irs:ManagementAndGeneralAmt"],
+            "fundraising_expenses": [".//irs:TotalFunctionalExpensesGrp/irs:FundraisingAmt"],
         }
 
         for field, field_paths in paths.items():
@@ -630,11 +659,28 @@ class Form990GrantsCollector(BaseCollector):
         org_name = latest["org_name"]
         financials = latest["financials"]
 
+        # Every filing's own income statement, not just the newest. All three
+        # were parsed and then discarded, which is how a page came to publish
+        # an FY2025 headline above a trend that ended at FY2024.
+        annual: dict[int, Dict[str, Any]] = {}
+
         for fd in filings_data:
             all_domestic.extend(fd["domestic_grants"])
             all_foreign.extend(fd["foreign_grants"])
             if fd["tax_year"] is not None:
                 filing_years.append(fd["tax_year"])
+                # Filings arrive newest first, so an amended re-release of a
+                # year already seen must not displace the one we elected.
+                annual.setdefault(fd["tax_year"], {
+                    "fiscal_year": fd["tax_year"],
+                    **{
+                        key: fd["financials"].get(key)
+                        for key in (
+                            "total_revenue", "total_expenses", "program_expenses",
+                            "admin_expenses", "fundraising_expenses",
+                        )
+                    },
+                })
 
         # Calculate totals
         total_domestic = sum(g["amount"] for g in all_domestic if g["amount"])
@@ -647,6 +693,7 @@ class Form990GrantsCollector(BaseCollector):
             "tax_year": tax_year,
             "object_id": object_id,
             "filing_years": sorted(set(filing_years), reverse=True),
+            "annual_financials": [annual[y] for y in sorted(annual, reverse=True)],
             "domestic_grants": all_domestic,
             "foreign_grants": all_foreign,
             "total_domestic_grants": total_domestic,
@@ -657,6 +704,8 @@ class Form990GrantsCollector(BaseCollector):
             "total_revenue": financials.get("total_revenue"),
             "total_expenses": financials.get("total_expenses"),
             "program_expenses": financials.get("program_expenses"),
+            "admin_expenses": financials.get("admin_expenses"),
+            "fundraising_expenses": financials.get("fundraising_expenses"),
             "noncash_contributions": financials.get("noncash_contributions"),
         }
 

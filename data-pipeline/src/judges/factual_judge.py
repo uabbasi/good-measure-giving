@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 from src.llm.llm_client import TASK_MODELS, LLMClient, LLMTask
+from src.utils.source_trust import field_group, published_column_for
 
 from .base_judge import BaseJudge, JudgeType
 from .materiality import is_methodology_divergent
@@ -38,6 +39,37 @@ BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
 _WALLET_TAG_AGREEMENT_RE = re.compile(r"wallet.{0,3}tag", re.IGNORECASE)
 
 
+# Financial figures whose value legitimately differs year to year. Founding year
+# and similar identity fields are excluded: for those, two years IS the finding.
+_YEAR_VARYING_FINANCIAL_FIELD_RE = re.compile(
+    r"revenue|expense|contribution|asset|liabilit|net_assets|working.?capital",
+    re.IGNORECASE,
+)
+# A bare four-digit year, not part of a larger number ("$2,024" / "$2024500").
+# The trailing guard rejects a comma only when digits follow it, so an ordinary
+# prose comma ("for FY2024, which matches...") still leaves the year visible.
+_FISCAL_YEAR_RE = re.compile(r"(?<![\d,$.])(20[1-3]\d)(?!,?\d)")
+
+
+def _is_cross_fiscal_year_comparison(field: str, message: str) -> bool:
+    """Is this finding just two different fiscal years being compared?
+
+    ProPublica's latest filing routinely lags Charity Navigator by a year, so the
+    same charity legitimately reports different revenue for FY2023 and FY2024, and a
+    narrative citing the newer year is correct. The judge kept reading that gap as a
+    contradiction across three separate charities (27-3175543, 75-2882187,
+    77-0442850) even while naming the gap itself ("the narrative's figure appears to
+    be from FY2024 data"), and prompt guidance did not stop it.
+
+    Deterministic marker: the message names two or more DISTINCT fiscal years on a
+    field whose value varies by year. Same-year disagreements, year-free messages,
+    and identity fields like founded_year are untouched.
+    """
+    if not _YEAR_VARYING_FINANCIAL_FIELD_RE.search(field or ""):
+        return False
+    return len(set(_FISCAL_YEAR_RE.findall(message or ""))) >= 2
+
+
 def _is_wallet_tag_agreement(field: str, message: str) -> bool:
     """Is this finding the wallet-tag/zakat-claim comparison _quick_checks owns?"""
     text = f"{field} {message}"
@@ -59,7 +91,14 @@ def _is_wallet_tag_agreement(field: str, message: str) -> bool:
 # Retrying is not ignoring: exhausting the retries still blocks.
 _TRUNCATED_RESPONSE_MARKERS = ("invalid json", "json_invalid", "eof while parsing")
 
-_ESCALATION_MODEL = "gemini-2.5-flash"
+_ESCALATION_MODEL = "gemini-3.5-flash"
+
+# Independent LLM rolls for the error-consensus vote (odd number → clean majority).
+# Mirrors score_judge: this judge gates publication on interpretive prose, which
+# flips roll to roll even at temperature 0.
+from .consensus import rolls_can_still_matter  # noqa: E402
+
+CONSENSUS_ROLLS = 3
 
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
 
@@ -81,6 +120,335 @@ def _parse_number(v: Any) -> Optional[float]:
         return float(m.group(0).replace(",", ""))
     except ValueError:
         return None
+
+
+def _normalized_text(value: Any) -> str:
+    """Lowercased, whitespace-collapsed text, or "" when the value is absent."""
+    if value is None:
+        return ""
+    return " ".join(str(value).strip().lower().split())
+
+
+def _column_value(column: str, published: Any) -> Optional[float]:
+    """One published column, from the row or the metrics blob behind it."""
+    if not isinstance(published, dict):
+        return None
+    metrics = published.get("metrics_json")
+    metrics = metrics if isinstance(metrics, dict) else {}
+    for holder in (published, metrics):
+        if isinstance(holder, dict) and holder.get(column) is not None:
+            return _parse_number(holder[column])
+    return None
+
+
+def _published_value(field: Any, published: Any) -> Optional[float]:
+    """What we actually published for this field, as a number."""
+    if not isinstance(published, dict):
+        return None
+    if field_group(field) is None:
+        return None
+    column = published_column_for(field)
+    if column is None:
+        return None
+    return _column_value(column, published)
+
+
+def _normalised_field(field: Any) -> str:
+    key = str(field or "").strip().lower().replace(" ", "_").replace("-", "_")
+    return key.rsplit(".", 1)[-1]
+
+
+# Figures we compute rather than store, and the published columns they are
+# computed from. A judge objecting that one is "not found in the source data"
+# is right about the source data and wrong about the page: EIN 20-0942434's
+# cost per beneficiary of $76,612.48 is program_expenses 68,185,104 over
+# beneficiaries_served_annually 890, to the cent.
+#
+# Several numerators are accepted because which expense line to divide by is an
+# editorial choice rather than a fact — the same way the program ratio has
+# carried both a filed and a cash-adjusted basis since the GIK fix. What is NOT
+# accepted is a figure that reconciles to none of them.
+_DERIVED_BASES: dict[str, tuple[tuple[str, ...], str]] = {
+    "cost_per_beneficiary": (
+        ("program_expenses", "total_expenses"),
+        "beneficiaries_served_annually",
+    ),
+    "cost_per_person_served": (
+        ("program_expenses", "total_expenses"),
+        "beneficiaries_served_annually",
+    ),
+}
+
+
+def _derived_figure_reconciles(field: Any, claimed: float, published: Any) -> bool:
+    """Does a computed claim divide out of figures we published?"""
+    spec = _DERIVED_BASES.get(_normalised_field(field))
+    if spec is None:
+        return False
+    numerators, denominator = spec
+    denom = _column_value(denominator, published)
+    if not denom:
+        return False
+    for numerator in numerators:
+        value = _column_value(numerator, published)
+        if value is None:
+            continue
+        if numeric_agreement(claimed, value / denom) is True:
+            return True
+    return False
+
+
+# Field names that describe WHERE a claim sits in the page rather than WHAT it
+# is. There is no column to compare against, so the per-column check stays
+# silent and a correct page is withheld: EIN 81-2169685 was blocked on
+# baseline_narrative.summary for reporting the FY2025 revenue we publish,
+# against the mirrors' FY2023 that lost the election.
+_NARRATIVE_LOCATION_RE = re.compile(
+    r"narrative|summary|rationale|explanation|headline|verdict|strength|weakness|"
+    r"concern|case_for|case_against|dimension",
+    re.IGNORECASE,
+)
+
+# The figures a narrative actually quotes. Bounded on purpose: matching against
+# every number we hold would wave through a coincidence.
+_QUOTABLE_COLUMNS = (
+    "total_revenue",
+    "total_expenses",
+    "program_expenses",
+    "admin_expenses",
+    "fundraising_expenses",
+    "total_assets",
+    "total_liabilities",
+    "net_assets",
+    "working_capital_months",
+    "program_expense_ratio",
+)
+
+
+def _is_narrative_location(field: Any) -> bool:
+    return bool(_NARRATIVE_LOCATION_RE.search(str(field or "")))
+
+
+def _matches_any_published_figure(claimed: float, published: Any) -> bool:
+    for column in _QUOTABLE_COLUMNS:
+        ours = _column_value(column, published)
+        if ours is None:
+            continue
+        if (
+            numeric_agreement(claimed, ours) is True
+            or numeric_agreement(claimed, ours * 100) is True
+        ):
+            return True
+    return False
+
+
+# The model frequently leaves claim_value null and states both figures in prose:
+# "The narrative claims FY2025 revenue of $3,145,617, but the source data shows
+# $3,572,587." Only the first of those is the narrative's claim, so matching any
+# number in the message would also match the figure the judge is citing AGAINST
+# it — which would wave through real fabrications. This picks out the number the
+# sentence attributes to the narrative, and nothing else.
+_NARRATIVE_CLAIM_RE = re.compile(
+    r"(?:narrative|report|page|it)\s+(?:claims?|states?|says?|reports?|indicates?)"
+    r"[^.;]{0,80}?(-?\$?\s?\d[\d,]*\.?\d*)\s*%?",
+    re.IGNORECASE,
+)
+
+
+# "The narrative claims FY2025 revenue of $3,145,617" — the first number after
+# "claims" is the fiscal year, not the claim. Years are removed before matching.
+_YEAR_TOKEN_RE = re.compile(r"\bFY\s*\d{4}\b|\b(?:19|20)\d{2}\b", re.IGNORECASE)
+
+
+def _claim_stated_in_message(message: Any) -> Optional[float]:
+    """The figure a judge's prose attributes to the narrative itself."""
+    text = _YEAR_TOKEN_RE.sub(" ", str(message or ""))
+    match = _NARRATIVE_CLAIM_RE.search(text)
+    return _parse_number(match.group(1)) if match else None
+
+
+def claim_matches_published_value(
+    field: Any, claim_value: Any, published: Any, message: Any = None
+) -> bool:
+    """Is the narrative faithfully reporting the figure we published?
+
+    This is the whole answer to "the sources disagree". Which source a field
+    comes from is settled before the judge runs, by src/utils/source_trust.py,
+    and the disagreement is published as a discrepancy rather than hidden. So a
+    narrative that reports our published figure is correct BY CONSTRUCTION, and
+    a judge citing the source that lost the election is describing our
+    provenance, not a defect in the page.
+
+    EIN 45-5637293 is the case: ProPublica reported FY2023 revenue of
+    $1,759,964 and Charity Navigator $100,000 for the same year. The election
+    picked the filing, correctly, and the page was then withheld for
+    "revenue diverges >80% across sources - likely wrong org".
+
+    A claim that does NOT match what we published still blocks. That is
+    fabrication, and no hierarchy excuses it.
+    """
+    claimed = _parse_number(claim_value)
+    if claimed is None:
+        claimed = _claim_stated_in_message(message)
+    if claimed is None:
+        return False
+
+    ours = _published_value(field, published)
+    if ours is not None:
+        # Ratios are published as fractions and written as percentages.
+        return (
+            numeric_agreement(claimed, ours) is True
+            or numeric_agreement(claimed, ours * 100) is True
+        )
+
+    # No column for this field. Either it is computed from columns, or it names
+    # a place in the page rather than a datum. Both are still our own figures.
+    if _derived_figure_reconciles(field, claimed, published):
+        return True
+    if _is_narrative_location(field) and _matches_any_published_figure(claimed, published):
+        return True
+    return False
+
+
+def demote_published_figure_errors(issues: Any, charity_data: Any) -> int:
+    """Demote every blocking issue that merely restates a figure we published.
+
+    The rule below is applied inline by this judge, among its other gates. It
+    is exposed here because it is not this judge's rule: which source supplies
+    a field is settled for the whole pipeline before any judge runs, so a page
+    withheld over our own provenance is the same defect whoever writes it down.
+    EIN 81-2169685 was blocked by the SCORE judge for reporting the FY2025
+    revenue we publish, against the mirrors' FY2023 that lost the election —
+    a finding this judge would have waved through.
+
+    Returns the number demoted. Fails closed: with no charity_data there is
+    nothing to compare against and nothing is demoted.
+    """
+    demoted = 0
+    for issue in issues or []:
+        if getattr(issue, "severity", None) != Severity.ERROR:
+            continue
+        if claim_matches_published_value(
+            getattr(issue, "field", None),
+            getattr(issue, "claim_value", None),
+            charity_data,
+            getattr(issue, "message", None),
+        ):
+            issue.severity = Severity.WARNING
+            demoted += 1
+    return demoted
+
+
+# The program ratio carries two legitimate values since this run's GIK fix: the
+# filed ratio Charity Navigator reports, and the cash-adjusted ratio we publish and
+# score when gifts-in-kind inflate the filed one.
+_RATIO_FIELD_RE = re.compile(r"program.{0,3}(?:expense.{0,3})?ratio", re.IGNORECASE)
+# Measured in PERCENTAGE POINTS. _same_story's 60% relative bound would swallow
+# 96.5% vs 47.5%, which is precisely the gap donors must see.
+_RATIO_BASIS_GAP_MAX_POINTS = 10.0
+
+
+def _as_percentage_points(value: Any) -> Optional[float]:
+    """A ratio on a 0-100 scale, whether it arrived as 0.475 or as 47.5%.
+
+    Both spellings occur for the same field in the same judge output. Anything
+    within [-1, 1] is read as a fraction; a program ratio of literally 1% does not
+    occur for these organizations, while 1.0 meaning 100% is common.
+    """
+    number = _parse_number(value)
+    if number is None:
+        return None
+    return number * 100 if abs(number) <= 1 else number
+
+
+def _is_ratio_basis_gap(field: str, claim_value: Any, source_value: Any) -> bool:
+    """Two program-ratio figures close enough to be the same story told two ways.
+
+    Justice Defenders' 58.5% against CN's 65.13% is a basis difference. UMR's
+    96.48% against its 47.5% cash-adjusted ratio is not — that is "nearly all
+    spending reaches programs" versus "less than half", the gap that earned it 0/5
+    on Program Ratio, and it must keep blocking.
+    """
+    if not _RATIO_FIELD_RE.search(field or ""):
+        return False
+    a, b = _as_percentage_points(claim_value), _as_percentage_points(source_value)
+    if a is None or b is None:
+        return False
+    if (a < 0) != (b < 0):
+        return False
+    return abs(a - b) <= _RATIO_BASIS_GAP_MAX_POINTS
+
+
+def _currency_claim_against_a_percentage(message: str, claim_value: Any, source_value: Any) -> bool:
+    """The two compared figures are a dollar amount and a percentage.
+
+    Those are different quantities, so their difference is not a discrepancy. On
+    EIN 27-3175543 the judge set claim='7.44' against source='47.5%' and wrote "the
+    narrative claims a low cost per beneficiary of $7.44 ... but the cash-adjusted
+    program expense ratio is only 47.5%" — a cost per person measured against a
+    ratio. The prompt's "CRITICAL: Working Capital Units" section shows unit
+    confusion is a known failure mode here; this is its deterministic form.
+
+    Requires BOTH that the source is a percentage and that the claim actually
+    appears as currency in the message, so two percentages or two dollar amounts
+    (a real disagreement) are untouched.
+    """
+    if "%" not in str(source_value or ""):
+        return False
+    if "%" in str(claim_value or ""):
+        return False
+    number = _parse_number(claim_value)
+    if number is None:
+        return False
+    rendered = f"{number:g}"
+    return bool(re.search(rf"\$\s*{re.escape(rendered)}", message or ""))
+
+
+def _values_are_textually_identical(claim_value: Any, source_value: Any) -> bool:
+    """Both sides present and the same string once case/spacing are normalized.
+
+    numeric_agreement covers this for numbers; it returns None for prose, so
+    `claim='two members'` against `source='two members'` reached the gate as a
+    blocking contradiction on EIN 23-7065716 — in a message that itself ended
+    "which is not a contradiction".
+    """
+    a, b = _normalized_text(claim_value), _normalized_text(source_value)
+    return bool(a) and a == b
+
+
+def _unnamed_claim_against_a_source(claim_value: Any, source_value: Any) -> bool:
+    """The judge produced a source value but never named what the narrative claimed.
+
+    Without a claim there is no stated pair to contradict — on EIN 27-3175543 the
+    judge blocked on `claim=None, source='0.475'` while the message objected to the
+    narrative "mentioning a low cost per beneficiary and strong program outcomes",
+    which is framing, not a competing figure.
+
+    Deliberately one-directional. The MIRROR shape — a claim with no source — is
+    what a fabrication looks like ("the narrative states $4.2M was distributed as
+    zakat; the Form 990 reports no such program") and must keep blocking, as must
+    a finding that names neither side, since the model states real contradictions
+    in prose without filling the structured fields.
+    """
+    return not _normalized_text(claim_value) and bool(_normalized_text(source_value))
+
+
+def _prose_claim_against_a_number(claim_value: Any, source_value: Any) -> bool:
+    """Both sides present, but exactly one of them is a number.
+
+    A qualitative claim cannot be numerically falsified without interpretation,
+    and interpretation is the part that is unreliable: on EIN 27-3175543 the judge
+    set claim='much of which is non-cash' against source='143021451' and called it
+    an error in a sentence reading "which is supported by the source data".
+
+    Two numbers are left to numeric_agreement, which can actually adjudicate them;
+    two prose values are left alone, since those can genuinely contradict.
+    """
+    if not _normalized_text(claim_value) or not _normalized_text(source_value):
+        return False
+    claim_is_number = _parse_number(claim_value) is not None
+    source_is_number = _parse_number(source_value) is not None
+    return claim_is_number != source_is_number
 
 
 def numeric_agreement(claim_value: Any, source_value: Any) -> Optional[bool]:
@@ -219,46 +587,64 @@ class FactualJudge(BaseJudge):
         quick_issues = self._quick_checks(output, context)
         issues.extend(quick_issues)
 
-        # Step 2: LLM-based claim extraction and verification (with retry for rate limits)
-        max_retries = 3
-        escalated: Optional[LLMClient] = None
-        for attempt in range(max_retries):
-            try:
-                llm_result = self._verify_claims_with_llm(output, context, client=escalated)
-                if llm_result:
-                    issues.extend(llm_result.issues)
-                    cost_usd = llm_result.cost
-                    metadata["claims_checked"] = llm_result.claims_checked
-                    metadata["claims_verified"] = llm_result.claims_verified
-                break  # Success, exit retry loop
-            except Exception as e:
-                error_str = str(e).lower()
-                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
-                is_truncated = any(m in error_str for m in _TRUNCATED_RESPONSE_MARKERS)
-
-                if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
-                    wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
-                    if is_truncated and escalated is None:
-                        # The same model at temperature 0 will return the same
-                        # unparseable bytes, so change the model, not just the
-                        # timing.
-                        escalated = self._escalated_client()
-                        cause = f"Unparseable response, escalating to {_ESCALATION_MODEL}"
-                    else:
-                        cause = "Truncated response" if is_truncated else "Rate limit hit"
-                    logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(wait_time)
-                    continue
-
-                logger.error(f"Factual judge LLM verification failed: {e}")
-                self.add_issue(
-                    issues,
-                    Severity.ERROR,
-                    "llm_verification",
-                    f"Could not complete LLM verification: {str(e)[:100]}",
-                )
-                metadata["llm_failed"] = True
+        # Step 2: LLM verification, k=3 majority consensus on ERRORS.
+        # temperature=0 was already set here for reproducibility ("a publication
+        # gate must not change its mind on identical input") and it is not
+        # sufficient: across two consecutive runs with a byte-identical
+        # judge_content_hash, UMR (27-3175543) went 0 -> 1 errors, Rahima
+        # (77-0442850) 1 -> 0, and the Muslim clinics association (93-2136609)
+        # 0 -> 1. Same content, same code, different publication decision, and the
+        # flipping errors were interpretive ("the narrative *implies* revenue is
+        # primarily cash-based"). So gate on a majority instead of a single roll,
+        # exactly as score_judge already does for the same reason. Warnings and
+        # info never gate, so they come from the first completed roll.
+        roll_results: list["LLMFactualResult"] = []
+        for _ in range(CONSENSUS_ROLLS):
+            roll = self._verify_claims_with_rate_limit_retry(output, context)
+            if roll is not None:
+                roll_results.append(roll)
+            # Stop as soon as the remaining rolls cannot move the majority.
+            # Outcome-identical by construction (src/judges/consensus.py); a
+            # failed roll leaves the estimate of what is left conservative,
+            # so this never stops early on a set that is still open.
+            if not rolls_can_still_matter(
+                [any(i.severity == Severity.ERROR for i in r.issues) for r in roll_results],
+                CONSENSUS_ROLLS,
+            ):
                 break
+
+        if roll_results:
+            metadata["consensus_rolls"] = len(roll_results)
+            metadata["claims_checked"] = roll_results[0].claims_checked
+            metadata["claims_verified"] = roll_results[0].claims_verified
+            cost_usd = sum(r.cost for r in roll_results)
+
+            error_roll_count = sum(
+                1 for r in roll_results if any(i.severity == Severity.ERROR for i in r.issues)
+            )
+            metadata["error_roll_count"] = error_roll_count
+            majority = (len(roll_results) // 2) + 1
+            if error_roll_count >= majority:
+                # Errors are real — surface them from the roll that found the most.
+                worst = max(
+                    roll_results,
+                    key=lambda r: sum(1 for i in r.issues if i.severity == Severity.ERROR),
+                )
+                issues.extend([i for i in worst.issues if i.severity == Severity.ERROR])
+            issues.extend([i for i in roll_results[0].issues if i.severity != Severity.ERROR])
+        else:
+            # Fail CLOSED. A judge that completed no roll verified nothing, and
+            # reporting error_count == 0 opened the publication gate on an
+            # unchecked narrative — which is what the old `if llm_result:` path
+            # did when verification returned None rather than raising.
+            logger.error("Factual judge: all consensus rolls failed")
+            self.add_issue(
+                issues,
+                Severity.ERROR,
+                "llm_verification",
+                "Could not complete LLM verification (no consensus roll completed)",
+            )
+            metadata["llm_failed"] = True
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])
@@ -370,6 +756,43 @@ class FactualJudge(BaseJudge):
         ]
         return client
 
+    def _verify_claims_with_rate_limit_retry(
+        self, output: dict[str, Any], context: dict[str, Any]
+    ) -> Optional["LLMFactualResult"]:
+        """One consensus roll, with the rate-limit/truncation retry around it.
+
+        Returns None when this roll could not complete. A single failed roll is
+        not an error on its own — `validate` only fails closed when EVERY roll
+        fails, so one rate-limited roll no longer blocks a charity by itself.
+        """
+        max_retries = 3
+        escalated: Optional[LLMClient] = None
+        for attempt in range(max_retries):
+            try:
+                return self._verify_claims_with_llm(output, context, client=escalated)
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = "rate" in error_str or "429" in error_str or "quota" in error_str
+                is_truncated = any(m in error_str for m in _TRUNCATED_RESPONSE_MARKERS)
+
+                if (is_rate_limit or is_truncated) and attempt < max_retries - 1:
+                    wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
+                    if is_truncated and escalated is None:
+                        # The same model at temperature 0 will return the same
+                        # unparseable bytes, so change the model, not just the
+                        # timing.
+                        escalated = self._escalated_client()
+                        cause = f"Unparseable response, escalating to {_ESCALATION_MODEL}"
+                    else:
+                        cause = "Truncated response" if is_truncated else "Rate limit hit"
+                    logger.warning(f"{cause}, retrying in {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+
+                logger.error(f"Factual judge LLM verification failed: {e}")
+                return None
+        return None
+
     def _verify_claims_with_llm(
         self,
         output: dict[str, Any],
@@ -431,7 +854,23 @@ class FactualJudge(BaseJudge):
                 # settled deterministically above, so the model's second
                 # opinion on it never blocks -- see _is_wallet_tag_agreement.
                 if severity == Severity.ERROR:
-                    if numeric_agreement(issue.claim_value, issue.source_value) is True:
+                    # Governing rule, ahead of everything below: a narrative
+                    # reporting the figure we published is correct, whatever a
+                    # source that lost the election says. Which source supplies
+                    # a field is settled deterministically before the judge runs
+                    # (src/utils/source_trust.py) and the disagreement is
+                    # published as a discrepancy, so re-litigating it here can
+                    # only withhold a page over our own provenance. The rules
+                    # after this one are narrower shapes of the same mistake,
+                    # each added after a regeneration surfaced it.
+                    if claim_matches_published_value(
+                        issue.field,
+                        issue.claim_value,
+                        context.get("charity_data"),
+                        issue.message,
+                    ):
+                        severity = Severity.WARNING
+                    elif numeric_agreement(issue.claim_value, issue.source_value) is True:
                         severity = Severity.INFO
                     elif issue.discrepancy_kind not in BLOCKING_DISCREPANCY_KINDS:
                         severity = Severity.WARNING
@@ -440,6 +879,37 @@ class FactualJudge(BaseJudge):
                     ) and _same_story(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
                     elif _is_wallet_tag_agreement(issue.field, issue.message):
+                        severity = Severity.WARNING
+                    # Fifth: two different fiscal years being compared is not a
+                    # narrative fault -- our sources cover different years and the
+                    # narrative citing the newer one is correct.
+                    elif _is_cross_fiscal_year_comparison(issue.field, issue.message):
+                        severity = Severity.WARNING
+                    # Sixth: an ERROR must be self-consistent to gate. The model
+                    # routinely files verification NOTES as errors -- severity
+                    # contradicting its own message ("which is not a
+                    # contradiction", "which is supported by the source data") and
+                    # its own claim/source pair. numeric_agreement above already
+                    # catches the numeric form; these are the same failure in
+                    # prose, which it cannot see.
+                    elif _values_are_textually_identical(issue.claim_value, issue.source_value):
+                        # Provable agreement, exactly like the numeric case.
+                        severity = Severity.INFO
+                    elif _unnamed_claim_against_a_source(issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    elif _prose_claim_against_a_number(issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    # Seventh: the filed and cash-adjusted program ratios are both
+                    # ours and both legitimate, so a basis-sized gap between them
+                    # is not a fault. Bounded in percentage points so the GIK gap
+                    # donors must see (96.5% vs 47.5%) still blocks.
+                    elif _is_ratio_basis_gap(issue.field, issue.claim_value, issue.source_value):
+                        severity = Severity.WARNING
+                    # Eighth: a dollar amount and a percentage are different
+                    # quantities, so their difference is not a discrepancy.
+                    elif _currency_claim_against_a_percentage(
+                        issue.message, issue.claim_value, issue.source_value
+                    ):
                         severity = Severity.WARNING
                 details = {}
                 if issue.claim_value:

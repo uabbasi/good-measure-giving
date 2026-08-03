@@ -1,6 +1,6 @@
 # PROMPT: charity_navigator_financials
-# VERSION: 1.0.0
-# LAST_UPDATED: 2025-11-27
+# VERSION: 1.1.0
+# LAST_UPDATED: 2026-07-30
 # DESCRIPTION: Extract financial metrics from Charity Navigator HTML
 # ---PROMPT_START---
 # Charity Navigator Financial Data Extraction
@@ -20,7 +20,7 @@ Extract financial metrics from the Charity Navigator HTML page. Return a JSON ob
   "program_expense_ratio": <decimal 0-1 or null>,
   "admin_expense_ratio": <decimal 0-1 or null>,
   "fundraising_expense_ratio": <decimal 0-1 or null>,
-  "working_capital_ratio": <decimal or null>,
+  "working_capital_ratio": <decimal in MONTHS or null>,
   "fiscal_year": <YYYY integer or null>,
   "overall_score": <number 0-100 or null>,
   "financial_score": <number 0-100 or null>,
@@ -35,4 +35,8 @@ Rules:
 2. Convert percentages to decimals (e.g., 85% -> 0.85)
 3. Remove currency symbols and commas from numbers
 4. Use null for any field not found in the HTML
-5. Return ONLY the JSON object, no additional text
+5. Charity Navigator states working capital in YEARS. Return it in MONTHS:
+   multiply by 12 (a page showing 3.25 becomes 39.0). Every other consumer
+   of this field reads months, so an unconverted value understates an
+   organization's reserves twelvefold.
+6. Return ONLY the JSON object, no additional text

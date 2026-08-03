@@ -29,7 +29,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from synthesize import realign_income_statement_attribution
+from synthesize import elected_program_expense_ratio, realign_income_statement_attribution
 
 
 def _pp_attribution(value):
@@ -153,3 +153,51 @@ class TestMixedElectionOnlyRewritesFieldsThatActuallyDrifted:
         realign_income_statement_attribution(attr, m, "20-8540050")
         assert attr["total_expenses"]["source_name"] == "Charity Navigator"
         assert attr["total_expenses"]["value"] == m.total_expenses
+
+
+class TestTheRatioComesFromTheSameElectionAsItsComponents:
+    """The same two-election split, one field further on.
+
+    The aggregator's values overwrite the financial columns -- total_revenue,
+    total_expenses, program_expenses, admin, fundraising -- but the list they
+    are copied from omits program_expense_ratio, which keeps whatever
+    extract_financials() put there. extract_financials takes Charity
+    Navigator's own precomputed ratio whenever it has one.
+
+    So when the IRS filing won EIN 36-4476244's income statement, the page
+    published FY2024 program expenses of 34,365,532 over total expenses of
+    36,818,000 -- 0.9334 -- beside Charity Navigator's FY2023 ratio of 0.9159.
+    A reader dividing the two numbers in front of them does not get the third.
+
+    The fallback matters: where the aggregator has no ratio it has no
+    components either, and Charity Navigator's standalone ratio is then the
+    only thing we know. Dropping it would collapse program-ratio scoring, the
+    way Al-Furqaan went 0.85 -> None -> impact 8/50.
+    """
+
+    def test_the_aggregator_s_ratio_wins(self):
+        assert elected_program_expense_ratio(
+            SimpleNamespace(program_expense_ratio=0.9334), {"program_expense_ratio": 0.9159}
+        ) == 0.9334
+
+    def test_it_divides_the_published_components(self):
+        metrics = SimpleNamespace(program_expense_ratio=round(34365532 / 36818000, 4))
+        got = elected_program_expense_ratio(metrics, {"program_expense_ratio": 0.9159})
+        assert abs(34365532 / 36818000 - got) < 0.0001
+
+    def test_charity_navigator_still_fills_a_genuine_gap(self):
+        assert elected_program_expense_ratio(
+            SimpleNamespace(program_expense_ratio=None), {"program_expense_ratio": 0.85}
+        ) == 0.85
+
+    def test_neither_source_is_still_none(self):
+        assert elected_program_expense_ratio(
+            SimpleNamespace(program_expense_ratio=None), {}
+        ) is None
+
+    def test_a_zero_ratio_is_a_value_not_a_gap(self):
+        """A charity that genuinely spent nothing on programs must not have
+        Charity Navigator's number substituted for that finding."""
+        assert elected_program_expense_ratio(
+            SimpleNamespace(program_expense_ratio=0.0), {"program_expense_ratio": 0.85}
+        ) == 0.0

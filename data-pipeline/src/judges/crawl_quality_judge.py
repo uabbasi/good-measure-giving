@@ -556,12 +556,24 @@ class CrawlQualityJudge(BaseJudge):
 
             if divergence > REVENUE_DIVERGENCE_ERROR:
                 if same_fiscal_year:
-                    # Same year, >80% divergence = ERROR (likely wrong org)
+                    # Same year, >80% divergence. This USED to block, on the
+                    # theory that it means we scraped the wrong organization.
+                    # It does not: the income-statement election detects exactly
+                    # this, picks the filing over Charity Navigator's figure,
+                    # and records the loser as a discrepancy for publication
+                    # (src/utils/source_trust.py). EIN 45-5637293 was withheld
+                    # for "likely wrong org" when CN had simply returned a round
+                    # $100,000 against the 990's $1,759,964 — a transcription
+                    # error we had already caught and resolved.
+                    #
+                    # Sources disagreeing is a provenance fact to publish, not a
+                    # defect to withhold a page over, so this reports rather
+                    # than gates.
                     issues.append(
                         ValidationIssue(
-                            severity=Severity.ERROR,
+                            severity=Severity.WARNING,
                             field="multi_source.revenue_divergence",
-                            message=f"Revenue diverges >{REVENUE_DIVERGENCE_ERROR:.0%} across sources (${min_rev:,.0f} - ${max_rev:,.0f}) in same fiscal year - likely wrong org",
+                            message=f"Revenue diverges >{REVENUE_DIVERGENCE_ERROR:.0%} across sources (${min_rev:,.0f} - ${max_rev:,.0f}) in same fiscal year - resolved by source trust order; the lower figure is likely a transcription error",
                             details=details,
                         )
                     )

@@ -73,12 +73,12 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-07-28 21:24:41",
+  "lastUpdated": "2026-08-02 11:51:59",
   "sourceAttribution": {
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369",
-      "timestamp": "2026-07-28T21:23:20",
+      "timestamp": "2026-08-02T11:50:57",
       "value": 2021
     },
     "has_audited_financials": {
@@ -90,7 +90,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369",
-      "timestamp": "2026-07-28T21:23:20",
+      "timestamp": "2026-08-02T11:50:57",
       "value": "P20"
     }
   },
@@ -135,8 +135,10 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": null,
-    "evaluationSources": null,
+    "thirdPartyEvaluated": 0,
+    "evaluationSources": [
+      "UNCORROBORATED: Candid/GuideStar"
+    ],
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": null,
@@ -314,33 +316,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_4",
+          "field": "citation_3",
           "judge": "citation",
           "message": "URL unreachable: Timeout after 10s",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The content for citation [1] could not be fetched or is missing.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "The fetched content for citation [2] does not contain the claim.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "The fetched content for citation [4] does not contain the claim.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_6",
-          "judge": "citation",
-          "message": "The content for citation [6] could not be fetched or is missing.",
           "severity": "warning"
         },
         {
@@ -356,10 +334,22 @@
           "severity": "info"
         },
         {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
         }
       ],
       "risk_deduction": 0,
@@ -369,7 +359,7 @@
         "risks": [],
         "total_deduction": 0
       },
-      "score_summary": "Albarr Inc shows moderate alignment and limited impact.",
+      "score_summary": "Al-Barr Foundation shows moderate alignment and limited impact.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
@@ -381,180 +371,84 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Albarr Inc is a nonprofit organization that focuses on hunger relief, healthcare awareness, and education support.",
+          "claim": "The Al-Barr Foundation is a nonprofit organization focused on serving and healing under-served communities.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/853964369#financials"
         },
         {
-          "claim": "The charity serves a religious and cultural cause that fits with Muslim donor interests.",
-          "id": "[2]",
-          "source_name": "Charity Website - Zakat",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "claim": "The group provides direct services to under-served communities and offers opportunities for donors to give through sadaqah.",
+          "claim": "Donors can support these efforts through general charitable giving known as sadaqah.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.albarr.org/last-10-nights-donate"
         },
         {
-          "claim": "Albarr Inc works directly with the community to provide food and health support.",
+          "claim": "Its primary activities include providing education support, healthcare awareness, and hunger relief to those in need.",
           "id": "[6]",
           "source_name": "Annual Report",
           "source_url": "https://www.albarr.org/annual-reports"
         }
       ],
-      "amal_score_rationale": "The organization's assessment is limited by a significant lack of available financial data and outcome evidence. While it performs direct service work, there is not enough information to confirm how efficiently it uses its funds.",
+      "amal_score_rationale": "The organization's assessment is limited by a lack of available financial data and outcome evidence. While it provides direct services, there is not enough information to confirm its cost-effectiveness or long-term impact.",
       "areas_for_improvement": [
-        "Lack of public financial data regarding program expenses and revenue",
-        "Limited evidence of long-term outcomes and impact tracking"
+        "Limited public data regarding financial health and spending efficiency",
+        "Lack of third-party verification for program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "The charity serves a religious and cultural cause that fits moderately well with Muslim donor interests [2]. It has a clear theory of change, but its track record is difficult to verify due to limited reporting on past funding gaps [6].",
-        "impact": "Albarr Inc works directly with the community to provide food and health support [6]. However, the organization lacks public data for its program expense ratio and cost per beneficiary, making it difficult to measure its overall effectiveness [1]."
+        "alignment": "This charity is a moderate fit for donors looking to support religious and cultural causes through sadaqah [4]. It has a documented track record of running programs, but it operates in a space with many other similar organizations [6]. Information about its specific funding needs is not fully detailed in public reports [1].",
+        "impact": "The foundation works directly with people to provide essential services like food and medical awareness [6]. However, there is no public data on the cost per person served or specific financial health metrics [1]. While the group has a clear plan for how its work helps the community, it lacks independent evidence to prove its results [6]."
       },
-      "headline": "Albarr Inc provides direct social services but lacks the public financial data needed to verify its spending efficiency.",
+      "headline": "Al-Barr Foundation provides direct humanitarian aid through education, healthcare, and hunger relief programs.",
       "strengths": [
-        "Provides direct services to people in need",
+        "Provides direct services to beneficiaries in need",
         "Clear mission focused on healing and empowering the under-served"
       ],
-      "summary": "Albarr Inc is a nonprofit organization that focuses on hunger relief, healthcare awareness, and education support [1]. The group provides direct services to under-served communities and offers opportunities for donors to give through sadaqah [4]."
+      "summary": "The Al-Barr Foundation is a nonprofit organization focused on serving and healing under-served communities [1]. Its primary activities include providing education support, healthcare awareness, and hunger relief to those in need [6]. Donors can support these efforts through general charitable giving known as sadaqah [4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "education support, healthcare awareness, and hunger relief",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "serving and empowering under-served communities",
+          "confidence": 0.7,
           "id": "[1]",
-          "quote": "Programs: Education Support, Healthcare Awareness, Hunger Relief",
-          "source_name": "Albarr Inc Website",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "public financial data and outcome reporting",
-          "confidence": 0.95,
-          "id": "[2]",
-          "quote": "This organization is not yet rated",
+          "quote": "Al-Barr Foundation profile metadata",
           "source_name": "Charity Navigator Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/853964369#financials"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "accepts sadaqah donations",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "currently unavailable in public tax filings",
+          "confidence": 0.8,
           "id": "[3]",
-          "quote": "Donate your Sadaqah",
-          "source_name": "Albarr Inc Donate Page",
+          "quote": "Form 990 filings search results",
+          "source_name": "ProPublica Nonprofits",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "general charitable giving and sadaqah support",
+          "confidence": 0.85,
+          "id": "[4]",
+          "quote": "Donation page detailing options for supporters",
+          "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://www.albarr.org/last-10-nights-donate"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "insufficient data for cost-per-beneficiary calculations",
-          "confidence": 0.8,
-          "id": "[4]",
-          "quote": "Insufficient data for cost-per-beneficiary calculation",
-          "source_name": "Internal Assessment - Impact",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "program expense ratio remains unknown",
-          "confidence": 0.8,
-          "id": "[5]",
-          "quote": "Program expense ratio: unknown",
-          "source_name": "Internal Assessment - Finance",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "board governance is considered minimal",
-          "confidence": 0.8,
+          "access_date": "2026-01-09",
+          "claim": "education support, healthcare awareness, and hunger relief",
+          "confidence": 0.85,
           "id": "[6]",
-          "quote": "Board governance: MINIMAL (4 members)",
-          "source_name": "Internal Assessment - Governance",
+          "quote": "Overview of foundation program areas and activities",
+          "source_name": "Charity Website - Annual Reports",
           "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "clear theory of change",
-          "confidence": 0.8,
-          "id": "[7]",
-          "quote": "Theory of change: CLEAR",
-          "source_name": "Internal Assessment - Strategy",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "focus on underserved populations",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "empowering underserved populations",
-          "source_name": "Albarr Inc Mission",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "lack of verified evidence and outcomes",
-          "confidence": 0.8,
-          "id": "[9]",
-          "quote": "Evidence & outcomes: UNVERIFIED",
-          "source_name": "Internal Assessment - Evidence",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "publish audited financial statements",
-          "confidence": 0.7,
-          "id": "[10]",
-          "quote": "Publish audited financial statements",
-          "source_name": "Improvement Suggestion - Credibility",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "consistent beneficiary counts",
-          "confidence": 0.7,
-          "id": "[11]",
-          "quote": "Publish beneficiary counts consistently",
-          "source_name": "Improvement Suggestion - Impact",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "more underserved geographies",
-          "confidence": 0.7,
-          "id": "[12]",
-          "quote": "Expand services to underserved populations or geographies",
-          "source_name": "Improvement Suggestion - Alignment",
-          "source_type": "website",
-          "source_url": "https://albarr.org/annual-reports"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "89.5% peer program ratio median",
-          "confidence": 1,
-          "id": "[13]",
-          "quote": "Peer Program Ratio Median: 89.5%",
-          "source_name": "Peer Benchmark Data",
-          "source_type": "rating",
-          "source_url": "https://charitynavigator.org/ein/853964369#financials"
+          "source_url": "https://www.albarr.org/annual-reports"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of financial transparency and missing data on spending efficiency. While the charity has a clear theory of change, there is not enough evidence to confirm its impact or financial health.",
+      "amal_score_rationale": "The organization's assessment is limited by a lack of available financial data and outcome evidence. While it provides direct services, there is not enough information to confirm its cost-effectiveness or long-term impact.",
       "amal_scores": {
         "amal_score": 40,
         "confidence_scores": {
@@ -568,137 +462,130 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Financial Transparency",
+          "area": "Financial Transparency and Public Filings",
           "citation_ids": [
-            "[5]"
+            "[3]"
           ],
-          "context": "The organization has <cite id=\"5\">no reported program expense ratio</cite>, making it impossible to compare its efficiency to the 75% industry standard."
+          "context": "Key financial figures, including program expense ratios and working capital reserves, are <cite id=\"3\">currently unavailable in public tax filings</cite>."
         },
         {
-          "area": "Impact Measurement",
+          "area": "External Outcome Verification",
           "citation_ids": [
-            "[4]"
+            "[6]"
           ],
-          "context": "There is <cite id=\"4\">insufficient data to calculate cost-effectiveness</cite> or track long-term beneficiary outcomes."
+          "context": "The foundation lacks third-party impact evaluations and long-term performance tracking <cite id=\"6\">in its annual reporting</cite>."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is available for this organization."
+        "summary": "No evaluation from BBB Wise Giving Alliance is available."
       },
       "case_against": {
         "citation_ids": [
-          "[2]",
-          "[5]",
-          "[6]",
-          "[9]"
+          "[3]",
+          "[6]"
         ],
-        "mitigation_notes": "The organization is an emerging entity, but must prioritize financial reporting to build donor trust.",
+        "mitigation_notes": "The organization continues to offer basic community aid directly to recipients.",
         "risk_factors": [
-          "<cite id=\"5\">Unknown program expense ratio</cite> prevents efficiency analysis",
-          "<cite id=\"6\">Small board size</cite> limits organizational oversight",
-          "<cite id=\"9\">No third-party impact evaluations</cite> available"
+          "Program expense ratio and overhead figures are unverified in public filings.",
+          "No external evaluations or multi-year impact studies are available."
         ],
-        "summary": "The primary concern is the <cite id=\"2\">absence of financial transparency</cite> and a <cite id=\"5\">missing program expense ratio</cite>."
+        "summary": "Primary limiting factors include an absence of public financial metrics and lack of independent outcome evaluations."
       },
       "citation_stats": {
         "by_source_type": {
-          "rating": 2,
-          "website": 11
+          "form990": 1,
+          "rating": 1,
+          "website": 2
         },
-        "high_confidence_count": 10,
-        "total_count": 13,
+        "high_confidence_count": 3,
+        "total_count": 4,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Website data from 2025",
+        "data_freshness": "Data retrieved 2026",
         "data_gaps": [
-          "No Form 990",
-          "No audited financials",
-          "No program expense ratio"
+          "Missing public financial disclosures",
+          "Unverified program ratios",
+          "No third-party impact assessment"
         ],
         "level": "LOW",
-        "notes": "Evaluation is severely limited by the lack of public financial disclosures.",
+        "notes": "Evaluation limited by lack of financial reporting.",
         "score": 10,
         "sources_used": [
-          "Website",
-          "Charity Navigator profile"
+          "Charity Navigator",
+          "ProPublica",
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 10,
         "form_990_tax_year": null,
         "known_gaps": [
-          "Missing Form 990",
-          "No program expense ratio",
-          "No audited financials"
+          "Missing public tax filings",
+          "No detailed financial breakdowns",
+          "No external outcome evaluation"
         ],
-        "ratings_last_updated": "2025-01",
-        "total_citations": 13,
+        "ratings_last_updated": "2026-01",
+        "total_citations": 4,
         "unique_sources": 3,
-        "website_last_crawled": "2025-01"
+        "website_last_crawled": "2026-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[8]",
-            "[12]"
+            "[4]"
           ],
-          "explanation": "The organization offers a <cite id=\"8\">medium fit for Muslim donors</cite> through its focus on humanitarian service and underserved communities.",
-          "improvement": "Expanding services to <cite id=\"12\">more underserved geographies</cite> could strengthen its alignment with donor priorities."
+          "explanation": "The foundation serves under-represented populations through charitable programs supported by <cite id=\"4\">sadaqah donations</cite>.",
+          "improvement": "Clarify program details and community reach to better inform prospective supporters."
         },
         "credibility": {
           "citation_ids": [
-            "[2]",
-            "[6]",
-            "[10]"
+            "[3]"
           ],
-          "explanation": "Credibility is currently low because the charity <cite id=\"2\">lacks public financial filings</cite> and has <cite id=\"6\">minimal board oversight</cite> with only four members.",
-          "improvement": "The charity should <cite id=\"10\">publish audited financial statements</cite> and expand its board to improve governance and transparency."
+          "explanation": "Publicly available data regarding independent audits, board governance details, and financial disclosures is limited, which constrains verification.",
+          "improvement": "Publish annual audited financial reports and detailed board meeting summaries to enhance transparency."
         },
         "impact": {
           "citation_ids": [
-            "[7]",
-            "[4]",
-            "[11]"
+            "[6]"
           ],
-          "explanation": "While the charity uses a <cite id=\"7\">direct service model</cite>, its impact is unverified due to <cite id=\"4\">missing beneficiary counts</cite> and unknown reserve levels.",
-          "improvement": "Publishing <cite id=\"11\">consistent beneficiary counts</cite> would allow for the assessment of cost-effectiveness per person served."
+          "explanation": "Direct service activities focus on basic community needs, but key metrics like cost-per-beneficiary and official program expense ratios are missing.",
+          "improvement": "Track and publish beneficiary counts and cost-per-person metrics across primary programs."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[3]",
-          "[1]"
+          "[4]"
         ],
-        "evidence_rigor": "Grade C - Unverified emerging org baseline",
+        "evidence_rigor": "Grade C - Internal program reporting only",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct service support",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
         "admin_ratio": null,
         "annual_revenue": null,
         "citation_ids": [
-          "[13]"
+          "[3]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": null,
         "industry_program_ratio": 0.75,
-        "peer_count": 40,
-        "peer_program_ratio_median": 0.895,
+        "peer_count": 38,
+        "peer_program_ratio_median": 0.892,
         "program_expense_ratio": null,
         "reserves_months": null,
         "revenue_cagr_3yr": null,
@@ -708,72 +595,70 @@
         "citation_ids": [
           "[1]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct service provider rather than grantmaking institution",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
-      "headline": "Albarr Inc provides direct social services but lacks the financial data and outcome reporting needed for a full evaluation.",
+      "headline": "Al-Barr Foundation provides direct humanitarian aid through education, healthcare, and hunger relief programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who are comfortable supporting an emerging organization with a direct-service mission and do not require detailed financial transparency.",
+        "best_for_summary": "Best for donors seeking to support domestic community assistance programs through general sadaqah contributions.",
         "citation_ids": [
-          "[2]",
+          "[4]",
           "[6]"
         ],
         "donor_motivations": [
-          "Want to support local hunger relief and healthcare in the USA",
-          "Value direct service delivery over grantmaking",
-          "Interested in supporting technical and vocational training"
+          "Want to support direct humanitarian services in the United States",
+          "Value grassroots food aid and educational awareness projects",
+          "Prefer direct community-based service models"
         ],
         "giving_considerations": [
-          "Financial efficiency cannot be verified due to missing data",
-          "The organization has a short track record of reported results",
-          "Governance is managed by a very small board"
+          "Detailed financial breakdowns and program ratios are currently unavailable",
+          "Contributions qualify as general sadaqah giving"
         ],
-        "not_ideal_for": "Donors who require audited financials, high transparency ratings, or proven cost-effectiveness metrics before giving."
+        "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[9]"
+          "[6]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"9\">unverified outcomes</cite> and a lack of external evaluation documents.",
+        "evidence_grade_explanation": "Grade C reflects basic program descriptions without formal independent evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
-        "theory_of_change": "CLEAR",
-        "theory_of_change_summary": "The charity provides <cite id=\"1\">direct education, health, and food aid</cite> to empower underserved individuals.",
-        "why_evidence_matters": "Evidence ensures that direct services are actually improving the long-term stability of beneficiaries."
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "Direct delivery of food, education, and healthcare support reduces immediate hardship in local communities.",
+        "why_evidence_matters": "Independent evidence confirms that funds generate measurable long-term improvements for recipients."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[2]"
+          "[6]"
         ],
         "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": null,
         "room_for_funding": "UNKNOWN",
-        "room_for_funding_explanation": "Due to <cite id=\"2\">missing revenue data</cite>, the organization's capacity to absorb new funding is unclear.",
+        "room_for_funding_explanation": "Funding capacity cannot be fully evaluated due to missing revenue disclosures.",
         "strategic_priorities": [
-          "Vocational training",
-          "Emergency relief"
+          "Education Support",
+          "Healthcare Awareness",
+          "Hunger Relief"
         ],
-        "years_operating": 5
+        "years_operating": null
       },
       "organizational_capacity": {
-        "board_size": 4,
+        "board_size": null,
         "ceo_compensation": null,
         "ceo_compensation_pct_revenue": null,
         "ceo_name": null,
         "citation_ids": [
-          "[6]",
           "[1]"
         ],
         "employees_count": null,
@@ -788,11 +673,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[13]"
+          "[1]"
         ],
-        "differentiator": "Albarr Inc provides <cite id=\"1\">direct social services in the USA</cite> but falls behind the <cite id=\"13\">89.5% peer program ratio median</cite> due to missing data.",
-        "peer_group": "Humanitarian Organizations",
+        "differentiator": "Focuses on localized domestic direct services rather than international aid relief.",
+        "peer_group": "Domestic humanitarian and cultural organizations",
         "similar_orgs": [
           "The Morocco Foundation",
           "Abdul Sattar Edhi International Foundation",
@@ -801,38 +685,38 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on economic empowerment and size",
+          "differentiator": "Focuses on economic empowerment programs",
           "name": "The Morocco Foundation"
         },
         {
-          "differentiator": "Established global humanitarian track record",
+          "differentiator": "Operates larger international emergency response network",
           "name": "Abdul Sattar Edhi International Foundation"
         },
         {
-          "differentiator": "More detailed impact reporting",
+          "differentiator": "Focuses on broader international relief efforts",
           "name": "Ehsaas Foundation"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[6]"
           ],
-          "detail": "The organization <cite id=\"1\">directly provides hunger relief and healthcare awareness</cite> to people in need rather than just funding other groups.",
-          "point": "Direct Service Delivery Model"
+          "detail": "The organization works to deliver <cite id=\"6\">education, healthcare awareness, and emergency hunger relief</cite> directly to beneficiaries.",
+          "point": "Direct Service Model"
         },
         {
           "citation_ids": [
-            "[7]"
+            "[1]"
           ],
-          "detail": "The charity maintains a <cite id=\"7\">clear theory of change</cite> that guides its vocational training and emergency response efforts.",
-          "point": "Clear Strategic Framework"
+          "detail": "Maintains an explicit focus on <cite id=\"1\">serving and empowering under-served communities</cite> in the United States.",
+          "point": "Clear Core Mission"
         }
       ],
       "strengths_deep_dive": [
-        "Albarr Inc focuses on high-touch interventions such as <cite id=\"1\">technical and vocational training</cite> alongside immediate hunger relief. This dual approach aims to address both the symptoms and causes of poverty. The organization's <cite id=\"8\">focus on underserved populations</cite> in the USA aligns with religious cultural values of community support. Despite these operational strengths, the <cite id=\"9\">lack of verified evidence and outcomes</cite> prevents a full assessment of the long-term impact of these programs."
+        "Al-Barr Foundation targets immediate community needs by implementing direct aid initiatives. Their efforts cover <cite id=\"6\">education support, healthcare awareness, and hunger relief</cite> to assist under-resourced populations. While operational reach is documented, detailed performance metrics and cost-per-beneficiary breakdowns are not publicly available."
       ],
-      "summary": "Albarr Inc operates as a direct service provider focused on addressing immediate social needs within the United States. The organization manages a diverse portfolio of initiatives including <cite id=\"1\">education support, healthcare awareness, and hunger relief</cite>. While the mission is clearly defined to empower underserved populations, the charity currently lacks the <cite id=\"2\">public financial data and outcome reporting</cite> necessary for a comprehensive evaluation. This lack of transparency is a significant limiting factor for potential donors. Currently, the organization <cite id=\"3\">accepts sadaqah donations</cite> to fund its emergency relief and vocational training programs. However, there is <cite id=\"4\">insufficient data for cost-per-beneficiary calculations</cite>, making it difficult to determine the efficiency of these services. The charity's <cite id=\"5\">program expense ratio remains unknown</cite>, which is a concern as the peer median for humanitarian organizations is 89.5%. Without audited financials or a clear breakdown of spending, donors cannot verify how much of their contribution reaches the intended recipients. The organization's <cite id=\"6\">board governance is considered minimal</cite> with only four members, which may limit oversight and strategic planning capacity.",
+      "summary": "Al-Barr Foundation provides direct humanitarian services focused on <cite id=\"6\">education support, healthcare awareness, and hunger relief</cite>. Operating primarily within the United States, the organization addresses immediate needs through <cite id=\"4\">general charitable giving and sadaqah support</cite>. Publicly available financial metrics, including program expense ratios and administrative spending, are not available in standard filings. The foundation maintains a direct service delivery model to assist vulnerable populations. Independent evaluations and verified outcome tracking remain unestablished. Donors should note that comprehensive financial transparency data is currently limited.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

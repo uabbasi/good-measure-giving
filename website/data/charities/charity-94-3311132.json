@@ -54,8 +54,8 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Children",
-      "Men"
+      "Men",
+      "Children"
     ],
     "geographicCoverage": null
   },
@@ -78,12 +78,12 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-23 20:59:58",
+  "lastUpdated": "2026-07-30 22:02:19",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
-      "timestamp": "2026-07-23T20:36:48",
+      "timestamp": "2026-07-30T22:00:41",
       "value": 50699
     },
     "beneficiaries_served_annually": {
@@ -92,7 +92,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-27T23:29:39.930911+00:00",
+        "timestamp": "2026-07-31T05:01:07.435444+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -116,7 +116,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
-      "timestamp": "2026-07-23T20:36:48",
+      "timestamp": "2026-07-30T22:00:41",
       "value": 14286
     },
     "has_audited_financials": {
@@ -128,26 +128,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-30T22:00:41",
       "value": "B20"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
-      "timestamp": "2026-07-23T20:36:48",
+      "timestamp": "2026-07-30T22:00:41",
       "value": 0.981
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
-      "timestamp": "2026-07-23T20:36:48",
+      "timestamp": "2026-07-30T22:00:41",
       "value": 4373224
     },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
+      "timestamp": "2026-07-30T22:00:41",
+      "value": 4438209
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132",
-      "timestamp": "2026-07-23T20:36:47",
-      "value": 4155519
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/943311132#financials",
+      "timestamp": "2026-07-30T22:00:41",
+      "value": 4330166
     },
     "working_capital_months": {
       "derived_from": [
@@ -155,9 +161,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132",
-      "timestamp": "2026-07-23T20:36:47",
+      "timestamp": "2026-07-30T22:00:41",
       "value": 9.1
     }
   },
@@ -179,7 +186,7 @@
     "religious-services"
   ],
   "hideFromCurated": null,
-  "theoryOfChange": "Al-Arqam Islamic School has published its 'Student Learning Goals' as part of its Islamic Education curriculum. These goals serve as a results framework, outlining the intended impact on students across five key areas: living Islam, becoming lifelong learners, effective communicators, citizens of the world, and honoring themselves physically and spiritually.",
+  "theoryOfChange": "Al-Arqam Islamic School has published 'Schoolwide Learning Outcomes (SLOs)' and 'Al-Arqam Student Learning Goals' which outline the intended results and impact of their educational programs. These five outcomes focus on students' academic, spiritual, social, and physical development. The goals detail how students are expected to 'Live Islam,' 'Become Lifelong Learners,' be 'Effective Communicators,' be 'Citizens of the World,' and 'Honor themselves physically & spiritually.' These serve as a documented approach to measuring change and impact, functioning as a results framework.",
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 1998,
@@ -195,7 +202,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-27T23:29:39.930911+00:00",
+      "timestamp": "2026-07-31T05:01:07.435444+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -236,7 +243,23 @@
     "used_fallback": false,
     "fallback_reasons": null
   },
-  "keyConcerns": null,
+  "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 9.1,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    }
+  ],
   "amalEvaluation": {
     "charity_ein": "94-3311132",
     "charity_name": "Al-Arqam Islamic School",
@@ -390,6 +413,48 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The provided content for citation [1] is a PDF that could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The provided content for citation [2] is a PDF that could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_3",
+          "judge": "citation",
+          "message": "The provided content for citation [3] is a PDF that could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "The provided content for citation [5] is a PDF that could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_11",
+          "judge": "citation",
+          "message": "The provided content for citation [11] is a PDF that could not be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_13",
+          "judge": "citation",
+          "message": "The content for citation [13] mentions general charitable giving and sadaqah, but does not explicitly state that donors can support the school through these methods.",
+          "severity": "info"
+        },
+        {
+          "field": "citation_14",
+          "judge": "citation",
+          "message": "The content for citation [14] mentions the school's location and its role in raising a Muslim generation, but does not explicitly state a 'solid track record and engagement in the Sacramento area'.",
+          "severity": "info"
+        },
+        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -414,6 +479,12 @@
           "severity": "info"
         },
         {
+          "field": "discovered.evaluations.evaluators[2].url",
+          "judge": "discover_quality",
+          "message": "Evaluation source domain 'niche.com' is not a known trusted evaluator",
+          "severity": "info"
+        },
+        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
@@ -432,71 +503,70 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The donation page for Al-Arqam Islamic School (Sacramento, CA) lists methods for donations (checks, PayPal, Zelle) but does not explicitly mention \"zakat\" or have a dedicated zakat fund or campaign. (Source: https://www.alarqamislamicschool.org/apps/pages/index.jsp?uREC_ID=1440031&type=d)",
+        "claim_evidence": "The donation page for Al-Arqam Islamic School (Sacramento, CA) lists methods for general donations (checks, PayPal, Zelle) and asks for support to raise a \"God-conscious Muslim generation\" but does not explicitly mention \"zakat\" or dedicated zakat funds. While another entity, \"Al-Arqam Center of Saratoga, NY,\" explicitly accepts zakat, this is a different organization and does not apply to Al-Arqam Islamic School in Sacramento, CA. (Source: https://www.alarqamislamicschool.org/apps/pages/index.jsp?uREC_ID=1440031&type=d)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The school serves the educational needs of Muslim youth in the Sacramento area.",
+          "claim": "The school spends 98.1% of its budget directly on its educational programs and maintains 9.1 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/943311132#financials"
         },
         {
-          "claim": "In FY2024, the organization managed $4,330,166 in total revenue and spent 98.1% on programs.",
+          "claim": "In FY2024, the organization managed $4,330,166 in total revenue.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/943311132"
         },
         {
-          "claim": "The school provides programs for Transitional Kindergarten.",
+          "claim": "The organization shows a clear model for student success through structured elementary programs.",
+          "id": "[3]",
+          "source_name": "1stGrade_SupplyList_2026-2027",
+          "source_url": "https://4.files.edl.io/d582/06/02/26/213922-5c139364-3964-48c3-960e-d4cae60ee00a.pdf"
+        },
+        {
+          "claim": "The school serves children through Transitional Kindergarten programs.",
           "id": "[5]",
           "source_name": "TK_ SupplyList_2026-2027",
           "source_url": "https://4.files.edl.io/2e45/07/13/26/181621-510883ce-702f-4ff5-b40d-4fb5d7bb2c42.pdf"
         },
         {
-          "claim": "The school maintains structured curriculum requirements for elementary students.",
-          "id": "[8]",
-          "source_name": "5thGrade_SupplyList_2026-2027.pdf",
-          "source_url": "https://4.files.edl.io/7094/06/02/26/214350-b55c27ac-01ac-41e5-a7d4-bf8bc77f6173.pdf"
-        },
-        {
-          "claim": "The school provides programs through the 8th grade.",
+          "claim": "The school provides middle school education through 8th grade.",
           "id": "[11]",
           "source_name": "8thGrade_SupplyList_2026-2027",
           "source_url": "https://4.files.edl.io/582c/07/07/26/162941-db1f61b4-90c7-4821-9b2b-1a008231897e.pdf"
         },
         {
-          "claim": "The school offers various giving methods for donors.",
+          "claim": "Donors can support the school through general charitable giving and sadaqah.",
           "id": "[13]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.alarqamislamicschool.org/apps/pages/index.jsp?uREC_ID=1440031&type=d&pREC_ID=1602841"
         },
         {
-          "claim": "The organization provides opportunities for community engagement and volunteering.",
+          "claim": "The school has a solid track record and engagement in the Sacramento area.",
           "id": "[14]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.alarqamislamicschool.org/apps/pages/index.jsp?uREC_ID=1440031&type=d&pREC_ID=1602841"
         }
       ],
-      "amal_score_rationale": "The school shows a positive standing due to its excellent spending efficiency and clear educational mission, though the high cost per student reflects the specialized nature of its local services.",
+      "amal_score_rationale": "The school shows an above-average performance due to its excellent financial health and focus on direct educational services, though the cost to serve each student is relatively high.",
       "areas_for_improvement": [
-        "High cost per student compared to larger educational non-profits",
-        "Limited geographic reach outside of the Greater Sacramento area"
+        "High cost per student compared to other educational models",
+        "Limited geographic reach outside of the Sacramento region"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a moderate fit for Muslim donors seeking to support local education, as it specifically serves the Sacramento Muslim community [1]. It has a proven track record of providing religious and academic instruction, though it operates in a less underserved space than international relief efforts [13][14].",
-        "impact": "The school demonstrates strong financial health and governance, spending 98.1% of its budget directly on student programs in FY2024 [1][2]. While the cost per beneficiary is approximately $9,718, the organization maintains a clear theory of change by providing structured curriculum and supply lists for every grade level from TK through middle school [5][8][11]."
+        "alignment": "This organization is a good fit for donors interested in local Islamic education and capacity building [13]. It has a solid track record in the Sacramento area, though its focus is specific to one community [2][14].",
+        "impact": "The school spends 98.1% of its budget directly on its educational programs [1]. While the cost per student is approximately $9,718, the organization shows strong governance and a clear model for student success [3]. It also maintains 9.1 months of working capital to ensure stability [1]."
       },
-      "headline": "Al-Arqam Islamic School provides focused elementary and middle school education for Muslim children in the Sacramento area.",
+      "headline": "Al-Arqam Islamic School provides elementary and middle school education with high spending efficiency in the Sacramento area.",
       "strengths": [
         "High program expense ratio of 98.1% in FY2024",
-        "Strong fundraising efficiency of $0.00 spent per $1 raised",
-        "Solid financial liquidity with 9.1 months of working capital"
+        "Efficient fundraising costs of only $0.06 per $1 raised"
       ],
-      "summary": "The school serves the educational needs of Muslim youth through programs ranging from Transitional Kindergarten to 8th grade [1][5][11]. In FY2024, the organization managed $4,330,166 in total revenue to support its academic operations [2]."
+      "summary": "The school serves Muslim children in the Greater Sacramento area through programs for Transitional Kindergarten through 8th grade [5][11]. In FY2024, the organization managed $4,330,166 in total revenue while maintaining a focus on classroom instruction [2]. Donors can support the school through general charitable giving and sadaqah [13]."
     },
     "rich_narrative": {
       "all_citations": [

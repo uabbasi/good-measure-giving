@@ -225,3 +225,237 @@ class TestAnUnreadableMemberDegradesInsteadOfFailingTheRun:
 
         with pytest.raises(ValueError):
             self._fetch_raising(ValueError("a genuine bug"))
+
+
+def _volume_zip(members: dict[str, str]) -> bytes:
+    """A bundle holding exactly the members given, name -> body."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        for name, body in members.items():
+            zf.writestr(name, body, compress_type=zipfile.ZIP_DEFLATED)
+    return buf.getvalue()
+
+
+class TestTheIndexDoesNotAlwaysNameTheBundleThatHoldsTheFiling:
+    """XML_BATCH_ID is not a reliable address, in three separate ways.
+
+    Measured against the live IRS on 2026-07-31, chasing EIN 36-4476244
+    (Zakat Foundation of America) failing its crawl with "Failed to download
+    any XML filings":
+
+    1. OVERFLOW VOLUMES. index_2026 assigns 168,344 rows to
+       2026_TEOS_XML_05A. That bundle holds 84,172 members and stops at
+       object_id 202621329349203217. 2026_TEOS_XML_05B holds the next 84,172,
+       starting at 202621329349203222 -- and is named by no index row at all.
+       Half of the batch was therefore unreachable, and a sample of twelve
+       arbitrary 05A rows found only five of them present.
+
+    2. CASE. index_2024 writes the volume letter lowercase
+       ("2024_TEOS_XML_05a"); the server has 05A.zip and 302-redirects the
+       lowercase URL to irs.gov/404. zipfile then reports "File is not a zip
+       file", which reads like corruption rather than a wrong address.
+
+    3. NESTED MEMBERS. The 2024 bundles store members under a directory
+       ("2024_TEOS_XML_05A/<object_id>_public.xml"); 2025 and 2026 store them
+       flat. An exact-name lookup misses the nested ones entirely.
+
+    All three surfaced as the same thing -- a filing we could not address
+    reported as a filing that does not exist.
+    """
+
+    OID = "202631349349308303"
+    MEMBER = f"{OID}_public.xml"
+    XML = '<?xml version="1.0"?><Return><ReturnHeader><TaxYr>2025</TaxYr></ReturnHeader></Return>'
+
+    def _ref(self, batch_id="2026_TEOS_XML_05A"):
+        return FilingRef(
+            ein="364476244", tax_period="202506", object_id=self.OID,
+            batch_id=batch_id, return_type="990",
+        )
+
+    def _serving(self, bundles: dict[str, bytes]):
+        """Patch HttpRangeReader so each bundle URL serves its own bytes.
+
+        A URL with no entry raises OSError, which is what a 404 looks like
+        once the reader checks its responses.
+        """
+        from unittest.mock import patch
+
+        from src.collectors import irs_990_source
+
+        def reader(url, session=None, timeout=120):
+            for name, data in bundles.items():
+                if url.endswith(f"/{name}.zip"):
+                    return io.BytesIO(data)
+            raise OSError(f"404 for {url}")
+
+        return patch.object(irs_990_source, "HttpRangeReader", side_effect=reader)
+
+    def test_candidates_start_with_the_bundle_the_index_named(self):
+        from src.collectors.irs_990_source import bundle_candidates
+
+        assert next(iter(bundle_candidates("2026_TEOS_XML_05A"))) == "2026_TEOS_XML_05A"
+
+    def test_candidates_continue_into_the_overflow_volumes(self):
+        from src.collectors.irs_990_source import bundle_candidates
+
+        got = list(bundle_candidates("2026_TEOS_XML_05A"))
+        assert got[:3] == ["2026_TEOS_XML_05A", "2026_TEOS_XML_05B", "2026_TEOS_XML_05C"]
+
+    def test_a_lowercase_volume_letter_is_normalised(self):
+        from src.collectors.irs_990_source import bundle_candidates
+
+        got = list(bundle_candidates("2024_TEOS_XML_05a"))
+        assert got[0] == "2024_TEOS_XML_05A"
+        assert "2024_TEOS_XML_05a" not in got
+
+    def test_a_filing_in_the_overflow_volume_is_found(self):
+        from src.collectors import irs_990_source
+
+        bundles = {
+            "2026_TEOS_XML_05A": _volume_zip({"202600000000000001_public.xml": "<other/>"}),
+            "2026_TEOS_XML_05B": _volume_zip({self.MEMBER: self.XML}),
+        }
+        with self._serving(bundles):
+            got = irs_990_source.fetch_filing_xml(self._ref(), session=object())
+        assert got is not None and "<TaxYr>2025</TaxYr>" in got
+
+    def test_a_member_stored_under_a_directory_is_found(self):
+        from src.collectors import irs_990_source
+
+        bundles = {
+            "2024_TEOS_XML_05A": _volume_zip(
+                {f"2024_TEOS_XML_05A/{self.MEMBER}": self.XML}
+            )
+        }
+        with self._serving(bundles):
+            got = irs_990_source.fetch_filing_xml(
+                self._ref("2024_TEOS_XML_05a"), session=object()
+            )
+        assert got is not None and "<TaxYr>2025</TaxYr>" in got
+
+    def test_a_filing_in_no_volume_is_still_none(self):
+        """Widening where we look must not turn absence into an exception."""
+        from src.collectors import irs_990_source
+
+        bundles = {"2026_TEOS_XML_05A": _volume_zip({"202600000000000001_public.xml": "<o/>"})}
+        with self._serving(bundles):
+            assert irs_990_source.fetch_filing_xml(self._ref(), session=object()) is None
+
+    def test_the_search_stops_at_the_first_absent_volume(self):
+        """Volumes are contiguous, so probing past a gap is wasted downloads
+        of 3.5 MB central directories -- against a bundle that does not exist.
+        """
+        from unittest.mock import patch
+
+        from src.collectors import irs_990_source
+
+        seen = []
+
+        def reader(url, session=None, timeout=120):
+            seen.append(url)
+            if url.endswith("/2026_TEOS_XML_05A.zip"):
+                return io.BytesIO(_volume_zip({"202600000000000001_public.xml": "<o/>"}))
+            raise OSError("404")
+
+        with patch.object(irs_990_source, "HttpRangeReader", side_effect=reader):
+            assert irs_990_source.fetch_filing_xml(self._ref(), session=object()) is None
+        assert len(seen) == 2, seen
+
+
+def _deflate64_zip(member: str, body: bytes) -> bytes:
+    """A real single-member archive compressed with Deflate64 (method 9).
+
+    Built by hand because nothing in the standard library can write method 9 --
+    which is the whole reason this case exists. Fields the reader does not
+    consult (times, versions) are left at zero.
+    """
+    import binascii
+    import struct
+
+    import inflate64
+
+    d = inflate64.Deflater()
+    data = d.deflate(body) + d.flush()
+    crc = binascii.crc32(body) & 0xFFFFFFFF
+    name = member.encode()
+
+    # version, flags, method=9, time, date, crc, csize, usize, namelen, extralen
+    local = b"PK\x03\x04" + struct.pack(
+        "<HHHHHIIIHH", 20, 0, 9, 0, 0, crc, len(data), len(body), len(name), 0
+    ) + name
+    central = b"PK\x01\x02" + struct.pack(
+        "<HHHHHHIIIHHHHHII",
+        20, 20, 0, 9, 0, 0, crc, len(data), len(body), len(name), 0, 0, 0, 0, 0, 0,
+    ) + name
+    eocd = struct.pack(
+        "<4sHHHHIIH", b"PK\x05\x06", 0, 0, 1, 1,
+        len(central), len(local) + len(data), 0,
+    )
+    return local + data + central + eocd
+
+
+class TestTheBigBundlesAreDeflate64:
+    """Python's zipfile cannot decompress method 9, and batch 05 is all of it.
+
+    Measured on 2026-07-31: every one of the 84,172 members of
+    2026_TEOS_XML_05A, its 84,172 in 05B, and the 81,770 in 2025_TEOS_XML_05B
+    is Deflate64. Batches 01-04 are ordinary Deflate, and so is all of 2024 --
+    it is the oversized batch that gets packed past deflate's limits.
+
+    zipfile raises NotImplementedError("That compression method is not
+    supported") for those, which fetch_filing_xml caught and turned into "no
+    filing available". So the 168,344 filings that index_2026 assigns to batch
+    05 -- 48% of the submission year -- were silently unreadable, and every
+    charity among them quietly kept whatever older filing was already cached.
+    """
+
+    OID = "202631349349308303"
+    XML = b'<?xml version="1.0"?><Return><ReturnHeader><TaxYr>2025</TaxYr></ReturnHeader></Return>'
+
+    def _ref(self):
+        return FilingRef(
+            ein="364476244", tax_period="202506", object_id=self.OID,
+            batch_id="2026_TEOS_XML_05A", return_type="990",
+        )
+
+    def test_the_fixture_really_is_method_9(self):
+        """Guard: if this ever compresses as plain deflate the test below
+        proves nothing."""
+        zf = zipfile.ZipFile(io.BytesIO(_deflate64_zip(f"{self.OID}_public.xml", self.XML)))
+        assert [i.compress_type for i in zf.infolist()] == [9]
+
+    def test_stock_zipfile_cannot_read_it(self):
+        """The defect itself, so the fix below is not testing a no-op."""
+        import pytest
+
+        zf = zipfile.ZipFile(io.BytesIO(_deflate64_zip(f"{self.OID}_public.xml", self.XML)))
+        with pytest.raises(NotImplementedError):
+            zf.read(f"{self.OID}_public.xml")
+
+    def test_a_deflate64_filing_is_read(self):
+        from unittest.mock import patch
+
+        from src.collectors import irs_990_source
+
+        blob = _deflate64_zip(f"{self.OID}_public.xml", self.XML)
+        with patch.object(
+            irs_990_source, "HttpRangeReader", side_effect=lambda url, **kw: io.BytesIO(blob)
+        ):
+            got = irs_990_source.fetch_filing_xml(self._ref(), session=object())
+        assert got is not None and "<TaxYr>2025</TaxYr>" in got
+
+    def test_ordinary_deflate_members_still_read(self):
+        """2024's bundles are plain deflate and must not regress."""
+        from unittest.mock import patch
+
+        from src.collectors import irs_990_source
+
+        ref = FilingRef("831794093", "202512", "202600939349201205",
+                        "2026_TEOS_XML_04A", "990EZ")
+        with patch.object(
+            irs_990_source, "HttpRangeReader",
+            side_effect=lambda url, **kw: io.BytesIO(TEST_BATCH_ZIP),
+        ):
+            got = irs_990_source.fetch_filing_xml(ref, session=object())
+        assert got is not None and "<TaxYr>2025</TaxYr>" in got

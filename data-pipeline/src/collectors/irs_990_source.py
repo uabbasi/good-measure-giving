@@ -66,6 +66,94 @@ def zip_member_url(batch_id: str) -> str:
     return f"{IRS_BASE_URL}/{year}/{batch_id}.zip"
 
 
+# How far past the named volume to look. Six is well beyond anything observed
+# (2026 batch 05 runs to B) and bounded so a wrong batch id cannot start an
+# unbounded walk.
+_MAX_VOLUMES = 6
+
+
+def bundle_candidates(batch_id: str) -> list[str]:
+    """The bundles that may hold a filing the index assigns to batch_id.
+
+    XML_BATCH_ID is not a reliable address. When a batch outgrows one zip the
+    IRS publishes lettered volumes and keeps naming only the first: on
+    2026-07-31, index_2026 assigned 168,344 rows to 2026_TEOS_XML_05A, which
+    holds 84,172 members and stops at object_id 202621329349203217.
+    2026_TEOS_XML_05B holds the next 84,172, starting at 202621329349203222,
+    and appears in no index row at all. Half the batch was unaddressable.
+
+    The trailing letter is also written in whichever case the IRS pleases --
+    index_2024 says "05a" where the server has 05A.zip and 302-redirects the
+    lowercase to irs.gov/404 -- so it is normalised here.
+    """
+    prefix, sep, tail = batch_id.rpartition("_")
+    if not sep or not tail or not tail[-1].isalpha():
+        return [batch_id]
+    stem, letter = tail[:-1], tail[-1].upper()
+    return [f"{prefix}_{stem}{chr(ord(letter) + i)}" for i in range(_MAX_VOLUMES)]
+
+
+ZIP_DEFLATED64 = 9
+
+
+def _read_member(zf: Any, name: str) -> bytes:
+    """The member's bytes, including the ones zipfile cannot decompress.
+
+    The oversized batch is packed with Deflate64 (method 9), which Python's
+    zipfile refuses: on 2026-07-31 every member of 2026_TEOS_XML_05A/05B and
+    2025_TEOS_XML_05B was method 9, against ordinary deflate everywhere else.
+    Since that batch carries 168,344 of index_2026's 353,651 rows, nearly half
+    the submission year was unreadable, and each of those charities silently
+    fell back to whatever older filing happened to be cached.
+
+    Deflate64 members are located from their local header and inflated
+    directly; everything else goes through zipfile unchanged.
+    """
+    import struct
+    import zipfile
+
+    info = zf.getinfo(name)
+    if info.compress_type != ZIP_DEFLATED64:
+        return zf.read(name)
+
+    import binascii
+
+    import inflate64
+
+    fp = zf.fp
+    fp.seek(info.header_offset)
+    header = fp.read(30)
+    if header[:4] != b"PK\x03\x04":
+        raise zipfile.BadZipFile(f"no local header for {name}")
+    name_len, extra_len = struct.unpack("<HH", header[26:30])
+
+    fp.seek(info.header_offset + 30 + name_len + extra_len)
+    data = b""
+    while len(data) < info.compress_size:
+        chunk = fp.read(info.compress_size - len(data))
+        if not chunk:
+            break
+        data += chunk
+
+    body = inflate64.Inflater().inflate(data)
+    if binascii.crc32(body) & 0xFFFFFFFF != info.CRC:
+        raise zipfile.BadZipFile(f"CRC mismatch for {name}")
+    return body
+
+
+def _member_named(zf: Any, object_id: str) -> Optional[str]:
+    """The archive entry for this filing, however the bundle stores it.
+
+    2025 and 2026 bundles store members flat; 2024 nests them under a
+    directory named for the bundle, so an exact-name lookup misses them.
+    """
+    wanted = f"{object_id}_public.xml"
+    for name in zf.namelist():
+        if name == wanted or name.endswith("/" + wanted):
+            return name
+    return None
+
+
 def build_index_map(lines: Iterable[str]) -> dict[str, list[FilingRef]]:
     """Parse index_YYYY.csv rows into EIN -> filings, newest tax period first.
 
@@ -113,6 +201,13 @@ class HttpRangeReader(io.RawIOBase):
             session = requests.Session()
         self._session = session
         head = self._session.head(url, timeout=self.timeout, allow_redirects=True)
+        # An absent volume 302s to irs.gov/404, which has a content-length like
+        # any other page. Without this the reader would hand zipfile an HTML
+        # error page and the caller would see "File is not a zip file" -- a
+        # wrong address reported as a corrupt archive.
+        status = getattr(head, "status_code", 200)
+        if status >= 400:
+            raise OSError(f"HTTP {status} for {url}")
         try:
             self.size = int(head.headers["content-length"])
         except (KeyError, TypeError, ValueError) as e:
@@ -170,19 +265,34 @@ def fetch_filing_xml(ref: FilingRef, session: Any = None) -> Optional[str]:
     """
     import zipfile
 
-    url = zip_member_url(ref.batch_id)
-    member = f"{ref.object_id}_public.xml"
-    try:
-        zf = zipfile.ZipFile(HttpRangeReader(url, session=session))
-        return zf.read(member).decode("utf-8", "replace")
-    except KeyError:
-        logger.warning("IRS bundle %s has no member %s", ref.batch_id, member)
-        return None
-    except (OSError, zipfile.BadZipFile, NotImplementedError) as e:
-        # NotImplementedError is zipfile's "That compression method is not
-        # supported" -- some IRS bundles carry members compressed outside the
-        # set it handles. Without it here the error escaped this function's
-        # contract, failed form990_grants as a required source, and aborted the
-        # entire crawl for the charity rather than costing it its grants data.
-        logger.warning("Could not read %s from %s: %s", member, url, e)
-        return None
+    for batch_id in bundle_candidates(ref.batch_id):
+        url = zip_member_url(batch_id)
+        try:
+            zf = zipfile.ZipFile(HttpRangeReader(url, session=session))
+        except (OSError, zipfile.BadZipFile, NotImplementedError) as e:
+            # Volumes are contiguous, so the first one that is not published
+            # ends the chain; probing past it costs a central directory read
+            # per absent bundle and can find nothing.
+            #
+            # NotImplementedError is zipfile's "That compression method is not
+            # supported" -- some IRS bundles carry members compressed outside
+            # the set it handles. Without it here the error escaped this
+            # function's contract, failed form990_grants as a required source,
+            # and aborted the entire crawl for the charity rather than costing
+            # it its grants data.
+            logger.warning("Could not open IRS bundle %s: %s", url, e)
+            return None
+
+        member = _member_named(zf, ref.object_id)
+        if member is None:
+            continue
+        try:
+            return _read_member(zf, member).decode("utf-8", "replace")
+        except (KeyError, OSError, zipfile.BadZipFile, NotImplementedError) as e:
+            logger.warning("Could not read %s from %s: %s", member, url, e)
+            return None
+
+    logger.warning(
+        "No volume of IRS batch %s holds %s", ref.batch_id, ref.object_id
+    )
+    return None

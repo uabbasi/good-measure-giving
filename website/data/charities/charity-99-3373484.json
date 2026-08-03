@@ -36,17 +36,17 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": 100000,
-    "totalExpenses": 100000,
-    "programExpenses": 100000,
-    "adminExpenses": 0,
-    "fundraisingExpenses": 0,
+    "totalRevenue": null,
+    "totalExpenses": null,
+    "programExpenses": null,
+    "adminExpenses": 100000,
+    "fundraisingExpenses": null,
     "programExpenseRatio": "1.0000",
-    "fiscalYear": 2023,
-    "dataSource": "mixed",
-    "totalAssets": 0,
-    "totalLiabilities": 0,
-    "netAssets": 0,
+    "fiscalYear": 2024,
+    "dataSource": "charity_navigator",
+    "totalAssets": null,
+    "totalLiabilities": 100000,
+    "netAssets": null,
     "workingCapitalMonths": null,
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
@@ -55,23 +55,31 @@
   "baselineGovernance": null,
   "targeting": {
     "populationsServed": [
-      "Families",
       "Youth",
-      "Needy"
+      "Needy",
+      "Families"
     ],
     "geographicCoverage": [
       "Haverford"
     ]
   },
-  "trustSignals": null,
+  "trustSignals": {
+    "hasAnnualReport": null,
+    "hasAuditedFinancials": 1,
+    "candidSeal": null,
+    "isConflictZone": 0,
+    "nonprofitSizeTier": "small_nonprofit",
+    "employeesCount": null,
+    "volunteersCount": null
+  },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 17:56:14",
+  "lastUpdated": "2026-07-30 21:58:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/993373484#financials",
-      "timestamp": "2026-07-23T17:27:30",
-      "value": 0
+      "timestamp": "2026-07-30T21:55:17",
+      "value": 100000
     },
     "beneficiaries_served_annually": {
       "method": "pattern_match",
@@ -79,7 +87,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-27T23:28:30.403584+00:00",
+        "timestamp": "2026-07-31T04:55:42.517263+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -90,51 +98,33 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://yateemfoundationusa.org/",
+      "source_url": "https://hyusa.org/faqs/",
       "timestamp": "2026-07-23T16:22:34",
-      "value": true
+      "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-30T21:55:15",
       "value": 2024
-    },
-    "fundraising_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/993373484#financials",
-      "timestamp": "2026-07-23T17:27:30",
-      "value": 0
     },
     "has_audited_financials": {
       "source_name": "Charity Website",
       "source_url": "https://yateemfoundationusa.org/our-support/",
       "timestamp": "2026-07-23T16:22:34",
-      "value": false
+      "value": true
     },
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484",
-      "timestamp": "2026-07-23T17:27:28",
+      "timestamp": "2026-07-30T21:55:15",
       "value": "M20"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/993373484#financials",
-      "timestamp": "2026-07-23T17:27:30",
+      "timestamp": "2026-07-30T21:55:17",
       "value": 1
-    },
-    "program_expenses": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/993373484#financials",
-      "timestamp": "2026-07-23T17:27:30",
-      "value": 100000
-    },
-    "total_revenue": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/993373484#financials",
-      "timestamp": "2026-07-23T17:27:30",
-      "value": 100000
     }
   },
   "primaryCategory": "BASIC_NEEDS",
@@ -147,9 +137,7 @@
     "direct-service",
     "faith-based",
     "food",
-    "fuqara",
     "grantmaking",
-    "masakin",
     "muslim-led",
     "orphans",
     "refugees",
@@ -178,7 +166,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-27T23:28:30.403584+00:00",
+      "timestamp": "2026-07-31T04:55:42.517263+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -189,10 +177,16 @@
   },
   "beneficiariesConfidence": "cited",
   "beneficiariesExcludedFromScoring": false,
-  "evidenceQuality": null,
-  "zakatClaimEvidence": [
-    "Yateem Foundation USA lists \"Zekat Relief\" under its \"Donation and Campaigns\" section."
-  ],
+  "evidenceQuality": {
+    "hasOutcomeMethodology": null,
+    "hasMultiYearMetrics": null,
+    "thirdPartyEvaluated": 1,
+    "evaluationSources": [
+      "Charity Navigator"
+    ],
+    "receivesFoundationGrants": null
+  },
+  "zakatClaimEvidence": null,
   "archetype": "DIRECT_SERVICE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
@@ -201,10 +195,10 @@
     "assessment_label": "Limited Basis",
     "archetype_code": "DIRECT_SERVICE",
     "archetype_label": "Frontline Relief",
-    "evidence_stage": "Early",
+    "evidence_stage": "Established",
     "signal_states": {
-      "evidence": "Moderate",
-      "financial_health": "Limited",
+      "evidence": "Strong",
+      "financial_health": "Strong",
       "donor_fit": "Moderate",
       "risk": "Moderate"
     },
@@ -215,36 +209,38 @@
   },
   "keyConcerns": [
     {
-      "type": "risk_deduction",
-      "severity": "medium",
-      "headline": "Latest available financial filing is FY2023 (3 years old)",
-      "detail": "Source: ProPublica 990",
-      "data_points": {}
+      "type": "high_fundraising_ratio",
+      "severity": "high",
+      "headline": "Fundraising costs are 100% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 1
+      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "99-3373484",
     "charity_name": "Yateem Foundation",
     "amal_score": null,
-    "wallet_tag": "ZAKAT-ELIGIBLE",
+    "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:10:20",
     "rubric_version": "5.3.0",
     "confidence_scores": {
-      "alignment": 37,
-      "data_confidence": 0.26,
-      "impact": 22
+      "alignment": 33,
+      "data_confidence": 0.6,
+      "impact": 35
     },
     "score_details": {
       "alignment": {
         "cause_urgency_label": "EXTREME_POVERTY",
         "components": [
           {
-            "evidence": "Accepts zakat (+2); Muslim-focused organization (+2); Asnaf: masakin (+5); Humanitarian service (+2)",
-            "improvement_suggestion": "Clarify zakat allocation policy and eligible use categories for donors.",
+            "evidence": "Muslim-focused organization (+2); Asnaf: masakin (+5); Humanitarian service (+2)",
+            "improvement_suggestion": "Add a dedicated zakat page or clearly state whether donations are zakat-eligible.",
             "improvement_value": 8,
             "name": "Muslim Donor Fit",
             "possible": 19,
-            "scored": 11,
+            "scored": 9,
             "status": "partial"
           },
           {
@@ -275,41 +271,41 @@
             "status": "partial"
           },
           {
-            "evidence": "Revenue: $100,000 (5/5 funding gap)",
+            "evidence": "Revenue: unknown (moderate gap assumed)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
             "possible": 5,
-            "scored": 5,
-            "status": "full"
+            "scored": 3,
+            "status": "partial"
           }
         ],
         "muslim_donor_fit_level": "MEDIUM",
-        "rationale": "Alignment 37/50: MEDIUM Muslim donor fit, extreme poverty cause area",
-        "score": 37
+        "rationale": "Alignment 33/50: MEDIUM Muslim donor fit, extreme poverty cause area",
+        "score": 33
       },
       "data_confidence": {
-        "badge": "LOW",
-        "data_age_years": 3,
+        "badge": "MEDIUM",
+        "data_age_years": 2,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.26,
-        "recency_factor": 0.85,
+        "overall": 0.6,
+        "recency_factor": 1,
         "transparency_label": "NONE",
         "transparency_value": 0,
-        "verification_tier": "BASIC",
-        "verification_value": 0.4
+        "verification_tier": "HIGH",
+        "verification_value": 1
       },
       "impact": {
         "components": [
           {
-            "evidence": "$952.38/beneficiary (general benchmark)",
-            "improvement_suggestion": null,
-            "improvement_value": 6,
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
+            "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
+            "improvement_value": 0,
             "name": "Cost Per Beneficiary",
             "possible": 13,
-            "scored": 2,
-            "status": "full"
+            "scored": 6,
+            "status": "missing"
           },
           {
             "evidence": "Delivery model: Direct Service",
@@ -321,13 +317,13 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: unknown (UNKNOWN)",
-            "improvement_suggestion": "Publish current reserve levels and a board-approved reserve policy (often 3-12 months for most nonprofits).",
-            "improvement_value": 4,
+            "evidence": "Working capital: 12.0 months (RESILIENT)",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 0,
-            "status": "missing"
+            "scored": 6,
+            "status": "full"
           },
           {
             "evidence": "Program expense ratio: 100%",
@@ -339,13 +335,13 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED (emerging org baseline)",
-            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
-            "improvement_value": 3,
+            "evidence": "Evidence & outcomes: VERIFIED",
+            "improvement_suggestion": null,
+            "improvement_value": 0,
             "name": "Evidence & Outcomes",
             "possible": 5,
-            "scored": 2,
-            "status": "partial"
+            "scored": 5,
+            "status": "full"
           },
           {
             "evidence": "Theory of change: DEVELOPING",
@@ -366,24 +362,48 @@
             "status": "partial"
           }
         ],
-        "cost_per_beneficiary": 952.3809523809524,
+        "cost_per_beneficiary": null,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$952.38/beneficiary; Delivery: direct service; Impact 22/50",
+        "rationale": "Delivery: direct service; Impact 35/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 22
+        "score": 35
       },
       "judge_issues": [
         {
-          "field": "discovered.zakat.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The fetched content does not contain information about the charity's program expense ratio for FY2024.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The fetched content does not contain information about the charity's working capital.",
+          "severity": "warning"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative claims a 100.0% program expense ratio for FY2024, but the source data indicates a program expense ratio of 1.0 for the same fiscal year.",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative states the group maintains 12.0 months of working capital, which matches the source data.",
           "severity": "info"
         },
         {
-          "field": "source_attribution.claims_zakat_eligible.source_url",
-          "judge": "synthesize_quality",
-          "message": "Website citation for 'claims_zakat_eligible' uses homepage URL; deep link preferred",
+          "field": "zakat_classification",
+          "judge": "score",
+          "message": "The narrative does not explicitly mention the 'masakin' classification for Zakat, although it is present in the assigned scores and used as evidence in the Alignment score details. The narrative focuses on 'SADAQAH-ELIGIBLE'.",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -396,246 +416,242 @@
       "risk_deduction": -2,
       "risks": {
         "overall_risk_level": "MODERATE",
-        "risk_summary": "1 risk(s) identified.",
+        "risk_summary": "Key concern: Fundraising costs are 100% of total expenses",
         "risks": [
           {
-            "category": "operational",
-            "data_source": "ProPublica 990",
-            "description": "Latest available financial filing is FY2023 (3 years old)",
+            "category": "financial",
+            "data_source": "Reconciliation",
+            "description": "Fundraising costs are 100% of total expenses",
             "mitigation": null,
-            "severity": "medium"
+            "severity": "high"
           }
         ],
         "total_deduction": -2
       },
-      "score_summary": "Yateem Foundation USA shows strong alignment and moderate impact, with zakat compliance (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Yateem Foundation USA shows strong impact and good alignment (minor risk deductions applied).",
       "zakat": {
-        "asnaf_category": "masakin",
+        "asnaf_category": null,
         "bonus_points": 0,
-        "charity_claims_zakat": true,
-        "claim_evidence": "Yateem Foundation USA lists \"Zekat Relief\" under its \"Donation and Campaigns\" section.",
+        "charity_claims_zakat": false,
+        "claim_evidence": "Help Yateem currently provides aid in more than 5 countries, Kenya, Yeman, Somalia, Gambia and the United Kingdom. (Source: https://hyusa.org/faqs/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides food and shelter to displaced orphans in Syria to return to their original cities.",
+          "claim": "The organization operates programs including orphan sponsorship and seasonal assistance projects for children in need.",
           "id": "[1]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
-          "claim": "The charity reported $100,000 in revenue and a 100.0% program expense ratio in its last filing from FY2023.",
+          "claim": "In FY2024, the charity reported a 100.0% program expense Ratio.",
           "id": "[2]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484"
         },
         {
-          "claim": "The organization is zakat-eligible.",
+          "claim": "The group maintains 12.0 months of working capital to support its ongoing operations.",
           "id": "[3]",
-          "source_name": "Charity Website - Zakat",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "claim": "Financial data is based on older filings, with no recent updates available.",
-          "id": "[4]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/993373484#financials"
         }
       ],
-      "amal_score_rationale": "The charity receives an average assessment because it addresses a critical need with efficient spending, but it is significantly behind on public financial reporting. This lack of current data creates a transparency risk for donors.",
+      "amal_score_rationale": "This charity shows a positive commitment to its mission with efficient spending and strong financial health, though it has a shorter history than some other organizations.",
       "areas_for_improvement": [
-        "No financial filings newer than FY2023 are available\u2014donors should treat this 3-year-old financial picture with caution [2].",
-        "High cost of $952.38 per beneficiary suggests a need for better cost efficiency [2].",
-        "Lack of recent public data makes it difficult to track current progress or growth [4]."
+        "Establish a longer public track record of financial growth",
+        "Provide more detailed reporting on specific program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a highly urgent need in Syria, a region facing extreme poverty [1]. It is a good fit for Muslim donors as it accepts zakat [3]. Its track record is harder to judge because the latest available revenue is $100,000 from three years ago [2].",
-        "impact": "The charity provides direct services like food and housing to orphans [1]. It reports a 100.0% program expense ratio and a fundraising efficiency of $0.00 per $1 raised [2]. However, the cost to help each person is high at $952.38, and the lack of recent filings makes it hard to verify current results [4]."
+        "alignment": "The organization serves an urgent cause by helping children in extreme poverty [1]. While it is a good fit for donors looking to give sadaqah, it has a limited track record compared to older charities [2].",
+        "impact": "The charity provides direct services to orphans, which is a highly effective way to help [1]. Its financial health is supported by a 100.0% program expense Ratio in FY2024 and a solid reserve of 12.0 months of working capital [2][3]."
       },
-      "headline": "Yateem Foundation USA focuses on returning displaced Syrian orphans to their home cities through direct aid.",
+      "headline": "Yateem Foundation USA focuses on providing food and shelter to displaced Syrian orphans to help them return to their home cities.",
       "strengths": [
-        "Reports a 100.0% program expense ratio, meaning all funds go toward aid [2].",
-        "Operates in a high-urgency cause area by supporting displaced children in conflict zones [1].",
-        "Confirmed as zakat-eligible for Muslim donors [3]."
+        "Maintains a 100.0% program expense Ratio based on FY2024 data",
+        "Holds a full year of working capital to ensure stability",
+        "Addresses extreme poverty and urgent needs for displaced children"
       ],
-      "summary": "This organization provides food and shelter to orphans in Syria through sponsorship and seasonal projects [1]. While it reports spending all revenue on programs, its financial records are several years out of date [2][4]."
+      "summary": "The organization operates programs including orphan sponsorship and seasonal assistance projects for children in need [1]. In FY2024, the charity reported a 100.0% program expense Ratio, indicating that all reported spending went toward its mission [2]. The group maintains 12.0 months of working capital to support its ongoing operations [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2025-01-15",
-          "claim": "returning displaced Syrian orphans to their home cities",
+          "claim": "providing food and shelter",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "returning displaced Syrian orphans to their home cities",
+          "quote": "Providing food and shelter to displaced orphans in Syria",
           "source_name": "Charity Website - Support",
           "source_type": "website",
           "source_url": "https://yateemfoundationusa.org/our-support/"
         },
         {
           "access_date": "2025-01-15",
-          "claim": "100.0% program expense ratio",
+          "claim": "program expense ratio of 100.0%",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Program Expense Ratio: 100.0%",
+          "quote": "Program Expense Ratio: 100%",
           "source_name": "Form 990 (2025)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/993373484"
         },
         {
           "access_date": "2025-01-15",
-          "claim": "confirmed as zakat-eligible",
+          "claim": "12.0 months of working capital",
           "confidence": 0.95,
           "id": "[3]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "Charity Website - Zakat",
-          "source_type": "website",
-          "source_url": "https://yateemfoundationusa.org/our-support/"
-        },
-        {
-          "access_date": "2025-01-15",
-          "claim": "Working capital levels are unknown",
-          "confidence": 0.85,
-          "id": "[4]",
-          "quote": "Working Capital: 0.0 months",
+          "quote": "Working Capital Ratio (months): 12.0",
           "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/993373484#financials"
         }
       ],
-      "amal_score_rationale": "The charity receives an average assessment because it addresses a critical need with efficient spending, but it is significantly behind on public financial reporting. This lack of current data creates a transparency risk for donors.",
+      "amal_score_rationale": "This charity shows a positive commitment to its mission with efficient spending and strong financial health, though it has a shorter history than some other organizations.",
       "amal_scores": {
-        "amal_score": 57,
+        "amal_score": 66,
         "confidence_scores": {
-          "alignment": 37,
-          "data_confidence": 0.26,
-          "impact": 22
+          "alignment": 33,
+          "data_confidence": 0.6,
+          "impact": 35
         },
-        "confidence_tier": "LOW",
-        "impact_tier": "AVERAGE",
-        "wallet_tag": "ZAKAT-ELIGIBLE"
+        "confidence_tier": "MEDIUM",
+        "impact_tier": "ABOVE_AVERAGE",
+        "wallet_tag": "SADAQAH-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Outdated Financial Transparency",
+          "area": "Transparency and Reporting",
           "citation_ids": [
-            "[2]",
-            "[4]"
+            "[3]"
           ],
-          "context": "No financial filings <cite id=\"2\">newer than FY2023 are available</cite>. Donors should treat this 3-year-old financial picture with caution as it may not reflect current health."
+          "context": "The charity currently <cite id=\"3\">meets 0 out of 20 BBB standards</cite> and lacks detailed beneficiary counts."
         },
         {
-          "area": "High Cost Per Beneficiary",
+          "area": "Strategic Documentation",
           "citation_ids": [
             "[2]"
           ],
-          "context": "The estimated <cite id=\"2\">cost of $952.38 per beneficiary</cite> is relatively high, suggesting a need for improved operational efficiency."
-        },
-        {
-          "area": "Limited Outcome Evidence",
-          "citation_ids": [
-            "[4]"
-          ],
-          "context": "The organization lacks <cite id=\"4\">verified evidence and outcomes</cite> tracked over a multi-year period."
+          "context": "The organization has a <cite id=\"2\">developing theory of change</cite> that requires more explicit causal pathways."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "citation_ids": [
+          "[3]"
+        ],
+        "effectiveness_status": "FAIL",
+        "finances_status": "FAIL",
+        "governance_status": "FAIL",
         "meets_all_standards": false,
         "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is available for this organization."
+        "standards_not_met": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "summary": "The charity does not currently meet any of the 20 BBB Standards for Charity Accountability."
       },
       "case_against": {
         "citation_ids": [
           "[2]",
-          "[4]"
+          "[3]"
         ],
-        "mitigation_notes": "The organization maintains a direct service model which may explain higher costs due to intensive care requirements.",
+        "mitigation_notes": "The organization maintains a full year of reserves to mitigate risks associated with its early growth stage.",
         "risk_factors": [
-          "<cite id=\"2\">No financial filings newer than FY2023</cite>",
-          "<cite id=\"2\">High cost of $952.38 per beneficiary</cite>",
-          "<cite id=\"4\">Working capital levels are unknown</cite>"
+          "<cite id=\"2\">Founded in 2024</cite>, leading to limited historical data",
+          "<cite id=\"3\">Meets 0 out of 20 BBB standards</cite> for charity accountability"
         ],
-        "summary": "The primary concern is the <cite id=\"2\">three-year gap in financial reporting</cite>, which prevents a current assessment of stability. Additionally, the <cite id=\"2\">high per-beneficiary cost</cite> may limit the total number of children helped."
+        "summary": "The primary concerns involve the <cite id=\"2\">short two-year track record</cite> and a lack of transparency regarding <cite id=\"3\">BBB accountability standards</cite>."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 5,
-          "rating": 3,
-          "website": 4
+          "rating": 5,
+          "website": 5
         },
-        "high_confidence_count": 9,
-        "total_count": 12,
-        "unique_sources": 4
+        "high_confidence_count": 10,
+        "total_count": 15,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial data is 3 years old",
+        "data_freshness": "Data from FY2024/2025",
         "data_gaps": [
-          "Missing recent financials",
-          "No third-party impact evaluation"
+          "Missing governance details",
+          "No multi-year revenue data"
         ],
-        "level": "LOW",
-        "notes": "Low confidence due to outdated filings and limited transparency.",
-        "score": 26,
+        "level": "MODERATE",
+        "notes": "Financial efficiency is clear, but organizational transparency is emerging.",
+        "score": 60,
         "sources_used": [
           "Form 990",
-          "Website",
-          "Charity Navigator"
+          "Charity Navigator",
+          "Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 26,
-        "form_990_tax_year": 2023,
+        "confidence_score": 60,
+        "form_990_tax_year": 2024,
         "known_gaps": [
-          "Missing 2024 and 2025 financials",
-          "No independent audit available",
-          "No board member list"
+          "Missing board member list",
+          "No BBB accreditation",
+          ""
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 4,
+        "total_citations": 15,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "explanation": "The organization shows <cite id=\"3\">strong alignment for Muslim donors</cite> by accepting zakat and serving <cite id=\"3\">eligible asnaf categories</cite> in high-urgency conflict zones.",
-          "improvement": "The foundation could <cite id=\"3\">clarify its zakat allocation policy</cite> to provide donors more detail on how funds are partitioned."
+          "explanation": "The charity has a <cite id=\"1\">medium fit for Muslim donors</cite>. It addresses <cite id=\"1\">extreme poverty</cite> in a niche, underserved space.",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[2]",
+            "[3]"
           ],
-          "explanation": "Credibility is currently limited by <cite id=\"2\">outdated tax filings from 2023</cite> and a lack of recent independent audits. While the charity <cite id=\"1\">clearly defines its mission</cite>, the low data confidence makes it difficult to verify current governance.",
-          "improvement": "The charity should <cite id=\"2\">publish current reserve levels</cite> and update its public financial filings to the most recent fiscal year."
+          "explanation": "The charity is an <cite id=\"2\">emerging organization founded in 2024</cite> with a baseline board governance structure. While it lacks a <cite id=\"3\">full Charity Navigator rating</cite>, its financial filings show a stable reserve of <cite id=\"3\">12 months of capital</cite>.",
+          "improvement": "To strengthen credibility, the charity should <cite id=\"3\">pursue BBB Wise Giving Alliance accreditation</cite> and publish a list of its board members."
         },
         "impact": {
           "citation_ids": [
             "[1]",
-            "[2]",
-            "[4]"
+            "[2]"
           ],
-          "explanation": "The charity demonstrates impact through <cite id=\"1\">direct service delivery</cite> and a <cite id=\"2\">100.0% program expense ratio</cite>. However, the <cite id=\"2\">$952.38 cost per beneficiary</cite> suggests that aid delivery is expensive relative to the scale of revenue.",
-          "improvement": "Impact measurement would benefit from <cite id=\"4\">tracking outcomes over at least three years</cite> and seeking external evaluation."
+          "explanation": "Operations are highly efficient with a <cite id=\"2\">100.0% program expense ratio</cite> and a <cite id=\"1\">direct service delivery model</cite> for orphans. Evidence of outcomes is <cite id=\"2\">verified</cite>, though specific cost-per-beneficiary data is not yet public.",
+          "improvement": "The charity could improve by <cite id=\"1\">publishing annual beneficiary counts</cite> to allow for a more detailed assessment of cost-effectiveness."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Unverified emerging org baseline",
+        "evidence_rigor": "Grade C - Verified outcomes with developing theory of change",
         "geographic_focus": [
           "Syria",
           "T\u00fcrkiye"
@@ -643,32 +659,31 @@
         "giving_style": "Direct service",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)"
+          ""
         ],
-        "zakat_status": "ZAKAT-ELIGIBLE"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": null,
-        "annual_revenue": 100000,
+        "admin_ratio": 0,
+        "annual_revenue": null,
         "citation_ids": [
           "[2]",
-          "[4]"
+          "[3]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0,
+        "fundraising_ratio": null,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
         "peer_program_ratio_median": null,
         "program_expense_ratio": 1,
-        "reserves_months": 0,
+        "reserves_months": 12,
         "revenue_cagr_3yr": null,
         "yearly_financials": [
           {
-            "expenses": 100000,
+            "expenses": 0,
             "net_assets": 0,
-            "revenue": 100000,
-            "year": 2023
+            "revenue": 0,
+            "year": 2024
           }
         ]
       },
@@ -687,62 +702,65 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Yateem Foundation USA focuses on returning displaced Syrian orphans to their home cities through direct aid.",
+      "headline": "Yateem Foundation USA focuses on providing food and shelter to displaced Syrian orphans to help them return to their home cities.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize direct aid to Syrian orphans and are comfortable supporting a smaller, emerging organization with a 100.0% program expense claim.",
+        "best_for_summary": "Best for donors who want to support direct, high-efficiency relief for Syrian orphans and are comfortable with a younger, emerging organization.",
         "citation_ids": [
+          "[1]",
           "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat through orphan sponsorship",
-          "Care about the specific cause of displaced Syrian children",
-          "Value a 100% donation policy where no funds go to overhead"
+          "Want to fund direct shelter and food for displaced children",
+          "Prioritize high program expense ratios where every dollar reaches the field",
+          "Value niche humanitarian work in the Syria-T\u00fcrkiye border region"
         ],
         "giving_considerations": [
-          "Financial data is three years old and may not be current",
-          "The organization has a small revenue base of $100,000",
-          "High cost per beneficiary suggests intensive but limited-reach care"
+          "The organization is in a growth phase with a short track record",
+          "Donations are currently classified as Sadaqah rather than Zakat",
+          "Limited public data is available regarding board governance"
         ],
-        "not_ideal_for": "Donors who require up-to-date audited financials or those seeking large-scale organizations with high data transparency ratings."
+        "not_ideal_for": "Donors who require Zakat-verified status or those who prefer large, multi-decade institutions with full BBB accreditation."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]"
+          "[1]",
+          "[2]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects an emerging organization with unverified outcomes and no external evaluations.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
+        "evidence_grade_explanation": "Grade C reflects verified outcomes but a developing theory of change and missing cost-per-beneficiary metrics.",
+        "external_evaluations": [
+          "None available"
+        ],
+        "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The charity provides direct shelter and food to orphans to enable their return to home cities, though the causal pathway is not explicitly documented.",
-        "why_evidence_matters": "Evidence ensures that the high cost of care is translating into long-term stability for the orphans served."
+        "theory_of_change_summary": "The charity provides direct shelter and food to orphans to enable their eventual return to their home cities.",
+        "why_evidence_matters": "Evidence ensures that the construction of orphan villages leads to long-term stability for displaced children."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[4]"
+          "[2]"
         ],
-        "founded_year": null,
+        "founded_year": 2024,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": null,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a small revenue base and high humanitarian need in Syria, the charity can absorb significantly more funding.",
+        "room_for_funding_explanation": "As a young organization addressing a massive displacement crisis, there is significant capacity to scale operations.",
         "strategic_priorities": [
           "Village construction for orphans",
-          "Expanding seasonal food projects"
+          "Expanding seasonal food assistance"
         ],
         "years_operating": 2
       },
       "organizational_capacity": {
         "board_size": null,
-        "ceo_compensation": null,
+        "ceo_compensation": 100000,
         "ceo_compensation_pct_revenue": null,
         "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[1]"
         ],
         "employees_count": null,
         "geographic_reach": "Syria and T\u00fcrkiye",
@@ -758,21 +776,25 @@
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Focuses specifically on <cite id=\"1\">returning orphans to their original cities</cite> rather than just general refugee aid.",
-        "peer_group": "Syrian Relief Organizations",
+        "differentiator": "Distinguished by its <cite id=\"1\">specific focus on village construction</cite> for Syrian orphans in T\u00fcrkiye.",
+        "peer_group": "International Orphan Relief",
         "similar_orgs": [
-          "Helping Hand for Relief",
-          "Muslim Aid USA"
+          "Helping Hand for Relief and Development",
+          "Islamic Relief USA"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Larger global scale and more recent financial data",
+          "differentiator": "Larger global footprint",
           "name": "Helping Hand for Relief"
         },
         {
-          "differentiator": "Broader humanitarian focus beyond orphans",
-          "name": "Muslim Aid USA"
+          "differentiator": "Focus on healthcare vs shelter",
+          "name": "Syrian American Medical Society"
+        },
+        {
+          "differentiator": "Focus on education and innovation",
+          "name": "Karam Foundation"
         }
       ],
       "strengths": [
@@ -780,31 +802,31 @@
           "citation_ids": [
             "[2]"
           ],
-          "detail": "The organization reports a <cite id=\"2\">100.0% program expense ratio</cite>, indicating that every dollar goes toward orphan care.",
-          "point": "Maximum Program Spending"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "The charity serves <cite id=\"1\">displaced children in conflict zones</cite>, addressing extreme poverty and displacement.",
-          "point": "High-Urgency Mission"
+          "detail": "The charity reported a <cite id=\"2\">100.0% program expense ratio</cite> in FY2024, ensuring all funds are used for direct service delivery.",
+          "point": "Maximum Program Efficiency"
         },
         {
           "citation_ids": [
             "[3]"
           ],
-          "detail": "The foundation is <cite id=\"3\">confirmed as zakat-eligible</cite>, specifically serving the masakin (needy) and fuqara (poor).",
-          "point": "Zakat Eligibility"
+          "detail": "The organization holds <cite id=\"3\">12.0 months of working capital</cite>, providing a significant safety net for its international programs.",
+          "point": "Strong Financial Reserves"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "The charity provides <cite id=\"1\">direct services like food and shelter</cite> to vulnerable orphans in high-conflict zones.",
+          "point": "Direct Humanitarian Impact"
         }
       ],
       "strengths_deep_dive": [
-        "Yateem Foundation USA operates in a niche but critical space by focusing on the repatriation and stabilization of Syrian orphans. Their <cite id=\"1\">village construction projects</cite> and <cite id=\"1\">orphanage in T\u00fcrkiye</cite> provide tangible infrastructure for child welfare. Financially, the charity reports <cite id=\"4\">fundraising efficiency of $0.00 per $1 raised</cite>, which aligns with their claim of directing all revenue to programs. This lean model is attractive to donors who want their full contribution to reach the field, though it is supported by <cite id=\"2\">older financial data from 2023</cite>."
+        "Yateem Foundation USA demonstrates a commitment to direct aid by maintaining a <cite id=\"2\">100.0% program expense ratio</cite> in its most recent filings. This means that every dollar reported in its expenses was used for <cite id=\"1\">orphanage operations in T\u00fcrkiye</cite> and village construction for Syrian orphans. Furthermore, the charity's <cite id=\"3\">12.0 months of operating reserves</cite> is a notable strength for a young organization, as it allows for consistent support to sponsored children even during fundraising fluctuations."
       ],
-      "summary": "Yateem Foundation USA is a humanitarian organization dedicated to supporting Syrian orphans displaced by conflict. The charity focuses on <cite id=\"1\">returning displaced Syrian orphans to their home cities</cite> through direct aid and shelter. Its primary operations include <cite id=\"1\">orphan sponsorship and seasonal assistance projects</cite> like Ramadan food baskets. Based on available data, the organization reported <cite id=\"2\">$100,000 in total revenue</cite>. A defining feature of its financial reporting is a <cite id=\"2\">100.0% program expense ratio</cite>, suggesting that all funds are directed toward aid delivery. However, donors should exercise significant caution. <cite id=\"2\">No financial filings newer than FY2023 are available</cite>, meaning this three-year-old financial picture may not reflect current operations. The organization maintains a <cite id=\"1\">direct service delivery model</cite>, which includes village construction for orphans and <cite id=\"1\">operating an orphanage in T\u00fcrkiye</cite>. While the mission addresses a high-urgency cause, the lack of recent public filings raises questions about current accountability and growth.",
+      "summary": "Yateem Foundation USA is a humanitarian organization dedicated to supporting Syrian orphans displaced by conflict. The charity focuses on <cite id=\"1\">providing food and shelter</cite> to help these children eventually return to their home cities. Based in Haverford, the organization manages several critical initiatives, including <cite id=\"1\">orphan sponsorship and seasonal assistance projects</cite> like Ramadan food baskets. Their work extends across <cite id=\"1\">Syria and T\u00fcrkiye</cite>, where they operate an orphanage and build villages specifically designed for Syrian orphans. In FY2024, the organization reported a <cite id=\"2\">program expense ratio of 100.0%</cite>, meaning all reported spending was directed toward its core mission. This high ratio is paired with a resilient financial position, as the charity maintains <cite id=\"3\">12.0 months of working capital</cite> to ensure stability in its operations. While the organization is in its early stages, having been <cite id=\"2\">founded in 2024</cite>, it addresses the urgent needs of populations facing extreme poverty and displacement. Donors should note that while the charity serves Muslim communities, it is currently <cite id=\"1\">Sadaqah-eligible</cite> rather than Zakat-verified.",
       "zakat_guidance": {
-        "classification": "masakin",
-        "eligibility": "ZAKAT-ELIGIBLE"
+        "classification": "",
+        "eligibility": "SADAQAH-ELIGIBLE"
       }
     }
   }

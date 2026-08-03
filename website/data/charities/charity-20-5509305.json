@@ -34,14 +34,14 @@
   },
   "awards": null,
   "financials": {
-    "totalRevenue": 93638,
-    "totalExpenses": 97461,
-    "programExpenses": null,
+    "totalRevenue": 94382,
+    "totalExpenses": 102247,
+    "programExpenses": 100783,
     "adminExpenses": null,
     "fundraisingExpenses": null,
-    "programExpenseRatio": null,
-    "fiscalYear": 2023,
-    "dataSource": null,
+    "programExpenseRatio": "0.9857",
+    "fiscalYear": 2024,
+    "dataSource": "irs_990",
     "totalAssets": 73097,
     "totalLiabilities": 0,
     "netAssets": null,
@@ -60,12 +60,21 @@
     "geographicCoverage": null
   },
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 21:05:42",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-08-03 12:20:06",
   "sourceAttribution": {
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.mubany.org/about-us",
+      "source_url": "https://goodmeasuregiving.org/charity/20-5509305/",
       "timestamp": "2026-07-23T20:31:40",
       "value": false
     },
@@ -84,14 +93,23 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-23T20:36:40",
+      "timestamp": "2026-08-03T12:19:11",
       "value": "S46"
     },
+    "program_expenses": {
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 100783
+    },
+    "total_expenses": {
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 102247
+    },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-23T20:36:40",
-      "value": 93638
+      "method": "selection",
+      "source_name": "irs_990",
+      "value": 94382
     },
     "working_capital_months": {
       "derived_from": [
@@ -99,9 +117,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
-      "timestamp": "2026-07-23T20:36:40",
+      "timestamp": "2026-08-03T12:19:11",
       "value": 9
     }
   },
@@ -123,7 +142,7 @@
   "grantsData": null,
   "evaluationTrack": "RESEARCH_POLICY",
   "foundedYear": 2006,
-  "scoreSummary": "Muslim Bar Association of New Yorkinc shows good alignment and moderate impact (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+  "scoreSummary": "Muslim Bar Association of New York shows good alignment and good impact. Evidence score may reflect limited reporting capacity, not program weakness.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -137,8 +156,9 @@
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": 0,
     "evaluationSources": [
-      "UNCORROBORATED: Candid/GuideStar",
-      "UNCORROBORATED: Founding Member of Muslim American Judicial Advisory Council (MAJAC) (Muslim Bar Association of New York (in collaboration with Capital Area Muslim Bar Association and America Indivisible))"
+      "UNCORROBORATED: Good Measure Giving",
+      "UNCORROBORATED: Founding Member of Muslim American Judicial Advisory Council (MAJAC) (Muslim American Judicial Advisory Council (MAJAC))",
+      "UNCORROBORATED: Recognized Regional Bar Association (National Association of Muslim Lawyers (NAML))"
     ],
     "receivesFoundationGrants": null
   },
@@ -153,8 +173,8 @@
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Moderate",
-      "financial_health": "Limited",
+      "evidence": "Limited",
+      "financial_health": "Strong",
       "donor_fit": "Moderate",
       "risk": "Moderate"
     },
@@ -165,24 +185,48 @@
   },
   "keyConcerns": [
     {
-      "type": "risk_deduction",
-      "severity": "medium",
-      "headline": "Latest available financial filing is FY2023 (3 years old)",
-      "detail": "Source: ProPublica 990",
-      "data_points": {}
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Figures are from the FY2024 Form 990, which is newer than the FY2023 rating data",
+      "detail": "The IRS filing reports $94,382 in revenue for FY2024; Charity Navigator and ProPublica have not yet published past FY2023 ($93,638). Ratings elsewhere on this page may still reflect the older year.",
+      "data_points": {
+        "canonical_source": "irs_990",
+        "canonical_value": 94382,
+        "field": "income_statement",
+        "fiscal_year": 2024,
+        "other_fiscal_year": 2023,
+        "other_source": "propublica",
+        "other_value": 93638,
+        "reason": "primary_filing_is_newer"
+      }
+    },
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 9,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "irs_990",
+        "reason": "derived_from_a_different_filing_year"
+      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "20-5509305",
     "charity_name": "Muslim Bar Association of New York",
-    "amal_score": 48,
+    "amal_score": 58,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:18:56",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 30,
-      "data_confidence": 0.26,
-      "impact": 20
+      "data_confidence": 0.3,
+      "impact": 28
     },
     "score_details": {
       "alignment": {
@@ -225,7 +269,7 @@
             "status": "full"
           },
           {
-            "evidence": "Revenue: $93,638 (5/5 funding gap)",
+            "evidence": "Revenue: $94,382 (5/5 funding gap)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Funding Gap",
@@ -240,11 +284,11 @@
       },
       "data_confidence": {
         "badge": "LOW",
-        "data_age_years": 3,
+        "data_age_years": 2,
         "data_quality_label": "MODERATE",
         "data_quality_value": 0.67,
-        "overall": 0.26,
-        "recency_factor": 0.85,
+        "overall": 0.3,
+        "recency_factor": 1,
         "transparency_label": "NONE",
         "transparency_value": 0,
         "verification_tier": "BASIC",
@@ -253,12 +297,12 @@
       "impact": {
         "components": [
           {
-            "evidence": "Insufficient data for cost-per-beneficiary calculation",
+            "evidence": "No beneficiary data available for cost-per-beneficiary scoring; high program ratio (\u226585%) suggests efficient delivery",
             "improvement_suggestion": "Publish beneficiary counts consistently so cost-effectiveness can be assessed.",
-            "improvement_value": 3,
+            "improvement_value": 0,
             "name": "Cost Per Beneficiary",
             "possible": 7,
-            "scored": 0,
+            "scored": 3,
             "status": "missing"
           },
           {
@@ -280,22 +324,22 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: unknown",
+            "evidence": "Program expense ratio: 99%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 7,
-            "scored": 0,
-            "status": "missing"
+            "scored": 7,
+            "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: UNVERIFIED (emerging org baseline)",
+            "evidence": "Evidence & outcomes: REPORTED (emerging org baseline)",
             "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
             "improvement_value": 5,
             "name": "Evidence & Outcomes",
             "possible": 9,
-            "scored": 4,
-            "status": "partial"
+            "scored": 2,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: BASIC (emerging org baseline)",
@@ -307,7 +351,7 @@
             "status": "partial"
           },
           {
-            "evidence": "Board governance: MINIMAL (4 members)",
+            "evidence": "Board governance: baseline (unknown members, emerging org)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
@@ -319,17 +363,11 @@
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 20/50",
+        "rationale": "Delivery: capacity building; Impact 28/50",
         "rubric_archetype": "SYSTEMIC_CHANGE",
-        "score": 20
+        "score": 28
       },
       "judge_issues": [
-        {
-          "field": "financial.program_expense_ratio",
-          "judge": "data_completeness",
-          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
-          "severity": "warning"
-        },
         {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
@@ -361,117 +399,108 @@
           "severity": "warning"
         }
       ],
-      "risk_deduction": -2,
+      "risk_deduction": 0,
       "risks": {
-        "overall_risk_level": "MODERATE",
-        "risk_summary": "1 risk(s) identified.",
-        "risks": [
-          {
-            "category": "operational",
-            "data_source": "ProPublica 990",
-            "description": "Latest available financial filing is FY2023 (3 years old)",
-            "mitigation": null,
-            "severity": "medium"
-          }
-        ],
-        "total_deduction": -2
+        "overall_risk_level": "LOW",
+        "risk_summary": "No significant risks identified.",
+        "risks": [],
+        "total_deduction": 0
       },
-      "score_summary": "Muslim Bar Association of New Yorkinc shows good alignment and moderate impact (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Muslim Bar Association of New York shows good alignment and good impact. Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No mention of \"zakat\" or \"zakat donations\" on the Muslim Bar Association of New York's website or related search results. The organization's mission and activities focus on organizing and representing Muslim attorneys, professional development, and advocacy for the Muslim community in New York and the US, rather than direct charitable distribution to zakat-eligible recipients. (Source: https://www.mubany.org/about-us)",
+        "claim_evidence": "No mention of \"zakat\" or \"zakat donations\" on the Muslim Bar Association of New York's website or related search results. The organization's mission and activities focus on organizing and representing Muslim attorneys, professional development, and advocacy for the Muslim community in New York and the US, rather than direct charitable distribution to zakat-eligible recipients. (Source: https://goodmeasuregiving.org/charity/20-5509305/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization holds 9.0 months of working capital.",
+          "claim": "There is limited third-party evidence available to measure the direct effectiveness of these services.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/205509305#financials"
         },
         {
-          "claim": "The mission is to represent Muslim attorneys in the New York area.",
+          "claim": "The organization works to represent Muslim attorneys in the New York area and focuses on capacity building through career support.",
           "id": "[2]",
           "source_name": "Charity Website - About",
           "source_url": "https://mubany.org/about-us"
         },
         {
-          "claim": "Programs include professional development, networking, and career support.",
+          "claim": "The group aims to improve the position of the Muslim community in the legal field and fills an underserved space.",
           "id": "[3]",
           "source_name": "bylaws",
           "source_url": "https://www.mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
         },
         {
-          "claim": "The organization has specific procedures for endorsing judicial or political positions.",
+          "claim": "The association provides a platform for endorsing candidates for judicial positions.",
           "id": "[7]",
           "source_name": "MuBANY's Policy and Procedures for Judicial or Senior Political Position Endorsements",
           "source_url": "https://mubany.org/sites/default/files/content-files/MuBANY%20Endorsement%20Policy%20and%20Procedures%20for%20Judicial%20or%20Senior%20Political%20Positions.pdf"
         },
         {
-          "claim": "The latest available financial filing is from fiscal year 2023, showing total revenue of $93,638.",
+          "claim": "In fiscal year 2024, the group managed Total Revenue of $94,382 and maintained a Program expense ratio of 98.6%.",
           "id": "[8]",
           "source_name": "Form 990 (2023)",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305"
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305",
+          "\u7167source_name": "Form 990 (2023)"
         }
       ],
-      "amal_score_rationale": "This organization is rated below average because its public financial data is three years out of date. While it has enough cash on hand to operate, the lack of current reporting raises significant accountability questions.",
+      "amal_score_rationale": "This organization shows a balanced profile with very efficient spending on its programs, though it lacks detailed public reporting on the long-term results of its advocacy work.",
       "areas_for_improvement": [
-        "Financial transparency is a major concern as the latest public records are from 2023 [8]",
-        "Lack of recent data makes it difficult to verify how much money currently goes to programs [1]",
-        "Limited evidence is available to show the long-term impact of its advocacy work [8]"
+        "Limited public data on specific program outcomes and evidence of impact",
+        "Narrow geographic focus primarily serving the New York area"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves a specific niche for Muslim legal professionals in the New York area [2]. It is eligible for sadaqah but does not meet the criteria for zakat, and its primary focus is on advocacy and networking within the legal field [3, 7].",
-        "impact": "The group focuses on building professional capacity for lawyers rather than providing direct services to the public [2, 3]. While it reported total revenue of $93,638 in 2023, the lack of recent filings makes it impossible to track current spending efficiency or program outcomes [1, 8]."
+        "alignment": "The association serves a specific niche by providing a platform for Muslim lawyers and endorsing candidates for judicial positions [7]. While it fills an underserved space in the legal field, its alignment with general donor interests is moderate due to its specialized focus on professional advocacy [3].",
+        "impact": "The group focuses on capacity building for legal professionals through job boards and career support [2]. It maintains a Program expense ratio of 98.6%, meaning nearly all spending goes toward its mission [8]. However, there is limited third-party evidence available to measure the direct effectiveness of these services [1]."
       },
-      "headline": "The Muslim Bar Association of New York faces transparency challenges due to outdated financial records.",
+      "headline": "The Muslim Bar Association of New York supports legal professionals through career development and advocacy for the Muslim community.",
       "strengths": [
-        "holds 9.0 months of working capital to cover ongoing operations [1]",
-        "Provides specialized career support and a job board for legal professionals [3]",
-        "Offers a formal process for endorsing judicial and political candidates [7]"
+        "High Program expense ratio of 98.6% in FY2024",
+        "Maintains 9.0 months of working capital for financial stability"
       ],
-      "summary": "The Muslim Bar Association of New York (MuBANY) serves Muslim attorneys through professional networking and career support [2, 3]. However, no financial filings newer than FY2023 are available, meaning donors should treat this three-year-old financial picture with caution [8]."
+      "summary": "The organization works to represent Muslim attorneys in the New York area while improving the position of the Muslim community in the legal field [2][3]. In fiscal year 2024, the group managed Total Revenue of $94,382 to fund its networking and professional support programs [8]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "9.0 months of working capital",
-          "confidence": 0.9,
+          "claim": "in public filings",
+          "confidence": 0.7,
           "id": "[1]",
-          "quote": "Working Capital Ratio (months): 9.0",
-          "source_name": "Charity Navigator - Financials",
+          "quote": "Profile information for Muslim Bar Association of New York",
+          "source_name": "Charity Navigator - Profile Metadata",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/205509305#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "organizing and representing Muslim attorneys",
-          "confidence": 0.95,
+          "claim": "founded in 2006",
+          "confidence": 0.9,
           "id": "[2]",
-          "quote": "TO ORGANIZE AND REPRESENT MUSLIM ATTORNEYS IN THE NEW YORK AREA",
-          "source_name": "MuBANY - About Us",
+          "quote": "To organize and represent Muslim attorneys in the New York area",
+          "source_name": "Charity Website - About Us",
           "source_type": "website",
           "source_url": "https://mubany.org/about-us"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "professional development, networking, and a job board",
-          "confidence": 0.9,
+          "claim": "MuBANY Bylaws",
+          "confidence": 0.95,
           "id": "[3]",
-          "quote": "Professional Development and Networking, Job Board and Career Support",
-          "source_name": "MuBANY Bylaws",
+          "quote": "MuBANY Bylaws - as adopted March 2019",
+          "source_name": "MuBANY Bylaws Document",
           "source_type": "website",
           "source_url": "https://www.mubany.org/sites/default/files/content-files/MuBANY%20Bylaws%20-%20as%20adopted%20March%202019.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "formal process for endorsing judicial and political candidates",
-          "confidence": 1,
+          "claim": "Judicial or Senior Political Position Endorsements",
+          "confidence": 0.9,
           "id": "[7]",
           "quote": "Policy and Procedures for Judicial or Senior Political Position Endorsements",
           "source_name": "MuBANY Endorsement Policy",
@@ -480,166 +509,160 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $93,638",
+          "claim": "total revenue of $94,382",
           "confidence": 1,
           "id": "[8]",
-          "quote": "Total Revenue: $93,638",
+          "quote": "Total Revenue $94,382; Total Assets $73,097",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/205509305"
         }
       ],
-      "amal_score_rationale": "This organization is rated below average because its public financial data is three years out of date. While it has enough cash on hand to operate, the lack of current reporting raises significant accountability questions.",
+      "amal_score_rationale": "This organization shows a balanced profile with very efficient spending on its programs, though it lacks detailed public reporting on the long-term results of its advocacy work.",
       "amal_scores": {
-        "amal_score": 48,
+        "amal_score": 58,
         "confidence_scores": {
           "alignment": 30,
-          "data_confidence": 0.26,
-          "impact": 20
+          "data_confidence": 0.3,
+          "impact": 28
         },
         "confidence_tier": "LOW",
-        "impact_tier": "BELOW_AVERAGE",
+        "impact_tier": "AVERAGE",
         "wallet_tag": "SADAQAH-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Financial Transparency and Reporting",
+          "area": "Limited outcome tracking and evaluation",
           "citation_ids": [
-            "[1]",
-            "[8]"
+            "[1]"
           ],
-          "context": "The <cite id=\"8\">latest available financials are from FY2023</cite>, and the <cite id=\"1\">program expense ratio remains unknown</cite>, making it impossible to verify spending efficiency."
+          "context": "The organization does not publish specific outcome metrics or third-party impact assessments regarding its professional programs <cite id=\"1\">in public filings</cite>."
         },
         {
-          "area": "Impact Measurement",
+          "area": "Narrow geographic and population focus",
           "citation_ids": [
-            "[8]"
+            "[2]"
           ],
-          "context": "There is <cite id=\"8\">insufficient data for cost-per-beneficiary calculations</cite> and no external evaluations to prove the effectiveness of its advocacy."
+          "context": "Programming primarily targets legal professionals within the <cite id=\"2\">New York metropolitan area</cite>."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "NOT_EVALUATED",
+        "finances_status": "NOT_EVALUATED",
+        "governance_status": "NOT_EVALUATED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is available for this organization."
+        "summary": "Not currently evaluated by BBB Wise Giving Alliance."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[8]"
         ],
-        "mitigation_notes": "The organization has existed since 2006, suggesting some level of community-sustained stability despite reporting gaps.",
+        "mitigation_notes": "The association operates with low overhead and holds <cite id=\"8\">9.0 months of working capital</cite> to maintain financial stability.",
         "risk_factors": [
-          "<cite id=\"8\">No financial filings newer than FY2023</cite>",
-          "<cite id=\"1\">Unknown program expense ratio</cite>",
-          "<cite id=\"8\">Minimal board governance with only 4 members</cite>"
+          "<cite id=\"8\">Modest annual budget under $100,000</cite> limits programming scope",
+          "<cite id=\"1\">Lack of published quantitative outcome tracking</cite>"
         ],
-        "summary": "The primary concerns involve <cite id=\"8\">outdated financial records</cite> and a lack of transparency regarding <cite id=\"1\">how donations are spent on programs</cite>."
+        "summary": "Key limiting factors include small organizational scale, lack of independent impact evaluations, and low overall data transparency."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 2,
-          "website": 6
+          "form990": 5,
+          "rating": 1,
+          "website": 4
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
+        "high_confidence_count": 8,
+        "total_count": 10,
         "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financial data from 2023",
+        "data_freshness": "Most data from FY2023 and FY2024 filings",
         "data_gaps": [
-          "Missing 2024 expense breakdown",
-          "No program ratio available"
+          "Missing 2024 detailed Form 990",
+          "No third-party impact evaluation"
         ],
         "level": "LOW",
-        "notes": "Low confidence due to outdated filings and lack of expense transparency.",
-        "score": 26,
+        "notes": "Low data confidence due to limited third-party transparency and lack of outcome tracking",
+        "score": 30,
         "sources_used": [
           "Form 990",
-          "Charity Navigator",
-          "Website"
+          "Charity Website",
+          "Charity Navigator Metadata"
         ]
       },
       "data_confidence": {
-        "confidence_score": 26,
+        "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 expense data",
-          "Unknown program expense ratio",
-          "No external impact evaluation"
+          "No independent financial audit",
+          "No published beneficiary tracking"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 10,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[1]",
             "[2]"
           ],
-          "explanation": "This group serves a specific niche for Muslim legal professionals in the New York area [2]. It is eligible for sadaqah but does not meet the criteria for zakat, and its primary focus is on advocacy and networking within the legal field [3, 7].",
-          "improvement": "To better serve Muslim donors, the organization could <cite id=\"1\">clearly state its sadaqah-only status</cite> on a dedicated giving page."
+          "explanation": "The organization serves a focused community niche for Muslim legal professionals in New York as a <cite id=\"2\">registered bar association</cite>.",
+          "improvement": "Clarify funding policies and community outreach initiatives on its public website."
         },
         "credibility": {
           "citation_ids": [
             "[8]"
           ],
-          "explanation": "Credibility is constrained by <cite id=\"8\">low data confidence</cite> and a board of only <cite id=\"8\">four members</cite>, which is minimal for an organization of this age. No financial filings newer than FY2023 are available, raising questions about current accountability.",
-          "improvement": "The organization should <cite id=\"8\">publish updated financial audits</cite> and expand its board to improve oversight."
+          "explanation": "Credibility disclosures are constrained by low overall data confidence. The organization provides basic filings, including <cite id=\"8\">Form 990 tax records showing $73,097 in total assets</cite>, but lacks independent third-party accreditation and detailed board disclosures.",
+          "improvement": "To strengthen credibility, the association could publish independent audit reports and provide transparent board governance details publicly."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
             "[8]"
           ],
-          "explanation": "Impact is difficult to measure because the <cite id=\"1\">program expense ratio is unknown</cite> and there is <cite id=\"8\">no consistent tracking of beneficiary counts</cite>.",
-          "improvement": "MuBANY should <cite id=\"8\">publish annual impact reports</cite> that detail the number of attorneys served and the outcomes of its advocacy efforts."
+          "explanation": "Impact delivery relies on capacity building and advocacy, supported by an efficient <cite id=\"8\">program expense data unavailable in FY2024</cite>. However, cost-per-beneficiary metrics remain untracked.",
+          "improvement": "Publish beneficiary counts consistently so that cost-effectiveness across professional and mentorship programs can be evaluated."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "ADVOCACY & PROFESSIONAL DEVELOPMENT",
+        "cause_area": "ADVOCACY_AND_LEGAL_SERVICES",
         "citation_ids": [
-          "[1]",
+          "[2]",
           "[8]"
         ],
-        "evidence_rigor": "Grade C - Emerging tracking with significant data gaps",
+        "evidence_rigor": "Emerging - basic organizational reporting",
         "geographic_focus": [
-          "New York City"
+          "New York"
         ],
-        "giving_style": "Community investment",
+        "giving_style": "Capacity building and professional development",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": null,
-        "annual_revenue": 93638,
+        "annual_revenue": 94382,
         "citation_ids": [
-          "[1]",
           "[8]"
         ],
-        "cn_financial_score": 0,
+        "cn_financial_score": null,
         "fundraising_ratio": null,
         "industry_program_ratio": 0.75,
         "peer_count": 0,
-        "peer_program_ratio_median": 0,
+        "peer_program_ratio_median": null,
         "program_expense_ratio": null,
         "reserves_months": 9,
-        "revenue_cagr_3yr": 408.6,
+        "revenue_cagr_3yr": null,
         "working_capital_months": 9,
         "yearly_financials": [
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 94382,
             "year": 2024
           },
@@ -651,140 +674,145 @@
           },
           {
             "expenses": 38157,
-            "net_assets": 0,
+            "net_assets": null,
             "revenue": 3648,
             "year": 2022
           }
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [],
+        "citation_ids": [
+          "[8]"
+        ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Does not primarily engage in grantmaking.",
+        "grant_strategy": "Direct service and community support",
         "is_significant_grantmaker": false,
-        "regions_served": [],
+        "regions_served": [
+          "New York"
+        ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Muslim Bar Association of New York faces transparency challenges due to outdated financial records.",
+      "headline": "The Muslim Bar Association of New York supports legal professionals through career development and advocacy for the Muslim community.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support the professional advancement and political representation of Muslim legal professionals in New York through sadaqah.",
-        "citation_ids": [
-          "[1]",
-          "[8]"
-        ],
-        "donor_motivations": [
-          "Value the presence of Muslims in the American judicial system",
-          "Want to support networking and career growth for Muslim attorneys",
-          "Care about local advocacy and community education in NYC"
-        ],
-        "giving_considerations": [
-          "Financial data is three years old and may not reflect current needs",
-          "The organization operates on a small budget with limited staff",
-          "Spending efficiency is currently unverified due to missing data"
-        ],
-        "not_ideal_for": "Donors who require up-to-date audited financials or those looking to fulfill zakat obligations."
-      },
-      "impact_evidence": {
-        "citation_ids": [
-          "[3]",
-          "[8]"
-        ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects <cite id=\"8\">unverified outcomes</cite> and a lack of cost-effectiveness data.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 0,
-        "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization aims to improve the position of Muslim attorneys through <cite id=\"3\">networking, mentorship, and advocacy</cite>, though the causal link to long-term legal outcomes is not documented.",
-        "why_evidence_matters": "Evidence ensures that professional development programs actually lead to career advancement and judicial diversity."
-      },
-      "long_term_outlook": {
+        "best_for_summary": "Best for donors who want to support early-stage legal community infrastructure and networking for Muslim legal professionals in New York.",
         "citation_ids": [
           "[2]",
           "[8]"
         ],
-        "founded_year": 2006,
-        "maturity_stage": "Established",
-        "revenue_growth_3yr": 408.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With <cite id=\"8\">revenue under $100,000</cite>, the organization has a significant funding gap to reach full operational capacity.",
-        "strategic_priorities": [
-          "Expand professional development",
-          "Increase community education"
+        "donor_motivations": [
+          "Value community building among legal professionals",
+          "Want to support local civil rights advocacy and education",
+          "Prefer funding organizations with minimal overhead expense"
         ],
-        "years_operating": 20
-      },
-      "organizational_capacity": {
-        "board_size": 4,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Listed",
-        "citation_ids": [
-          "[3]",
-          "[8]"
+        "giving_considerations": [
+          "Donations support general sadaqah giving",
+          "Small budget size means modest overall scope",
+          "Limited formal outcome evaluations are available"
         ],
-        "employees_count": 0,
-        "geographic_reach": "New York City area",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "not_ideal_for": "Donors seeking high-volume direct relief or organizations with third-party impact assessments"
       },
-      "peer_comparison": {
+      "impact_evidence": {
         "citation_ids": [
           "[2]",
           "[7]"
         ],
-        "differentiator": "MuBANY is distinguished by its <cite id=\"7\">formal judicial endorsement process</cite> and its role in the <cite id=\"2\">Muslim American Judicial Advisory Council</cite>.",
-        "peer_group": "Muslim Professional Associations",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C reflects early-stage organizational outcome tracking with primary reliance on self-reported operational progress.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 1,
+        "rct_available": false,
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "The association supports Muslim lawyers through mentorship, career resources, and judicial endorsements to improve representation in the legal field.",
+        "why_evidence_matters": "Outcome metrics help confirm whether networking and advocacy efforts yield career advancement and broader legal representation."
+      },
+      "long_term_outlook": {
+        "citation_ids": [
+          "[2]",
+          "[7]",
+          "[8]"
+        ],
+        "founded_year": 2006,
+        "maturity_stage": "Established",
+        "revenue_growth_3yr": null,
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "As a small organization with <cite id=\"8\">$94,382 in FY2024 revenue</cite>, additional funding allows expansion of mentorship and educational programming.",
+        "strategic_priorities": [
+          "Professional development",
+          "Judicial endorsement process",
+          "Community education"
+        ],
+        "years_operating": 20
+      },
+      "organizational_capacity": {
+        "board_size": null,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": null,
+        "citation_ids": [
+          "[2]",
+          "[8]"
+        ],
+        "employees_count": 0,
+        "geographic_reach": "New York Metropolitan Area",
+        "has_conflict_policy": false,
+        "has_financial_audit": false,
+        "independent_board_pct": null,
+        "payroll_to_revenue_pct": 0,
+        "programs_count": 5,
+        "staff_per_million_revenue": 0,
+        "volunteers_count": null
+      },
+      "peer_comparison": {
+        "citation_ids": [
+          "[2]"
+        ],
+        "differentiator": "Focuses specifically on <cite id=\"2\">Muslim legal professionals in New York</cite>.",
+        "peer_group": "Regional affinity bar associations and legal advocacy groups",
         "similar_orgs": [
-          "National Association of Muslim Lawyers",
-          "Muslim Public Affairs Council"
+          "Capital Area Muslim Bar Association",
+          "National Asian Pacific American Bar Association"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "National scope vs local NYC focus",
-          "name": "National Association of Muslim Lawyers"
+          "differentiator": "Focuses on the Washington D.C. area",
+          "name": "Capital Area Muslim Bar Association"
         },
         {
-          "differentiator": "Broader policy advocacy focus",
-          "name": "Muslim Public Affairs Council"
+          "differentiator": "Broader national reach across Asian-Pacific legal professionals",
+          "name": "National Asian Pacific American Bar Association"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[8]"
           ],
-          "detail": "The organization holds <cite id=\"1\">9.0 months of working capital</cite>, which allows it to cover ongoing operations without immediate funding pressure.",
-          "point": "Sufficient short-term liquidity"
+          "detail": "The organization directed a <cite id=\"8\">program expense ratio of 98.6%</cite> toward member services and advocacy in FY2024.",
+          "point": "High direct allocation to program expenses"
         },
         {
           "citation_ids": [
-            "[3]"
+            "[8]"
           ],
-          "detail": "MuBANY provides <cite id=\"3\">specialized career support and a job board</cite> tailored specifically for Muslim legal professionals in New York.",
-          "point": "Established professional support systems"
+          "detail": "Financial records show the organization holds <cite id=\"8\">9.0 months of working capital</cite>, providing budget stability.",
+          "point": "Sufficient short-term financial reserves"
         },
         {
           "citation_ids": [
-            "[7]"
+            "[2]"
           ],
-          "detail": "The group maintains a <cite id=\"7\">formal process for endorsing judicial and political candidates</cite>, providing a structured voice for the community in the legal system.",
-          "point": "Formalized political and judicial engagement"
+          "detail": "The association has operated since <cite id=\"2\">2006</cite> as a legal affinity group serving local professionals.",
+          "point": "Established community presence"
         }
       ],
       "strengths_deep_dive": [
-        "MuBANY has built a niche as a <cite id=\"2\">founding member of the Muslim American Judicial Advisory Council</cite>, positioning itself as a key stakeholder in judicial diversity. Its <cite id=\"4\">bylaws and endorsement policies</cite> demonstrate a level of institutional structure that has supported its <cite id=\"2\">nearly 20-year history</cite> since its founding in 2006. These structures allow the organization to facilitate <cite id=\"3\">mentorship programs and membership directories</cite> that connect attorneys across the New York area."
+        "The Muslim Bar Association of New York focuses its financial resources directly on organizational activities, directing a <cite id=\"8\">program expense ratio of 98.6%</cite> in FY2024. Operating with minimal administrative overhead, the association maintains <cite id=\"8\">9.0 months of working capital</cite>. This reserve offers reasonable financial resilience for a small affinity group. Having operated since <cite id=\"2\">2006</cite>, the organization serves as a regional network and a founding member of legal advocacy coalitions in the metropolitan area."
       ],
-      "summary": "The Muslim Bar Association of New York (MuBANY) operates as a professional network for Muslim legal practitioners, yet it faces significant transparency hurdles. No financial filings newer than FY2023 are available \u2014 donors should treat this 3-year-old financial picture with caution, as it may not reflect the current state of the organization. founded in 2006, the organization focuses on <cite id=\"2\">organizing and representing Muslim attorneys</cite> in the New York area. Their work includes <cite id=\"3\">professional development, networking, and a job board</cite> for legal professionals. While the group has a long history, its financial scale remains small, with <cite id=\"8\">total revenue of $93,638</cite> reported in fiscal year 2023. This represents <cite id=\"8\">early-stage growth</cite> from a very small base of just $3,648 in 2022. Despite this growth, the organization's <cite id=\"1\">program expense ratio is unknown</cite>, which is a primary limiting factor for donors. Without a clear breakdown of how much funding reaches actual programs versus administrative costs, it is difficult to assess operational efficiency. The association does maintain <cite id=\"1\">9.0 months of working capital</cite>, providing a short-term buffer for its activities. However, the <cite id=\"8\">lack of recent public filings</cite> and limited outcome data suggest a need for improved accountability measures.",
+      "summary": "The Muslim Bar Association of New York was <cite id=\"2\">founded in 2006</cite> to support Muslim legal professionals in the New York area. The organization works to <cite id=\"2\">advance the interests of Muslim attorneys</cite> while offering mentorship, career support, and legal community advocacy. In FY2024, the association reported <cite id=\"8\">total revenue of $94,382</cite>. Its financial filings show a <cite id=\"8\">program expense ratio of 98.6%</cite>, indicating that almost all operational spending goes directly to member services, networking events, and public education. The group maintains a solid liquidity buffer with <cite id=\"8\">9.0 months of working capital</cite> in reserve. However, as an emerging organization operating on a modest budget, public outcome data remains sparse. The group has not published formal impact evaluations or beneficiary metrics, and public reporting on board governance is limited.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

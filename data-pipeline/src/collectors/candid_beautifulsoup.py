@@ -21,6 +21,42 @@ from ..validators.candid_validator import CandidProfile
 from .base import BaseCollector, FetchResult, ParseResult
 
 
+# Role vocabulary for board titles. A title drawn from a person's name instead
+# of their role means the name/title split landed mid-name and we are not
+# reading the markup we think we are.
+_BOARD_ROLE_WORDS = (
+    "chair", "president", "vice", "secretary", "treasurer", "director",
+    "trustee", "member", "officer", "ceo", "cfo", "coo", "founder",
+    "emeritus", "executive", "governor", "clerk", "principal", "advisor",
+    "adviser", "elect", "past", "board", "head", "lead",
+)
+
+
+def board_extraction_is_reliable(members: Any) -> bool:
+    """Did the name/title split land on real roles, or inside people's names?
+
+    Candid renders some boards with the given and family names in separate
+    elements. get_text() then puts a gap between them, the split treats the
+    family name as a title, and the resulting count comes from markup we are
+    misreading — EIN 23-7065716 yielded {"name": "Ayman", "title": "Khalil"}.
+
+    A one-word title is not the signal: "Chairman" and "Treasurer" are real.
+    The signal is a title carrying no role vocabulary at all. A member with no
+    title is missing data, not a misparse.
+    """
+    if not isinstance(members, list):
+        return True
+    for member in members:
+        if not isinstance(member, dict):
+            continue
+        title = member.get("title")
+        if not isinstance(title, str) or not title.strip():
+            continue
+        if not any(word in title.lower() for word in _BOARD_ROLE_WORDS):
+            return False
+    return True
+
+
 class CandidCollector(BaseCollector):
     """
     Collect Candid charity profile data using deterministic BeautifulSoup parsing.
@@ -826,7 +862,19 @@ class CandidCollector(BaseCollector):
 
                         board_members.append(member)
 
-        # Board size is just the count
+        # Board size is just the count — but only when the split above landed
+        # on real roles. When it landed inside people's names we are misreading
+        # this section, and a count taken from it would drive the -2
+        # `board_under_3` deduction off a parser bug. Unknown is the honest
+        # answer; the deduction already skips a null.
+        if board_members and not board_extraction_is_reliable(board_members):
+            if self.logger:
+                self.logger.warning(
+                    f"Candid board split landed inside member names "
+                    f"({board_members[0]}); board_size left unknown"
+                )
+            return board_members, None
+
         board_size = len(board_members) if board_members else None
 
         return board_members, board_size

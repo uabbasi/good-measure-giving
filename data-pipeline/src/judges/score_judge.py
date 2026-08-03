@@ -11,6 +11,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 from .base_judge import BaseJudge, JudgeType
+from .factual_judge import demote_published_figure_errors
 from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 
@@ -48,6 +49,8 @@ SCORE_TIERS = {
 
 
 # Independent LLM rolls for the error-consensus vote (odd number → clean majority).
+from .consensus import rolls_can_still_matter  # noqa: E402
+
 CONSENSUS_ROLLS = 3
 
 
@@ -62,7 +65,7 @@ class ScoreJudge(BaseJudge):
     # (flagged concern-led prose as contradicting a Below Average band, 3/3
     # rolls, 2026-07-18) — this judge gates publication, so it gets the
     # stronger tier.
-    judge_model_override = "gemini-2.5-flash"
+    judge_model_override = "gemini-3.5-flash"
 
     @property
     def name(self) -> str:
@@ -113,6 +116,15 @@ class ScoreJudge(BaseJudge):
             roll = self._verify_with_rate_limit_retry(output, context)
             if roll is not None:
                 roll_results.append(roll)
+            # Stop as soon as the remaining rolls cannot move the majority.
+            # Outcome-identical by construction (src/judges/consensus.py); a
+            # failed roll leaves the estimate of what is left conservative,
+            # so this never stops early on a set that is still open.
+            if not rolls_can_still_matter(
+                [any(i.severity == Severity.ERROR for i in r.issues) for r in roll_results],
+                CONSENSUS_ROLLS,
+            ):
+                break
 
         if roll_results:
             metadata["consensus_rolls"] = len(roll_results)
@@ -145,6 +157,16 @@ class ScoreJudge(BaseJudge):
                 "llm_verification",
                 "Score judge could not complete any consensus roll",
             )
+
+        # The governing rule, shared with the factual judge rather than owned
+        # by it: which source supplies a field is settled for the whole
+        # pipeline before any judge runs, so a narrative reporting the figure
+        # we published is correct however this judge labels the field. EIN
+        # 81-2169685 was blocked here for reporting the FY2025 revenue we
+        # publish, cited against the mirrors' FY2023 that lost the election.
+        demoted = demote_published_figure_errors(issues, (context or {}).get("charity_data"))
+        if demoted:
+            metadata["demoted_published_figures"] = demoted
 
         # Determine pass/fail
         error_count = len([i for i in issues if i.severity == Severity.ERROR])

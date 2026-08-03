@@ -20,6 +20,28 @@ from .url_verifier import URLVerifier
 
 logger = logging.getLogger(__name__)
 
+# Whether the charity accepts zakat is settled in code: factual_judge's
+# _quick_checks compares evaluation.wallet_tag against a tag derived
+# independently from claims_zakat_eligible, and that judge already refuses to let
+# the model's second opinion block (_is_wallet_tag_agreement). This judge had no
+# equivalent, so the same settled question could still withhold a page from a
+# different direction: on EIN 20-1799252 it blocked over "the citation states the
+# organization is Zakat eligible, but the claim states it is recognized as
+# zakat-eligible" — the same assertion, twice. A miscited zakat claim is a craft
+# issue for the editorial queue, not a publication blocker.
+_ZAKAT_ELIGIBILITY_RE = re.compile(r"zakat[- ]?eligib|eligible\s+for\s+zakat|wallet.{0,3}tag", re.IGNORECASE)
+# A dollar/quantity assertion ABOUT zakat is a different claim than eligibility,
+# and must keep blocking (a fabricated "$4.2M distributed as zakat").
+_ZAKAT_QUANTITY_RE = re.compile(r"\$\s?[\d,.]+|\b\d[\d,.]*\s*(?:million|m\b|billion)", re.IGNORECASE)
+
+
+def is_zakat_eligibility_claim(field: str, message: str) -> bool:
+    """Is this finding the zakat-eligibility question already settled in code?"""
+    text = f"{field} {message}"
+    if _ZAKAT_QUANTITY_RE.search(text):
+        return False
+    return bool(_ZAKAT_ELIGIBILITY_RE.search(text))
+
 
 class CitationIssue(BaseModel):
     """Schema for citation verification issue from LLM."""
@@ -312,6 +334,14 @@ class CitationJudge(BaseJudge):
                 # may block (a closed set of one) rather than trying to
                 # enumerate the open-ended ways a model phrases uncertainty.
                 if severity == Severity.ERROR and not issue.contradicted:
+                    severity = Severity.WARNING
+                # The zakat-eligibility question is settled deterministically in
+                # _quick_checks, so this judge's opinion on it never blocks —
+                # matching factual_judge's _is_wallet_tag_agreement. Claimed zakat
+                # AMOUNTS are excluded and keep blocking.
+                elif severity == Severity.ERROR and is_zakat_eligibility_claim(
+                    issue.field, issue.message
+                ):
                     severity = Severity.WARNING
                 issues.append(
                     ValidationIssue(

@@ -84,6 +84,29 @@ SITEMAP_MIN_PAGES_FOR_COVERAGE = 3
 TERMINAL_FAILURE_TTL_DAYS = 180
 TERMINAL_FAILURE_MARKERS = ("captcha_blocked", "challenge page", "not found", "not_found")
 
+# Of those, the ones that describe a DEFENCE rather than a fact about the
+# resource. "not found" persists; a challenge lifts. HTTP 202 with a challenge
+# body is Cloudflare's under-attack mode, triggered by load and rate-limit
+# heuristics as often as by any decision about us -- MedGlobal and Islamic
+# Services Foundation were each frozen for 180 days by ONE such sighting, and
+# both sites answered a plain GET with HTTP 200 nine days later.
+#
+# A defensive failure is therefore provisional until it has been seen
+# CRAWL_MAX_RETRIES times. Below that it takes the ordinary backoff and gets
+# re-checked within hours; at or above it, it is a settled fact about the
+# publisher and earns the full terminal TTL. The politeness guarantee is kept
+# for every site that really is refusing us, and only for those.
+DEFENSIVE_FAILURE_MARKERS = ("captcha_blocked", "challenge page")
+
+# How long content we already hold can stand in for a fetch that failed.
+# The crawl gate used to ask "did this run fetch every required source?", so a
+# charity with a complete parsed source in the database failed outright when
+# today's re-fetch tripped over a challenge page: EIN 75-2352043 carried 320KB
+# parsed into 45 usable fields from March and was frozen on one bad request.
+# Beyond this the content stops standing in, because a page that old is no
+# longer evidence of what the organisation is doing now.
+STALE_SOURCE_GRACE_DAYS = 180
+
 # Blocker 2A: the streaming runner's implicit re-crawl trigger skips a
 # stale-but-successful website re-attempted within this many days, so a
 # soft-failed (thin-content) re-observation doesn't force a full re-crawl on

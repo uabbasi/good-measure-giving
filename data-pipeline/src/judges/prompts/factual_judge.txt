@@ -6,6 +6,15 @@ Your task is to verify that factual claims in the narrative match the source dat
 Name: {charity_name}
 EIN: {ein}
 
+## Today's Date
+{current_date} (the current year is {current_year})
+
+Use this date for EVERY age or recency calculation. Do not use your own idea of
+the current year — it is not the year this narrative is being judged in. "The
+data is N years old" means {current_year} minus the fiscal year. If the latest
+filing is FY2018 and the current year is 2026, the data is 8 years old, and a
+narrative saying so is CORRECT.
+
 ## Narrative to Verify
 {narrative}
 
@@ -104,6 +113,15 @@ Working capital is measured in MONTHS, not years. If narrative says "X years" bu
 - Revenue/expense amounts that are simply rounded (e.g., "$816K" when source is $816,038)
 - Percentage differences under 1 percentage point (75.2% vs 75.8%)
 - Values that can be derived from source data using standard calculations
+- A figure that matches the source for the fiscal year the narrative NAMES.
+  Sources cover different years — ProPublica's latest filing often lags Charity
+  Navigator by a year — so the same charity legitimately has different revenue in
+  FY2023 and FY2024. Compare like-for-like on fiscal year. If the narrative says
+  "FY2024 revenue was $11,142,566" and the FY2024 source says $11,142,566, that is
+  CORRECT even when the FY2023 filing says $9,535,194. A different year's figure is
+  not a contradiction, and neither is the narrative choosing the most recent year.
+  Report an error only when the narrative's figure disagrees with the source for
+  the SAME year the narrative cites.
 
 ## Special Field Semantics
 

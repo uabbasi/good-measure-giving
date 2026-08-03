@@ -26,7 +26,10 @@ SECTION_AWARDS = "awards"
 
 
 class ZakatDict(TypedDict, total=False):
-    accepts_zakat: bool
+    # None means "we looked and established nothing", which is NOT the same as
+    # False ("we established that zakat is not accepted"). See
+    # ZakatVerification.to_dict.
+    accepts_zakat: bool | None
     accepts_zakat_evidence: str | None
     accepts_zakat_url: str | None
     zakat_categories_served: list[str]

@@ -40,11 +40,11 @@
     "fundraisingExpenses": 13550,
     "programExpenseRatio": "0.2894",
     "fiscalYear": 2024,
-    "dataSource": "mixed",
+    "dataSource": "charity_navigator",
     "totalAssets": null,
     "totalLiabilities": null,
     "netAssets": null,
-    "workingCapitalMonths": null,
+    "workingCapitalMonths": "0.00",
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
@@ -62,12 +62,12 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-07-28 18:23:23",
+  "lastUpdated": "2026-08-03 12:15:20",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 117560
     },
     "beneficiaries_served_annually": {
@@ -75,8 +75,8 @@
       "semantics": {
         "category": "annual_people_served",
         "confident": true,
-        "model": "gemini-2.5-flash-lite",
-        "timestamp": "2026-07-28T19:51:27.024011+00:00",
+        "model": "gemini-3.5-flash-lite",
+        "timestamp": "2026-08-03T19:14:37.740363+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -87,20 +87,20 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://afghanrefugeerelief.org",
+      "source_url": "https://www.afghanrefugeerelief.org/",
       "timestamp": "2026-03-07T12:20:26",
       "value": false
     },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 2023
     },
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 13550
     },
     "has_audited_financials": {
@@ -112,32 +112,44 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": "T50"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 0.2894
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 53400
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 184510
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/931556038#financials",
-      "timestamp": "2026-07-26T22:53:14",
+      "timestamp": "2026-08-03T12:14:18",
       "value": 205225
+    },
+    "working_capital_months": {
+      "derived_from": [
+        "total_assets",
+        "total_liabilities",
+        "total_expenses"
+      ],
+      "fiscal_year": 2024,
+      "source_name": "Calculated from Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/931556038",
+      "timestamp": "2026-08-03T12:14:18",
+      "value": 0
     }
   },
   "primaryCategory": "HUMANITARIAN",
@@ -170,8 +182,8 @@
     "semantics": {
       "category": "annual_people_served",
       "confident": true,
-      "model": "gemini-2.5-flash-lite",
-      "timestamp": "2026-07-28T19:51:27.024011+00:00",
+      "model": "gemini-3.5-flash-lite",
+      "timestamp": "2026-08-03T19:14:37.740363+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -231,7 +243,7 @@
     "confidence_scores": {
       "alignment": 24,
       "data_confidence": 0.3,
-      "impact": 28
+      "impact": 26
     },
     "score_details": {
       "alignment": {
@@ -320,13 +332,13 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: 1.3 months (LEAN)",
-            "improvement_suggestion": "Build reserves toward your board-approved target range (often 3-12 months), adjusted for revenue volatility and obligations.",
+            "evidence": "Working capital: unknown (UNKNOWN)",
+            "improvement_suggestion": "Publish current reserve levels and a board-approved reserve policy (often 3-12 months for most nonprofits).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
-            "scored": 2,
-            "status": "full"
+            "scored": 0,
+            "status": "missing"
           },
           {
             "evidence": "Program expense ratio: 29%",
@@ -368,64 +380,16 @@
         "cost_per_beneficiary": 5.34,
         "directness_level": "DIRECT_SERVICE",
         "impact_design_categories": [],
-        "rationale": "$5.34/beneficiary; Delivery: direct service; Impact 28/50",
+        "rationale": "$5.34/beneficiary; Delivery: direct service; Impact 26/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 28
+        "score": 26
       },
       "judge_issues": [
         {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "The provided content for citation 1 does not contain information about the charity's program expense ratio or working capital.",
-          "severity": "warning"
-        },
-        {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The provided PDF content is not parseable and does not contain the claimed information about furnishing homes, distributing laptops, or cost per beneficiary.",
+          "message": "Could not confirm the claim because the fetched URL content is a binary PDF stream that could not be parsed.",
           "severity": "warning"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "The provided content for citation 3 does not explicitly mention the acceptance of 'sadaqah'. It mentions general donations and financial aid.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "The provided content for citation 4 does not explicitly state that the organization relies on passionate volunteers, but it does provide a form to sign up as a volunteer.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "The provided content for citation 5 does not contain information about the charity's total revenue for FY2024.",
-          "severity": "warning"
-        },
-        {
-          "field": "program_expense_ratio",
-          "judge": "factual",
-          "message": "The program expense ratio in the narrative (28.9%) differs from the source data (28.94%).",
-          "severity": "info"
-        },
-        {
-          "field": "working_capital",
-          "judge": "factual",
-          "message": "The working capital in the narrative (1.3 months) differs from the source data (1.32 months).",
-          "severity": "info"
-        },
-        {
-          "field": "total_revenue",
-          "judge": "factual",
-          "message": "The total revenue reported in the narrative ($205,225) differs from the source data ($205,225).",
-          "severity": "info"
-        },
-        {
-          "field": "cost_per_beneficiary",
-          "judge": "factual",
-          "message": "The cost per beneficiary in the narrative ($5.34) differs from the source data (which does not explicitly state this figure, but the PDF mentions a cost per beneficiary of $5.34).",
-          "severity": "info"
         },
         {
           "field": "discovered.outcomes.confidence",
@@ -455,114 +419,124 @@
         ],
         "total_deduction": -5
       },
-      "score_summary": "Afghan Refugee Relief shows good impact and moderate alignment (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "Afghan Refugee Relief shows moderate impact and moderate alignment (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "No explicit mention of zakat acceptance found for the specific US charity 'Afghan Refugee Relief' in the search results.",
+        "claim_evidence": "No explicit mention of \"zakat\" on the Afghan Refugee Relief website or donation pages. The website mentions general donations and financial aid but does not specify acceptance of zakat.",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a program expense ratio of 28.9% and 1.3 months of working capital.",
+          "claim": "The charity has limited public data and a low program ratio compared to standards.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/931556038#financials"
         },
         {
-          "claim": "The charity furnishes homes, distributes laptops, and has a cost per beneficiary of $5.34.",
+          "claim": "The charity provides direct services like furnishing homes and laptops at a cost of $5.34 per beneficiary.",
           "id": "[2]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
         },
         {
-          "claim": "The charity accepts general donations and sadaqah.",
+          "claim": "Donors can support the mission through sadaqah and general charitable giving.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.afghanrefugeerelief.org/home"
         },
         {
-          "claim": "The organization relies on passionate volunteers to help refugees.",
+          "claim": "The organization works with volunteers to support refugee resettlement.",
           "id": "[4]",
           "source_name": "Charity Website - Volunteer",
           "source_url": "https://www.afghanrefugeerelief.org/volunteer-now"
         },
         {
-          "claim": "Total revenue for the organization was $205,225 in FY2024.",
+          "claim": "In FY2024, the charity had a Total Revenue of $205,225 and a Program expense ratio of 28.9%.",
           "id": "[5]",
           "source_name": "Form 990 (2025)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by a very low program expense ratio and a lack of long-term financial stability. While it provides direct help to refugees at a low cost per person, most of its spending does not reach its core programs.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and a lack of specific fit for Muslim donor requirements. While the cost to help each person is low, most of the organization's spending does not go toward direct program services.",
       "areas_for_improvement": [
-        "The program expense ratio is low, with only 28.9% of spending going to programs [1]",
-        "Limited financial cushion with only 1.3 months of working capital available [1]"
+        "The Program Expense Ratio is low at 28.9%, meaning less than a third of spending goes to programs [5]",
+        "Limited track record and public data regarding long-term outcomes [1]"
       ],
       "dimension_explanations": {
-        "alignment": "The group addresses an urgent humanitarian need for Afghan refugees [2]. However, it has a low fit for traditional Muslim donor requirements and lacks a long track record in the underserved charity space [3][5].",
-        "impact": "The charity focuses on direct services like furnishing homes for refugee families [2]. While it is efficient at reaching people for just $5.34 per beneficiary, its financial health is a concern because the program expense ratio is only 28.9% [1]. This means less than one-third of its spending goes toward its actual mission [1]."
+        "alignment": "This organization focuses on urgent humanitarian needs for refugees [2]. It is eligible for sadaqah but does not meet specific criteria for zakat-focused giving [3]. The charity has a limited track record and a low alignment with specific Muslim donor preferences [1][5].",
+        "impact": "The charity provides direct services such as financial aid and home supplies [2]. However, in FY2024, the Program Expense Ratio was only 28.9%, which is a significant concern for financial health [5]. While the cost per beneficiary is low at $5.34, the overall spending on programs is below standard levels [1]."
       },
-      "headline": "Afghan Refugee Relief provides direct aid to families but spends a low percentage of its budget on programs.",
+      "headline": "Afghan Refugee Relief provides direct aid to families but spends a low percentage of its funds on programs.",
       "strengths": [
         "Provides direct services like furnishing homes and distributing laptops to refugees [2]",
-        "Low cost of $5.34 per beneficiary to deliver services [2]"
+        "Maintains a low cost of $5.34 per beneficiary for its services [2]"
       ],
-      "summary": "The organization works with local partners and volunteers to help refugees through financial aid and Project Sabr [2][4]. In fiscal year 2024, the charity reported total revenue of $205,225 [5]."
+      "summary": "The organization partners with local groups and volunteers to help refugees through financial aid and Project Sabr [2][4]. In FY2024, the charity reported a Total Revenue of $205,225 [5]. Donors can support the mission through sadaqah and general charitable giving [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "program expense ratio of 28.9%",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "75% industry standard",
+          "confidence": 0.8,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 28.9%",
-          "source_name": "Charity Navigator - Afghan Refugee Relief",
+          "quote": "Program Expense Ratio",
+          "source_name": "Charity Navigator Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/931556038#financials"
         },
         {
-          "access_date": "2025-01-15",
+          "access_date": "2026-01-09",
           "claim": "furnishing 200 homes",
-          "confidence": 0.95,
+          "confidence": 0.9,
           "id": "[2]",
           "quote": "Homes furnished: 200",
-          "source_name": "ARR 2023 Impact Report",
-          "source_type": "website",
+          "source_name": "Afghan Refugee Relief 2023 Report",
+          "source_type": "evaluation",
           "source_url": "https://www.afghanrefugeerelief.org/s/ARR-2023-Report-Finalpdf.pdf"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "",
-          "confidence": 0.8,
+          "access_date": "2026-01-09",
+          "claim": "sadaqah and general charitable giving",
+          "confidence": 0.9,
           "id": "[3]",
-          "quote": "Donate to support our mission (no zakat mention)",
+          "quote": "Donate",
           "source_name": "Afghan Refugee Relief - Donate",
           "source_type": "website",
           "source_url": "https://www.afghanrefugeerelief.org/home"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "total revenue of $205,225",
+          "access_date": "2026-01-09",
+          "claim": "volunteer opportunities",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Volunteer",
+          "source_name": "Afghan Refugee Relief - Volunteer",
+          "source_type": "website",
+          "source_url": "https://www.afghanrefugeerelief.org/volunteer-now"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Total Revenue of $205,225",
           "confidence": 1,
           "id": "[5]",
           "quote": "Total Revenue: $205,225",
-          "source_name": "ProPublica - Afghan Refugee Relief",
+          "source_name": "Form 990 (2025)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931556038"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a very low program expense ratio, meaning most spending does not go toward direct services. While the cost to help each person is low, the charity lacks enough saved cash to cover long-term operations.",
+      "amal_score_rationale": "The assessment is limited by a very low program expense ratio and a lack of specific fit for Muslim donor requirements. While the cost to help each person is low, most of the organization's spending does not go toward direct program services.",
       "amal_scores": {
-        "amal_score": 47,
+        "amal_score": 45,
         "confidence_scores": {
           "alignment": 24,
           "data_confidence": 0.3,
-          "impact": 28
+          "impact": 26
         },
         "confidence_tier": "LOW",
         "impact_tier": "BELOW_AVERAGE",
@@ -572,63 +546,66 @@
         {
           "area": "Critically low program expense ratio",
           "citation_ids": [
-            "[1]"
+            "[5]"
           ],
-          "context": "The <cite id=\"1\">program expense ratio of 28.9%</cite> is far below the 75% benchmark, suggesting high administrative costs."
+          "context": "The organization's <cite id=\"5\">Program expense ratio of 28.9%</cite> in FY2024 means less than one-third of overall spending funds actual refugee programs."
         },
         {
-          "area": "Insufficient financial reserves",
+          "area": "Lack of third-party evaluation and public financial transparency",
           "citation_ids": [
             "[1]"
           ],
-          "context": "With only <cite id=\"1\">1.3 months of working capital</cite>, the charity lacks the stability to survive revenue fluctuations."
+          "context": "The charity has <cite id=\"1\">limited public rating data</cite> and lacks independent outcome evaluations."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
+        "effectiveness_status": "NEEDS_IMPROVEMENT",
+        "finances_status": "NEEDS_IMPROVEMENT",
+        "governance_status": "NEEDS_IMPROVEMENT",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "This organization has not yet been reviewed by the BBB Wise Giving Alliance."
+        "summary": "Does not currently meet BBB Wise Giving Alliance evaluation criteria due to lack of standard disclosures."
       },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[5]"
         ],
-        "mitigation_notes": "The charity is an emerging organization, which may explain high initial administrative setup costs.",
+        "mitigation_notes": "The organization maintains direct partnership networks to keep direct program delivery costs low.",
         "risk_factors": [
-          "<cite id=\"1\">Program spending is 46% below the industry standard</cite>",
-          "<cite id=\"1\">Fragile financial health with only 1.3 months of working capital</cite>"
+          "<cite id=\"5\">Program expense ratio of 28.9%</cite> is well below the 75% industry threshold",
+          "<cite id=\"1\">Lack of independent financial audits or third-party impact assessments</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"1\">critically low program expense ratio of 28.9%</cite>, which indicates that most funds are not reaching direct programs."
+        "summary": "Primary concerns stem from financial inefficiency and low transparency. In FY2024, <cite id=\"5\">less than 30% of total expenses</cite> went to program services."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 5,
-          "website": 4
+          "evaluation": 1,
+          "form990": 1,
+          "rating": 1,
+          "website": 2
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
+        "high_confidence_count": 4,
+        "total_count": 5,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial data from FY2024",
+        "data_freshness": "Figures from FY2024 filing and 2023 organizational report",
         "data_gaps": [
-          "Missing audited financials",
-          "No multi-year revenue trends"
+          "Missing financial audits",
+          "No independent outcome evaluations"
         ],
         "level": "LOW",
-        "notes": "Low data confidence due to minimal transparency and small organizational size.",
+        "notes": "Data is limited due to unrated status and missing independent outcome verification.",
         "score": 30,
         "sources_used": [
+          "Form 990",
           "Charity Navigator",
-          "ProPublica",
-          "Impact Report"
+          "Charity Website",
+          "Annual Report PDF"
         ]
       },
       "data_confidence": {
@@ -636,70 +613,70 @@
         "form_990_tax_year": 2024,
         "known_gaps": [
           "Missing audited financials",
-          "Incomplete expense breakdown"
+          "No third-party evaluation data"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 5,
         "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
             "[3]"
           ],
-          "explanation": "This group addresses an urgent humanitarian need by helping refugees resettle in new communities [2]. While it offers ways to give sadaqah, it has a limited track record and does not specifically focus on the needs of the Muslim donor community [3].",
-          "improvement": "To improve alignment, the charity could <cite id=\"3\">clearly state its sadaqah-only status</cite> and explore underserved geographies."
+          "explanation": "The organization serves urgent humanitarian refugee needs, accepting <cite id=\"3\">sadaqah and general charitable donations</cite>, but maintains low formal institutional alignment features.",
+          "improvement": "Clarify donation guidance and publish clearer program breakdowns for Muslim donors."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[5]"
+            "[1]"
           ],
-          "explanation": "Credibility is currently limited by <cite id=\"1\">low data confidence</cite> and a lack of comprehensive transparency seals. While the charity <cite id=\"5\">files basic financial data</cite>, it lacks the independent verification common in larger organizations.",
-          "improvement": "The charity should seek <cite id=\"1\">external evaluation</cite> and publish audited financial statements to build donor trust."
+          "explanation": "Credibility is constrained by limited public filings and a lack of independent verification. The organization is <cite id=\"1\">not fully rated by Charity Navigator</cite> and does not publish third-party audited financial statements.",
+          "improvement": "Publish board-approved audited financial statements and complete full disclosures on public monitoring platforms."
         },
         "impact": {
           "citation_ids": [
             "[1]",
-            "[2]"
+            "[2]",
+            "[5]"
           ],
-          "explanation": "Impact is hampered by a <cite id=\"1\">program expense ratio of 28.9%</cite>, which is significantly below the <cite id=\"1\">peer median of 89.8%</cite>. However, the <cite id=\"2\">cost per beneficiary is low</cite> for direct service delivery.",
-          "improvement": "The organization needs to <cite id=\"1\">build reserves</cite> toward a 3-12 month target to ensure operational stability."
+          "explanation": "Impact capacity is severely restricted by spending allocations. In FY2024, the direct <cite id=\"5\">Program Expense Ratio was 28.9%</cite>, which is substantially below the <cite id=\"1\">peer median of 89.2%</cite>, despite maintaining a low delivery cost of <cite id=\"2\">$5.34 per beneficiary</cite>.",
+          "improvement": "Reallocate operational expenditures to ensure at least 75% of budget directly supports refugee services."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
           "[2]",
-          "[5]"
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Reported internal metrics only",
+        "evidence_rigor": "Grade C - Self-reported metrics",
         "geographic_focus": [
-          "United States",
-          "Mexico"
+          "Mexico",
+          "United States"
         ],
-        "giving_style": "Direct material aid",
+        "giving_style": "Direct service",
         "tax_deductible": true,
-        "zakat_asnaf_served": null,
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_asnaf_served": [],
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.641,
+        "admin_ratio": 0.711,
         "annual_revenue": 205225,
         "citation_ids": [
           "[1]",
           "[5]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.07,
+        "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 39,
-        "peer_program_ratio_median": 0.898,
+        "peer_count": 38,
+        "peer_program_ratio_median": 0.892,
         "program_expense_ratio": 0.2894,
         "reserves_months": 1.3,
         "revenue_cagr_3yr": null,
+        "working_capital_months": 0,
         "yearly_financials": [
           {
             "expenses": null,
@@ -713,50 +690,46 @@
         "citation_ids": [
           "[2]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than grantmaking",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct delivery of aid rather than institutional grantmaking.",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Mexico"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
-      "headline": "Afghan Refugee Relief provides direct aid to families but spends a low percentage of its budget on programs.",
+      "headline": "Afghan Refugee Relief provides direct aid to families but spends a low percentage of its funds on programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize direct, tangible aid like furniture and technology for refugees and are comfortable supporting a small, emerging organization.",
+        "best_for_summary": "Best for donors willing to support grassroots refugee resettlement initiatives through sadaqah, who accept high administrative overhead in exchange for direct local service delivery.",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[5]"
         ],
         "donor_motivations": [
-          "Want to see specific items like laptops reaching families",
-          "Interested in supporting the Afghan newcomer community specifically",
-          "Value low fundraising costs over high program ratios"
+          "Want to provide general sadaqah aid to resettling refugee families",
+          "Value direct physical distributions like laptops and home furniture"
         ],
         "giving_considerations": [
-          "The program expense ratio is significantly lower than established peers",
-          "Financial data is limited due to the organization's small scale",
-          ""
+          "More than 70% of organizational spending goes toward non-program expenses",
+          "Limited independent outcome evaluations or audited financial records"
         ],
-        "not_ideal_for": "Donors who require high program expense ratios (above 75%) or those seeking to fulfill zakat obligations."
+        "not_ideal_for": "Donors seeking high program spending efficiency, or organizations with complete third-party auditing"
       },
       "impact_evidence": {
         "citation_ids": [
           "[2]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "The charity reports <cite id=\"2\">internal output metrics</cite> but lacks independent third-party evaluations of long-term outcomes.",
-        "external_evaluations": [
-          "Welcome Fund Grant recognition"
-        ],
+        "evidence_grade_explanation": "Grade C indicates self-reported activity outputs without independent verification or multi-year tracking.",
+        "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
-        "theory_of_change": "BASIC",
-        "theory_of_change_summary": "The charity provides immediate material and financial resources to refugees to facilitate their resettlement and integration.",
-        "why_evidence_matters": "Tracking outcomes ensures that providing laptops and furniture actually leads to successful long-term resettlement."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Provides direct financial support, home goods, and education tools through local volunteer and partner networks.",
+        "why_evidence_matters": "Independent outcome evaluation confirms whether direct distributions lead to sustained long-term economic stability for refugees."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -766,24 +739,24 @@
         "maturity_stage": "Growth",
         "revenue_growth_3yr": null,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "As a small organization with <cite id=\"5\">$205,225 in revenue</cite>, it has significant capacity to scale its resettlement services.",
+        "room_for_funding_explanation": "As a small-scale emerging entity with <cite id=\"5\">$205,225 in FY2024 revenue</cite>, additional funding could expand direct service delivery if operational overhead is controlled.",
         "strategic_priorities": [
-          "Expand financial aid distribution",
-          "Increase home furnishing capacity"
+          "Financial Aid",
+          "Project Sabr",
+          "Women Empowerment"
         ],
         "years_operating": 3
       },
       "organizational_capacity": {
-        "board_size": 3,
+        "board_size": null,
         "ceo_compensation": null,
         "ceo_compensation_pct_revenue": null,
         "ceo_name": null,
         "citation_ids": [
-          "[1]",
           "[2]"
         ],
         "employees_count": null,
-        "geographic_reach": "Mexico and United States",
+        "geographic_reach": "Mexico, United States",
         "has_conflict_policy": false,
         "has_financial_audit": false,
         "independent_board_pct": null,
@@ -794,50 +767,50 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]"
+          "[5]"
         ],
-        "differentiator": "Focuses on <cite id=\"2\">direct material distribution</cite> like laptops and furniture rather than just advocacy.",
-        "peer_group": "Humanitarian Refugee Services",
+        "differentiator": "Direct local resettlement services with a low per-person cost, offset by an unusually <cite id=\"5\">low program expense ratio</cite>.",
+        "peer_group": "HUMANITARIAN",
         "similar_orgs": [
-          "BASMAH",
           "Rohingya Muslim Relief",
-          "International Rescue Committee"
+          "BASMAH",
+          "International Aid Charity"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on refugee services and humanitarian relief",
-          "name": "BASMAH"
-        },
-        {
-          "differentiator": "Faith-based, Muslim-led organization of similar size",
+          "differentiator": "Similar focus on refugee aid with comparable operating scale.",
           "name": "Rohingya Muslim Relief"
         },
         {
-          "differentiator": "Much larger scale with higher program efficiency",
-          "name": "International Rescue Committee"
+          "differentiator": "Focuses on refugee services at a larger operating scale.",
+          "name": "BASMAH"
+        },
+        {
+          "differentiator": "Provides humanitarian assistance across broader geographic zones.",
+          "name": "International Aid Charity"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "The organization spends only <cite id=\"1\">$0.07 per $1 raised</cite>, which is highly efficient compared to sector norms.",
-          "point": "Low fundraising overhead"
+          "detail": "Maintains direct assistance programs achieving a low reported cost of <cite id=\"2\">$5.34 per beneficiary</cite>.",
+          "point": "Low per-beneficiary direct delivery cost"
         },
         {
           "citation_ids": [
             "[2]"
           ],
-          "detail": "The charity successfully <cite id=\"2\">distributed 750 laptops</cite> and <cite id=\"2\">furnished 200 homes</cite> for refugee families.",
-          "point": "Direct material aid"
+          "detail": "Provided direct relief items including <cite id=\"2\">distributing 750 laptops</cite> and <cite id=\"2\">furnishing 200 homes</cite> for resettling refugees.",
+          "point": "Tangible material distribution"
         }
       ],
       "strengths_deep_dive": [
-        "The organization demonstrates a strong ability to mobilize material resources for newcomers. In 2023, they successfully <cite id=\"2\">distributed $85,000 in financial aid</cite> and managed the logistics for <cite id=\"2\">1,700 donated phones</cite>. These direct services provide immediate relief to families in transition. Furthermore, the charity was <cite id=\"2\">awarded a Welcome Fund grant</cite> by Welcome.US, indicating some level of recognition from established resettlement partners."
+        "Afghan Refugee Relief delivers immediate physical support to resettled families, providing essential household setup and technological tools. According to internal reports, efforts resulted in <cite id=\"2\">furnishing 200 homes</cite>, <cite id=\"2\">distributing 750 laptops</cite>, and providing <cite id=\"2\">$85,000 in financial aid</cite>. These direct services are achieved at a low unit cost of <cite id=\"2\">$5.34 per beneficiary</cite>."
       ],
-      "summary": "Afghan Refugee Relief provides essential support to displaced families, yet its financial structure raises significant concerns regarding charitable efficiency. The organization focuses on direct service delivery, including <cite id=\"2\">furnishing 200 homes</cite> and <cite id=\"2\">distributing 750 laptops</cite> to refugees. In FY2024, the charity reported <cite id=\"5\">total revenue of $205,225</cite> to support these operations. While the mission addresses a high-urgency humanitarian need, the financial allocation is problematic. The charity reported a <cite id=\"1\">program expense ratio of 28.9%</cite> in FY2024. This means less than one-third of total spending reached direct programs. This figure is significantly below the <cite id=\"1\">industry standard of 75%</cite> and the <cite id=\"1\">peer median of 89.8%</cite>. Despite these efficiency gaps, the organization maintains <cite id=\"1\">low fundraising costs of $0.07</cite> for every dollar raised. The charity also manages a high volume of donated goods, having <cite id=\"2\">received 1,700 phones</cite> for distribution. However, with only <cite id=\"1\">1.3 months of working capital</cite>, the organization operates with a very lean financial cushion. This limited reserve makes long-term sustainability and response to sudden crises difficult.",
+      "summary": "Afghan Refugee Relief presents significant operational limitations, primary among which is a low allocation of spending toward direct programming. In FY2024, the charity generated <cite id=\"5\">Total Revenue of $205,225</cite>, but directed a <cite id=\"5\">Program expense ratio of 28.9%</cite> to its direct service activities. This leaves over 70% of organizational spending absorbed by administrative and fundraising activities, falling far below the <cite id=\"1\">75% industry standard</cite> and the <cite id=\"1\">peer program ratio median of 89.2%</cite> for humanitarian organizations. Despite financial spending constraints, the organization provides direct support to incoming refugee families through services including <cite id=\"2\">furnishing 200 homes</cite> and <cite id=\"2\">distributing 750 laptops</cite>. The charity achieves a reported direct service cost of <cite id=\"2\">$5.34 per beneficiary</cite> across its assistance operations. However, transparency and public evidence remain minimal, with no independent third-party impact evaluations available and limited public financial disclosures. Donors looking to support general refugee aid can contribute through <cite id=\"3\">sadaqah and general charitable giving</cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

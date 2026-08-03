@@ -58,14 +58,18 @@ def check_gik_inflated_ratio(metrics: CharityMetrics) -> list[ContradictionSigna
         return signals
 
     if ratio >= 0.80:
-        headline = f"{ratio:.0%} of reported revenue appears to be phantom noncash contributions"
+        # noncash_ratio is noncash / total CONTRIBUTIONS (see CharityMetrics), so
+        # naming revenue here overstated it: United Muslim Relief clamps to 100%
+        # of contributions while noncash is $143.0M of $149.9M revenue (95.4%),
+        # and the narrative repeated the "100% of revenue" claim.
+        headline = f"{ratio:.0%} of reported contributions appear to be phantom noncash contributions"
         detail_parts = [
             f"Noncash ratio: {ratio:.0%}",
             "At this level, reported program ratios are likely meaningless — "
             "inflated by noncash valuations rather than actual cash spending on programs",
         ]
     else:
-        headline = f"{ratio:.0%} of reported revenue is noncash (gifts-in-kind)"
+        headline = f"{ratio:.0%} of reported contributions are noncash (gifts-in-kind)"
         detail_parts = [f"Noncash ratio: {ratio:.0%}"]
     if program_ratio is not None:
         detail_parts.append(f"Reported program ratio: {program_ratio:.0%}")

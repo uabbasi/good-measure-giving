@@ -57,9 +57,24 @@
     "geographicCoverage": null
   },
   "trustSignals": null,
-  "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-07-23 21:10:21",
+  "websiteEvidenceSignals": {
+    "claims_longitudinal": false,
+    "claims_rcts": false,
+    "claims_third_party_eval": false,
+    "disclosure_richness": 1,
+    "reports_annual_report": false,
+    "reports_board_info": false,
+    "reports_methodology": false,
+    "reports_outcome_metrics": true
+  },
+  "lastUpdated": "2026-08-02 11:40:05",
   "sourceAttribution": {
+    "admin_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
+      "timestamp": "2026-08-02T11:39:03",
+      "value": 0
+    },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
       "source_url": "https://citcd.org/donate",
@@ -75,7 +90,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
-      "timestamp": "2026-07-23T20:36:42",
+      "timestamp": "2026-08-02T11:39:03",
       "value": 0
     },
     "has_audited_financials": {
@@ -87,26 +102,32 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/454227947",
-      "timestamp": "2026-07-23T20:36:41",
+      "timestamp": "2026-08-02T11:39:03",
       "value": "X40"
     },
     "program_expense_ratio": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
-      "timestamp": "2026-07-23T20:36:42",
+      "timestamp": "2026-08-02T11:39:03",
       "value": 1
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
-      "timestamp": "2026-07-23T20:36:42",
+      "timestamp": "2026-08-02T11:39:03",
+      "value": 1014590
+    },
+    "total_expenses": {
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
+      "timestamp": "2026-08-02T11:39:03",
       "value": 1014590
     },
     "total_revenue": {
-      "source_name": "Form 990 (2023)",
-      "source_url": "https://projects.propublica.org/nonprofits/organizations/454227947",
-      "timestamp": "2026-07-23T20:36:41",
-      "value": 2011605
+      "source_name": "Charity Navigator",
+      "source_url": "https://www.charitynavigator.org/ein/454227947#financials",
+      "timestamp": "2026-08-02T11:39:03",
+      "value": 1955187
     },
     "working_capital_months": {
       "derived_from": [
@@ -114,9 +135,10 @@
         "total_liabilities",
         "total_expenses"
       ],
+      "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/454227947",
-      "timestamp": "2026-07-23T20:36:41",
+      "timestamp": "2026-08-02T11:39:03",
       "value": 126.5
     }
   },
@@ -128,6 +150,7 @@
   "causeTags": [
     "educational",
     "faith-based",
+    "fisabilillah",
     "fuqara",
     "long-term-development",
     "masakin",
@@ -156,9 +179,11 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": 1,
+    "thirdPartyEvaluated": null,
     "evaluationSources": [
-      "Charity Navigator",
+      "3-Star Rating (Charity Navigator)",
+      "Grant (Muslim Community Center (MCC))",
+      "Grant (PayPal Giving Fund)",
       "Grant (The Arif Foundation)"
     ],
     "receivesFoundationGrants": null
@@ -171,22 +196,37 @@
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Limited Basis",
+    "assessment_label": "Context Dependent",
     "archetype_code": "SOVEREIGNTY",
     "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Early",
     "signal_states": {
-      "evidence": "Strong",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
-      "risk": "Limited"
+      "risk": "Moderate"
     },
-    "recommendation_cue": "Limited Match",
-    "recommendation_rationale": "Limited match due to weaker results and/or higher uncertainty; review methodology details before deciding.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Operating reserves are calculated from the FY2023 Form 990, not the FY2024 income statement above",
+      "detail": "Charity Navigator supplied the more recent income statement but publishes no balance sheet for that year, so reserves are computed from the IRS filing's own assets and expenses. The two figures describe different years and will not divide into one another.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 126.5,
+        "field": "working_capital_months",
+        "fiscal_year": 2023,
+        "other_fiscal_year": 2024,
+        "other_source": "charity_navigator",
+        "reason": "derived_from_a_different_filing_year"
+      }
+    },
     {
       "type": "zakat_hoarding",
       "severity": "high",
@@ -199,13 +239,6 @@
     {
       "type": "risk_deduction",
       "severity": "low",
-      "headline": "No outcome measurement or metrics tracking",
-      "detail": "Source: Website/Candid",
-      "data_points": {}
-    },
-    {
-      "type": "risk_deduction",
-      "severity": "low",
       "headline": "No documented theory of change",
       "detail": "Source: Website",
       "data_points": {}
@@ -214,14 +247,14 @@
   "amalEvaluation": {
     "charity_ein": "45-4227947",
     "charity_name": "The Center for Islamic Teachings and Community Development",
-    "amal_score": 47,
+    "amal_score": 50,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:28:36",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.3,
-      "impact": 22
+      "impact": 24
     },
     "score_details": {
       "alignment": {
@@ -328,13 +361,13 @@
             "status": "full"
           },
           {
-            "evidence": "Evidence & outcomes: VERIFIED",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Evidence & outcomes: REPORTED",
+            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
+            "improvement_value": 6,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 2,
+            "status": "missing"
           },
           {
             "evidence": "Theory of change: ABSENT",
@@ -346,46 +379,28 @@
             "status": "missing"
           },
           {
-            "evidence": "Board governance: WEAK (unknown members)",
+            "evidence": "Board governance: STRONG (9 members)",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Governance",
             "possible": 10,
-            "scored": 0,
-            "status": "missing"
+            "scored": 10,
+            "status": "full"
           }
         ],
         "cost_per_beneficiary": null,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "Delivery: capacity building; Impact 22/50",
+        "rationale": "Delivery: capacity building; Impact 24/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 22
+        "score": 24
       },
       "judge_issues": [
         {
-          "field": "baseline_narrative.dimension_explanations.impact",
-          "judge": "score",
-          "message": "The rationale for the impact dimension omits a dominant limiting factor: the excessive cash reserves (126.5 months of working capital), which resulted in a 0/7 score for Financial Health.",
+          "field": "dimension_explanations.impact",
+          "judge": "citation",
+          "message": "The citation URL points to a general donation page instead of the CITCD Portfolio Magazine, so the services mentioned could not be confirmed from this URL.",
           "severity": "warning"
-        },
-        {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity's programs primarily focus on religious education and community services like funeral arrangements. While these can indirectly benefit the poor and needy (masakin), there is no explicit evidence presented that the direct beneficiaries of these programs are exclusively or primarily from the 'masakin' category as defined by zakat guidelines. The charity's website states it accepts Zakat for 'fuqara and masakin', but the program descriptions lean more towards general community support and religious education which could fall under 'fi sabilillah' if framed as such.",
-          "severity": "warning"
-        },
-        {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The charity holds a significant amount of working capital (126.5 months), which is unusual for an organization that claims to distribute zakat. While not a direct contradiction of the 'masakin' classification, it raises questions about the prompt distribution of zakat funds, which is a key principle.",
-          "severity": "info"
-        },
-        {
-          "field": "discovered.evaluations.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
-          "severity": "info"
         },
         {
           "field": "discovered.awards.confidence",
@@ -406,18 +421,11 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -5,
+      "risk_deduction": -4,
       "risks": {
-        "overall_risk_level": "ELEVATED",
+        "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Zakat-collecting organization holds 126 months of reserves \u2014 zakat must be distributed promptly",
         "risks": [
-          {
-            "category": "impact",
-            "data_source": "Website/Candid",
-            "description": "No outcome measurement or metrics tracking",
-            "mitigation": null,
-            "severity": "low"
-          },
           {
             "category": "impact",
             "data_source": "Website",
@@ -433,7 +441,7 @@
             "severity": "high"
           }
         ],
-        "total_deduction": -5
+        "total_deduction": -4
       },
       "score_summary": "The Center for Islamic Teachings and Community Development shows good alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
       "zakat": {
@@ -447,194 +455,200 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported total revenue of $1,955,187 and 126.5 months of working capital in FY2024.",
+          "claim": "The organization lacks a formal theory of change to track long-term outcomes.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/454227947#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and follows specific asnaf categories.",
+          "claim": "The charity is zakat-eligible and accepts donations for various community needs.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://citcd.org/donate"
         },
         {
-          "claim": "The organization reported a 100.0% program expense ratio in FY2024.",
+          "claim": "In FY2024, the organization managed $1,955,187 in total revenue and held 126.5 months of working capital.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454227947"
         },
         {
-          "claim": "The organization operates the Abraar Academy and the American Muslim Cemetery.",
+          "claim": "Services include the Abraar Academy for children and the American Muslim Cemetery for dignified burials.",
           "id": "[5]",
           "source_name": "CITCD PORTFOLIO MAGAZINE",
           "source_url": "https://citcd.org/assets/about/CITCD_BOOK.pdf"
         },
         {
-          "claim": "The charity offers various donation options for religious and community support.",
+          "claim": "The charity has a high fit for Muslim donors by offering zakat-eligible programs.",
           "id": "[6]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://citcd.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization shows high spending efficiency on programs, but its overall assessment is limited by a lack of outcome tracking and an unusually high level of cash reserves. While it serves a clear religious need, there is no formal plan showing how its activities lead to specific long-term changes.",
+      "amal_score_rationale": "This charity shows a balance between efficient spending on local services and a need for better planning regarding its large financial reserves. While it serves clear community needs, it lacks public data on long-term outcomes.",
       "areas_for_improvement": [
-        "Lacks a documented theory of change or public metrics to track program outcomes",
-        "holds 126.5 months of working capital, which exceeds typical needs for prompt zakat distribution",
-        "Does not provide a formal governance framework or independent board oversight data"
+        "High cash reserves of 126.5 months may delay the distribution of zakat funds",
+        "Lack of a documented theory of change to measure long-term impact"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a strong fit for Muslim donors as it is zakat-eligible and provides religious education and funeral services [2][6]. While it has a solid track record of serving the community, it currently holds 126.5 months of working capital [1]. This is a concern because zakat funds are generally intended to be distributed to those in need without long delays.",
-        "impact": "The charity spent 100.0% of its funds on programs in FY2024, showing that all donor money goes toward services like education and burials [1][3]. However, it does not track specific metrics or outcomes to prove how well these programs work [5]. It also lacks a theory of change to explain its long-term goals."
+        "alignment": "The charity has a high fit for Muslim donors by offering zakat-eligible programs and religious education [2][6]. It addresses specific cultural needs like Islamic funerals.",
+        "impact": "The organization focuses on capacity building through religious schooling and burial services [5]. In FY2024, it reported a Program expense ratio of 100.0%, meaning all spending went toward its mission [3]. However, there is no formal theory of change to track how these programs improve lives over time [1]."
       },
-      "headline": "The Center for Islamic Teachings and Community Development provides religious services and education while maintaining very high cash reserves.",
+      "headline": "The Center for Islamic Teachings and Community Development provides religious education and funeral services for the Muslim community.",
       "strengths": [
-        "Directed 100.0% of expenses toward programs in FY2024",
-        "Maintains a $0.00 fundraising cost for every $1 raised",
-        "Provides essential community services including dignified burials and religious schooling"
+        "Program expense ratio of 100.0% in FY2024",
+        "Fundraising Efficiency of $0.00 per $1 raised in FY2024"
       ],
-      "summary": "Based in Indiana, this organization manages worship services, the Abraar Academy, and the American Muslim Cemetery [1][5]. In FY2024, the charity reported total revenue of $1,955,187 and directed 100.0% of its spending toward its programs [1][3]."
+      "summary": "In FY2024, the organization managed $1,955,187 in total revenue to support its local programs [3]. These services include the Abraar Academy for children and the American Muslim Cemetery for dignified burials [5]. The charity is zakat-eligible and accepts donations for various community needs [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2025-01-15",
-          "claim": "126.5 months of working capital",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 100.0% in FY2024",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Working Capital Ratio: 127.2 Months",
-          "source_name": "Charity Navigator - CITCD",
+          "quote": "Program Expense Ratio: 100.0%",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/454227947#financials"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "zakat eligibility verified",
+          "access_date": "2026-01-09",
+          "claim": "zakat-eligible",
           "confidence": 0.9,
           "id": "[2]",
-          "quote": "Accepts Zakat for fuqara and masakin",
-          "source_name": "CITCD Donate",
+          "quote": "Zakat categories accepted for community support",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://citcd.org/donate"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "100.0% program expense ratio",
-          "confidence": 1,
+          "access_date": "2026-01-09",
+          "claim": "$1,955,187 in total revenue",
+          "confidence": 0.95,
           "id": "[3]",
-          "quote": "Program Service Expenses: 100%",
+          "quote": "Total Revenue: $2,011,605 in 2023",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/454227947"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "Abraar Academy supply list",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "third-party impact evaluations",
+          "confidence": 0.85,
           "id": "[4]",
-          "quote": "Supply list for Abraar Academy students",
-          "source_name": "Abraar Academy Supply List",
+          "quote": "School supply lists and internal course documents",
+          "source_name": "Download Supply List",
           "source_type": "website",
           "source_url": "https://citcd.org/assets/abraar/supply_list.pdf"
         },
         {
-          "access_date": "2025-01-15",
-          "claim": "American Muslim Cemetery and funeral services",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "religious education, cemetery services, and community programs",
+          "confidence": 0.9,
           "id": "[5]",
-          "quote": "Managing the American Muslim Cemetery and providing dignified burials",
-          "source_name": "CITCD Portfolio Magazine",
+          "quote": "Abraar Academy and American Muslim Cemetery programs",
+          "source_name": "CITCD PORTFOLIO MAGAZINE",
           "source_type": "website",
           "source_url": "https://citcd.org/assets/about/CITCD_BOOK.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "donation options",
+          "confidence": 0.9,
+          "id": "[6]",
+          "quote": "Donate to CITCD projects",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://citcd.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization shows high spending efficiency on programs, but its overall assessment is limited by a lack of outcome tracking and an unusually high level of cash reserves. While it serves a clear religious need, there is no formal plan showing how its activities lead to specific long-term changes.",
+      "amal_score_rationale": "This charity shows a balance between efficient spending on local services and a need for better planning regarding its large financial reserves. While it serves clear community needs, it lacks public data on long-term outcomes.",
       "amal_scores": {
-        "amal_score": 47,
+        "amal_score": 50,
         "confidence_scores": {
           "alignment": 30,
           "data_confidence": 0.3,
-          "impact": 22
+          "impact": 24
         },
         "confidence_tier": "LOW",
-        "impact_tier": "BELOW_AVERAGE",
+        "impact_tier": "AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
         {
-          "area": "Excessive Cash Reserves",
+          "area": "Excessive Operating Reserves",
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[1]"
           ],
-          "context": "The charity holds <cite id=\"1\">126.5 months of working capital</cite>, which may conflict with the religious requirement for <cite id=\"2\">prompt zakat distribution</cite>."
+          "context": "The charity holds <cite id=\"1\">126.5 months of working capital reserves</cite>, which may delay prompt zakat distribution."
         },
         {
-          "area": "Governance Transparency",
+          "area": "Limited Outcome Measurement",
           "citation_ids": [
-            "[3]"
+            "[4]"
           ],
-          "context": "There is <cite id=\"3\">limited public data regarding board oversight</cite> or independent governance frameworks."
+          "context": "The organization lacks <cite id=\"4\">third-party impact evaluations</cite> and explicit theory of change documentation."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "UNEVALUATED",
+        "finances_status": "UNEVALUATED",
+        "governance_status": "UNEVALUATED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "No BBB Wise Giving Alliance assessment is available for this organization."
+        "summary": "Currently unevaluated by BBB Wise Giving Alliance Standards"
       },
       "case_against": {
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[4]"
         ],
-        "mitigation_notes": "The organization provides essential funeral and educational services that are otherwise unavailable in the region.",
+        "mitigation_notes": "The organization continues to operate active community facilities and direct academic programs.",
         "risk_factors": [
-          "<cite id=\"1\">126.5 months of working capital</cite> suggests stagnant funds.",
-          "<cite id=\"3\">Lack of documented theory of change</cite> or outcome metrics."
+          "<cite id=\"1\">Excessive reserves equal to over 10 years of operations</cite>",
+          "<cite id=\"4\">Absence of formal third-party outcome evaluations</cite>"
         ],
-        "summary": "The primary concern is the <cite id=\"1\">excessive accumulation of funds</cite> rather than active deployment for community needs."
+        "summary": "The main concern involves financial capital accumulation: holding <cite id=\"1\">126.5 months of working capital</cite> risks delaying the distribution of zakat donations. Furthermore, empirical outcome tracking across its educational and funeral services is not comprehensively published."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
+          "form990": 2,
           "rating": 3,
           "website": 5
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
+        "high_confidence_count": 8,
+        "total_count": 10,
         "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financial data from FY2024",
+        "data_freshness": "Form 990 and web data from 2023-2024",
         "data_gaps": [
-          "Missing board governance details",
-          "No audited financials"
+          "Missing published outcome evaluations",
+          "Limited transparency disclosures"
         ],
         "level": "LOW",
-        "notes": "Low data confidence due to transparency gaps and excessive reserves.",
+        "notes": "Evaluation affected by low data confidence",
         "score": 30,
         "sources_used": [
-          "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Form 990",
+          "Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing independent board member names",
-          "Excessive reserve levels",
-          "No external impact evaluation"
+          "Limited outcome metrics",
+          "Excess reserve justification"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 10,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
@@ -643,47 +657,45 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The organization has <cite id=\"2\">verified zakat eligibility</cite> and serves the <cite id=\"2\">fuqara and masakin</cite> within a religious-cultural context.",
+          "explanation": "Strong fit for Muslim donors with <cite id=\"2\">verified zakat eligibility</cite> serving local religious and community needs.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[1]"
           ],
-          "explanation": "Credibility is constrained by <cite id=\"3\">low data transparency</cite> and a lack of <cite id=\"1\">independent board member verification</cite> in public filings.",
-          "improvement": "The charity should <cite id=\"3\">publish a list of independent board members</cite> and formalize its governance policies to build donor trust."
+          "explanation": "The organization demonstrates governance stability with <cite id=\"1\">100% independent board members</cite>, though public transparency is limited by a low overall data confidence profile.",
+          "improvement": "Publish detailed annual impact reports and independent financial audits to enhance public verification."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[3]",
-            "[5]"
+            "[1]"
           ],
-          "explanation": "While the <cite id=\"3\">100.0% program ratio</cite> is high, the <cite id=\"1\">126.5 months of working capital</cite> indicates that impact is delayed rather than immediate.",
-          "improvement": "The organization should <cite id=\"1\">deploy its excess unrestricted reserves</cite> into mission delivery and <cite id=\"5\">publish beneficiary counts</cite> to track effectiveness."
+          "explanation": "Operations show a <cite id=\"1\">100.0% program expense ratio in FY2024</cite> alongside minimal fundraising costs.",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS_CULTURAL",
         "citation_ids": [
           "[2]",
-          "[3]"
+          "[5]"
         ],
-        "evidence_rigor": "Grade C - Verified outcomes but no external evaluation",
+        "evidence_rigor": "Grade C - Limited published outcome tracking",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct local service and community infrastructure",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
-          "masakin (needy)"
+          "masakin (needy)",
+          "fisabilillah"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": null,
+        "admin_ratio": 0,
         "annual_revenue": 2011605,
         "citation_ids": [
           "[1]",
@@ -692,19 +704,13 @@
         "cn_financial_score": null,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 12,
-        "peer_program_ratio_median": 0.909,
+        "peer_count": 10,
+        "peer_program_ratio_median": 0.969,
         "program_expense_ratio": 1,
-        "reserves_months": 127.2,
+        "reserves_months": 126.5,
         "revenue_cagr_3yr": 8.1,
         "working_capital_months": 126.5,
         "yearly_financials": [
-          {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 1955187,
-            "year": 2024
-          },
           {
             "expenses": 581832,
             "net_assets": 6131548,
@@ -726,7 +732,7 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service provider",
+        "grant_strategy": "Direct operation of local programs rather than external grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
@@ -734,131 +740,126 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Center for Islamic Teachings and Community Development provides religious services and education while maintaining very high cash reserves.",
+      "headline": "The Center for Islamic Teachings and Community Development provides religious education and funeral services for the Muslim community.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support local Indiana Muslim infrastructure and are comfortable with a charity that maintains high long-term savings.",
+        "best_for_summary": "Best for donors who want to support local Islamic education and cemetery infrastructure with zakat-eligible contributions.",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[2]",
+          "[5]"
         ],
         "donor_motivations": [
-          "Want to fund essential religious services like funerals and cemeteries",
-          "Prefer organizations with zero fundraising overhead",
-          "Value the stability of a long-standing local institution"
+          "Fulfill zakat obligations through local community infrastructure",
+          "Support Islamic primary and secondary education facilities",
+          "Fund essential community burial services"
         ],
         "giving_considerations": [
-          "High reserves mean your donation may not be spent immediately",
-          "Limited transparency regarding board governance",
-          "Focus is on local capacity building rather than global relief"
+          "The charity maintains large capital reserves relative to annual spending",
+          "Outcome reporting relies primarily on internal administrative tracking"
         ],
-        "not_ideal_for": "Donors who prioritize immediate deployment of zakat or those who require high levels of transparency and independent board data."
+        "not_ideal_for": "Donors seeking international emergency humanitarian relief or those requiring third-party academic evaluation studies."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[5]"
+          "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Evidence is verified through internal handbooks and program descriptions, but lacks independent evaluation.",
-        "external_evaluations": [
-          "Internal School Handbooks"
-        ],
-        "outcome_tracking_years": 3,
+        "evidence_grade_explanation": "Grade C indicates internal tracking of programmatic activities without external third-party evaluation.",
+        "external_evaluations": [],
+        "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The organization provides religious education and funeral services to maintain Islamic identity and community dignity.",
-        "why_evidence_matters": "Evidence ensures that educational programs like the Abraar Academy are meeting their religious and academic goals."
+        "theory_of_change_summary": "Provides community facilities and Islamic schooling to support local religious life.",
+        "why_evidence_matters": "Outcome tracking helps ensure programs achieve sustained religious and educational goals efficiently."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[5]"
         ],
         "founded_year": 2012,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 8.1,
-        "room_for_funding": "LOW",
-        "room_for_funding_explanation": "The organization already holds <cite id=\"1\">over 126.5 months of working capital</cite> in reserve.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "Large reserve balances suggest strong capital coverage, though program expansion remains possible.",
         "strategic_priorities": [
-          "Religious education expansion",
-          "Cemetery maintenance"
+          "Abraar Academy education",
+          "American Muslim Cemetery development"
         ],
         "years_operating": 14
       },
       "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
+        "board_size": 9,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": null,
         "citation_ids": [
           "[1]",
-          "[3]",
           "[5]"
         ],
         "employees_count": null,
-        "geographic_reach": "Indiana, USA",
+        "geographic_reach": "USA",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
+        "staff_per_million_revenue": null,
         "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[5]"
         ],
-        "differentiator": "Maintains a <cite id=\"3\">100.0% program ratio</cite>, which exceeds the <cite id=\"1\">90.9% peer median</cite>.",
-        "peer_group": "Religious and Cultural Organizations",
+        "differentiator": "Combines Islamic schooling with specialized services like <cite id=\"5\">dignified cemetery and funeral operations</cite>.",
+        "peer_group": "Religious and cultural community organizations",
         "similar_orgs": [
           "Islamic Society of Central Jersey",
           "Islamic Center of Irvine",
-          "Sachse Muslim Society"
+          "Islamic Society of Northwest Suburbs of Chicago"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar religious and community focus",
+          "differentiator": "Similar focus on religious services and community facilities",
           "name": "Islamic Society of Central Jersey"
         },
         {
-          "differentiator": "Similar size and service model",
+          "differentiator": "Similar focus on religious services and community facilities",
           "name": "Islamic Center of Irvine"
         },
         {
-          "differentiator": "Focus on religious services and education",
-          "name": "Sachse Muslim Society"
+          "differentiator": "Similar focus on religious services and community facilities",
+          "name": "Islamic Society of Northwest Suburbs of Chicago"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "detail": "The organization directed <cite id=\"3\">1.0% of its expenses toward programs</cite> in FY2024, ensuring all reported spending goes to services.",
-          "point": "Maximum Program Spending"
+          "detail": "The organization reported a <cite id=\"1\">100.0% program expense ratio in FY2024</cite>, directing funds fully to direct community operations.",
+          "point": "High Program Expense Allocation"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The charity maintains a <cite id=\"1\">$0.00 fundraising cost for every $1 raised</cite>, indicating that it does not use professional solicitors.",
-          "point": "High Fundraising Efficiency"
+          "detail": "Reported <cite id=\"1\">fundraising efficiency of $0.00 per $1 raised in FY2024</cite> demonstrates minimal direct donor acquisition spending.",
+          "point": "Zero Fundraising Costs"
         },
         {
           "citation_ids": [
             "[5]"
           ],
-          "detail": "CITCD manages critical services including <cite id=\"5\">Muslim funeral services and the Abraar Academy</cite> religious school.",
-          "point": "Essential Community Infrastructure"
+          "detail": "Operates essential community facilities including <cite id=\"5\">Abraar Academy and Muslim Funeral Services</cite>.",
+          "point": "Direct Community Infrastructure"
         }
       ],
       "strengths_deep_dive": [
-        "The Center for Islamic Teachings and Community Development demonstrates a commitment to direct service delivery within the Indiana Muslim community. By managing the <cite id=\"5\">American Muslim Cemetery and providing funeral services</cite>, they fill a vital niche in religious infrastructure. Their educational arm, <cite id=\"5\">Abraar Academy</cite>, provides religious instruction for both children and adults. Financially, the organization is characterized by <cite id=\"3\">zero reported fundraising expenses</cite>, which allows the entirety of its annual budget to be <cite id=\"3\">allocated to these core community programs</cite>."
+        "The organization maintains direct community services through the <cite id=\"5\">Abraar Academy and the American Muslim Cemetery</cite>. Financial data from FY2024 reflects a <cite id=\"1\">100.0% program expense ratio</cite>, beating the <cite id=\"1\">industry standard benchmark of 75%</cite> as well as the <cite id=\"1\">peer program ratio median of 96.9%</cite>."
       ],
-      "summary": "The Center for Islamic Teachings and Community Development (CITCD) operates as a religious and educational hub in Indiana, managing the <cite id=\"5\">Abraar Academy and the American Muslim Cemetery</cite>. While the organization maintains a <cite id=\"3\">100.0% program expense ratio</cite> as of FY2024, its overall evaluation is limited by significant financial and governance concerns. The charity reported <cite id=\"3\">$2,011,605 in total revenue</cite> in FY2024, yet it holds an unusually high volume of cash. Specifically, it maintains <cite id=\"1\">126.5 months of working capital</cite>, which is more than ten years of operating expenses. For a <cite id=\"2\">zakat-eligible organization</cite>, this level of reserves is a major limiting factor, as it suggests that funds are being accumulated rather than <cite id=\"2\">distributed promptly to those in need</cite>. Despite these financial bottlenecks, the organization provides essential services, including <cite id=\"5\">dignified burials and religious schooling</cite> for the local community. Its fundraising operations are notably lean, reporting <cite id=\"1\">$0.00 spent to raise every $1</cite> in donations. However, the lack of <cite id=\"3\">independent board oversight data</cite> and a formal theory of change makes it difficult for donors to verify the long-term effectiveness of its programs.",
+      "summary": "The Center for Islamic Teachings and Community Development provides <cite id=\"5\">religious education, cemetery services, and community programs</cite> for the Muslim community in North America. Founded in <cite id=\"5\">2012</cite>, the organization operates key institutions including the <cite id=\"5\">Abraar Academy and the American Muslim Cemetery</cite>. In FY2024, the charity managed <cite id=\"3\">$1,955,187 in total revenue</cite> to support its core religious and local infrastructure services. Financial filings indicate a <cite id=\"1\">program expense ratio of 100.0% in FY2024</cite>, which exceeds the <cite id=\"1\">peer program ratio median of 96.9%</cite>. The organization is <cite id=\"2\">zakat-eligible</cite> and directs funds toward valid categories including <cite id=\"2\">fuqara, masakin, and fisabilillah</cite>. However, evaluation shows significant reserves equal to <cite id=\"1\">126.5 months of working capital</cite>, which creates a potential delay in deploying collected donor funds. Additionally, public outcome data remains limited across its educational and funeral service initiatives.",
       "zakat_guidance": {
         "classification": "masakin",
         "eligibility": "ZAKAT-ELIGIBLE"

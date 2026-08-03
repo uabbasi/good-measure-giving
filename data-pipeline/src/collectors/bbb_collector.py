@@ -72,6 +72,33 @@ class BBBCollector(BaseCollector):
     BASE_URL = "https://give.org"
     SEARCH_URL = "https://give.org/search"
 
+    # Marks the verified negative "BBB does not review this charity". The payload
+    # is ~47 bytes by design, well under the orchestrator's 200-byte substance
+    # floor for bbb, so the floor alone would reject it as empty/shell content
+    # and re-fail a required source — the H12 failure the sentinel exists to
+    # prevent. `is_not_reviewed_sentinel` is how the storage layer recognizes it,
+    # mirroring Form990GrantsCollector.NO_XML_SENTINEL.
+    NOT_REVIEWED_KEY = "bbb_not_reviewed"
+
+    @classmethod
+    def is_not_reviewed_sentinel(cls, content: Optional[str]) -> bool:
+        """True when content is the not-reviewed payload emitted by fetch().
+
+        Deliberately narrow: only a JSON object carrying a truthy
+        NOT_REVIEWED_KEY qualifies, so an unrelated short body is still
+        rejected by the substance floor.
+        """
+        if not content:
+            return False
+        stripped = content.strip()
+        if not stripped.startswith("{"):
+            return False
+        try:
+            payload = json.loads(stripped)
+        except (json.JSONDecodeError, ValueError):
+            return False
+        return isinstance(payload, dict) and bool(payload.get(cls.NOT_REVIEWED_KEY))
+
     def __init__(
         self,
         logger: Optional[PipelineLogger] = None,
@@ -255,7 +282,7 @@ class BBBCollector(BaseCollector):
             # (H12). Return the finding instead.
             return FetchResult(
                 success=True,
-                raw_data=json.dumps({"bbb_not_reviewed": True, "ein": ein}),
+                raw_data=json.dumps({self.NOT_REVIEWED_KEY: True, "ein": ein}),
                 content_type="json",
             )
 

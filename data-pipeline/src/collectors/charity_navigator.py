@@ -1150,6 +1150,9 @@ class CharityNavigatorCollector(BaseCollector):
 
                 # C-004: Validate plausibility of LLM-extracted financial figures
                 financials = self._validate_llm_financials(financials)
+                # The prompt names no unit for working capital; the page shows
+                # years and every consumer here reads months.
+                financials = self.normalize_working_capital_units(financials)
 
                 if self.logger:
                     found_fields = [k for k, v in financials.items() if v is not None]
@@ -1164,6 +1167,59 @@ class CharityNavigatorCollector(BaseCollector):
             if self.logger:
                 self.logger.warning(f"LLM financial extraction failed: {e}")
             return {}
+
+    # Charity Navigator states working capital in YEARS; every consumer of
+    # working_capital_ratio in this codebase reads MONTHS. Both structured
+    # extraction paths convert (`years * 12`, lines ~826 and ~953); the LLM
+    # fallback did not, because its prompt names no unit and the model copies
+    # what the page shows. The field then meant years for 6 charities and
+    # months for the rest — a twelvefold understatement of reserves wherever
+    # the aggregator gap-filled it, and the reason EIN 23-7065716 was blocked
+    # (the judge read our 39.0 months against "3.25" and called it a
+    # contradiction; 3.25 years IS 39.0 months).
+    _WORKING_CAPITAL_UNIT_TOLERANCE = 0.02
+
+    @classmethod
+    def normalize_working_capital_units(cls, financials: Dict[str, Any]) -> Dict[str, Any]:
+        """Coerce working_capital_ratio to months, using the page's own arithmetic.
+
+        net_assets / total_expenses is the ratio expressed in years, so it
+        settles which unit the extracted value is in. Without that basis the
+        units are unknowable and the value is left alone — a silent 12x is
+        worse than an inconsistent one.
+        """
+        value = financials.get("working_capital_ratio")
+        net_assets = financials.get("net_assets")
+        total_expenses = financials.get("total_expenses")
+        if value is None or net_assets is None or not total_expenses:
+            return financials
+        try:
+            value = float(value)
+            years = float(net_assets) / float(total_expenses)
+        except (TypeError, ValueError, ZeroDivisionError):
+            return financials
+
+        def close(a: float, b: float) -> bool:
+            return abs(a - b) <= max(0.01, abs(b) * cls._WORKING_CAPITAL_UNIT_TOLERANCE)
+
+        # Months first: an already-converted value must never be multiplied
+        # again. At a ratio of 0 the two readings coincide and either is right.
+        if close(value, years * 12):
+            return financials
+        if close(value, years):
+            financials["working_capital_ratio"] = round(value * 12, 1)
+            return financials
+
+        # Neither reading fits. Working capital is a subset of net assets, so
+        # it cannot cover more months than net assets do — a figure above that
+        # ceiling is impossible rather than merely differently defined. (Below
+        # it is fine: Charity Navigator may count only unrestricted funds.)
+        # EIN 20-1799252 returned 39 against a ceiling of 3.2. It never reached
+        # the page, but it is handed to the factual judge as ground truth,
+        # where a wrong number blocks a narrative that is right.
+        if years > 0 and value > years * 12 * 1.05:
+            financials["working_capital_ratio"] = None
+        return financials
 
     def _validate_llm_financials(self, financials: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -1247,6 +1303,35 @@ class CharityNavigatorCollector(BaseCollector):
             # Pass through other fields unchanged
             else:
                 validated[key] = value
+
+        # Cross-field check: the range checks above are per-field, so a single
+        # invented round number passes every one of them. When CN changes its
+        # page format the structured extraction finds nothing, the LLM fallback
+        # runs against a page with no financials, and it answers with one
+        # placeholder repeated across every money field. Observed on EIN
+        # 99-3373484: revenue == expenses == program == admin == fundraising ==
+        # $100,000 against a Form 990 reporting $47,893, with "100000" appearing
+        # nowhere in the CN page. No real filer produces that shape -- it implies
+        # zero admin, zero fundraising, and revenue exactly equal to expenses at
+        # once -- so treat it as a failed extraction and keep the fields NULL
+        # rather than publishing a fabricated figure.
+        #
+        # Zero is deliberately excluded: the aggregator already resolves
+        # ambiguous CN zeros by arithmetic corroboration, and pre-empting that
+        # here would discard a signal it knows how to interpret.
+        shared = {
+            key: validated[key]
+            for key in financial_fields
+            if validated.get(key) not in (None, 0)
+        }
+        if len(shared) >= 3 and len(set(shared.values())) == 1:
+            if self.logger:
+                self.logger.warning(
+                    f"LLM financials rejected: {len(shared)} money fields all equal "
+                    f"{next(iter(shared.values()))} (placeholder, not a filing)"
+                )
+            for key in shared:
+                validated[key] = None
 
         return validated
 
