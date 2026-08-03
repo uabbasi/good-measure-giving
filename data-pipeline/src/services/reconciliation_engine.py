@@ -9,12 +9,14 @@ Produces:
 - CharityDataBundle with all data merged and conflicts logged
 """
 
+import json
 import logging
 from datetime import datetime, timezone
 from typing import Any, Optional
 
 from ..db.repository import (
     AgentDiscoveryRepository,
+    CharityDataRepository,
     CharityRepository,
     RawDataRepository,
 )
@@ -46,6 +48,7 @@ class ReconciliationEngine:
         self.raw_repo = RawDataRepository()
         self.discovery_repo = AgentDiscoveryRepository()
         self.mapper = ParameterMapper()
+        self.charity_data_repo = CharityDataRepository()
 
     def reconcile(self, ein: str) -> Optional[CharityDataBundle]:
         """
@@ -76,7 +79,7 @@ class ReconciliationEngine:
         )
 
         # 1. Build financials from structured sources
-        bundle.financials = self._reconcile_financials(raw_data)
+        bundle.financials = self._reconcile_financials(raw_data, ein)
 
         # 2. Build legal status
         bundle.legal_status = self._build_legal_status(ein, charity, raw_data)
@@ -161,11 +164,61 @@ class ReconciliationEngine:
                 result["reputation"].append(d)
         return result
 
-    def _reconcile_financials(self, raw_data: dict[str, dict]) -> Optional[FinancialsBundle]:
-        """
-        Reconcile financial data using source priority.
+    _ELECTED_INCOME_STATEMENT = (
+        "total_revenue",
+        "total_expenses",
+        "program_expenses",
+        "admin_expenses",
+        "fundraising_expenses",
+    )
 
-        Priority: ProPublica > Candid > Charity Navigator
+    def _elected_income_statement(self, ein: Optional[str]) -> dict[str, Any]:
+        """The income statement the pipeline actually published, or {}.
+
+        Read from metrics_json, where synthesize writes it — the equivalent
+        top-level columns on charity_data are not populated.
+
+        All-or-nothing by design: a half-elected statement would put one
+        year's numerator over another year's denominator, which is the defect
+        the canonical-source rule exists to prevent, arriving already divided.
+        """
+        if not ein:
+            return {}
+        row = self.charity_data_repo.get(ein) or {}
+        metrics = row.get("metrics_json") or {}
+        if isinstance(metrics, str):
+            try:
+                metrics = json.loads(metrics)
+            except (ValueError, TypeError):
+                return {}
+        if not isinstance(metrics, dict) or metrics.get("total_revenue") is None:
+            return {}
+        return {
+            field: metrics[field]
+            for field in self._ELECTED_INCOME_STATEMENT
+            if metrics.get(field) is not None
+        }
+
+    def _reconcile_financials(
+        self, raw_data: dict[str, dict], ein: str | None = None
+    ) -> Optional[FinancialsBundle]:
+        """
+        Reconcile financial data, preferring the income statement we published.
+
+        These values reach the rich prompt inside its "MANDATORY VALUES (USE
+        EXACTLY - DO NOT CALCULATE OR INVENT)" block, the most forceful
+        instruction in it. This method used to run its own election over the
+        raw sources -- a THIRD one, alongside extract_financials() and
+        CharityMetricsAggregator.aggregate() -- so whenever ProPublica lost the
+        real election the model was still ordered to use ProPublica's figure
+        exactly. 57 published charities state a total revenue that is not the
+        one we publish; 54 trace to ProPublica. CARE USA was told $909,098,267
+        was mandatory against a published $832,911,696, and complied.
+
+        The elected income statement therefore wins outright. Raw-source
+        priority (ProPublica > Candid > Charity Navigator) remains for
+        charities the aggregator elected nothing for, and for fields outside
+        the income statement such as assets and liabilities.
         """
         # Priority order for financial fields
         priority = self.mapper.FIELD_PRIORITY["financial"]
@@ -179,7 +232,14 @@ class ReconciliationEngine:
         financials: dict[str, Any] = {}
         primary_source = None
 
+        elected = self._elected_income_statement(ein)
+        if elected:
+            financials.update(elected)
+            primary_source = "elected"
+
         for field in fields:
+            if field in financials:
+                continue
             for source in priority:
                 if source in raw_data:
                     # Map source field name to our unified name

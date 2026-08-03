@@ -96,6 +96,8 @@ _ESCALATION_MODEL = "gemini-3.5-flash"
 # Independent LLM rolls for the error-consensus vote (odd number → clean majority).
 # Mirrors score_judge: this judge gates publication on interpretive prose, which
 # flips roll to roll even at temperature 0.
+from .consensus import rolls_can_still_matter  # noqa: E402
+
 CONSENSUS_ROLLS = 3
 
 _NUMERIC_RE = re.compile(r"-?\d[\d,]*\.?\d*")
@@ -601,6 +603,15 @@ class FactualJudge(BaseJudge):
             roll = self._verify_claims_with_rate_limit_retry(output, context)
             if roll is not None:
                 roll_results.append(roll)
+            # Stop as soon as the remaining rolls cannot move the majority.
+            # Outcome-identical by construction (src/judges/consensus.py); a
+            # failed roll leaves the estimate of what is left conservative,
+            # so this never stops early on a set that is still open.
+            if not rolls_can_still_matter(
+                [any(i.severity == Severity.ERROR for i in r.issues) for r in roll_results],
+                CONSENSUS_ROLLS,
+            ):
+                break
 
         if roll_results:
             metadata["consensus_rolls"] = len(roll_results)
