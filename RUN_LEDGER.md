@@ -1502,3 +1502,70 @@ publishes a curated short name ("Muslim Hands Inc" vs "Muslim Hands USA",
 "Human Appeal Inc" vs "Human Appeal USA"). Defensible editorially, but
 inconsistent with the page header — untouched, and listed here rather than
 silently changed.
+
+## Auditing the data behind the rich narratives (2026-08-02)
+
+Three deterministic, free checks over all 166 published charities
+(`scratchpad/rich_audit.py`):
+
+| check | result |
+|---|---|
+| RichQualityJudge (the pipeline's own inline validator) | **0 errors** |
+| embedded `amal_scores.amal_score` vs current evaluation | **57 disagree** |
+| stated total revenue vs the figure we publish | **57 disagree** |
+
+The embedded score is stamped from the evaluation, not written by the model,
+so a disagreement is mechanical proof the narrative predates the score.
+The split by regeneration date is exact:
+
+| rich prose written | drifting | clean |
+|---|---|---|
+| 2026-08-02 (this run) | **0** | 89 |
+| 2026-07-31 and earlier | 57 | 20 |
+
+Every one of the 89 regenerated today is clean. The 57 are the residue of
+the "staleness verdict discarded" defect — detected at the time, then handed
+back unchanged. The fix stops new ones; it does not repair existing pages.
+
+### The revenue disagreements trace to the losing source
+
+Each of the 57 stated revenues was matched back against the raw sources:
+
+- **54** are ProPublica's figure, **3** are Charity Navigator's.
+- Fiscal-year relationship: 43 are PP FY2023 vs elected FY2024, 10 PP FY2023
+  vs FY2025, 2 PP FY2024 vs FY2025, 2 PP FY2022 vs FY2024.
+
+Examples: CARE USA narrative $909,098,267 / published $832,911,696; ACLU
+Foundation $185,146,988 / $306,750,536; Baitulmaal $23,687,125 / $77,434,379.
+
+**Why the guards never stopped it:** both read the elected year from
+`charity_data.financial_data_tax_year`, a column populated for **0 of 166**
+charities, while the value lives in `metrics_json` (160 of 166).
+`_financials_match_elected_year` is permissive on an unknown year, so both
+guards returned True forever. The CN guard had been inert since it was
+written. Fixed in `6380de0`; verified live — CARE now logs "Withholding
+ProPublica income-statement figures … tax_year=2024 != elected 2025".
+
+### Open: the citation registry is a second channel
+
+Withholding ProPublica from the *prompt* did not remove the figure. It
+re-enters through `CitationService.build_registry`, which builds citations
+from raw sources independently of the election, and the citation labels
+ProPublica's FY2024 amount as FY2025:
+
+    all_citations[0].claim: "Total Revenue of $909,098,267 ... in FY2025"
+
+The registry needs the same election-awareness the prompt now has. Until
+then, regenerating does not clear the figure.
+
+### Also open
+
+- **57 published pages still carry both defects** (stale embedded score,
+  losing-source revenue). Repair needs a regeneration run — judge is ~80-97%
+  of run cost, so roughly $35-45 for 57-77 charities. Not started; budget
+  call.
+- **CARE USA regeneration is blocked by a judge misread**: it flags
+  "sadaqah-eligible" as an unsupported claim, but that is the DEFAULT wallet
+  tag for every charity not claiming zakat. Recurs across regenerations. The
+  row was restored to its last clean evaluation (hash e37bc48d1c10564e) to
+  keep the index at 166/166.
