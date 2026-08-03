@@ -538,7 +538,7 @@ class RichNarrativeGenerator:
             # prompt — with the elected year framed as "the" fiscal year by
             # data_vintage_note — is how ICNAB published ProPublica's FY2023
             # $4,520,145 as an FY2025 figure, contradicting its own baseline.
-            _elected_year = (self.charity_data_repo.get(ein) or {}).get("financial_data_tax_year")
+            _elected_year = self._elected_tax_year(ein)
             pp_financials_publishable = self._financials_match_elected_year(
                 p990.get("tax_year"), _elected_year
             )
@@ -654,15 +654,15 @@ class RichNarrativeGenerator:
             # points at two disagreeing profile snapshots rather than the
             # fiscal-year election, and remains unexplained. This guard closes
             # a real adjacent hole; it does not close that one.
-            _elected = self.charity_data_repo.get(ein) or {}
+            _elected_cn_year = self._elected_tax_year(ein)
             cn_financials_publishable = self._financials_match_elected_year(
-                cn.get("fiscal_year"), _elected.get("financial_data_tax_year")
+                cn.get("fiscal_year"), _elected_cn_year
             )
             if not cn_financials_publishable:
                 logger.info(
                     f"Withholding CN income-statement figures from narrative prompt for {ein}: "
                     f"CN fiscal_year={cn.get('fiscal_year')} != elected "
-                    f"tax_year={_elected.get('financial_data_tax_year')}"
+                    f"tax_year={_elected_cn_year}"
                 )
 
             def _fy_bound(value: Any) -> Any:
@@ -731,6 +731,29 @@ class RichNarrativeGenerator:
                 }
 
         return data
+
+    def _elected_tax_year(self, ein: str) -> Any:
+        """The fiscal year the pipeline actually published, read from where it lives.
+
+        `charity_data.financial_data_tax_year` is a column synthesize never
+        writes: 0 of 166 published charities have it set, while the same field
+        inside metrics_json is set for 160. Both fiscal-year guards below read
+        the column and _financials_match_elected_year is permissive on an
+        unknown year, so both were inert — the Charity Navigator one since it
+        was written. 57 published charities ended up stating a total revenue
+        that is not the figure the site publishes, every one traceable to a
+        source that lost the election.
+        """
+        row = self.charity_data_repo.get(ein) or {}
+        metrics = row.get("metrics_json") or {}
+        if isinstance(metrics, str):
+            try:
+                metrics = json.loads(metrics)
+            except (ValueError, TypeError):
+                metrics = {}
+        if not isinstance(metrics, dict):
+            metrics = {}
+        return metrics.get("financial_data_tax_year") or row.get("financial_data_tax_year")
 
     @staticmethod
     def _financials_match_elected_year(source_fiscal_year: Any, elected_tax_year: Any) -> bool:
