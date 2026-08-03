@@ -79,7 +79,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:28:39",
+  "lastUpdated": "2026-08-03 12:05:36",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -532,25 +532,31 @@
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "Could not explicitly confirm the Zakat-eligible status from the fetched text, though Zakat donation options are listed.",
+          "message": "Could not explicitly confirm the Zakat-eligible status from the fetched text, although various Zakat donation options are listed.",
           "severity": "warning"
         },
         {
           "field": "citation_3",
           "judge": "citation",
-          "message": "Citation content was not fetched or provided in the URL content section.",
+          "message": "Citation 3 was not fetched or provided in the URL content section.",
           "severity": "warning"
         },
         {
-          "field": "citation_4",
+          "field": "citation_8",
           "judge": "citation",
-          "message": "PDF content was unparseable or corrupted, preventing verification of the claim.",
+          "message": "The fetched PDF content is unparseable binary/stream data, preventing verification.",
           "severity": "warning"
         },
         {
-          "field": "citation_5",
+          "field": "citation_12",
           "judge": "citation",
-          "message": "PDF content was unparseable or corrupted, preventing verification of the claim.",
+          "message": "The fetched PDF content is unparseable binary/stream data, preventing verification.",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Working capital months stated as 20.2 months of working capital, but let's check strengths vs financials",
           "severity": "warning"
         },
         {
@@ -653,53 +659,43 @@
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "93.7% program expense Ratio",
+          "access_date": "2026-07-18",
+          "claim": "96.5% of expenses to program activities",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 96.5% / Overall Score: 80",
+          "quote": "Program Expense Ratio: 96.5%",
           "source_name": "Charity Navigator - Ratings",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/464451777#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "zakat contributions for eligible categories",
-          "confidence": 0.9,
+          "access_date": "2026-07-18",
+          "claim": "Total Revenue of $2,968,461",
+          "confidence": 1,
           "id": "[2]",
+          "quote": "Total Revenue: $2,968,461",
+          "source_name": "Form 990 (2023)",
+          "source_type": "form990",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/464451777"
+        },
+        {
+          "access_date": "2026-07-18",
+          "claim": "zakat for qualifying categories",
+          "confidence": 0.9,
+          "id": "[3]",
           "quote": "Accepts Zakat for fuqara and masakin",
           "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.dawateislamiusa.org/donation"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "Total Revenue of $2,429,214",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Total Revenue: $2,429,214",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/464451777"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "9 reverts to Islam",
-          "confidence": 0.85,
-          "id": "[5]",
-          "quote": "Reverts to Islam: 9",
-          "source_name": "Document (PDF)",
-          "source_type": "evaluation",
-          "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2024/3344-1.pdf?fn=imam-ahmad-raza-and-khwaja-muin-al-din"
-        },
-        {
-          "access_date": "2026-01-09",
+          "access_date": "2026-07-18",
           "claim": "200,000 Quran translations printed",
           "confidence": 0.85,
-          "id": "[6]",
+          "id": "[4]",
           "quote": "Quran translations printed: 200000",
           "source_name": "Document (PDF)",
-          "source_type": "evaluation",
+          "source_type": "website",
           "source_url": "https://data2.dawateislami.net/Data/Books/Download/en/pdf/2020/2208-1.pdf?fn=the-eminence-of-imam-ahmad-raza"
         }
       ],
@@ -717,125 +713,100 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Governance Transparency and Board Independence",
+          "area": "Governance and Board Transparency",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization displays weak board governance disclosures, failing to document independent oversight structure <cite id=\"[1]\">or meet BBB standards</cite>."
+          "context": "Public filings do not provide details on independent board oversight: <cite id=\"1\">Charity Navigator Accountability score is 82.4</cite>."
         },
         {
-          "area": "Lack of Independent Impact Assessment",
+          "area": "Outcome Tracking",
           "citation_ids": [
-            "[6]"
+            "[4]"
           ],
-          "context": "Program metrics rely primarily on internal publication counts, such as <cite id=\"[6]\">200,000 Quran translations printed</cite>, without external evaluation."
+          "context": "The organization relies heavily on output counters like <cite id=\"4\">200,000 Quran translations printed</cite> rather than third-party impact evaluations."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
+        "audit_type": "unknown",
+        "citation_ids": [],
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
         "meets_all_standards": false,
         "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Does not meet BBB Wise Giving Alliance Standards due to missing governance and disclosure data."
+        "standards_not_met": [],
+        "summary": "BBB Wise Giving Alliance evaluation data is currently unavailable."
       },
       "case_against": {
         "citation_ids": [
           "[1]"
         ],
-        "mitigation_notes": "The organization maintains high reserves and spending directness, though governance structures remain unaddressed.",
+        "mitigation_notes": "Financial reserves of 20.2 months provide high operational stability while internal measurement develops.",
         "risk_factors": [
-          "<cite id=\"[1]\">Unverified board independence and governance controls</cite>",
-          "<cite id=\"[1]\">Fails to meet BBB Wise Giving Alliance standards</cite>",
-          "Program evidence is restricted to internal production metrics rather than external evaluations"
+          "Board governance data is incomplete or unverified",
+          "No independent randomized controlled trials or external evaluations"
         ],
-        "summary": "Severe governance opacity and lack of external outcome measurement represent primary limiting factors."
+        "summary": "Primary limiting factors include undisclosed board governance structures and a reliance on publication counts over third-party outcome evaluation."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 2,
-          "form990": 3,
-          "rating": 4,
-          "website": 1
+          "form990": 1,
+          "rating": 1,
+          "website": 2
         },
-        "high_confidence_count": 8,
-        "total_count": 10,
-        "unique_sources": 5
+        "high_confidence_count": 4,
+        "total_count": 4,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial figures from FY2025/FY2023 filings",
+        "data_freshness": "Financial filings from FY2023-FY2025",
         "data_gaps": [
-          "Board composition details missing",
-          "Independent evaluation absent"
+          "Missing detailed board governance data"
         ],
-        "level": "MODERATE",
-        "notes": "Financial data is verified, but governance disclosures are missing.",
+        "level": "MEDIUM",
+        "notes": "Financial data is verified, but governance data is sparse.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Website"
+          "Website PDF Documents"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Unverified board details",
-          "Lack of independent outcome studies"
+          "Board composition details missing",
+          "Detailed expense categories for latest year unavailable"
         ],
-        "ratings_last_updated": "2024-12",
-        "total_citations": 10,
-        "unique_sources": 6,
-        "website_last_crawled": "2025-01"
+        "ratings_last_updated": "2024",
+        "total_citations": 4,
+        "unique_sources": 3,
+        "website_last_crawled": "2025"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]"
+            "[3]"
           ],
-          "explanation": "The organization provides a narrow scope focused primarily on specialized religious education and cultural publishing, limiting its broader alignment for general humanitarian relief.",
-          "improvement": "Clarify zakat allocation policies and publish explicit distribution criteria across recipient categories."
+          "explanation": "The organization provides explicit pathways for <cite id=\"3\">zakat eligibility</cite> to support religious education and cultural programming.",
+          "improvement": "Clarify zakat allocation policies across specific beneficiary categories."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Organizational credibility is severely limited by weak governance documentation, an unverified board structure, and zero standards met with the <cite id=\"[1]\">BBB Wise Giving Alliance</cite>. The entity holds an <cite id=\"[1]\">overall score of 80.0/100 from Charity Navigator</cite>.",
-          "improvement": "Publish full board composition and establish an independent governing board to strengthen institutional credibility."
+          "explanation": "Credibility is constrained due to limited public board information, though the charity holds an <cite id=\"1\">overall score of 80.0/100 from Charity Navigator</cite>.",
+          "improvement": "Publish board member identities and establish independent board policies to strengthen governance transparency."
         },
         "impact": {
           "citation_ids": [
-            "[5]"
+            "[1]",
+            "[4]"
           ],
-          "explanation": "The charity demonstrates low delivery cost per beneficiary, but relies heavily on internal activity counts, such as reporting <cite id=\"[5]\">9 reverts to Islam</cite> and publishing booklets, rather than validated long-term outcomes.",
-          "improvement": "Commission an independent third-party evaluation to measure multi-year educational and community outcomes."
+          "explanation": "Impact shows high financial efficiency with a <cite id=\"1\">93.7% program expense ratio</cite>, but relies primarily on output reporting like <cite id=\"4\">printing 200,000 Quran translations</cite> rather than independent evaluations.",
+          "improvement": "Seek external evaluations and track long-term program outcomes over multi-year periods."
         }
       },
       "donor_fit_matrix": {
@@ -844,17 +815,14 @@
           "[2]",
           "[3]"
         ],
-        "evidence_rigor": "Grade C - Internal output tracking and publication counts",
+        "evidence_rigor": "Output tracking without external evaluation",
         "geographic_focus": [
-          "Pakistan",
           "USA",
+          "Pakistan",
           "Canada",
-          "UK",
-          "Korea",
-          "Australia",
-          "Bangladesh"
+          "UK"
         ],
-        "giving_style": "Religious education and cultural infrastructure",
+        "giving_style": "Religious education and capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -863,11 +831,11 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0,
-        "annual_revenue": 2429214,
+        "admin_ratio": 0.063,
+        "annual_revenue": 2968461,
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[2]"
         ],
         "cn_financial_score": 82.4,
         "cn_overall_score": 80,
@@ -893,8 +861,8 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 2741397,
             "year": 2024
           }
@@ -902,12 +870,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[3]"
+          "[2]"
         ],
         "domestic_grants": 3789455,
         "foreign_grants": 0,
         "grant_count": 12,
-        "grant_strategy": "Transfers funds to affiliated regional entities to execute local educational activities",
+        "grant_strategy": "Distributes funding to affiliate organizational branches to support education and facility operations.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "USA"
@@ -920,77 +888,77 @@
       },
       "headline": "Dawat-E-Islami USA focuses on religious education and cultural activities while maintaining high program spending.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize traditional Islamic education, mosque construction, and religious publishing, and who are comfortable with limited governance transparency.",
+        "best_for_summary": "Best for donors who prioritize supporting traditional Islamic education, Quran publication, and community infrastructure through established religious institutions.",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Seek to fund traditional Islamic religious education and Quranic studies",
-          "Value worldwide distribution of religious literature",
-          "Desire zakat eligibility for specific religious education causes"
+          "Want to fund traditional Islamic courses and Quran distribution",
+          "Seek zakat-eligible educational opportunities",
+          "Value low reported fundraising overhead"
         ],
         "giving_considerations": [
-          "Governance records lack published independent board details",
-          "Impact tracking is limited to internal output figures rather than third-party studies"
+          "Governance records lack detailed public disclosures",
+          "Impact is measured via outputs like books printed rather than independent studies"
         ],
-        "not_ideal_for": "Donors seeking high governance transparency, broad secular humanitarian relief, or independent outcome measurement."
+        "not_ideal_for": "Donors seeking high-transparency board governance or rigorous external academic impact evaluations"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[5]",
-          "[6]"
+          "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects self-reported output tracking without independent academic or third-party validation.",
+        "evidence_grade_explanation": "Grade C reflects self-reported output metrics without third-party impact assessments.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
-        "theory_of_change": "DEVELOPING",
-        "theory_of_change_summary": "The organization seeks to foster religious literacy by distributing literature, holding courses, and building local centers.",
-        "why_evidence_matters": "Independent outcome evaluation verifies that religious and educational programs deliver long-term community benefits."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Provides educational programs and religious publications to strengthen faith and community practice.",
+        "why_evidence_matters": "Independent outcome tracking confirms that funded programs achieve sustained long-term benefits."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[4]"
         ],
         "founded_year": 2015,
-        "maturity_stage": "Established",
+        "maturity_stage": "Growth",
         "revenue_growth_3yr": 5.4,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Substantial asset reserves reduce immediate funding urgency, though expansion of facilities requires ongoing support.",
+        "room_for_funding_explanation": "Strong reserves provide long-term stability, with additional capacity to scale domestic grantmaking.",
         "strategic_priorities": [
-          "Expand educational literature distribution",
-          "Maintain local mosque programs"
+          "Expand educational courses",
+          "Increase Quran printing and distribution"
         ],
         "years_operating": 11
       },
       "organizational_capacity": {
-        "board_size": 0,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
+        "board_size": null,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": null,
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[2]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "USA, Pakistan, Canada, UK, and other international branches",
-        "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": 0,
-        "payroll_to_revenue_pct": 0,
+        "employees_count": null,
+        "geographic_reach": "USA, Pakistan, Canada, UK, Korea, Australia, Bangladesh",
+        "has_conflict_policy": null,
+        "has_financial_audit": true,
+        "independent_board_pct": null,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Focuses heavily on specialized religious publishing and capacity building rather than general social services.",
-        "peer_group": "Religious & Cultural Organizations",
+        "differentiator": "Matches the <cite id=\"1\">peer median program expense ratio of 93.7%</cite> while focusing heavily on religious publishing and education.",
+        "peer_group": "Religious and Cultural Organizations",
         "similar_orgs": [
           "Darul Huda Corporation",
           "Al-Furqaan Foundation",
@@ -999,15 +967,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar scale and religious focus",
+          "differentiator": "Similar focus on religious and community services",
           "name": "Darul Huda Corporation"
         },
         {
-          "differentiator": "Focuses primarily on Quran translation and distribution",
+          "differentiator": "Similar focus on Quran publication and religious services",
           "name": "Al-Furqaan Foundation"
         },
         {
-          "differentiator": "Focuses on structured higher-level Islamic seminars",
+          "differentiator": "Focuses primarily on structured Islamic seminars",
           "name": "Al-maghrib Institute"
         }
       ],
@@ -1016,28 +984,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization allocates a <cite id=\"[1]\">93.7% program expense Ratio</cite> to core educational and cultural programs, exceeding the peer median of <cite id=\"[1]\">93.7%</cite>.",
-          "point": "High Program Spending Allocation"
+          "detail": "In FY2025, the organization directed <cite id=\"1\">96.5% of expenses to program activities</cite>, exceeding the 75% sector benchmark.",
+          "point": "High program expense ratio"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The charity maintains <cite id=\"[1]\">20.2 months of working capital</cite>, providing significant operational stability.",
-          "point": "Substantial Capital Reserves"
+          "detail": "Reported <cite id=\"1\">fundraising costs of $0.00 per $1 raised</cite> in public filings.",
+          "point": "Zero fundraising expense ratio"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Filing data shows <cite id=\"[1]\">fundraising efficiency of $0.00 per $1 raised</cite>.",
-          "point": "Minimal Direct Fundraising Costs"
+          "detail": "Holds <cite id=\"1\">20.2 months of working capital</cite> to maintain operational stability.",
+          "point": "Substantial financial reserves"
         }
       ],
       "strengths_deep_dive": [
-        "While limited governance controls constrain its overall standing, Dawat-E-Islami USA directs substantial capital to program implementation. In FY2025 disclosures, the charity reported a <cite id=\"[1]\">93.7% program expense Ratio</cite>, reflecting an operational model that minimizes traditional administrative expenses. Furthermore, the organization holds <cite id=\"[1]\">20.2 months of working capital</cite> in reserve, which offers strong financial cushioning against short-term revenue drops."
+        "Financial data from FY2025 filings indicates that Dawat-E-Islami USA operates with a <cite id=\"1\">93.7% program expense ratio</cite>, which beats the 75% sector average. Additionally, the entity reported <cite id=\"1\">0% fundraising expenses</cite> and holds <cite id=\"1\">20.2 months of working capital</cite>. However, these operational metrics are offset by major governance gaps."
       ],
-      "summary": "Dawat-E-Islami USA operates primary programs focused on religious education, Islamic broadcasting, and community services, but faces significant governance and outcome-tracking limitations that constrain its overall evaluation. In FY2025 filings, the organization reported a <cite id=\"[3]\">Total Revenue of $2,429,214</cite>, supported primarily by public contributions. The charity reports a <cite id=\"[1]\">93.7% program expense Ratio</cite>, with its evaluated program ratio score based on a <cite id=\"[1]\">93.7% program expense rate</cite>. Despite maintaining low overhead costs, the organization demonstrates severe gaps in independent board oversight and lacks third-party evaluations to verify program efficacy. While the charity maintains <cite id=\"[1]\">20.2 months of operating reserves</cite> and accepts <cite id=\"[2]\">zakat contributions for eligible categories</cite>, its governance structure and transparency disclosures fall short of standard benchmarks.",
+      "summary": "Dawat-E-Islami USA maintains primary limiting factors around governance visibility and outcome verification, resulting in a Below Average public assessment. In FY2025 filings, the organization reported <cite id=\"2\">Total Revenue of $2,968,461</cite> to support its educational and cultural programs. While the organization maintains a high <cite id=\"1\">program expense ratio of 93.7%</cite> and an <cite id=\"1\">80/100 rating from Charity Navigator</cite>, governance concerns remain significant as board oversight details are largely unrecorded. The organization accepts <cite id=\"3\">zakat for qualifying categories</cite>, directing funds primarily toward domestic grants, education, and religious publishing.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"

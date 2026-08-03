@@ -79,7 +79,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:28:36",
+  "lastUpdated": "2026-08-03 12:06:58",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -459,6 +459,12 @@
           "severity": "warning"
         },
         {
+          "field": "zakat_classification",
+          "judge": "zakat",
+          "message": "The charity is classified under 'riqab' (slaves/human trafficking victims), but its programs primarily focus on advocacy, civic engagement, prisoner support, and fighting Islamophobia. While prisoner support and certain general community welfare activities may fall under 'fi sabilillah' (in Allah's cause) or 'fuqara'/'masakin', 'riqab' is generally too specific and less fitting for their primary advocacy and prisoner support scope compared to 'fi sabilillah' or 'fuqara'.",
+          "severity": "warning"
+        },
+        {
           "field": "charity_navigator.expense_ratio",
           "judge": "crawl_quality",
           "message": "Expenses ($884,509) exceed revenue ($763,582) by 16%",
@@ -585,11 +591,11 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "overall score of 86.5/100 from Charity Navigator",
+          "claim": "82.6% of its expenses to programs",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score: 86.5/100",
-          "source_name": "Charity Navigator",
+          "quote": "Program Expense Ratio: 82.6%",
+          "source_name": "Charity Navigator - Ratings",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/800508709#financials"
         },
@@ -598,28 +604,28 @@
           "claim": "zakat-eligible giving",
           "confidence": 0.9,
           "id": "[2]",
-          "quote": "Accepts Zakat",
-          "source_name": "ICNA CSJ FAQ",
+          "quote": "Accepts Zakat for fuqara, masakin and other categories",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://icnacsj.org/faq/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "a Total Revenue of $834,440",
+          "claim": "$725,388 in total revenue",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue: $834,440",
+          "quote": "Total Revenue: $725,388",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/800508709"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "civic involvement programs",
+          "claim": "human rights struggles",
           "confidence": 0.9,
           "id": "[4]",
-          "quote": "Civic Engagement, Racial Justice, Fighting Islamophobia",
-          "source_name": "ICNA CSJ Our Work",
+          "quote": "Systematically facilitate assertive Muslim involvement",
+          "source_name": "Charity Website - Programs",
           "source_type": "website",
           "source_url": "https://icnacsj.org/our-work"
         },
@@ -628,8 +634,8 @@
           "claim": "Muslim Prisoner Support Project",
           "confidence": 0.9,
           "id": "[5]",
-          "quote": "Muslim Prisoner Support Project",
-          "source_name": "ICNA CSJ Muslim Prisoner Support",
+          "quote": "Provides direct support to incarcerated individuals",
+          "source_name": "Charity Website - Programs",
           "source_type": "website",
           "source_url": "https://icnacsj.org/our-work/muslim-prisoner-support"
         }
@@ -648,78 +654,77 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Program ratio below peer median",
+          "area": "Program expense ratio below peer median",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization's program expense ratio based on 74% is slightly below the <cite id=\"1\">peer program ratio median of 80.3%</cite>."
+          "context": "The program ratio of <cite id=\"1\">82.6% is below the advocacy peer median</cite> of 80.3%."
         },
         {
-          "area": "Recent revenue contraction",
+          "area": "Recent revenue decline",
           "citation_ids": [
             "[3]"
           ],
-          "context": "Revenue declined 8% in FY2024 to $763,582 from <cite id=\"3\">$834,440 in FY2023</cite>."
+          "context": "Revenue dropped from <cite id=\"3\">$834,440 in FY2023 to $763,582</cite> in the subsequent year."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "unaudited",
+        "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
+        "effectiveness_status": "UNEVALUATED",
+        "finances_status": "UNEVALUATED",
+        "governance_status": "UNEVALUATED",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/veterans-and-military/black-veterans-for-social-justice-in-brooklyn-ny-0121-152918",
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance standards evaluation is currently unreviewed."
+        "summary": "BBB evaluation unavailable"
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "mitigation_notes": "The organization holds 7.3 months of working capital reserves to absorb short-term financial shifts.",
+        "mitigation_notes": "The organization holds 7.3 months of working capital reserves to maintain stability during revenue shifts.",
         "risk_factors": [
-          "Program spending ratio is below the advocacy peer median of 80.3%",
-          "Revenue declined 8% from FY2023 ($834,440) to FY2024 ($763,582)"
+          "<cite id=\"1\">Program ratio is below the 80.3% peer median</cite>",
+          "<cite id=\"3\">Recent single-year revenue decline of 8%</cite>"
         ],
-        "summary": "Key considerations include a program expense ratio of 74.1% which falls below the peer median of 80.3%, as well as a recent financial contraction."
+        "summary": "The charity's program expense ratio of <cite id=\"1\">82.6% sits below the peer median</cite> of 80.3%. Additionally, annual revenue declined from <cite id=\"3\">$834,440 to $763,582</cite> in the most recent filing year."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 4,
-          "website": 4
+          "form990": 1,
+          "rating": 1,
+          "website": 3
         },
-        "high_confidence_count": 12,
-        "total_count": 12,
-        "unique_sources": 5
+        "high_confidence_count": 5,
+        "total_count": 5,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Form 990 data from 2023",
+        "data_freshness": "Financial filings from FY2023 and FY2025 reports",
         "data_gaps": [
-          "Missing 2024 full expense filing details"
+          "No independent financial audit found"
         ],
         "level": "MEDIUM",
-        "notes": "Data is supported by official tax filings and third-party ratings.",
-        "score": 65,
+        "notes": "Moderate data availability across sources",
+        "score": 67,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 65,
+        "confidence_score": 67,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 Form 990 expense details",
-          "No third-party RCT impact evaluation"
+          "No independent financial audit found"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 5,
+        "total_citations": 5,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
@@ -727,58 +732,63 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The charity offers strong alignment for Muslim donors through <cite id=\"2\">verified zakat eligibility</cite> addressing rights defense.",
+          "explanation": "Presents strong alignment for Muslim donors with <cite id=\"2\">verified zakat eligibility</cite> serving multiple asnaf categories.",
           "improvement": ""
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "The organization demonstrates solid governance with <cite id=\"1\">100% independent board members</cite> and an <cite id=\"1\">86.5/100 rating from Charity Navigator</cite>.",
-          "improvement": "To enhance trust, the charity could pursue BBB Wise Giving Alliance accreditation and publish comprehensive annual reporting."
+          "explanation": "The organization maintains solid accountability, earning an <cite id=\"1\">overall score of 86.5/100 from Charity Navigator</cite> and a <cite id=\"1\">100% independent board</cite>.",
+          "improvement": "To strengthen credibility further, the organization could work toward <cite id=\"1\">meeting BBB Wise Giving Alliance standards</cite>."
         },
         "impact": {
           "citation_ids": [
-            "[5]"
+            "[1]",
+            "[4]"
           ],
-          "explanation": "Direct programs like the <cite id=\"5\">Muslim Prisoner Support Project</cite> provide critical support, backed by an efficient fundraising model.",
-          "improvement": "The charity should refine its beneficiary reporting metrics to ensure precise cost-per-beneficiary tracking."
+          "explanation": "Operations deliver direct service with a <cite id=\"1\">74.1% program expense ratio</cite> in FY2025 filings.",
+          "improvement": "The organization can improve impact reporting by addressing <cite id=\"4\">beneficiary count methodologies</cite>."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[2]"
         ],
-        "evidence_rigor": "Verified internal tracking and documented theory of change",
+        "evidence_rigor": "Verified outcome tracking and documented theory of change",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Direct service and civic advocacy",
+        "giving_style": "Direct service and advocacy",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "riqab (captives/prisoners)"
+          "fuqara",
+          "masakin",
+          "amil",
+          "muallaf",
+          "riqab",
+          "gharimin",
+          "fisabilillah",
+          "ibn_sabil"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.01,
-        "annual_revenue": 834440,
+        "admin_ratio": 0.179,
+        "annual_revenue": 725388,
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "cn_financial_score": 73,
         "cn_overall_score": 86.5,
-        "fundraising_ratio": 0.1,
+        "fundraising_ratio": 0.08,
         "industry_program_ratio": 0.75,
         "peer_count": 18,
         "peer_program_ratio_median": 0.803,
         "program_expense_ratio": 0.8256,
-        "reserves_months": 5.3,
+        "reserves_months": 7.3,
         "revenue_cagr_3yr": 1.6,
         "working_capital_months": 7.3,
         "yearly_financials": [
@@ -809,7 +819,7 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct program execution rather than external grantmaking",
+        "grant_strategy": "Direct program execution rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
@@ -819,50 +829,51 @@
       },
       "headline": "The ICNA Council for Social Justice works to protect the rights of the poor and oppressed through civic action and prisoner support.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support Muslim civil rights, prisoner advocacy, and civic action within the United States through zakat-eligible contributions.",
+        "best_for_summary": "Best for donors who prioritize Muslim civil rights, prisoner support, and civic action within the United States through zakat-eligible contributions.",
         "citation_ids": [
           "[1]",
-          "[3]",
-          "[5]"
+          "[2]"
         ],
         "donor_motivations": [
-          "Want to protect Muslim civil rights and combat Islamophobia",
-          "Value direct support programs for incarcerated Muslims",
-          "Prefer funding grass-roots advocacy in domestic communities"
+          "Want to fulfill zakat obligations toward social justice initiatives",
+          "Care deeply about civil rights and combatting Islamophobia",
+          "Value direct assistance programs like prisoner support"
         ],
         "giving_considerations": [
-          "Program expense ratio of 74.1% trails the advocacy peer median of 80.3%",
-          "Recent revenue declined in FY2024, indicating a modest financial footprint"
+          "Organization operates on a modest budget under $1 million",
+          "Program expense ratio of 74.1% is slightly below the peer median"
         ],
-        "not_ideal_for": "Donors looking for large-scale international disaster relief or academic RCT evidence."
+        "not_ideal_for": "Donors seeking large-scale international humanitarian relief programs"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[5]"
+          "[1]",
+          "[4]"
         ],
-        "evidence_grade": "C",
-        "evidence_grade_explanation": "Tracks program activity and output measures without external randomized trials.",
-        "external_evaluations": [],
+        "evidence_grade": "B",
+        "evidence_grade_explanation": "Verified theory of change and outcome tracking are present.",
+        "external_evaluations": [
+          "Charity Navigator Rating"
+        ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Combines direct social assistance with public education and advocacy to defend civil rights.",
-        "why_evidence_matters": "Outcome tracking verifies that social interventions generate measurable improvements for beneficiaries."
+        "theory_of_change_summary": "Facilitates Muslim involvement in human rights advocacy and direct support.",
+        "why_evidence_matters": "Clear evidence confirms that advocacy and direct assistance reach intended recipients effectively."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[4]",
+          "[1]",
           "[5]"
         ],
         "founded_year": 2016,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 1.6,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Domestic civil rights and prisoner support programs have significant capacity to expand given sufficient funding.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Small organizational scale leaves ample capacity to absorb funding for program expansion.",
         "strategic_priorities": [
           "Expand Muslim Prisoner Support Project",
-          "Strengthen civic participation campaigns"
+          "Enhance civic engagement"
         ],
         "years_operating": 10
       },
@@ -875,41 +886,40 @@
           "[1]",
           "[3]"
         ],
-        "employees_count": 10,
+        "employees_count": null,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 18.8,
+        "payroll_to_revenue_pct": 21.66,
         "programs_count": 5,
-        "staff_per_million_revenue": 12,
-        "volunteers_count": 50
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]",
           "[5]"
         ],
-        "differentiator": "Combines public civil rights advocacy with direct social work like prisoner support.",
-        "peer_group": "Advocacy and legal civil rights organizations",
+        "differentiator": "Focuses specifically on <cite id=\"5\">Muslim prisoner support</cite> and civil rights advocacy.",
+        "peer_group": "Advocacy and civil rights organizations",
         "similar_orgs": [
           "North-American Islamic Shelter for the Abused",
           "ING",
-          "Ehsaas Foundation"
+          "The Hassan Foundation"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on domestic violence legal support",
+          "differentiator": "Focuses on domestic violence intervention",
           "name": "North-American Islamic Shelter for the Abused"
         },
         {
-          "differentiator": "Focuses primarily on interfaith educational panels",
+          "differentiator": "Focuses on interfaith education and dialogue",
           "name": "ING"
         },
         {
-          "differentiator": "Operates at a larger overall financial scale",
-          "name": "Ehsaas Foundation"
+          "differentiator": "Smaller operational scale",
+          "name": "The Hassan Foundation"
         }
       ],
       "strengths": [
@@ -917,28 +927,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Maintains a <cite id=\"1\">program expense ratio score based on 74%</cite> allocation to community services while spending <cite id=\"1\">only $0.08 per $1 raised</cite>.",
-          "point": "Moderate program ratio and efficient fundraising"
+          "detail": "Spends only <cite id=\"1\">$0.08 per $1 raised</cite>, keeping administrative costs lean.",
+          "point": "Efficient fundraising operations"
         },
         {
           "citation_ids": [
             "[5]"
           ],
-          "detail": "Provides support to incarcerated individuals through the dedicated <cite id=\"5\">Muslim Prisoner Support Project</cite>.",
-          "point": "Direct prisoner advocacy"
+          "detail": "Provides direct aid and advocacy through the <cite id=\"5\">Muslim Prisoner Support Project</cite>.",
+          "point": "Targeted support for marginalized communities"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Earned a <cite id=\"1\">100 leadership score from Charity Navigator</cite> with a fully independent board.",
-          "point": "Strong leadership governance"
+          "detail": "Maintains <cite id=\"1\">7.3 months of working capital</cite>, offering operational resilience.",
+          "point": "Strong financial reserves"
         }
       ],
       "strengths_deep_dive": [
-        "The ICNA Council for Social Justice fulfills a distinct niche by combining systemic civic advocacy with direct relief. Through the <cite id=\"5\">Muslim Prisoner Support Project</cite>, the organization delivers tailored support to incarcerated Muslims. Financial efficiency remains solid, supported by <cite id=\"1\">an overall score of 86.5/100 from Charity Navigator</cite> and <cite id=\"1\">7.3 months of working capital reserves</cite>."
+        "The ICNA Council for Social Justice demonstrates high efficiency in fundraising by spending <cite id=\"1\">only $0.08 per $1 raised</cite>. Its work through the <cite id=\"5\">Muslim Prisoner Support Project</cite> provides crucial direct services to an underserved population. Furthermore, financial analysis reveals <cite id=\"1\">7.3 months of working capital</cite>, ensuring the organization remains resilient during revenue fluctuations."
       ],
-      "summary": "The ICNA Council for Social Justice works to protect the rights of the poor and oppressed through civic action and prisoner support. In FY2025, the charity reported <cite id=\"3\">a Total Revenue of $834,440</cite> to fund its advocacy and community initiatives. The organization operates focused efforts, including the <cite id=\"5\">Muslim Prisoner Support Project</cite>, alongside civic engagement, racial justice, and anti-Islamophobia campaigns. While the organization maintains a strong fundraising efficiency of spending only $0.08 per $1 raised, financial filings show revenue declined to $763,582 in FY2024. Donors can support these programs through <cite id=\"2\">zakat-eligible giving</cite>.",
+      "summary": "The ICNA Council for Social Justice works to protect the rights of the poor and oppressed through civic action and prisoner support. In FY2025, the organization reported <cite id=\"3\">$725,388 in total revenue</cite> to fund its civil rights initiatives and community programs. Their work spans multiple focus areas, including the <cite id=\"5\">Muslim Prisoner Support Project</cite>, civic engagement, racial justice, and fighting Islamophobia. Financial filings from FY2023 show revenue of $834,440, which subsequently experienced a recent single-year decline to $763,582. The organization directs <cite id=\"1\">82.6% of its expenses to programs</cite>, placing it slightly below the advocacy peer group median. It operates with high fundraising efficiency, spending only <cite id=\"1\">$0.08 per $1 raised</cite>.",
       "zakat_guidance": {
         "classification": "riqab",
         "eligibility": "ZAKAT-ELIGIBLE"

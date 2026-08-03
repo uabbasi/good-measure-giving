@@ -68,7 +68,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:39:19",
+  "lastUpdated": "2026-08-03 12:47:38",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -388,7 +388,7 @@
         {
           "field": "citation_2",
           "judge": "citation",
-          "message": "The fetched PDF content is unparseable or binary-encoded, so the claim about sadaqah eligibility could not be verified from the source text.",
+          "message": "The fetched PDF content is unparseable or binary-encoded, preventing verification of the claim.",
           "severity": "warning"
         },
         {
@@ -494,30 +494,30 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio of 97.3%",
+          "claim": "97.3% program expense ratio",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 97.9%",
-          "source_name": "Charity Navigator Metadata",
+          "quote": "Program Expense Ratio: 97.3%",
+          "source_name": "Charity Navigator - Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/812169685#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "by-laws define mission but lack causal pathways",
+          "claim": "sadaqah-eligible",
           "confidence": 0.9,
           "id": "[2]",
-          "quote": "Fund raising for charitable purposes and key initiatives",
+          "quote": "Fundraising for charitable purposes and key initiatives for Bosniak based Islamic centers",
           "source_name": "ICNAB By-Laws",
           "source_type": "website",
           "source_url": "https://izbsa.com/wp-content/uploads/2016/01/Statut_ICNAB-BY-LAWS_OF_ICNAB.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $4,520,145",
+          "claim": "$3,851,438 in total revenue",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue: $4,520,145",
+          "quote": "Total Revenue: $4,520,145 in 2023",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/812169685"
@@ -537,40 +537,41 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Lack of Documented Theory of Change",
-          "citation_ids": [
-            "[2]"
-          ],
-          "context": "The organization lacks a formal theory of change to track long-term outcomes: <cite id=\"2\">by-laws define mission but lack causal pathways</cite>."
-        },
-        {
-          "area": "Missing Beneficiary Data",
+          "area": "Lack of clear outcome tracking and theory of change",
           "citation_ids": [
             "[3]"
           ],
-          "context": "ICNAB does not publish specific beneficiary counts: <cite id=\"3\">Form 990 filings omit direct impact metrics</cite>."
+          "context": "The organization lacks a documented theory of change and does not systematically publish beneficiary counts, making it difficult to assess direct cost-effectiveness <cite id=\"3\">(Form 990)</cite>."
+        },
+        {
+          "area": "Recent revenue decline",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "Total revenue decreased by 6% from <cite id=\"3\">$4,520,145 in FY2023 to $4,243,273 in FY2024</cite>."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "NEUTRAL",
-        "finances_status": "NEUTRAL",
-        "governance_status": "NEUTRAL",
+        "effectiveness_status": "REVIEW_PENDING",
+        "finances_status": "REVIEW_PENDING",
+        "governance_status": "REVIEW_PENDING",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB evaluation unavailable or incomplete."
+        "summary": "BBB Wise Giving Alliance evaluation is currently unavailable."
       },
       "case_against": {
         "citation_ids": [
           "[3]"
         ],
-        "mitigation_notes": "Strong working capital reserves offset short-term revenue drops.",
+        "mitigation_notes": "The charity relies on strong balance sheet reserves to cushion against financial fluctuations.",
         "risk_factors": [
-          "<cite id=\"3\">Recent annual revenue contraction of 6%</cite>"
+          "<cite id=\"3\">Revenue fell 6% between FY2023 and FY2024</cite>",
+          "Absence of a documented theory of change or public beneficiary statistics"
         ],
-        "summary": "Key limitations include <cite id=\"3\">a revenue decline to $4,243,273 in FY2024</cite> and an unstated theory of change."
+        "summary": "Key limiting factors include a recent decline in annual revenue and the absence of clear outcome reporting."
       },
       "citation_stats": {
         "by_source_type": {
@@ -583,16 +584,16 @@
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Data from FY2023 Form 990 and FY2024 summary revenue",
+        "data_freshness": "Financials from FY2023 and FY2024 IRS filings",
         "data_gaps": [
-          "Missing 2024 full expenses",
-          "No formal outcome evaluation"
+          "Missing recent formal audit details",
+          "No published beneficiary tracking"
         ],
-        "level": "MEDIUM",
-        "notes": "Data is moderate quality with clear 990 filings.",
+        "level": "MODERATE",
+        "notes": "Core financial data is verified via tax filings.",
         "score": 60,
         "sources_used": [
-          "Form 990",
+          "IRS Form 990",
           "Charity Navigator",
           "ICNAB By-Laws"
         ]
@@ -601,8 +602,8 @@
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 audited expenses",
-          "No outcome evaluations"
+          "Missing 2024 expense details",
+          "No third-party impact evaluation"
         ],
         "ratings_last_updated": "2025-01",
         "total_citations": 3,
@@ -614,23 +615,22 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Serves as a niche resource for Bosniak communities, offering <cite id=\"2\">sadaqah-eligible giving</cite> for religious and cultural institutions.",
-          "improvement": ""
+          "explanation": "The organization offers an avenue for community support, though its focus is restricted to specific religious cultural capacity building.",
+          "improvement": "Clarify donation channels and state administrative policies regarding specific giving categories."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
             "[3]"
           ],
-          "explanation": "ICNAB maintains operational reliability backed by <cite id=\"1\">100% independent board members</cite> and filed <cite id=\"3\">Form 990 tax records</cite>.",
-          "improvement": "To strengthen credibility further, the charity could publish audited financial statements and board meeting minutes."
+          "explanation": "Operations are supported by independent governance and clear tax filings, with <cite id=\"3\">100% independent board members</cite> overseeing organizational activities.",
+          "improvement": "To strengthen public transparency, the charity could pursue third-party accreditation standards and publish board meeting minutes."
         },
         "impact": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Program delivery is efficient, supported by a <cite id=\"1\">97.6% program ratio</cite> and <cite id=\"1\">9.2 months of working capital reserves</cite>.",
-          "improvement": "Impact measurement would benefit from publishing beneficiary counts consistently so cost-effectiveness can be assessed."
+          "explanation": "High resource directness is demonstrated by a <cite id=\"1\">97.3% program expense ratio in FY2025</cite> and <cite id=\"1\">9.2 months of working capital</cite>.",
+          "improvement": "Publish beneficiary counts consistently so that cost-effectiveness can be systematically evaluated."
         }
       },
       "donor_fit_matrix": {
@@ -639,19 +639,19 @@
           "[2]",
           "[3]"
         ],
-        "evidence_rigor": "Grade C - Basic tracking through financial filings",
+        "evidence_rigor": "Grade C - Administrative outputs tracked without external outcome studies",
         "geographic_focus": [
           "USA",
           "Canada"
         ],
-        "giving_style": "Capacity building",
+        "giving_style": "Capacity building and institutional support",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.024,
-        "annual_revenue": 4520145,
+        "admin_ratio": 0.027,
+        "annual_revenue": 3851438,
         "citation_ids": [
           "[1]",
           "[3]"
@@ -662,7 +662,7 @@
         "peer_count": 10,
         "peer_program_ratio_median": 0.937,
         "program_expense_ratio": 0.9793999999999999,
-        "reserves_months": 12.7,
+        "reserves_months": 9.2,
         "revenue_cagr_3yr": 20.8,
         "working_capital_months": 9.2,
         "yearly_financials": [
@@ -679,8 +679,8 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 4243273,
             "year": 2024
           }
@@ -690,34 +690,34 @@
         "citation_ids": [
           "[3]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct financial assistance to affiliated community centers",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct financial allocations to member community centers",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA",
           "Canada"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
       "headline": "ICNAB supports Bosniak Islamic centers across North America through efficient financial management and capacity building.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support Bosniak Islamic infrastructure and cultural centers across North America through sadaqah giving.",
+        "best_for_summary": "Best for donors who want to support Bosniak Islamic center infrastructure and diaspora community institutions across North America through general sadaqah.",
         "citation_ids": [
           "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Care deeply about supporting Bosniak diaspora Muslim institutions",
-          "Value low-overhead organizations with high program expense ratios",
-          "Prefer funding institutional capacity building over direct emergency relief"
+          "Value institutional development for local Bosniak Islamic centers",
+          "Prefer central organizations with low administrative spending ratios",
+          "Seek to strengthen diaspora community cultural identity"
         ],
         "giving_considerations": [
-          "Contributions are sadaqah-eligible rather than zakat-verified",
-          "Organization experienced a 6% revenue decline in FY2024",
-          "Limited public beneficiary counts are published"
+          "Donations support operational capacity building rather than direct poverty relief",
+          "Organization lacks published beneficiary impact metrics",
+          "Gifts fall under general sadaqah giving"
         ],
         "not_ideal_for": ""
       },
@@ -726,13 +726,13 @@
           "[3]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects basic operational financial disclosure without external impact evaluations.",
+        "evidence_grade_explanation": "Grade C reflects institutional capability tracking without public beneficiary impact evaluations.",
         "external_evaluations": [],
-        "outcome_tracking_years": 0,
+        "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "ICNAB builds capacity for Bosniak centers, ensuring financial stability and operations for local mosques.",
-        "why_evidence_matters": "Outcome metrics help confirm that institutional capacity translates into community development."
+        "theory_of_change_summary": "ICNAB strengthens Bosniak communities by providing administrative guidance and capital support to regional Islamic centers.",
+        "why_evidence_matters": "Outcome tracking clarifies how administrative capacity translates into local community programs."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -742,10 +742,10 @@
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 20.8,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Reserves provide stability, but recent revenue decline requires donor support.",
+        "room_for_funding_explanation": "Funding helps stabilize and expand regional center operations across North America.",
         "strategic_priorities": [
           "Strengthen Bosniak mosque infrastructure",
-          "Expand North American outreach"
+          "Support cultural community initiatives"
         ],
         "years_operating": 10
       },
@@ -753,43 +753,43 @@
         "board_size": 9,
         "ceo_compensation": 100000,
         "ceo_compensation_pct_revenue": 2.6,
-        "ceo_name": "Not Disclosed",
+        "ceo_name": "Not Listed",
         "citation_ids": [
-          "[1]",
           "[3]"
         ],
-        "employees_count": 0,
+        "employees_count": null,
         "geographic_reach": "USA, Canada",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 2.21,
+        "payroll_to_revenue_pct": null,
         "programs_count": 1,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Beats the peer program ratio median of <cite id=\"1\">93.7% with a 97.6% ratio</cite>.",
+        "differentiator": "ICNAB maintains a program expense ratio of <cite id=\"1\">97.3%</cite>, which beats the peer median of <cite id=\"1\">93.7%</cite>.",
         "peer_group": "Religious and Cultural Organizations",
         "similar_orgs": [
           "MAS Boston Society",
-          "Muslim Association of Puget Sound"
+          "Muslim Association of Puget Sound",
+          "Islamic Society of Central Jersey"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar religious services and local scope",
+          "differentiator": "Similar focus on religious and community services",
           "name": "MAS Boston Society"
         },
         {
-          "differentiator": "Broader community center focus",
+          "differentiator": "Regional religious community organization",
           "name": "Muslim Association of Puget Sound"
         },
         {
-          "differentiator": "Established regional facility presence",
+          "differentiator": "Established regional community center network",
           "name": "Islamic Society of Central Jersey"
         }
       ],
@@ -798,28 +798,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "ICNAB allocated <cite id=\"1\">97.6% of expenses to program activities in FY2025</cite>, exceeding sector benchmarks.",
-          "point": "High Program Expense Ratio"
+          "detail": "ICNAB directed a <cite id=\"1\">97.3% program expense ratio</cite> toward its core operations in FY2025, ensuring maximum funding reaches member community centers.",
+          "point": "Exceptional program ratio"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization maintains <cite id=\"1\">9.2 months of working capital</cite>, providing significant financial stability.",
-          "point": "Strong Financial Health"
+          "detail": "The organization maintains <cite id=\"1\">9.2 months of working capital reserves</cite>, providing a stable financial safety net for long-term operations.",
+          "point": "Resilient financial reserves"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Form 990 data shows <cite id=\"1\">$0.00 spent on fundraising costs per dollar raised</cite>.",
-          "point": "Efficient Fundraising"
+          "detail": "The central office spent <cite id=\"1\">$0.00 on direct fundraising costs per dollar raised</cite> in FY2025, keeping central administrative overhead minimal.",
+          "point": "Efficient administrative management"
         }
       ],
       "strengths_deep_dive": [
-        "ICNAB demonstrates high administrative efficiency by directing <cite id=\"1\">97.6% of overall expenses to program services</cite> in FY2025. The organization's financial model relies heavily on direct contributions, reporting <cite id=\"3\">$4,520,145 in total revenue in FY2023</cite>. With <cite id=\"1\">9.2 months of working capital</cite>, ICNAB possesses enough reserves to sustain operations through revenue fluctuations, such as the decline to $4,243,273 in FY2024."
+        "ICNAB functions as a central umbrella organization focused on capacity building for Bosniak mosques and cultural institutions. By maintaining a high <cite id=\"1\">97.3% program expense ratio</cite> in FY2025, the central administration ensures that the majority of operational capital directly funds member center programs. This administrative structure is backed by sound fiscal health, including <cite id=\"1\">9.2 months of working capital</cite> held in reserve, providing organizational resilience for partner institutions."
       ],
-      "summary": "Islamic Community of North America (ICNAB) supports Bosniak Islamic centers across North America through capacity building and financial support. In FY2025, ICNAB maintained a <cite id=\"1\">program expense ratio of 97.3%</cite>, directing the vast majority of its budget toward direct program services. Financial filings from FY2023 show <cite id=\"3\">total revenue of $4,520,145</cite>, though recent figures indicate revenue dropped to $4,243,273 in FY2024. Operating with 9.2 months of working capital reserves, the organization exhibits strong financial stability. Contributions to ICNAB are classified as sadaqah-eligible, serving religious and cultural needs of the Bosniak diaspora.",
+      "summary": "Islamic Community of North America Bosniaks (ICNAB) provides crucial institutional and financial management support to Bosniak Islamic centers across North America. In FY2025, the organization reported <cite id=\"3\">$3,851,438 in total revenue</cite>, reflecting its established role in coordinating regional religious infrastructure. The group spends a high portion of its budget on services, achieving a <cite id=\"1\">97.3% program expense ratio</cite> in FY2025. This focus on direct organizational support allows member centers to maintain facilities and deliver local community programs. Financial operations show strong stability, backed by <cite id=\"1\">9.2 months of working capital</cite> in reserve. However, revenue trends require monitoring, as contributions <cite id=\"3\">declined 6% from $4,520,145 in FY2023 to $4,243,273 in FY2024</cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

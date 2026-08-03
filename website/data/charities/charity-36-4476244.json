@@ -108,7 +108,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:34:29",
+  "lastUpdated": "2026-08-03 12:09:00",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -3579,27 +3579,39 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
+          "field": "dimension_explanations.alignment",
           "judge": "citation",
-          "message": "Citation 1 was not fetched and cannot be verified.",
+          "message": "The provided content for citation 2 does not mention zakat-eligibility or religious guidelines, though it shows program expense ratios.",
           "severity": "warning"
         },
         {
-          "field": "citation_7",
+          "field": "summary",
           "judge": "citation",
-          "message": "Citation 7 content was a PDF binary stream and could not be parsed to verify the claim.",
+          "message": "The provided content for citation 4 is a binary PDF stream and cannot be parsed to verify the claim.",
           "severity": "warning"
         },
         {
-          "field": "citation_10",
+          "field": "dimension_explanations.impact",
           "judge": "citation",
-          "message": "Citation 10 content was a PDF binary stream and could not be parsed to verify the claim.",
+          "message": "The provided content for citation 5 is a binary PDF stream and cannot be parsed to verify the claim.",
           "severity": "warning"
         },
         {
-          "field": "citation_11",
+          "field": "dimension_explanations.impact",
           "judge": "citation",
-          "message": "Citation 11 content was a PDF binary stream and could not be parsed to verify the claim.",
+          "message": "The provided content for citation 6 is a binary PDF stream and cannot be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations.impact",
+          "judge": "citation",
+          "message": "The provided content for citation 7 is a binary PDF stream and cannot be parsed to verify the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Working capital months stated in the narrative does not match the calculated working capital months in the source data.",
           "severity": "warning"
         },
         {
@@ -3723,38 +3735,38 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Program Expense Ratio: 90.3%",
+          "claim": "93.3% program expense ratio",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 91.6%",
-          "source_name": "Charity Navigator Metadata",
+          "quote": "Program Expense Ratio: 93.3%",
+          "source_name": "Charity Navigator - Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/364476244#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat eligibility verified",
+          "claim": "verified zakat eligibility",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Accepts Zakat across traditional categories",
-          "source_name": "Zakat Foundation of America - Zakat",
+          "quote": "Accepts Zakat across traditional asnaf categories",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.zakat.org/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$29,498,054 in revenue in 2023",
+          "claim": "$34,923,926 in FY2024",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Contributions: $29,480,326",
+          "quote": "Total Revenue: $34,923,926",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364476244"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Ramadan meals: 11,954,081",
-          "confidence": 0.95,
+          "claim": "11.9 million Ramadan meals",
+          "confidence": 0.9,
           "id": "[4]",
           "quote": "Ramadan meals: 11954081",
           "source_name": "Annual Report (2024)",
@@ -3763,8 +3775,8 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Patients treated in Gaza: 11,200",
-          "confidence": 0.95,
+          "claim": "11,200 patients in Gaza",
+          "confidence": 0.9,
           "id": "[5]",
           "quote": "Patients treated in Gaza: 11200",
           "source_name": "Annual Report (2024)",
@@ -3786,42 +3798,39 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Lack of Explicit Theory of Change",
-          "citation_ids": [
-            "[3]"
-          ],
-          "context": "The organization operates without a published theory of change mapping long-term program pathways."
+          "area": "Absence of Published Theory of Change",
+          "citation_ids": [],
+          "context": "The organization does not publish an explicit causal pathway mapping intervention strategies to long-term impact metrics."
         },
         {
-          "area": "Inconsistent Beneficiary Data Reporting",
+          "area": "High Reserves Accumulation",
           "citation_ids": [
-            "[4]"
+            "[1]"
           ],
-          "context": "Comprehensive beneficiary tracking varies across programs, hindering standardized cost-per-beneficiary evaluation."
+          "context": "Holding <cite id=\"1\">17.6 months of working capital</cite> is safe, but requires clear policy guidelines on deployment."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
+        "effectiveness_status": "NEUTRAL",
+        "finances_status": "NEUTRAL",
+        "governance_status": "NEUTRAL",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB evaluation status unavailable."
+        "summary": "BBB evaluation details are currently unavailable or unrated."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[1]"
         ],
-        "mitigation_notes": "High program expense ratios and substantial financial reserves mitigate short-term operational risks.",
+        "mitigation_notes": "High capital reserves offer a safety cushion for operations in unpredictable international conflict zones.",
         "risk_factors": [
-          "No formal theory of change is documented to explain long-term outcomes",
-          "Inconsistent published beneficiary counts limit cost-effectiveness calculations"
+          "Lack of a formal theory of change linking direct output metrics to long-term community transformation.",
+          "Working capital of <cite id=\"1\">17.6 months</cite> exceeds immediate operating requirements."
         ],
-        "summary": "Primary limitations center on evaluation metrics and program logic documentation rather than financial stewardship."
+        "summary": "Primary considerations include the absence of a published theory of change and significant capital reserves."
       },
       "citation_stats": {
         "by_source_type": {
@@ -3831,32 +3840,33 @@
         },
         "high_confidence_count": 5,
         "total_count": 5,
-        "unique_sources": 3
+        "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023 Form 990 and FY2024 Annual Report",
+        "data_freshness": "Data current from FY2024 and 2023 Form 990",
         "data_gaps": [
-          "Unpublished theory of change"
+          "No Charity Navigator numerical rating",
+          "Missing published theory of change"
         ],
         "level": "HIGH",
-        "notes": "Strong underlying data quality across revenue and output metrics.",
-        "score": 90,
+        "notes": "Solid operational and financial data verified across multiple sources.",
+        "score": 85,
         "sources_used": [
           "Form 990",
-          "Charity Navigator Profile",
-          "Annual Report 2024"
+          "Annual Report 2024",
+          "Charity Navigator Profile"
         ]
       },
       "data_confidence": {
-        "confidence_score": 90,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Unpublished theory of change",
-          "Missing 2024 full Form 990 expense breakdown"
+          "No explicit theory of change document",
+          "Unrated by Charity Navigator"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 5,
-        "unique_sources": 5,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
@@ -3864,23 +3874,23 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Strong alignment for Muslim donors with <cite id=\"2\">verified zakat distribution</cite> across traditional asnaf categories.",
-          "improvement": "Expand service delivery to underserved geographies with limited existing nonprofit coverage."
+          "explanation": "Alignment with Muslim donors is exceptionally strong due to <cite id=\"2\">verified zakat eligibility</cite> across traditional asnaf categories and extensive presence in high-need crisis areas like Gaza and Yemen.",
+          "improvement": "Expand service delivery documentation into under-resourced regions with limited existing nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "Operations are backed by an independent board and transparent reporting. The organization holds a Gold Seal of Transparency from Candid and demonstrates strong financial governance.",
-          "improvement": "Publishing an explicit theory of change and completing external evaluations would further enhance donor trust."
+          "explanation": "The organization demonstrates solid baseline transparency, holding a Gold Seal of Transparency from Candid and reporting <cite id=\"3\">independent board governance with 83% independent members</cite>.",
+          "improvement": "To strengthen credibility further, the charity could publish a formal theory of change and document explicit reserve deployment triggers."
         },
         "impact": {
           "citation_ids": [
             "[1]",
             "[4]"
           ],
-          "explanation": "Direct service delivery is supported by a <cite id=\"1\">93.3% program expense ratio</cite>, ensuring funds reach crisis zones quickly.",
-          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed systematically."
+          "explanation": "Impact execution is strong, driven by a <cite id=\"1\">93.3% program expense ratio in FY2024</cite> and direct service delivery providing <cite id=\"4\">11.9 million Ramadan meals</cite>.",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness per intervention can be comprehensively evaluated."
         }
       },
       "donor_fit_matrix": {
@@ -3889,15 +3899,15 @@
           "[2]",
           "[4]"
         ],
-        "evidence_rigor": "Grade C - Outcome tracking via annual reports and Candid",
+        "evidence_rigor": "Grade C - Verified outcome tracking and annual reporting",
         "geographic_focus": [
           "Gaza",
           "Yemen",
           "Sudan",
-          "Syria",
-          "Bangladesh"
+          "Bangladesh",
+          "Syria"
         ],
-        "giving_style": "Direct humanitarian relief and development",
+        "giving_style": "Direct humanitarian relief and emergency response",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara",
@@ -3912,19 +3922,19 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.067,
-        "annual_revenue": 29498054,
+        "admin_ratio": 0.03,
+        "annual_revenue": 34923926,
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.03,
+        "fundraising_ratio": 0.037,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
         "peer_program_ratio_median": 0.892,
         "program_expense_ratio": 0.9159,
-        "reserves_months": 19.9,
+        "reserves_months": 17.6,
         "revenue_cagr_3yr": 40.2,
         "transparency_score": 85,
         "working_capital_months": 17.6,
@@ -3956,7 +3966,7 @@
         "domestic_grants": 8088054,
         "foreign_grants": 32156632,
         "grant_count": 345,
-        "grant_strategy": "Distributes international direct aid alongside domestic institutional support grants.",
+        "grant_strategy": "Combines direct overseas program funding with grants to strategic regional partners.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Yemen",
@@ -3966,28 +3976,28 @@
           "Dominican Rep."
         ],
         "top_recipients": [
-          "Zakat Foundation Institute Inc ($548,540)",
-          "Amanah Security Group ($490,530)"
+          "ZAKAT FOUNDATION INSTITUTE INC ($548,540)",
+          "ZAKAT FOUNDATION INSTITUTE INC ($520,118)"
         ],
         "total_grants": 40244686
       },
       "headline": "Zakat Foundation of America provides direct humanitarian aid and long-term development to poor communities worldwide.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to fulfill their zakat obligations through an established humanitarian organization providing direct global emergency relief.",
+        "best_for_summary": "Best for donors seeking to fulfill zakat obligations through an established global humanitarian agency with high financial efficiency.",
         "citation_ids": [
           "[1]",
           "[2]"
         ],
         "donor_motivations": [
-          "Seeking verified zakat distribution across traditional Islamic categories",
-          "Desiring immediate emergency aid delivery to high-need conflict zones like Gaza and Yemen",
-          "Valuing low fundraising overhead and high program expense ratios"
+          "Want to fulfill zakat obligations across multiple recognized Islamic categories",
+          "Prioritize high financial efficiency where over 90% of funds go directly to programs",
+          "Care about immediate relief delivery in active international crisis areas"
         ],
         "giving_considerations": [
-          "Large-scale operations mean donations are pooled across major global funds",
-          "Formal academic impact studies (such as RCTs) are not currently produced"
+          "The charity maintains substantial financial reserves exceeding 17.6 months of working capital",
+          "Relies on output-based tracking rather than formal academic randomized evaluations"
         ],
-        "not_ideal_for": "Donors seeking hyperlocal US-focused community grants or those requiring rigorous academic randomized controlled trials."
+        "not_ideal_for": "Donors who require RCT-level academic proof of impact or those seeking hyperlocal domestic focus."
       },
       "impact_evidence": {
         "citation_ids": [
@@ -3995,29 +4005,29 @@
           "[5]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Tracks outputs and beneficiary numbers across programs but lacks independent third-party impact evaluations.",
+        "evidence_grade_explanation": "Grade C reflects consistent outcome tracking and verified annual reporting without formal independent academic studies.",
         "external_evaluations": [
-          "Candid Gold Seal profile"
+          "Candid Outcome Reporting"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Provides rapid emergency relief combined with vocational training and orphan support to foster community stability.",
-        "why_evidence_matters": "Tracking outcomes ensures that aid distribution effectively reduces long-term poverty rather than merely providing short-term assistance."
+        "theory_of_change_summary": "Provides emergency food, medical treatment, and orphan sponsorships to meet immediate survival needs while offering vocational training for long-term self-sufficiency.",
+        "why_evidence_matters": "Outcome tracking verifies that distributed aid delivers direct support to vulnerable populations during humanitarian emergencies."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[4]"
+          "[3]"
         ],
         "founded_year": 2001,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 40.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Expanding crises in regions such as Gaza and Sudan require significant ongoing resource allocation.",
+        "room_for_funding_explanation": "Expanding humanitarian crises in Gaza, Yemen, and Sudan require significant continuous capital deployment.",
         "strategic_priorities": [
-          "Expand emergency medical relief in Gaza",
-          "Scale vocational training programs"
+          "Emergency response expansion",
+          "Food security initiatives",
+          "Orphan healthcare support"
         ],
         "years_operating": 25
       },
@@ -4027,7 +4037,6 @@
         "ceo_compensation_pct_revenue": 0.39,
         "ceo_name": "Halil Demir",
         "citation_ids": [
-          "[1]",
           "[3]"
         ],
         "employees_count": null,
@@ -4035,7 +4044,7 @@
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0.83,
-        "payroll_to_revenue_pct": 1.07,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
         "staff_per_million_revenue": null,
         "volunteers_count": null
@@ -4044,8 +4053,8 @@
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Beats the peer median program expense ratio of 93.3% with a <cite id=\"1\">93.3% program expense ratio</cite>.",
-        "peer_group": "Humanitarian & Emergency Relief Organizations",
+        "differentiator": "Beats the peer median with a <cite id=\"1\">93.3% program expense ratio</cite> and significant direct output scale.",
+        "peer_group": "Humanitarian Relief Organizations",
         "similar_orgs": [
           "Human Appeal USA",
           "ICNA Relief",
@@ -4054,15 +4063,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar international emergency relief and orphan care focus",
+          "differentiator": "Similar humanitarian focus and size",
           "name": "Human Appeal USA"
         },
         {
-          "differentiator": "Greater focus on domestic US relief operations",
+          "differentiator": "Greater focus on domestic US relief",
           "name": "ICNA Relief"
         },
         {
-          "differentiator": "Similar international scope with comparable program ratio",
+          "differentiator": "Similar focus on international orphan care and emergency aid",
           "name": "Baitulmaal, Inc."
         }
       ],
@@ -4071,29 +4080,29 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "<cite id=\"1\">Directs 93.3% to program delivery</cite>, beating the 75% industry benchmark.",
-          "point": "High Program Expense Ratio"
+          "detail": "Directs <cite id=\"1\">93.3% of expenses to programs</cite> in FY2024, surpassing the 75% industry benchmark.",
+          "point": "High Program Efficiency"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "detail": "Maintains <cite id=\"1\">17.6 months of working capital in reserves</cite>, ensuring multi-year stability.",
-          "point": "Strong Financial Stability"
+          "detail": "Demonstrated financial expansion with a <cite id=\"3\">3-year revenue CAGR of 40.2%</cite> through FY2024.",
+          "point": "Strong Multi-Year Growth"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[4]",
+            "[5]"
           ],
-          "detail": "Spends only <cite id=\"1\">$0.04 per $1 raised of public support</cite>.",
-          "point": "Efficient Fundraising"
+          "detail": "Distributed over <cite id=\"4\">11.9 million Ramadan meals</cite> and treated <cite id=\"5\">11,200 patients in Gaza</cite> in 2024.",
+          "point": "Substantial Direct Impact"
         }
       ],
       "strengths_deep_dive": [
-        "Zakat Foundation of America demonstrates strong financial efficiency by allocating <cite id=\"1\">90.3% of expenses directly to programs</cite> in FY2024. This performance exceeds the 75% industry standard and the 89.2% peer median. Fundraising costs remain exceptionally low, taking just <cite id=\"1\">$0.04 per $1 raised</cite>. Furthermore, the organization holds <cite id=\"1\">17.6 months of working capital</cite>, providing significant operational stability during sudden global emergencies.",
-        "Program delivery shows concrete scale across multiple international aid operations. <cite id=\"4\">In 2024, the charity provided 11,954,081 Ramadan meals</cite>, <cite id=\"5\">sponsored 4,715 orphans</cite>, and <cite id=\"5\">treated 11,200 medical patients in Gaza</cite>. <cite id=\"4\">Vocational training reached 16,571 individuals</cite>, reflecting an ongoing focus on long-term self-sufficiency alongside immediate emergency intervention."
+        "Zakat Foundation of America demonstrates high financial efficiency in its humanitarian operations. In FY2024, the charity directed <cite id=\"1\">93.3% of its expenses directly to program services</cite>, outperforming the humanitarian peer median of 89.2% and the 75% sector benchmark. Growth has been rapid, with total revenue rising to <cite id=\"3\">$34,923,926 in FY2024</cite>, achieving a <cite id=\"3\">3-year CAGR of 40.2%</cite>."
       ],
-      "summary": "Founded in 2001, Zakat Foundation of America delivers emergency relief and sustainable development across crisis zones globally. <cite id=\"3\">In FY2024, the organization managed $29,498,054 in total revenue</cite>, supporting aid operations across regions including Yemen, Gaza, Syria, and Sudan. <cite id=\"1\">With a program expense ratio of 93.3%</cite>, the foundation ensures the overwhelming majority of funding directly supports community relief. Operations span seasonal feeding, healthcare, emergency aid, and educational support, alongside local development initiatives. <cite id=\"4\">In 2024, program efforts delivered over 11.9 million Ramadan meals</cite> and <cite id=\"5\">treated 11,200 patients in Gaza</cite>. <cite id=\"2\">The organization accepts zakat and allocates funds according to established Islamic guidelines</cite> for eligible categories including the poor and needy.",
+      "summary": "Zakat Foundation of America operates as an established global relief provider focused on emergency aid and sustainable community development. Founded in 2001, the organization delivers direct assistance across international crisis zones including Gaza, Yemen, and Sudan. Financial filings show total revenue reached <cite id=\"3\">$34,923,926 in FY2024</cite>, supported by a strong multi-year growth trajectory with a <cite id=\"3\">3-year revenue CAGR of 40.2%</cite>. Program spending remains efficient, with a <cite id=\"1\">93.3% program expense ratio</cite> that exceeds the peer median of 89.2% and beats the 75% industry standard. The foundation maintains strong financial reserves with <cite id=\"1\">17.6 months of working capital</cite>. In 2024, the foundation delivered over <cite id=\"4\">11.9 million Ramadan meals</cite> and supported <cite id=\"5\">11,200 patients in Gaza</cite>. While operational efficiency is high, the charity lacks a formal, published theory of change and maintains a high reserve level relative to typical operating needs.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

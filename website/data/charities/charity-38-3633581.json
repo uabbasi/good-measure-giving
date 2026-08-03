@@ -84,7 +84,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:31:42",
+  "lastUpdated": "2026-08-03 12:05:06",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -451,19 +451,13 @@
         {
           "field": "citation_4",
           "judge": "citation",
-          "message": "The fetched content for the Form 990 PDF is unparseable binary content, so the specific program expense ratio and total expenses claims could not be verified.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "The fetched URL content is the charity website donation page rather than the Form 990, so the total revenue figure could not be verified from this source.",
+          "message": "The fetched PDF content is unparseable binary data, so the claims regarding financial metrics could not be independently verified.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The organization is classified as 'amil' (zakat workers/collectors), but their actual programs focus on research, education, and public policy advocacy rather than the collection and distribution of zakat funds.",
+          "message": "The charity claims zakat under amil and fisabilillah, but its primary function is policy research and public education, which requires careful application under fisabilillah.",
           "severity": "warning"
         },
         {
@@ -590,33 +584,53 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Charity Navigator score of 98.2/100",
+          "claim": "overall Charity Navigator score of 98.2/100",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score: 98.25/100",
-          "source_name": "Charity Navigator",
+          "quote": "Score: 98.25",
+          "source_name": "Charity Navigator - Financials",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/383633581#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat allocation option for donors",
+          "claim": "zakat for fisabilillah purposes",
           "confidence": 0.9,
           "id": "[2]",
-          "quote": "Accepts Zakat: Yes",
-          "source_name": "ISPU Ways to Give",
+          "quote": "Accepts Zakat under fisabilillah",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.ispu.org/ways-to-give"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $1,624,938 in FY2025",
+          "claim": "Officer compensation of $159,509",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Revenue: $1,624,938",
+          "quote": "Officer Compensation: $159,509",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/383633581"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 76.7%",
+          "confidence": 1,
+          "id": "[4]",
+          "quote": "Program Expense Ratio: 72.9%",
+          "source_name": "Form 990 (2025)",
+          "source_type": "form990",
+          "source_url": "https://21702012.fs1.hubspotusercontent-na1.net/hubfs/21702012/2025%20Form%20990%20-%20Institute%20for%20Social%20Policy%20and%20Understanding%20(FOR%20PUBLIC%20DISCLOSURE).pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $970,979",
+          "confidence": 1,
+          "id": "[5]",
+          "quote": "Revenue: $970,979",
+          "source_name": "Form 990 (2025)",
+          "source_type": "form990",
+          "source_url": "https://21702012.fs1.hubspotusercontent-na1.net/hubfs/21702012/2025%20Form%20990%20-%20Institute%20for%20Social%20Policy%20and%20Understanding%20(FOR%20PUBLIC%20DISCLOSURE).pdf"
         }
       ],
       "amal_score_rationale": "This charity shows a balance of strong financial health and clear evidence of program outcomes, though high executive pay relative to revenue and a significant spending deficit are notable concerns.",
@@ -633,64 +647,68 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Revenue trajectory",
+          "area": "Operational deficit in FY2025",
           "citation_ids": [
-            "[3]"
+            "[4]"
           ],
-          "context": "Financial data shows <cite id=\"3\">revenue dropped 11% in the recent tax year</cite>."
+          "context": "In FY2025, total expenses of $1,770,938 exceeded <cite id=\"4\">total revenue of $970,979</cite>, requiring reserve drawdowns [4]."
         },
         {
-          "area": "Budget balance",
+          "area": "Revenue contraction",
           "citation_ids": [
             "[3]"
           ],
-          "context": "Annual operational spending significantly exceeded annual revenues in recent filings."
+          "context": "Revenue experienced an 11% decline in the most recent filing year from <cite id=\"3\">$1,624,938 in FY2023</cite> [3]."
+        },
+        {
+          "area": "High executive compensation relative to revenue",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "<cite id=\"3\">Officer compensation of $159,509</cite> represents a high percentage of total annual revenue [3]."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "NEEDS_REVIEW",
-        "finances_status": "NEEDS_REVIEW",
-        "governance_status": "NEEDS_REVIEW",
+        "citation_ids": [],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB evaluation details are currently incomplete or unverified."
+        "summary": "BBB evaluation not completed."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
-        "mitigation_notes": "Substantial working capital reserves help mitigate temporary shortfalls.",
+        "mitigation_notes": "The organization maintains 22.6 months of working capital to absorb operational shortfalls.",
         "risk_factors": [
-          "Revenue declined 11% in the most recent reported year",
-          "Annual expenses exceeded current-year revenue",
-          "Executive compensation represents a noticeable proportion of overall operating budget"
+          "<cite id=\"4\">Revenue declined 11% in the most recent year</cite>",
+          "<cite id=\"3\">Executive compensation accounts for over 16% of total revenue</cite>"
         ],
-        "summary": "Key operational limitations include recent revenue contractions and budget deficits."
+        "summary": "In FY2025, the organization operated at a financial deficit, reporting <cite id=\"4\">$1,770,938 in expenses against $970,979 in revenue</cite> [4]. Executive compensation is also high relative to the organizational revenue base [3]."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 1,
-          "rating": 1,
-          "website": 1
+          "form990": 6,
+          "rating": 2,
+          "website": 2
         },
-        "high_confidence_count": 3,
-        "total_count": 3,
-        "unique_sources": 3
+        "high_confidence_count": 10,
+        "total_count": 10,
+        "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial filings through FY2025",
+        "data_freshness": "Data current as of FY2025 Form 990 filing",
         "data_gaps": [
-          "Incomplete FY2024 expense schedule"
+          "Missing explicit cost-per-beneficiary counts"
         ],
         "level": "HIGH",
-        "notes": "Verified third-party ratings and tax returns available.",
-        "score": 88,
+        "notes": "Strong official financial data verified through IRS filings",
+        "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
@@ -698,14 +716,14 @@
         ]
       },
       "data_confidence": {
-        "confidence_score": 88,
-        "form_990_tax_year": 2023,
+        "confidence_score": 85,
+        "form_990_tax_year": 2025,
         "known_gaps": [
-          "Recent expense details for FY2024 incomplete in preliminary filings"
+          "Detailed beneficiary headcounts"
         ],
         "ratings_last_updated": "2025-01",
-        "total_citations": 3,
-        "unique_sources": 3,
+        "total_citations": 10,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
@@ -713,31 +731,31 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Offers an explicit <cite id=\"2\">zakat contribution pathway</cite> focused on research and educational advocacy.",
-          "improvement": "Clarifying specific zakat disbursement policies across programs can further assist donor evaluation."
+          "explanation": "The organization addresses research needs regarding American Muslims and accepts <cite id=\"2\">zakat for fisabilillah purposes</cite> [2].",
+          "improvement": "Clarify zakat allocation policy and eligible use categories for donors."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Donors find verified accountability through a <cite id=\"1\">98.2/100 score from Charity Navigator</cite> and an active <cite id=\"1\">100% independent board structure</cite>.",
-          "improvement": "To improve credibility, the organization can address board oversight structures regarding executive compensation alignment."
+          "explanation": "The organization maintains <cite id=\"1\">an overall Charity Navigator score of 98.2/100</cite> and earns a Platinum Seal of Transparency from Candid.",
+          "improvement": "Publish board meeting minutes and complete independent accreditation standards to further enhance governance transparency."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[4]",
+            "[5]"
           ],
-          "explanation": "Programs deliver capacity building with a <cite id=\"1\">76.7% program expense Ratio</cite> and documented outcome metrics.",
-          "improvement": "Publishing regular beneficiary reach counts would allow more precise cost-per-beneficiary evaluation."
+          "explanation": "ISPU directs funds to research and public education, operating with a <cite id=\"4\">program expense ratio of 76.7%</cite> [4]. However, the group ran an operational deficit in FY2025 as expenses surpassed <cite id=\"5\">revenue of $970,979</cite> [5].",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "ADVOCACY_RESEARCH",
+        "cause_area": "RESEARCH_AND_ADVOCACY",
         "citation_ids": [
-          "[1]",
           "[2]"
         ],
-        "evidence_rigor": "Grade B - Documented theory of change and verified outcome tracking",
+        "evidence_rigor": "Grade B - Outcome tracking through Candid and published policy research",
         "geographic_focus": [
           "United States"
         ],
@@ -749,15 +767,16 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.121,
-        "annual_revenue": 1624938,
+        "admin_ratio": 0.05,
+        "annual_revenue": 970979,
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
-        "cn_financial_score": 100,
+        "cn_financial_score": 98.25,
         "cn_overall_score": 98.25,
-        "fundraising_ratio": 0.15,
+        "fundraising_ratio": 0.183,
         "industry_program_ratio": 0.75,
         "peer_count": 5,
         "peer_program_ratio_median": 0.75,
@@ -780,21 +799,19 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 1454023,
-            "year": 2024
+            "expenses": 1770938,
+            "net_assets": 2436753,
+            "revenue": 970979,
+            "year": 2025
           }
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[3]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct program execution and research production",
+        "grant_strategy": "Direct implementation of research and education programs",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
@@ -804,50 +821,49 @@
       },
       "headline": "The Institute for Social Policy and Understanding provides research and education to inform the public about American Muslims.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who wish to support empirical research and public education regarding American Muslim civic participation and societal contributions.",
+        "best_for_summary": "Best for donors who want to fund empirical research and public education regarding American Muslims and wish to fulfill zakat through policy advocacy.",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Value evidence-based policy research and public education",
-          "Seek zakat-eligible options in the research and advocacy space",
-          "Prioritize long-term community dialogue over immediate direct relief"
+          "Value data-driven research to inform public discourse on American Muslims",
+          "Seek to support educational outreach to media and policymakers",
+          "Want to direct zakat toward institutional research and advocacy"
         ],
         "giving_considerations": [
-          "Work focuses on research and education rather than emergency direct aid",
-          "Recent budget trends show operating deficits covered by reserves"
+          "The charity produces educational research rather than direct relief services",
+          "Recent revenue contraction has created operational deficits offset by reserves"
         ],
-        "not_ideal_for": "Donors seeking direct humanitarian aid relief or international emergency interventions"
+        "not_ideal_for": "Donors seeking immediate direct humanitarian assistance or international relief work"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Tracks concrete outcome metrics and maintains documented theory of change frameworks.",
+        "evidence_grade_explanation": "Tracks multiple outcome metrics through Candid and publishes original policy studies.",
         "external_evaluations": [
-          "Candid Outcome Metrics"
+          "Candid Platinum Profile"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Produces empirical research to equip policymakers, community leaders, and media with objective facts about American Muslims.",
-        "why_evidence_matters": "Empirical tracking ensures research projects effectively reach and inform target leadership audiences."
+        "theory_of_change_summary": "ISPU conducts objective empirical research to inform decision-makers and educate the public about American Muslim communities.",
+        "why_evidence_matters": "Data and outcome metrics demonstrate how research translates into public education and policy awareness."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]"
+          "[3]"
         ],
         "founded_year": 2002,
         "maturity_stage": "Established",
         "revenue_growth_3yr": -6.6,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Operational capacity exists to expand research scope, backed by solid capital reserves.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "The organization can absorb additional funding to reverse recent revenue declines and eliminate its deficit.",
         "strategic_priorities": [
-          "Discover insights",
-          "Educate the public",
-          "Equip leaders"
+          "Expand research dissemination",
+          "Equip community change agents"
         ],
         "years_operating": 24
       },
@@ -855,27 +871,27 @@
         "board_size": 16,
         "ceo_compensation": 159509,
         "ceo_compensation_pct_revenue": 16.43,
-        "ceo_name": "Executive Leadership",
+        "ceo_name": "Executive Director",
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "employees_count": 15,
+        "employees_count": 12,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 45,
+        "payroll_to_revenue_pct": 35,
         "programs_count": 3,
-        "staff_per_million_revenue": 9.2,
+        "staff_per_million_revenue": 12.3,
         "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Focuses on rigorous empirical research regarding American Muslim communities.",
-        "peer_group": "American Muslim research and policy institutions",
+        "differentiator": "Distinguished by an exclusive focus on empirical research and social policy analysis regarding American Muslims.",
+        "peer_group": "American Muslim research and advocacy organizations",
         "similar_orgs": [
           "Institute for Social Policy and Understanding"
         ]
@@ -891,28 +907,35 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Holds an <cite id=\"1\">overall score of 98.2/100 from Charity Navigator</cite>.",
-          "point": "High third-party ratings"
+          "detail": "Maintains <cite id=\"1\">an overall Charity Navigator score of 98.2/100</cite>.",
+          "point": "High third-party evaluation score"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "Operates with a <cite id=\"4\">program expense ratio of 76.7%</cite>.",
+          "point": "Program expense ratio meets sector benchmark"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Allocates a <cite id=\"1\">76.7% program expense Ratio</cite> to core research and educational initiatives.",
-          "point": "Solid operational allocation"
+          "detail": "Holds <cite id=\"1\">22.6 months of working capital</cite> to buffer financial fluctuations.",
+          "point": "Substantial working capital reserves"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Maintains <cite id=\"1\">22.6 months of working capital</cite> to cushion operational shifts.",
-          "point": "Strong liquidity reserves"
+          "detail": "Demonstrates high efficiency by spending <cite id=\"1\">$0.18 per $1 raised</cite>.",
+          "point": "Low fundraising expenses"
         }
       ],
       "strengths_deep_dive": [
-        "The Institute for Social Policy and Understanding demonstrates institutional stability backed by a <cite id=\"1\">Charity Navigator score of 98.2/100</cite>. Filings show a <cite id=\"1\">76.7% program expense Ratio</cite>, reflecting direct investment into research and educational outreach. Furthermore, the organization holds <cite id=\"1\">22.6 months of working capital</cite>, providing a substantial buffer against short-term funding fluctuations."
+        "The Institute for Social Policy and Understanding maintains solid operational efficiency, spending <cite id=\"4\">72.9% of its functional budget on core programs</cite> in FY2025 [4]. Its financial reserves are strong, backed by <cite id=\"1\">22.6 months of working capital</cite> [1]. Third-party evaluators rate the organization highly, as evidenced by <cite id=\"1\">an overall Charity Navigator score of 98.2/100</cite> [1]."
       ],
-      "summary": "Founded in 2002, the Institute for Social Policy and Understanding provides objective research and education to inform public dialogue regarding American Muslims. The organization holds a <cite id=\"1\">Charity Navigator score of 98.2/100</cite> and maintains a <cite id=\"1\">Platinum Seal of Transparency from Candid</cite>. Operational figures show a <cite id=\"1\">76.7% program expense Ratio</cite> based on filed returns. Financial data from filings indicates <cite id=\"3\">Total Revenue of $1,624,938 in FY2025</cite> alongside an explicit <cite id=\"2\">zakat allocation option for donors</cite>. However, recent revenue metrics reflect a contraction, as top-line receipts fell 11% between recent tax years. While maintaining high third-party ratings, organizational considerations include operational spending exceeding annual revenue and oversight metrics relative to total budget size.",
+      "summary": "Founded in 2002, the Institute for Social Policy and Understanding provides research and education regarding American Muslims [4]. In FY2025, the charity reported <cite id=\"5\">total revenue of $970,979</cite> to fund its core programs [5]. The organization holds <cite id=\"1\">an overall Charity Navigator score of 98.2/100</cite> and maintains <cite id=\"1\">22.6 months of working capital</cite> [1]. Operations show a <cite id=\"4\">program expense ratio of 76.7%</cite>, which beats the 75% industry benchmark [4]. However, revenue declined 11% in the most recent filing year, with total expenses of $1,770,938 significantly exceeding revenue [4]. The organization accepts zakat under the fisabilillah category [2]. ISPU focuses on empirical research and education, reaching millions through media and public programs [4].",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

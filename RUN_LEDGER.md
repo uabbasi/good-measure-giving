@@ -1569,3 +1569,71 @@ then, regenerating does not clear the figure.
   tag for every charity not claiming zakat. Recurs across regenerations. The
   row was restored to its last clean evaluation (hash e37bc48d1c10564e) to
   keep the index at 166/166.
+
+## Repair run — 94 charities (2026-08-03)
+
+Regenerated every published charity carrying either defect: a stale embedded
+amal_score (57) or a stated total revenue that is not the published figure
+(53) — 94 in the union.
+
+**FINISHED at $28.61 of a $45 cap**, $0.2778/charity against $0.386 for the
+same work the day before. 93 of 94 completed; after a follow-up pass on the
+five that fell out, the index is back to **166/166**.
+
+### Cost: the estimate was too high, and here is the real shape
+
+| judge | avg per charity | share of judge spend |
+|---|---|---|
+| score | $0.2571 | 79% |
+| factual | $0.0477 | 15% |
+| zakat | $0.0108 | 3% |
+| citation | $0.0032 | 1% |
+| 11 others (deterministic) | $0.0000 | 0% |
+
+Judge is 76-97% of every run, and the score judge alone is about two thirds
+of a whole run. The $0.6-0.8/charity figure quoted earlier was generalised
+from CARE USA ($1.50/run), a mega-charity with an outsized narrative; the
+fleet average is roughly half that.
+
+**Lever applied:** both LLM judges ran `CONSENSUS_ROLLS = 3` and gate on a
+MAJORITY of rolls reporting any error. That signal is binary per roll, so
+with k=3 two agreeing rolls fix the outcome whatever the third says. Rolls
+now stop as soon as the remainder cannot change the verdict
+(`src/judges/consensus.py`), proven outcome-identical by exhaustion over k=3
+and k=5.
+
+Measured on the same five charities before and after: score judge
+**$0.4758 -> $0.4158, 12.6% lower** (10-38% each). Not the 33% the call
+count suggests, because repeated rolls hit the prompt cache — the third roll
+was the cheapest of the three. Real saving, smaller than it looks on paper.
+
+### Root cause fixed: the MANDATORY VALUES block
+
+`ReconciliationEngine._reconcile_financials` ran a THIRD election over the raw
+sources (`ProPublica > Candid > Charity Navigator`), never consulting the one
+the pipeline published. Its output lands in the rich prompt's "MANDATORY
+VALUES (USE EXACTLY - DO NOT CALCULATE OR INVENT)" block, so whenever
+ProPublica lost the real election the model was *ordered* to use ProPublica's
+figure. Withholding ProPublica from the context blocks had not helped,
+because this is a separate and louder channel. CARE USA now states
+$832,911,696 rather than $909,098,267.
+
+## Open: 44 charities publish a ratio that contradicts their own components
+
+`program_expense_ratio` disagrees with `program_expenses / total_expenses` on
+**44 of 165** published charities — 39 where Charity Navigator won the
+election, 5 "mixed". The IRS path recomputes ratios from elected components
+(fixed earlier in this pass); the Charity Navigator path still inherits CN's
+precomputed quotient over components that may come from elsewhere.
+
+    85-3547280  stored 0.8414  components give 0.9997
+    26-1140201  stored 0.8511  components give 0.6837
+    22-3382037  stored 0.7154  components give 0.9849
+
+The score judge catches this wherever the gap is wide enough to surface in
+prose, and is right to — the page contradicts itself. Two charities were
+blocked by it in this run. Whether CN's quotient or our components is the
+better number is not yet established: CN may divide by an expense base we do
+not store, so this needs investigating before it is "fixed" either way.
+85-3547280 was restored to its last clean evaluation to hold the index at
+166/166.

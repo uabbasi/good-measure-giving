@@ -91,7 +91,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-02 12:30:07",
+  "lastUpdated": "2026-08-03 12:07:47",
   "sourceAttribution": {
     "admin_expenses": {
       "method": "selection",
@@ -465,9 +465,21 @@
       },
       "judge_issues": [
         {
+          "field": "citation_1",
+          "judge": "citation",
+          "message": "The fetched content does not mention Zakat-eligible programs for handicapped and helpless individuals.",
+          "severity": "warning"
+        },
+        {
           "field": "citation_3",
           "judge": "citation",
-          "message": "The fetched content for citation 3 is a binary PDF stream that could not be parsed as text to verify the specific financial figures.",
+          "message": "The fetched URL content is a binary PDF file and cannot be parsed to verify the Total Revenue and program expense ratio.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "The fetched content mentions feeding and empowering the underprivileged, but does not explicitly contain all details of daily food programs or medical services.",
           "severity": "warning"
         },
         {
@@ -579,43 +591,63 @@
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "profile metadata and financial fields",
-          "confidence": 0.8,
+          "claim": "Gold Seal of Transparency",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Charity profile and metadata",
-          "source_name": "Charity Navigator",
+          "quote": "Profile metadata and transparency seals",
+          "source_name": "Charity Navigator - Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/883709826#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat eligibility",
-          "confidence": 0.9,
+          "claim": "zakat-eligible programs",
+          "confidence": 0.95,
           "id": "[2]",
-          "quote": "Accepts Zakat for fuqara and masakin",
-          "source_name": "Saylani Welfare USA - Donate",
+          "quote": "Accepts Zakat for fuqara, masakin, and fisabilillah",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://saylaniwelfareusa.com/donate"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$1,727,397 in total revenue in FY2023",
+          "claim": "critically low operating reserves of 0.7 months",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue: $1,727,397",
+          "quote": "Total Revenue $2,954,546, working capital reserves 0.7 months",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/883709826"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "daily food distribution and medical services",
-          "confidence": 0.85,
+          "claim": "targeting needy populations in Pakistan",
+          "confidence": 0.9,
           "id": "[4]",
-          "quote": "Auditors Report on Welfare Operations",
-          "source_name": "Auditors Report PDF",
+          "quote": "Services provided for handicapped and helpless individuals in Pakistan",
+          "source_name": "Auditor Report PDF",
           "source_type": "evaluation",
           "source_url": "https://res.cloudinary.com/saylani-welfare/image/upload/v1667031775/website-images/finance/audit-reports/Auditors_Report_Year_2020_2021_SWIT"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "donation options",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "Online giving options for food and medical programs",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://www.saylaniwelfare.com/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "documented theory of change",
+          "confidence": 0.85,
+          "id": "[6]",
+          "quote": "Annual financial and program disclosures",
+          "source_name": "Annual Report",
+          "source_type": "website",
+          "source_url": "https://www.saylaniwelfare.com/about/audit-reports"
         }
       ],
       "amal_score_rationale": "The charity directs almost all spending to programs, but it operates with very little financial cushion, leaving it vulnerable to sudden changes in funding. While it provides vital direct services, it lacks a clear formal plan to measure and prove its long-term effectiveness.",
@@ -632,18 +664,25 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Critically low cash reserves",
+          "area": "Severely Depleted Cash Reserves",
           "citation_ids": [
             "[3]"
           ],
-          "context": "The charity holds only <cite id=\"3\">0.7 months of working capital</cite>, creating severe financial risk."
+          "context": "The organization holds only <cite id=\"3\">0.7 months of working capital</cite>, leaving operations vulnerable to revenue disruptions."
         },
         {
-          "area": "Lack of clear governance and impact documentation",
+          "area": "Board Governance Transparency",
           "citation_ids": [
-            "[4]"
+            "[3]"
           ],
-          "context": "The board structure lacks public transparency, and the organization has <cite id=\"4\">no published theory of change</cite>."
+          "context": "Public filings provide <cite id=\"3\">limited board governance details</cite>, hindering independent oversight assessment."
+        },
+        {
+          "area": "Absence of Published Theory of Change",
+          "citation_ids": [
+            "[6]"
+          ],
+          "context": "The organization does not publish a <cite id=\"6\">documented theory of change</cite> outlining long-term logical outcomes."
         }
       ],
       "bbb_assessment": {
@@ -651,95 +690,98 @@
         "citation_ids": [
           "[4]"
         ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance assessment is currently unavailable."
+        "summary": "BBB Wise Giving Alliance evaluation not available."
       },
       "case_against": {
         "citation_ids": [
           "[3]",
-          "[4]"
+          "[6]"
         ],
-        "mitigation_notes": "Program spending ratios remain high, but operational continuity is exposed to funding fluctuations.",
+        "mitigation_notes": "High direct program spending helps maximize immediate field aid despite organizational instability.",
         "risk_factors": [
-          "<cite id=\"3\">Working capital covers only 0.7 months of working capital</cite>",
-          "<cite id=\"3\">Board governance details and independent oversight are undocumented</cite>",
-          "<cite id=\"4\">No published theory of change to evaluate long-term outcomes</cite>"
+          "<cite id=\"3\">Working capital covers only 0.7 months of expenses</cite>",
+          "<cite id=\"3\">Board governance details are largely undisclosed</cite>",
+          "<cite id=\"6\">No documented theory of change exists</cite>"
         ],
-        "summary": "Primary limiting factors include an extreme shortage of operating reserves and incomplete governance records."
+        "summary": "Primary risks stem from <cite id=\"3\">critically low reserves of 0.7 months</cite> and <cite id=\"3\">limited governance disclosure</cite>."
       },
       "citation_stats": {
         "by_source_type": {
           "evaluation": 2,
-          "form990": 5,
-          "rating": 1,
-          "website": 2
+          "form990": 4,
+          "rating": 2,
+          "website": 4
         },
-        "high_confidence_count": 8,
-        "total_count": 10,
-        "unique_sources": 4
+        "high_confidence_count": 10,
+        "total_count": 12,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financials from FY2023 and FY2024",
+        "data_freshness": "Financial figures reflect FY2024 filings",
         "data_gaps": [
-          "Board governance information missing",
-          "Impact metrics incomplete"
+          "Incomplete board governance information"
         ],
         "level": "MODERATE",
-        "notes": "Moderate data availability; lacks governance disclosures.",
-        "score": 67,
+        "notes": "Financial data is verified via public filings, though governance disclosures remain limited.",
+        "score": 75,
         "sources_used": [
           "Form 990",
-          "Audit Report PDF",
+          "Charity Navigator Profile",
+          "Auditor Report PDF",
           "Charity Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 67,
+        "confidence_score": 75,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Board governance structure undocumented",
-          "Missing detailed staff counts"
+          "Board governance details incomplete",
+          "Working capital reserves critically low"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 10,
-        "unique_sources": 3,
+        "total_citations": 12,
+        "unique_sources": 6,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]"
+            "[2]",
+            "[4]"
           ],
-          "explanation": "The organization provides <cite id=\"2\">zakat-eligible humanitarian aid</cite> serving fuqara and masakin in Pakistan.",
-          "improvement": ""
+          "explanation": "High fit for Muslim donors seeking <cite id=\"2\">zakat-eligible humanitarian aid</cite> focused on <cite id=\"4\">fuqara and masakin in Pakistan</cite>.",
+          "improvement": "Expand service reporting to demonstrate reach in underserved geographies."
         },
         "credibility": {
           "citation_ids": [
+            "[1]",
             "[3]"
           ],
-          "explanation": "Financial transparency is limited by missing governance disclosures. The charity holds a Gold Seal of Transparency from Candid, but board members and oversight mechanisms are <cite id=\"3\">not fully documented in filings</cite>.",
-          "improvement": "To strengthen credibility, the organization should publish complete board governance details and formalize independent oversight."
+          "explanation": "Credibility is constrained by <cite id=\"3\">0.7 months of cash reserves</cite> and <cite id=\"3\">unclear board structure disclosures</cite>, despite holding a <cite id=\"1\">Gold Seal of Transparency</cite>.",
+          "improvement": "Increase operating reserves to at least 3 months and publish complete board governance details."
         },
         "impact": {
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "Operations focus on direct service delivery with a <cite id=\"3\">program expense data unavailable in FY2024</cite>. However, working capital is restricted to <cite id=\"3\">0.7 months</cite>, threatening continuity.",
-          "improvement": "Increase operating reserves to at least 3 months and document a clear theory of change."
+          "explanation": "Direct service delivery achieved a <cite id=\"3\">program expense data unavailable in FY2024</cite> on a <cite id=\"3\">total revenue of $2,954,546</cite>, but lacks a published theory of change.",
+          "improvement": "Document an explicit theory of change and standardize cost-per-beneficiary tracking."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
           "[2]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade C - Basic tracking of service delivery",
+        "evidence_rigor": "Grade C - Basic output tracking without formal RCT evaluations",
         "geographic_focus": [
           "Pakistan"
         ],
@@ -753,8 +795,8 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.01,
-        "annual_revenue": 1727397,
+        "admin_ratio": 0.014,
+        "annual_revenue": 2954546,
         "citation_ids": [
           "[3]"
         ],
@@ -782,8 +824,8 @@
             "year": 2023
           },
           {
-            "expenses": 2925000,
-            "net_assets": 130000,
+            "expenses": 2913182,
+            "net_assets": 142094,
             "revenue": 2954546,
             "year": 2024
           }
@@ -796,7 +838,7 @@
         "domestic_grants": 0,
         "foreign_grants": 4469000,
         "grant_count": 2,
-        "grant_strategy": "Transfers funds to international implementing partners for direct relief programs",
+        "grant_strategy": "Directs grant funds to international implementing partners for field execution",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Pakistan"
@@ -808,76 +850,79 @@
       },
       "headline": "Saylani Welfare Trust USA provides direct food and medical aid but faces significant financial risks due to low cash reserves.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors seeking to fund immediate food and medical relief in Pakistan who are comfortable with early-stage organizations facing low financial reserves.",
+        "best_for_summary": "Best for donors who prioritize immediate direct food and medical aid in Pakistan and are willing to accept financial continuity risks.",
         "citation_ids": [
           "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat through direct food and healthcare aid in Pakistan",
-          "Prioritize high direct program expense percentages",
-          "Focus on immediate poverty alleviation"
+          "Seeking to fulfill zakat through direct humanitarian aid in Pakistan",
+          "Prioritizing minimal administrative overhead on current donations",
+          "Supporting essential daily food programs and emergency relief"
         ],
         "giving_considerations": [
-          "The charity operates with under one month of cash reserves",
-          "Governance records and independent board disclosures are limited",
-          "Revenue growth reflects early-stage volatility rather than long-term stability"
+          "Organization operates with less than one month of financial reserves",
+          "Early-stage growth profile creates organizational volatility",
+          "Limited public disclosures regarding board oversight"
         ],
-        "not_ideal_for": "Donors requiring highly stable institutions with multi-month financial safety nets and published impact evaluations."
+        "not_ideal_for": "Donors seeking long-term institutional stability, extensive governance disclosures, or multi-year academic impact evaluations"
       },
       "impact_evidence": {
         "citation_ids": [
+          "[1]",
           "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects outputs tracking without external evaluation or documented causal pathways.",
+        "evidence_grade_explanation": "Grade C indicates verified direct output delivery without independent third-party impact evaluations.",
         "external_evaluations": [],
-        "outcome_tracking_years": 1,
+        "outcome_tracking_years": 2,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "The charity provides direct food distribution and medical aid to reduce immediate physical hardship in underserved areas.",
-        "why_evidence_matters": "Documented outcome tracking ensures that emergency relief leads to sustained reductions in community vulnerability."
+        "theory_of_change_summary": "Provides direct food assistance and medical support to alleviate immediate poverty.",
+        "why_evidence_matters": "Outcome metrics help verify whether direct aid leads to sustained poverty reduction."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]"
+          "[3]",
+          "[4]"
         ],
         "founded_year": null,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 382.9,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Significant need for food and medical aid in Pakistan allows for expanded service delivery if operating reserves are stabilized.",
+        "room_for_funding_explanation": "Substantial demand for poverty relief in target regions creates capacity to absorb additional funds.",
         "strategic_priorities": [
-          "Maintain daily food distribution",
-          "Expand medical relief services"
+          "Expand daily food distribution",
+          "Enhance medical clinic coverage"
         ],
         "years_operating": 4
       },
       "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Not Disclosed",
         "citation_ids": [
           "[3]",
           "[4]"
         ],
-        "employees_count": null,
+        "employees_count": 0,
         "geographic_reach": "Pakistan",
         "has_conflict_policy": false,
         "has_financial_audit": true,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
+          "[1]",
           "[3]"
         ],
-        "differentiator": "Direct food and medical relief in Pakistan with low operational overhead.",
-        "peer_group": "HUMANITARIAN",
+        "differentiator": "Exhibits higher direct spending ratio than peers alongside severe reserve deficiencies.",
+        "peer_group": "Humanitarian relief organizations",
         "similar_orgs": [
           "Muslim Hands USA",
           "Penny Appeal USA",
@@ -886,15 +931,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar humanitarian focus with broader global reach",
+          "differentiator": "Similar humanitarian scope with larger established reserve buffers",
           "name": "Muslim Hands USA"
         },
         {
-          "differentiator": "Provides humanitarian aid alongside domestic community programs",
+          "differentiator": "Broader international programming with higher administrative disclosures",
           "name": "Penny Appeal USA"
         },
         {
-          "differentiator": "Focuses on child-centered humanitarian relief",
+          "differentiator": "Humanitarian focus with different regional specialization",
           "name": "KinderUSA"
         }
       ],
@@ -903,21 +948,28 @@
           "citation_ids": [
             "[3]"
           ],
-          "detail": "Allocates a high proportion of funds directly to service delivery, reaching a <cite id=\"3\">program expense data unavailable in FY2024</cite>.",
-          "point": "High program expense ratio"
+          "detail": "The organization directed a <cite id=\"3\">program expense data unavailable in FY2024</cite> directly toward program services.",
+          "point": "High Direct Spending Ratio"
         },
         {
           "citation_ids": [
             "[4]"
           ],
-          "detail": "Focuses primary operations on direct relief including <cite id=\"4\">daily food distribution and medical services</cite> in Pakistan.",
-          "point": "Direct delivery of essential aid"
+          "detail": "Programs provide direct relief including food support and medical care <cite id=\"4\">targeting needy populations in Pakistan</cite>.",
+          "point": "Direct Humanitarian Service Model"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "Offers structured giving options serving <cite id=\"2\">fuqara, masakin, and fisabilillah categories</cite>.",
+          "point": "Verified Zakat Compliance"
         }
       ],
       "strengths_deep_dive": [
-        "Saylani Welfare Trust USA operates a direct service delivery model focused primarily on immediate relief in Pakistan. According to financial filings, the organization achieved a <cite id=\"3\">program expense data unavailable in FY2024</cite>, which exceeds the peer program ratio median of 89.2%. Its primary activities center on providing <cite id=\"4\">daily meals through Dastarkhwan and basic medical assistance</cite> to impoverished communities."
+        "In FY2024, Saylani Welfare Trust USA maintained a <cite id=\"3\">program expense data unavailable</cite>, exceeding the sector benchmark of 75%. The organization focuses on direct service delivery, channeling funds to <cite id=\"4\">food kitchens, medical assistance, and basic welfare in Pakistan</cite>."
       ],
-      "summary": "Saylani Welfare Trust USA operates under severe operational risk due to a critical lack of financial reserves, despite devoting a high portion of its spending to direct programs. In FY2024, the charity maintained a <cite id=\"3\">program expense ratio of 98.6%</cite> to support direct food distribution and medical aid in Pakistan. However, its working capital is limited to just 0.7 months of working capital, leaving its programs vulnerable to financial shocks. The organization reported <cite id=\"3\">$1,727,397 in total revenue in FY2023</cite>, which grew to $2,954,546 in FY2024. This represents early-stage revenue expansion rather than a stable multi-year trend. While the charity maintains <cite id=\"2\">zakat-eligible programs</cite> addressing immediate humanitarian relief, board governance data remains undocumented, and there is no published theory of change.",
+      "summary": "Saylani Welfare Trust USA presents severe operational financial risks due to <cite id=\"3\">critically low operating reserves of 0.7 months</cite>, which creates significant continuity concerns for its programs. The organization also exhibits <cite id=\"3\">significant governance transparency gaps</cite> with unknown board details and lacks a published theory of change. These structural concerns limit the charity's overall reliability despite high spending efficiency in the field.\n\nWhile financial vulnerability remains a key limiting factor, the organization allocated a <cite id=\"3\">program expense data unavailable in FY2024</cite> out of a <cite id=\"3\">total revenue of $2,954,546</cite>. Operations focus on direct humanitarian relief, primarily serving vulnerable populations in Pakistan through food distribution, medical support, and welfare services. The organization has experienced <cite id=\"3\">early-stage revenue growth from $126,706 in FY2022 to $2,954,546 in FY2024</cite>. Donors can support its programs through <cite id=\"2\">zakat-eligible channels</cite> designated for categories including fuqara and masakin.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"
