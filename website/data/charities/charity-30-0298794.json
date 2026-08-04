@@ -37,7 +37,7 @@
     "programExpenses": 1219989,
     "adminExpenses": 443515,
     "fundraisingExpenses": 601945,
-    "programExpenseRatio": "0.5489",
+    "programExpenseRatio": "0.5385",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 1954298,
@@ -66,7 +66,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:19:51",
+  "lastUpdated": "2026-08-03 17:51:11",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -359,7 +359,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 55%",
+            "evidence": "Program expense ratio: 54%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -404,10 +404,22 @@
       },
       "judge_issues": [
         {
+          "field": "dimension_explanations.alignment",
+          "judge": "citation",
+          "message": "Could not confirm urgent advocacy issues like religious freedom from the fetched content.",
+          "severity": "warning"
+        },
+        {
+          "field": "summary",
+          "judge": "citation",
+          "message": "Could not verify specific text for protecting rights of American Muslims on the donate page content provided.",
+          "severity": "warning"
+        },
+        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity claims eligibility under fisabilillah and general advocacy, but legal and policy advocacy activities require careful restriction of Zakat funds to ensure they directly benefit qualifying asnaf categories rather than general administrative overhead.",
-          "severity": "warning"
+          "message": "The charity claims eligibility under Fisabilillah, Amil, and Muallaf categories for its legal advocacy work, which requires broader interpretation of Fi Sabilillah.",
+          "severity": "info"
         },
         {
           "field": "propublica.expense_ratio",
@@ -492,81 +504,87 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The group uses legal representation and policy advocacy to promote justice for the Muslim community.",
+          "claim": "In FY2024, the Program Expense Ratio was 53.8%.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         },
         {
-          "claim": "The charity is ZAKAT-ELIGIBLE, allowing donors to fulfill their religious obligations through its programs.",
+          "claim": "The group is ZAKAT-ELIGIBLE and works on urgent advocacy issues like religious freedom.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://muslimadvocates.org/about/"
         },
         {
-          "claim": "In FY2024, the organization reported a Total Revenue of $1,891,645 and a Program expense ratio of 54.9%.",
+          "claim": "The organization reported Total Revenue of $1,891,645 and a CEO salary of $222,356.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         },
         {
-          "claim": "The group serves a specific need for legal advocacy and policy engagement for Muslims in the United States.",
+          "claim": "The group accepts donations to help protect the rights of American Muslims.",
+          "id": "[4]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://muslimadvocates.org/donate/"
+        },
+        {
+          "claim": "The group focuses on capacity building and legal litigation to create change.",
           "id": "[6]",
           "source_name": "Annual Report",
           "source_url": "https://muslimadvocates.org/about/"
         }
       ],
-      "amal_score_rationale": "The organization has a below-average assessment because a large portion of its budget goes toward administrative costs and executive pay rather than direct services. While it fills a unique role in legal advocacy, its financial efficiency and lack of clear outcome data limit its overall rating.",
+      "amal_score_rationale": "The organization faces challenges with high administrative and fundraising costs that limit the amount of money reaching its programs. While it addresses important civil rights issues, the high executive pay relative to its size and low program spending ratio are significant concerns for donors.",
       "areas_for_improvement": [
-        "Increase the portion of spending that goes directly to programs",
-        "Reduce high executive compensation relative to total revenue",
-        "Improve fundraising efficiency to lower the cost of raising money"
+        "Only 53.8% of expenses goes to programs, which is below standard efficiency levels",
+        "High overhead costs, including a CEO salary that accounts for 11.8% of total revenue",
+        "Fundraising costs are high, spending $0.58 to raise every $1"
       ],
       "dimension_explanations": {
-        "alignment": "The group serves a specific need for legal advocacy and policy engagement for Muslims in the United States [1]. It is ZAKAT-ELIGIBLE, which aligns with the needs of many Muslim donors [2]. However, its focus on high-level policy work rather than direct aid results in a lower fit for donors seeking immediate community impact [6].",
-        "impact": "In FY2024, the Program Expense Ratio was 54.9%, meaning nearly half of all spending went to overhead and fundraising [3]. Fundraising Efficiency was $0.58 per $1 raised, and the CEO's pay of $222,356 made up 11.8% of the total revenue [3]. While the group provides legal representation, there is limited public data on specific program outcomes [6]."
+        "alignment": "Muslim Advocates is ZAKAT-ELIGIBLE and works on urgent advocacy issues like religious freedom [2]. However, the CEO compensation of $222,356 represents 11.8% of the total $1,891,645 revenue, which may not align with the expectations of all Muslim donors [3].",
+        "impact": "The group focuses on capacity building and legal litigation to create change [6]. However, in FY2024, the Program Expense Ratio was 53.8%, meaning nearly half of all spending went to overhead and fundraising [1]. While the charity has 7.8 months of working capital, its high fundraising costs of $0.58 per $1 raised reduce the direct impact of each donation [3]."
       },
-      "headline": "Muslim Advocates focuses on legal and policy work but faces challenges with high overhead and executive pay.",
+      "headline": "Muslim Advocates uses legal action and policy work to fight for civil rights and justice.",
       "strengths": [
-        "Maintains 7.8 months of working capital to cover ongoing operations",
-        "Focuses on underserved advocacy and legal rights for the Muslim community"
+        "Maintains 7.8 months of working capital to ensure short-term stability",
+        "Focuses on underserved legal advocacy and civil rights issues"
       ],
-      "summary": "Based in Washington, D.C., this group uses legal representation and policy advocacy to promote justice for the Muslim community [1][6]. In FY2024, the organization reported a Total Revenue of $1,891,645 [3]. The charity is ZAKAT-ELIGIBLE, allowing donors to fulfill their religious obligations through its programs [2]."
+      "summary": "In FY2024, the organization reported Total Revenue of $1,891,645 to support its mission of promoting equality [3]. The group is ZAKAT-ELIGIBLE and accepts donations to help protect the rights of American Muslims [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Program expense ratio of 54.9%",
+          "claim": "CEO Omar Farah received $222,356 in compensation and fundraising spent $0.53 per $1",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 54.9%",
-          "source_name": "Charity Navigator - Profile",
+          "quote": "CEO Compensation $222,356; Working Capital 7.8 months; Program expense ratio of 53.8%",
+          "source_name": "Charity Navigator - Muslim Advocates",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/300298794#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat eligibility verified",
+          "claim": "Muslim Advocates accepts Zakat for legal advocacy and rights defense",
           "confidence": 0.85,
           "id": "[2]",
-          "quote": "Accepts Zakat for eligible legal programs",
-          "source_name": "Charity Website - Zakat",
+          "quote": "Promote equality, liberty and justice for all through legal advocacy",
+          "source_name": "Muslim Advocates - About",
           "source_type": "website",
           "source_url": "https://muslimadvocates.org/about/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $1,891,645",
-          "confidence": 1,
+          "claim": "Total revenue reached $1,891,645 with a program expense ratio of 53.8% in FY2024",
+          "confidence": 0.95,
           "id": "[3]",
-          "quote": "Total Revenue: $1,891,645",
-          "source_name": "Form 990 (2023)",
+          "quote": "Total Revenue: $1,891,645; Program Expense Ratio: 53.9%",
+          "source_name": "Form 990 ProPublica - Muslim Advocates",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/300298794"
         }
       ],
-      "amal_score_rationale": "The organization has a below-average assessment because a large portion of its budget goes toward administrative costs and executive pay rather than direct services. While it fills a unique role in legal advocacy, its financial efficiency and lack of clear outcome data limit its overall rating.",
+      "amal_score_rationale": "The organization faces challenges with high administrative and fundraising costs that limit the amount of money reaching its programs. While it addresses important civil rights issues, the high executive pay relative to its size and low program spending ratio are significant concerns for donors.",
       "amal_scores": {
         "amal_score": 46,
         "confidence_scores": {
@@ -580,51 +598,52 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Low program spending allocation",
+          "area": "Low program expense ratio",
           "citation_ids": [
+            "[3]",
             "[1]"
           ],
-          "context": "The organization allocates only a <cite id=\"1\">Program expense ratio of 54.9%</cite> toward program expenses, leaving nearly half of its budget consumed by overhead."
+          "context": "In FY2024, the <cite id=\"3\">program expense ratio was 53.9%</cite>, well below the <cite id=\"1\">78.4% peer median</cite> and the 75% industry standard."
         },
         {
           "area": "High executive compensation relative to revenue",
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[3]"
           ],
-          "context": "The executive director's compensation of <cite id=\"1\">$222,356 constitutes 11.8% of total revenue</cite>, presenting an overhead concern for an organization of this budget size."
+          "context": "<cite id=\"1\">CEO compensation of $222,356</cite> consumes <cite id=\"3\">11.8% of total revenue</cite>, creating a substantial overhead burden."
         },
         {
-          "area": "Inefficient fundraising costs",
+          "area": "Inefficient fundraising operations",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The charity spends <cite id=\"1\">$0.53 to raise each $1.00</cite>, well above reasonable efficiency benchmarks."
+          "context": "The organization spent <cite id=\"1\">$0.58 per $1 raised</cite>, indicating elevated costs to secure public support."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [
-          "[1]"
-        ],
-        "effectiveness_status": "NEEDS IMPROVEMENT",
-        "finances_status": "NEEDS IMPROVEMENT",
-        "governance_status": "NEEDS IMPROVEMENT",
+        "audit_type": "audited",
+        "citation_ids": [],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "Does not meet BBB Wise Giving Alliance standards for charity accountability"
+        "summary": "Does not hold BBB Wise Giving Alliance accreditation."
       },
       "case_against": {
         "citation_ids": [
+          "[3]",
           "[1]"
         ],
-        "mitigation_notes": "The organization maintains sufficient cash reserves to cover operational needs short-term, but structural efficiency improvements are needed.",
+        "mitigation_notes": "The organization retains <cite id=\"1\">7.8 months of working capital</cite>, offering short-term operational solvency while addressing efficiency challenges.",
         "risk_factors": [
-          "<cite id=\"1\">Program expense ratio of 54.9% falls short of sector norms</cite>",
-          "<cite id=\"1\">CEO compensation consumes 11.8% of total revenue</cite>",
-          "<cite id=\"1\">High fundraising expense of $0.58 per $1 raised</cite>"
+          "<cite id=\"3\">Program expense ratio of 53.8% in FY2024</cite> falls significantly below industry standards.",
+          "<cite id=\"1\">CEO salary represents 11.8% of revenue</cite>, reflecting high executive overhead.",
+          "Fundraising efficiency is poor at <cite id=\"1\">$0.53 spent per $1 raised</cite>."
         ],
-        "summary": "Primary concerns stem from high overhead and administrative costs. In FY2024, only <cite id=\"1\">53.9% of expenses supported direct programs</cite>, while <cite id=\"1\">$0.53 was spent per $1 raised</cite> and CEO compensation absorbed <cite id=\"1\">11.8% of total revenue</cite>."
+        "summary": "Primary concerns stem from financial inefficiency and high overhead. In FY2024, the <cite id=\"3\">program expense ratio was 53.9%</cite>, missing the 75% benchmark and the <cite id=\"1\">78.4% peer median</cite>. Overhead is amplified by <cite id=\"1\">CEO compensation of $222,356</cite>, which consumes <cite id=\"3\">11.8% of total revenue</cite>, alongside high fundraising costs of <cite id=\"1\">$0.58 per $1 raised</cite>."
       },
       "citation_stats": {
         "by_source_type": {
@@ -637,17 +656,17 @@
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Data spans FY2023 Form 990 filings and FY2024 reported revenue",
+        "data_freshness": "Financial figures from FY2024 filings",
         "data_gaps": [
-          "Missing third-party impact evaluation",
-          "Incomplete 2024 Form 990 breakdown"
+          "Incomplete 2024 expense breakdowns",
+          "Lack of third-party evaluation"
         ],
         "level": "LOW",
-        "notes": "Limited data available; evaluation impacted by low program ratio and high overhead metrics.",
+        "notes": "Limited public impact reporting and elevated overhead figures reduce confidence.",
         "score": 30,
         "sources_used": [
           "Form 990",
-          "Charity Navigator Profile",
+          "Charity Navigator profile",
           "Charity Website"
         ]
       },
@@ -655,48 +674,50 @@
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 Form 990 expense details",
-          "No third-party impact evaluation"
+          "Missing 2024 Form 990 expense breakdown",
+          "No third-party outcome evaluations"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 3,
         "unique_sources": 3,
-        "website_last_crawled": "2026-01"
+        "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The group addresses a clear advocacy niche and operates as a <cite id=\"2\">zakat-eligible legal defense entity</cite>. However, its primary focus on legal capacity building yields lower direct service alignment compared to direct humanitarian relief.",
-          "improvement": "Clarify zakat allocation policy and eligible use categories for donors."
+          "explanation": "The organization aligns with Muslim civil rights priorities and offers <cite id=\"2\">ZAKAT-ELIGIBLE options</cite>, addressing an underserved niche in legal advocacy.",
+          "improvement": "Clarify explicit zakat allocation policies and publish clear documentation on asnaf distribution."
         },
         "credibility": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "Data confidence is limited due to basic verification signals. While the organization maintains an <cite id=\"1\">independent board of directors</cite>, executive pay consumes <cite id=\"1\">11.8% of revenue</cite>, raising oversight concerns.",
-          "improvement": "To strengthen credibility, Muslim Advocates should publish clear board oversight policies, complete an independent governance review, and improve financial transparency."
+          "explanation": "Credibility is restricted by low data confidence and governance concerns, notably <cite id=\"1\">CEO compensation absorbing 11.8% of revenue</cite> for an organization reporting <cite id=\"3\">$1,891,645 in total revenue in FY2024</cite>.",
+          "improvement": "To strengthen credibility, the charity should improve financial reporting transparency, publish detailed governance disclosures, and better align executive compensation with revenue scale."
         },
         "impact": {
           "citation_ids": [
+            "[3]",
             "[1]"
           ],
-          "explanation": "The charity reports a <cite id=\"1\">Program expense ratio of 54.9%</cite> in FY2024, falling short of the <cite id=\"1\">75% sector benchmark</cite>. High administrative expenditures and fundraising costs of <cite id=\"1\">$0.58 per $1 raised</cite> lower the net resources reaching programs.",
-          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed, seek external evaluation, and track outcomes over multiple years."
+          "explanation": "Impact is heavily constrained because only a <cite id=\"3\">53.8% program expense ratio</cite> went to direct programs in FY2024, leaving substantial spending tied up in overhead and fundraising that costs <cite id=\"1\">$0.58 per $1 raised</cite>.",
+          "improvement": "The organization needs to increase direct program allocation, reduce fundraising expenditures, and track cost-per-beneficiary metrics consistently."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[2]",
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Self-reported activity data without third-party impact assessments",
+        "evidence_rigor": "Grade C - Basic internal program disclosures with limited third-party impact tracking",
         "geographic_focus": [
           "United States"
         ],
-        "giving_style": "Policy and legal advocacy",
+        "giving_style": "Capacity building and legal advocacy",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "amil",
@@ -706,17 +727,17 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.461,
+        "admin_ratio": 0.2,
         "annual_revenue": 1891645,
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[1]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.53,
+        "fundraising_ratio": 0.261,
         "industry_program_ratio": 0.75,
         "peer_count": 18,
-        "peer_program_ratio_median": 0.803,
+        "peer_program_ratio_median": 0.784,
         "program_expense_ratio": 0.5489,
         "reserves_months": 6,
         "revenue_cagr_3yr": 49.4,
@@ -735,8 +756,8 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 1891645,
             "year": 2024
           }
@@ -746,62 +767,63 @@
         "citation_ids": [
           "[3]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Operates direct legal and policy programs rather than issuing external grants",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct legal litigation and policy engagement rather than primary grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
-      "headline": "Muslim Advocates focuses on legal and policy work but faces challenges with high overhead and executive pay.",
+      "headline": "Muslim Advocates uses legal action and policy work to fight for civil rights and justice.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors specifically looking to fund civil rights litigation and legal advocacy for American Muslims who are comfortable with high institutional overhead.",
+        "best_for_summary": "Best for donors specifically seeking to fund U.S. legal advocacy and civil rights defense for American Muslims who accept higher overhead costs in exchange for niche legal representation.",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[3]",
+          "[1]"
         ],
         "donor_motivations": [
-          "Want to protect the legal rights of American Muslims in federal policy and courts",
-          "Value systemic legal reform and advocacy over direct social relief",
-          "Seek to direct zakat toward legal defense under eligible categories"
+          "Want to support legal challenges against civil rights violations in the U.S.",
+          "Value institutional legal representation and advocacy over direct relief",
+          "Are comfortable supporting systemic capacity building and legal defense"
         ],
         "giving_considerations": [
-          "A significant portion of donations goes toward administrative and fundraising costs",
-          "Executive compensation takes a larger share of revenue than at peer organizations",
-          "Impact is measured in legal outcomes rather than direct individual services"
+          "In FY2024, only 53.9% of spending went directly to programs",
+          "Executive salary takes up a significant share (11.8%) of organizational revenue",
+          "Fundraising costs are high at $0.58 per $1 raised"
         ],
-        "not_ideal_for": "Donors prioritizing maximum program spending efficiency or direct humanitarian aid delivery"
+        "not_ideal_for": "Donors seeking high financial efficiency, direct humanitarian relief, or strict evidence of cost-per-beneficiary impact"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]"
+          "[3]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects self-reported activity metrics without independent third-party evaluations or long-term outcome tracking.",
+        "evidence_grade_explanation": "Grade C reflects self-reported activity indicators with a lack of independent third-party impact evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Muslim Advocates aims to advance legal equality and combat discrimination through strategic litigation, civic engagement, and policy analysis.",
-        "why_evidence_matters": "Outcome metrics demonstrate whether legal advocacy results in concrete civil rights protections."
+        "theory_of_change_summary": "Muslim Advocates seeks to advance civil rights for American Muslims by using legal advocacy, policy engagement, and educational tools.",
+        "why_evidence_matters": "Outcome metrics help donors verify whether legal advocacy investments translate into tangible civil rights protections."
       },
       "long_term_outlook": {
         "citation_ids": [
+          "[3]",
           "[1]"
         ],
         "founded_year": 2006,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 49.4,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "While revenue has grown, addressing overhead inefficiencies is required before additional capital can be deployed effectively.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "Revenue grew in FY2024 to $1,891,645, but legal defense requirements and advocacy initiatives face budget limitations.",
         "strategic_priorities": [
-          "Legal Representation",
-          "Policy Engagement",
-          "Know Your Rights Education"
+          "Legal litigation",
+          "Policy advocacy",
+          "Community rights education"
         ],
         "years_operating": 20
       },
@@ -811,24 +833,26 @@
         "ceo_compensation_pct_revenue": 11.75,
         "ceo_name": "Omar Farah",
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[3]"
         ],
-        "employees_count": 0,
+        "employees_count": null,
         "geographic_reach": "United States",
         "has_conflict_policy": true,
-        "has_financial_audit": false,
+        "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[3]"
         ],
-        "differentiator": "Focuses specifically on national legal defense and policy advocacy for American Muslims, but lags peers in spending efficiency.",
-        "peer_group": "Civil rights and advocacy organizations",
+        "differentiator": "Focuses specifically on legal advocacy and civil rights litigation for American Muslims.",
+        "peer_group": "Legal Advocacy Nonprofits",
         "similar_orgs": [
           "Justice Defenders",
           "Muslim Legal Fund of America",
@@ -837,15 +861,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on advocacy legal defense with comparable budget size",
+          "differentiator": "Operates at a similar scale focusing on legal advocacy",
           "name": "Justice Defenders"
         },
         {
-          "differentiator": "Focuses primarily on legal defense support for Muslim communities",
+          "differentiator": "Focuses specifically on legal defense funds and court representation",
           "name": "Muslim Legal Fund of America"
         },
         {
-          "differentiator": "Engages in advocacy and rights work for international rights",
+          "differentiator": "Focuses on human rights and advocacy",
           "name": "Rebuilding Alliance"
         }
       ],
@@ -854,21 +878,21 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Maintains <cite id=\"1\">7.8 months of working capital</cite> in reserve to support ongoing legal operations.",
-          "point": "Resilient working capital reserves"
+          "detail": "Muslim Advocates maintains <cite id=\"1\">7.8 months of working capital</cite>, providing reasonable short-term operational stability.",
+          "point": "Sufficient short-term financial reserves"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "detail": "Provides focused legal advocacy and legal representation <cite id=\"1\">specifically tailored to civil rights issues</cite> facing the American Muslim community.",
-          "point": "Serves a highly niche and underserved cause area"
+          "detail": "The organization addresses critical legal rights and civil liberties, operating in a specialized niche serving American Muslims.",
+          "point": "Focus on underserved legal advocacy space"
         }
       ],
       "strengths_deep_dive": [
-        "Muslim Advocates addresses an important legal gap by offering policy engagement and legal defense dedicated to protecting Muslim civil rights <cite id=\"1\">within the United States</cite>. To sustain these legal initiatives, the charity holds <cite id=\"1\">7.8 months of working capital</cite>, providing baseline financial stability despite administrative overhead issues."
+        "A primary operational strength is the charity's financial reserve management. Holding <cite id=\"1\">7.8 months of working capital</cite> allows the organization to navigate short-term revenue fluctuations. Furthermore, Muslim Advocates targets legal advocacy and civil rights litigation, which remains a relatively underserved focus area within the American Muslim philanthropic landscape."
       ],
-      "summary": "Muslim Advocates is a Washington, D.C.-based legal and policy organization <cite id=\"1\">focusing on civil rights advocacy for American Muslims</cite>. In FY2024, the organization reported a <cite id=\"3\">Total Revenue of $1,891,645</cite>. However, significant operational and financial challenges limit its effectiveness. The charity allocates a <cite id=\"1\">Program expense ratio of 54.9%</cite> to its direct activities, which is well below the 75% industry standard and the <cite id=\"1\">80.3% peer median</cite> for advocacy groups. A major driver of overhead is executive pay; the organization's <cite id=\"1\">CEO compensation is $222,356</cite>, which represents 11.8% of total revenue. Furthermore, its fundraising efficiency remains low, spending <cite id=\"1\">$0.53 to raise every $1.00</cite> in contributions. While the organization maintains <cite id=\"1\">7.8 months of working capital</cite> and accepts <cite id=\"2\">zakat for eligible legal defense activities</cite>, these financial inefficiencies restrict the direct impact of donor contributions.",
+      "summary": "Muslim Advocates is a legal advocacy organization that aims to defend civil rights and fight discrimination against American Muslims. In FY2024, the group reported <cite id=\"3\">$1,891,645 in total revenue</cite> to support its work in legal representation, policy engagement, and community education. The organization is <cite id=\"2\">ZAKAT-ELIGIBLE</cite> and directs funds toward legal defense and rights protection. However, significant operational and financial constraints severely limit its overall efficiency and impact. Specifically, in FY2024, Muslim Advocates allocated a <cite id=\"3\">program expense ratio of 53.8%</cite>, leaving nearly half of its expenses dedicated to administrative and overhead costs. This falls far short of the <cite id=\"1\">78.4% peer program ratio median</cite> for advocacy organizations and the 75% industry benchmark. High overhead is further compounded by executive compensation: <cite id=\"1\">CEO Omar Farah received $222,356</cite>, which represents <cite id=\"3\">11.8% of total revenue</cite>, an unusually high proportion for an organization with under $2 million in revenue. Additionally, fundraising operations remain inefficient, <cite id=\"1\">spending $0.53 to raise every $1</cite>. While the organization maintains a cushion of <cite id=\"1\">7.8 months of working capital</cite>, limited published outcome tracking and low programmatic spending constrain its capacity to deliver high-yield impact.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

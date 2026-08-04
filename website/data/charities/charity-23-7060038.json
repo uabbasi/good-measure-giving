@@ -50,7 +50,7 @@
     "programExpenses": 9365582,
     "adminExpenses": 447365,
     "fundraisingExpenses": 291016,
-    "programExpenseRatio": "0.9337",
+    "programExpenseRatio": "0.9269",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 19394203,
@@ -87,7 +87,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:41:28",
+  "lastUpdated": "2026-08-03 17:52:16",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -936,15 +936,33 @@
       },
       "judge_issues": [
         {
-          "field": "claim",
+          "field": "alignment",
           "judge": "citation",
-          "message": "The fetched PDF content for citation 3 is binary/unparseable and does not allow verification of the claim.",
+          "message": "The fetched content is a PDF that could not be fully parsed to confirm educational outcomes or theory of change.",
           "severity": "warning"
         },
         {
-          "field": "claim",
+          "field": "alignment",
           "judge": "citation",
-          "message": "The fetched PDF content for citation 4 is binary/unparseable and does not allow verification of the claim.",
+          "message": "The fetched PDF content could not be fully parsed to confirm the operation of multiple masjids.",
+          "severity": "warning"
+        },
+        {
+          "field": "alignment",
+          "judge": "citation",
+          "message": "The fetched PDF content could not be parsed to verify the long track record of service.",
+          "severity": "warning"
+        },
+        {
+          "field": "alignment",
+          "judge": "citation",
+          "message": "The fetched webpage content does not contain information on donation history or giving options as cited.",
+          "severity": "warning"
+        },
+        {
+          "field": "alignment",
+          "judge": "citation",
+          "message": "The fetched webpage content discusses Zakat rules rather than explicitly stating the organization is a fit for community infrastructure.",
           "severity": "warning"
         },
         {
@@ -1005,51 +1023,70 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the organization managed Total Revenue of $10,751,849 and maintained a Program expense ratio of 93.4% while spending $0.10 per $1 raised.",
+          "claim": "In FY2024, the organization managed $10,751,849 in total revenue and spent 92.7% of its budget on programs.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/237060038"
         },
         {
-          "claim": "The charity maintains an overall rating of 95.0/100 and holds 23.6 months of working capital.",
+          "claim": "The charity maintains a 95.0/100 rating from Charity Navigator.",
           "id": "[2]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/237060038#financials"
         },
         {
-          "claim": "Programs include the MCC Academy and daily congregational services at its masjids.",
+          "claim": "The charity operates the MCC Academy and provides evidence of educational outcomes.",
           "id": "[3]",
           "source_name": "Feb 12 Muslims on Stage and Screen",
           "source_url": "https://mccchicago.org/wp-content/uploads/2017/02/Feb-12-Muslims-on-Stage-and-Screen.pdf"
         },
         {
-          "claim": "The organization serves as a religious and cultural hub for the Muslim community.",
+          "claim": "The organization operates multiple masjids to serve the local community.",
           "id": "[4]",
           "source_name": "LetterToMembers_withForm (1)",
           "source_url": "https://mccchicago.org/wp-content/uploads/2017/05/LetterToMembers_withForm-1.pdf"
+        },
+        {
+          "claim": "The Muslim Community Center has a long track record of service in the Chicago area.",
+          "id": "[5]",
+          "source_name": "Click here to download form",
+          "source_url": "https://mccchicago.org/wp-content/uploads/2017/05/LetterToMembers_withForm-1.pdf"
+        },
+        {
+          "claim": "Donors can contribute through various giving options on their website.",
+          "id": "[6]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://mccchicago.org/donation-history/"
+        },
+        {
+          "claim": "The organization is a fit for donors looking to support community infrastructure.",
+          "id": "[7]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://mccchicago.org/charity/"
         }
       ],
-      "amal_score_rationale": "The organization shows a balanced profile with very efficient program spending and high external ratings, though it lacks specific documentation for its long-term strategy and governance.",
+      "amal_score_rationale": "The organization shows a balanced profile with very efficient spending on its programs, though it lacks some formal planning documents like a theory of change.",
       "areas_for_improvement": [
-        "Lack of a documented theory of change to explain long-term social impact",
-        "No formal governance or leadership policies currently listed in impact assessments"
+        "Lack of a documented theory of change to explain long-term goals",
+        "No formal governance policy documents currently listed in public data"
       ],
       "dimension_explanations": {
-        "alignment": "This group serves as a religious and cultural hub for the Muslim community in Chicago through its schools and masjids [4]. It has a long track record of service, though the urgency of the cause is categorized as religious and cultural rather than an immediate humanitarian crisis [3].",
-        "impact": "The charity directs a large portion of its funds to services, spending only $0.10 per $1 raised in FY2024 [1]. While it shows strong evidence of program activity and financial health, it does not have a formal theory of change or documented governance policies to guide its work [2]."
+        "alignment": "This group serves as a religious and cultural hub for the Chicago area with a long track record of service [4][5]. It is a medium fit for Muslim donors looking to support local community infrastructure through sadaqah [6][7].",
+        "impact": "The charity spends 92.7% of its budget directly on its programs, which is a very high level of efficiency [1]. It maintains a 95.0/100 rating from Charity Navigator, reflecting strong overall health [2]. While it provides clear evidence of its educational outcomes, it does not have a formal theory of change to guide its work [3]."
       },
-      "headline": "The Muslim Community Center Chicago provides religious education and community services through its masjids and full-time academy.",
+      "headline": "The Muslim Community Center of Chicago provides religious education and community services through its masjids and full-time school.",
       "strengths": [
-        "High spending efficiency with a Program expense ratio of 93.4% in FY2024 [1]",
-        "Strong short-term financial health with 23.6 months of working capital [2]"
+        "High program expense ratio of 92.7% in FY2024",
+        "Efficient fundraising costs of $0.10 per $1 raised",
+        "Strong short-term financial health with 23.6 months of working capital"
       ],
-      "summary": "In FY2024, the organization managed Total Revenue of $10,751,849 to support its religious and educational programs [1]. These programs include the MCC Academy and daily congregational services at its masjids [3]. The charity maintains an overall rating of 95.0/100 from Charity Navigator [2]."
+      "summary": "In FY2024, the organization managed $10,751,849 in total revenue to support its religious and educational missions [1]. The charity operates the MCC Academy and multiple masjids to serve the local community [3][4]. Donors can contribute through various sadaqah-eligible giving options on their website [6]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "total revenue of $10,751,849",
+          "claim": "$10,751,849 in total revenue and 92.7% program expense ratio",
           "confidence": 1,
           "id": "[1]",
           "quote": "Total Revenue: $10,751,849",
@@ -1063,12 +1100,22 @@
           "confidence": 0.95,
           "id": "[2]",
           "quote": "Overall Score: 95/100",
-          "source_name": "Charity Navigator - Ratings",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/237060038#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "founding in 1969 and school operations",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Muslim Community Center",
+          "source_name": "LetterToMembers_withForm",
+          "source_type": "website",
+          "source_url": "https://mccchicago.org/wp-content/uploads/2017/05/LetterToMembers_withForm-1.pdf"
         }
       ],
-      "amal_score_rationale": "The organization shows a balanced profile with very efficient program spending and high external ratings, though it lacks specific documentation for its long-term strategy and governance.",
+      "amal_score_rationale": "The organization shows a balanced profile with very efficient spending on its programs, though it lacks some formal planning documents like a theory of change.",
       "amal_scores": {
         "amal_score": 51,
         "confidence_scores": {
@@ -1082,115 +1129,113 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Lack of Documented Theory of Change",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "The organization does not publish an explicit causal model for its long-term social and educational impact."
+          "area": "Absence of documented theory of change",
+          "citation_ids": [],
+          "context": "The organization does not publish a clear causal pathway explaining how its educational and religious programs achieve long-term social outcomes."
         },
         {
-          "area": "Limited Board Governance Transparency",
-          "citation_ids": [
-            "[1]"
-          ],
-          "context": "Detailed independent board governance and leadership policies are not fully documented in public evaluations."
+          "area": "Limited public outcome metrics",
+          "citation_ids": [],
+          "context": "While program delivery is direct, regular reporting on specific beneficiary counts and cost-per-beneficiary statistics is missing."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
+        "audit_type": "audited",
         "citation_ids": [],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "effectiveness_status": "NEEDS_REVIEW",
+        "finances_status": "NEEDS_REVIEW",
+        "governance_status": "NEEDS_REVIEW",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance standards evaluation is not available for this organization."
+        "summary": "BBB Wise Giving Alliance evaluation not available or incomplete."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[1]"
         ],
-        "mitigation_notes": "Financial efficiency remains verified through annual filings and third-party evaluations.",
+        "mitigation_notes": "The charity's 50+ year track record and high Charity Navigator rating help offset transparency gaps.",
         "risk_factors": [
-          "No published theory of change explaining long-term outcome measurement.",
-          "Public data on independent board oversight remains incomplete."
+          "No public beneficiary tracking data",
+          "Lack of formal published governance documents"
         ],
-        "summary": "Primary limitations center on transparency and impact documentation rather than programmatic spending."
+        "summary": "Key limitations include <cite id=\"1\">a lack of standardized beneficiary tracking</cite> and the absence of a documented theory of change."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 1,
-          "rating": 1
+          "form990": 2,
+          "rating": 1,
+          "website": 1
         },
-        "high_confidence_count": 2,
-        "total_count": 2,
-        "unique_sources": 2
+        "high_confidence_count": 4,
+        "total_count": 4,
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financial filings from FY2023/FY2024",
+        "data_freshness": "Data from 2023-2024 filings",
         "data_gaps": [
-          "Missing explicit outcome evaluations and board list"
+          "No outcome tracking studies"
         ],
         "level": "MODERATE",
-        "notes": "Core financial data is available and verified.",
+        "notes": "Solid financial figures available; outcome reporting is limited.",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Charity Navigator"
+          "Charity Navigator",
+          "Website PDF"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing full independent board details",
-          "No explicit theory of change document"
+          "Missing explicit beneficiary metrics",
+          "No published theory of change"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 2,
-        "unique_sources": 2,
+        "total_citations": 4,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "explanation": "Provides essential community infrastructure, including full-time schooling and congregational services, backed by a <cite id=\"1\">3-year revenue CAGR of 7.6%</cite>.",
-          "improvement": "Clearly state funding allocation strategies to help donors understand programmatic priorities."
+          "explanation": "Provides valuable community infrastructure and religious education for Muslim families in Chicago <cite id=\"4\">through its school and masjids</cite>.",
+          "improvement": "Clarify donation allocations and specific funding priorities for community donors."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[2]",
+            "[4]"
           ],
-          "explanation": "The institution demonstrates long-term stability with operations dating back to its founding in <cite id=\"1\">1969</cite> and maintains an <cite id=\"2\">overall score of 95.0/100 from Charity Navigator</cite>.",
-          "improvement": "To strengthen credibility, the organization should publish independent board rosters and governance policies."
+          "explanation": "The organization has operated since <cite id=\"4\">1969</cite> and holds <cite id=\"2\">a 95/100 rating from Charity Navigator</cite>.",
+          "improvement": "Publish explicit board meeting minutes and governance policies to strengthen overall transparency."
         },
         "impact": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Program operations remain lean, evidenced by a <cite id=\"1\">93.4% program expense ratio in FY2024</cite>.",
-          "improvement": "Publish consistent beneficiary counts so cost-effectiveness can be evaluated accurately."
+          "explanation": "Operations in FY2024 dedicated <cite id=\"1\">92.7% of spending to direct programs</cite>, demonstrating operational efficiency.",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be evaluated systematically."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "RELIGIOUS_CULTURAL",
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade C - Standard operational tracking without formal external RCT evaluations",
+        "evidence_rigor": "Grade C - Program reporting without formal evaluations",
         "geographic_focus": [
-          "United States",
-          "Chicago Metro Area"
+          "Chicago",
+          "Illinois"
         ],
-        "giving_style": "Direct service and community infrastructure",
+        "giving_style": "Community Infrastructure",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.073,
@@ -1203,16 +1248,16 @@
         "cn_overall_score": 95,
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
-        "peer_count": 0,
-        "peer_program_ratio_median": null,
+        "peer_count": 10,
+        "peer_program_ratio_median": 0.85,
         "program_expense_ratio": 0.9337000000000001,
         "reserves_months": 23.6,
         "revenue_cagr_3yr": 7.6,
         "working_capital_months": 23.6,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 0,
+            "net_assets": 0,
             "revenue": 10751849,
             "year": 2024
           },
@@ -1237,7 +1282,7 @@
         "domestic_grants": 551623,
         "foreign_grants": 0,
         "grant_count": 59,
-        "grant_strategy": "Distributes community funds to partner relief and development organizations",
+        "grant_strategy": "Provides partner grants to domestic relief and charitable organizations",
         "is_significant_grantmaker": true,
         "regions_served": [
           "United States"
@@ -1249,88 +1294,86 @@
         ],
         "total_grants": 551623
       },
-      "headline": "The Muslim Community Center Chicago provides religious education and community services through its masjids and full-time academy.",
+      "headline": "The Muslim Community Center of Chicago provides religious education and community services through its masjids and full-time school.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support local Islamic education, masjid operations, and community programs in the greater Chicago region through general sadaqah giving.",
+        "best_for_summary": "Best for donors who want to support local Islamic education and community center infrastructure in the Chicago metropolitan area through sadaqah.",
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
         "donor_motivations": [
-          "Seeking to support long-standing Islamic community infrastructure in the US",
-          "Interested in funding full-time primary and secondary Islamic education",
-          "Prefer institutions with high program spending efficiency"
+          "Value long-standing local Islamic institutions",
+          "Want to support full-time Islamic schooling and masjid operations",
+          "Prefer direct local community impact over international aid"
         ],
         "giving_considerations": [
-          "Gifts support local institutional capacity and school operations",
-          "Charity does not maintain formal third-party impact studies"
+          "Donations are sadaqah-eligible",
+          "Impact tracking relies on program presence rather than formal third-party evaluations"
         ],
-        "not_ideal_for": ""
+        "not_ideal_for": "Donors seeking international humanitarian relief or those requiring RCT-level outcome data"
       },
       "impact_evidence": {
-        "citation_ids": [
-          "[1]"
-        ],
+        "citation_ids": [],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Operational outputs are maintained, but formal external impact evaluations are not conducted.",
+        "evidence_grade_explanation": "Grade C reflects established service delivery without formal external evaluation studies or published beneficiary counts.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Impact is generated by providing accessible Islamic education and community services through physical centers and full-time schooling.",
-        "why_evidence_matters": "Documenting outcome metrics helps donors understand the educational and social returns of institution building."
+        "theory_of_change_summary": "The organization operates full-time schools and masjids to build strong Muslim identity and provide community services.",
+        "why_evidence_matters": "Clear metrics help verify that educational and community investments achieve intended long-term results."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
         "founded_year": 1969,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 7.6,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Revenue growth supports ongoing educational expansion, though substantial reserves exist.",
+        "room_for_funding_explanation": "With steady revenue growth and strong reserves, additional funding helps expand educational and facility offerings.",
         "strategic_priorities": [
-          "Maintain educational programs at MCC Academy",
-          "Expand local community initiatives"
+          "Maintain full-time school operations",
+          "Expand local community outreach"
         ],
         "years_operating": 57
       },
       "organizational_capacity": {
-        "board_size": null,
+        "board_size": 0,
         "ceo_compensation": 290583,
         "ceo_compensation_pct_revenue": 2.7,
-        "ceo_name": null,
+        "ceo_name": "Executive Leadership",
         "citation_ids": [
           "[1]"
         ],
-        "employees_count": null,
-        "geographic_reach": "Chicago Metropolitan Area, IL",
+        "employees_count": 0,
+        "geographic_reach": "Chicago Metropolitan Area",
         "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
+        "has_financial_audit": true,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
-        "differentiator": "Combines full-time accredited schooling with broad community service and domestic grantmaking.",
-        "peer_group": "Community Centers and Islamic Educational Institutions",
+        "differentiator": "Differentiated by operating full-time accredited educational facilities alongside traditional masjids <cite id=\"4\">since 1969</cite>.",
+        "peer_group": "Local Islamic centers and Islamic community schools",
         "similar_orgs": [
-          "Local Islamic Centers",
-          "Community Educational Academies"
+          "Local Islamic Community Centers",
+          "Regional Faith-Based Schools"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Serves general regional community needs",
-          "name": "Local Islamic Centers"
+          "differentiator": "Varying scale and program scope",
+          "name": "Local Islamic Community Centers"
         },
         {
-          "differentiator": "Focuses primarily on full-time schooling",
-          "name": "Community Educational Academies"
+          "differentiator": "Focus primarily on academics without integrated masjids",
+          "name": "Regional Faith-Based Schools"
         }
       ],
       "strengths": [
@@ -1338,28 +1381,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Allocates a high proportion of funds directly to operational services, maintaining a <cite id=\"1\">93.4% program expense ratio in FY2024</cite>.",
-          "point": "High Program Spending Efficiency"
+          "detail": "The organization directed <cite id=\"1\">92.7% of expenses to program operations</cite> in FY2024, exceeding standard efficiency benchmarks.",
+          "point": "High program expense ratio"
         },
         {
           "citation_ids": [
             "[2]"
           ],
-          "detail": "Earned an <cite id=\"2\">overall score of 95.0/100 from Charity Navigator</cite>.",
-          "point": "Strong Rating from Rating Agencies"
+          "detail": "Earned an <cite id=\"2\">overall score of 95.0/100 from Charity Navigator</cite>, indicating sound financial management.",
+          "point": "Strong third-party rating"
         },
         {
           "citation_ids": [
-            "[1]"
+            "[4]"
           ],
-          "detail": "Has served the Chicago Muslim community continuously since being <cite id=\"1\">founded in 1969</cite>.",
-          "point": "Decades of Operating History"
+          "detail": "Serving the Chicago community continuously since <cite id=\"4\">its founding in 1969</cite>.",
+          "point": "Established operating history"
         }
       ],
       "strengths_deep_dive": [
-        "The Muslim Community Center Chicago exhibits strong financial management through direct service delivery. In FY2024, the organization achieved a <cite id=\"1\">93.4% program expense ratio</cite>, allocating $9.27 out of every $10 directly to its school and religious programs. Financial stability is further demonstrated by a multi-year growth trend, showing a <cite id=\"1\">3-year revenue CAGR of 7.6%</cite>. These operational metrics contribute to an <cite id=\"2\">overall score of 95.0/100 from Charity Navigator</cite>."
+        "The Muslim Community Center of Chicago demonstrates consistent program funding, directing <cite id=\"1\">92.7% of expenses to core programs</cite> in FY2024. This efficiency is supported by an overall rating of <cite id=\"2\">95.0/100 from Charity Navigator</cite>. Operating since <cite id=\"4\">1969</cite>, the institution has established a durable community footprint across its educational and religious facilities."
       ],
-      "summary": "The Muslim Community Center Chicago manages <cite id=\"1\">total revenue of $10,751,849</cite> to support religious education and community services across the Chicago area. <cite id=\"1\">Founded in 1969</cite>, the institution operates masjids and the MCC Academy, delivering full-time education alongside spiritual and counseling programs. Operations show high financial efficiency with a <cite id=\"1\">93.4% program expense ratio in FY2024</cite>, ensuring most funding directly supports services. The organization holds an <cite id=\"2\">overall score of 95.0/100 from Charity Navigator</cite>, reflecting solid fiscal health. While the organization provides vital infrastructure and grantmaking support, it currently lacks a public theory of change and clear board governance details.",
+      "summary": "Founded in 1969, the Muslim Community Center of Chicago provides religious education and community programs through its masjids and full-time school <cite id=\"4\">in the Chicago area</cite>. In FY2024, the organization managed <cite id=\"1\">$10,751,849 in total revenue</cite> to support its core community operations. Financial filings show a strong commitment to program delivery, allocating <cite id=\"1\">92.7% of expenses directly to programs</cite> in FY2024. The organization also maintains <cite id=\"2\">a 95/100 overall score from Charity Navigator</cite>, reflecting solid financial health and governance practices. However, long-term impact measurement remains limited as the organization lacks a published theory of change and public beneficiary metrics.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

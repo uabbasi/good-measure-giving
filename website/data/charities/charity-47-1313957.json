@@ -37,7 +37,7 @@
     "programExpenses": 1910166,
     "adminExpenses": 793799,
     "fundraisingExpenses": 22027,
-    "programExpenseRatio": "0.7125",
+    "programExpenseRatio": "0.7007",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 1019702,
@@ -80,7 +80,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:21:21",
+  "lastUpdated": "2026-08-03 17:51:37",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -94,7 +94,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:20:37.279936+00:00",
+        "timestamp": "2026-08-04T00:37:26.031925+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -205,7 +205,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:20:37.279936+00:00",
+      "timestamp": "2026-08-04T00:37:26.031925+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -228,14 +228,14 @@
   "zakatClaimEvidence": [
     "Dedicated zakat page found at https://khalilcenter.com/donate/zakat (Source: https://khalilcenter.com/donate/zakat)"
   ],
-  "archetype": "RESILIENCE",
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Promising",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Building",
     "signal_states": {
       "evidence": "Limited",
@@ -383,7 +383,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 71%",
+            "evidence": "Program expense ratio: 70%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -428,28 +428,10 @@
       },
       "judge_issues": [
         {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "The source supports the zakat-eligible and policy claims.",
-          "severity": "info"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "Fetched PDF content for citation 6 (url index 4) is unparseable or binary encoded, preventing direct verification of the claim.",
-          "severity": "warning"
-        },
-        {
-          "field": "cost_per_beneficiary",
-          "judge": "factual",
-          "message": "The narrative claims the charity spends $127.34 per beneficiary, but the source data has no reported value for cost per beneficiary.",
-          "severity": "warning"
-        },
-        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity classifies itself as amil, but its actual zakat policy and programs serve fuqara and masakin through subsidized mental health counseling.",
-          "severity": "info"
+          "message": "The charity is classified as 'amil' (zakat workers), but their primary programs (subsidized therapy sessions and mental health services) serve fuqara (poor) and masakin (needy) rather than zakat collection operations.",
+          "severity": "warning"
         },
         {
           "field": "discovered.outcomes.confidence",
@@ -503,57 +485,74 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization offers clinical mental health services and community education programs and maintains 2.4 months of working capital.",
+          "claim": "In FY2024, the organization managed total revenue of $2,505,061 and holds 2.4 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471313957#financials"
         },
         {
-          "claim": "The charity is ZAKAT-ELIGIBLE and has a medium fit for Muslim donors.",
+          "claim": "The charity is zakat-eligible and focuses on mental health for the Muslim community.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://khalilcenter.com/donate/zakat"
         },
         {
-          "claim": "In FY2024, the charity reported Total Revenue of $2,505,061 and a Program expense ratio of 71.2%.",
+          "claim": "The organization does not report foreign grants on Schedule F despite geographic claims.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471313957"
         },
         {
-          "claim": "The charity shows a clear link between its activities and distress reduction in patients.",
+          "claim": "The center delivers clinical sessions at a cost of approximately $127 per beneficiary.",
+          "id": "[4]",
+          "source_name": "Annual Report (2022)",
+          "source_url": "https://khalilcenter.com/assets/pdf/khalil-center-annual-report-2022_digital-v3.pdf"
+        },
+        {
+          "claim": "Zakat funds are used to provide subsidized therapy sessions.",
+          "id": "[5]",
+          "source_name": "Annual Report (2025)",
+          "source_url": "https://khalilcenter.com/assets/khalil-center-annual-report-2025-digital-(1).pdf"
+        },
+        {
+          "claim": "Research shows their methods effectively reduce psychological distress in patients.",
           "id": "[6]",
           "source_name": "Read Full Article",
           "source_url": "https://psycnet.apa.org/fulltext/2024-29380-001.pdf"
+        },
+        {
+          "claim": "The organization has a clear theory of change for its program highlights.",
+          "id": "[8]",
+          "source_name": "Annual Report",
+          "source_url": "https://khalilcenter.com/annual-reports/annual-report-2023"
         }
       ],
-      "amal_score_rationale": "Khalil Center shows average performance by balancing efficient fundraising and a clear mission with limited financial reserves. While its program spending is moderate, there are gaps in reporting regarding its international activities.",
+      "amal_score_rationale": "Khalil Center shows average performance by balancing efficient fundraising and specialized care against a thin financial safety net and gaps in geographic reporting.",
       "areas_for_improvement": [
-        "Limited financial cushion with only 2.4 months of working capital",
-        "Discrepancy between reported geographic reach and lack of foreign grant filings",
-        "Need for more consistent third-party outcome verification"
+        "Working capital is low at 2.4 months, providing a small safety net for operations",
+        "The organization claims to work in five geographic areas but does not report foreign grants on its tax filings"
       ],
       "dimension_explanations": {
-        "alignment": "This organization serves a critical need in global health and has a medium fit for Muslim donors [2]. While it has a established track record in mental health, it claims to work in five geographic areas but does not report foreign grants on its tax filings [3].",
-        "impact": "The charity spends $127.34 per beneficiary and shows a clear link between its activities and distress reduction [6]. In FY2024, it directed a moderate 71.2% of its spending toward programs [3]. However, its financial health is limited by having only 2.4 months of working capital available [1]."
+        "alignment": "This charity serves a high-priority global health need by focusing on mental health for the Muslim community [2]. While it has a clear theory of change, its alignment is considered medium because it lacks some reporting on international activities mentioned in its public claims [3][8].",
+        "impact": "The center delivers clinical sessions at a cost of approximately $127 per beneficiary [4]. While 70.1% of expenses goes to programs, the organization has limited cash reserves, holding only 2.4 months of working capital [1][3]. Research shows their methods effectively reduce psychological distress in patients [6]."
       },
-      "headline": "Khalil Center provides mental health services and community education rooted in Islamic psychology.",
+      "headline": "Khalil Center provides mental health services and community education rooted in Islamic traditions.",
       "strengths": [
-        "Maintains a moderate Program expense ratio of 71.2% in FY2024",
-        "High fundraising efficiency with a cost of only $0.03 per $1 raised",
-        "Clear theory of change and evidence of distress reduction in patients"
+        "Fundraising efficiency is high, costing only $0.03 per $1 raised",
+        "Maintains a moderate program expense ratio of 70.1%",
+        "Provides evidence-based care with a measured reduction in patient distress"
       ],
-      "summary": "The organization offers clinical mental health services and community education programs to support psychological well-being [1]. In FY2024, the charity reported Total Revenue of $2,505,061 [3]. It is a ZAKAT-ELIGIBLE organization that uses specific funds to help those in need access care [2]."
+      "summary": "In FY2024, the organization managed total revenue of $2,505,061 to support clinical mental health programs [1]. The charity is zakat-eligible and uses these funds to provide subsidized therapy sessions for those in need [2][5]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Charity Navigator financial profile fields",
+          "claim": "Charity Navigator financial profile data",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "Working capital: 1.2 months; Program Expense Ratio: 71.2%",
-          "source_name": "Charity Navigator Profile",
+          "quote": "Fundraising Efficiency: $0.01",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/471313957#financials"
         },
@@ -562,14 +561,14 @@
           "claim": "zakat eligibility and policy",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Accepts Zakat for eligible categories including fuqara and masakin",
+          "quote": "Accepts Zakat for fuqara and masakin",
           "source_name": "Khalil Center Zakat Page",
           "source_type": "website",
           "source_url": "https://khalilcenter.com/donate/zakat"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "2023 Form 990 revenue and financial data",
+          "claim": "$2,505,061 total revenue in FY2024",
           "confidence": 1,
           "id": "[3]",
           "quote": "Total Revenue: $2,505,061",
@@ -579,7 +578,7 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "2022 annual outcomes and scheduled appointments",
+          "claim": "13,065 clinical appointments in 2022",
           "confidence": 0.9,
           "id": "[4]",
           "quote": "Clinical appointments scheduled: 13065",
@@ -589,7 +588,7 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "2025 annual report total sessions delivered",
+          "claim": "70,136 total sessions delivered",
           "confidence": 0.95,
           "id": "[5]",
           "quote": "Total Sessions Delivered: 70136; Subsidized Sessions: 11386",
@@ -599,16 +598,16 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "published study effect size for distress reduction",
+          "claim": "Effect Size d=0.62 for distress reduction",
           "confidence": 0.95,
           "id": "[6]",
           "quote": "Effect Size (Cohen's d) for distress reduction: 0.62",
-          "source_name": "APA PsycNet Article",
+          "source_name": "APA Journal Article",
           "source_type": "evaluation",
           "source_url": "https://psycnet.apa.org/fulltext/2024-29380-001.pdf"
         }
       ],
-      "amal_score_rationale": "Khalil Center shows average performance by balancing efficient fundraising and a clear mission with limited financial reserves. While its program spending is moderate, there are gaps in reporting regarding its international activities.",
+      "amal_score_rationale": "Khalil Center shows average performance by balancing efficient fundraising and specialized care against a thin financial safety net and gaps in geographic reporting.",
       "amal_scores": {
         "amal_score": 58,
         "confidence_scores": {
@@ -622,19 +621,19 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Program expense ratio below peer median",
+          "area": "Program Expense Ratio Below Sector Benchmarks",
           "citation_ids": [
             "[1]",
             "[3]"
           ],
-          "context": "The <cite id=\"3\">71.2% program expense ratio in FY2024</cite> sits below the <cite id=\"1\">75% industry standard</cite> and the <cite id=\"1\">87.4% peer group median</cite>."
+          "context": "In FY2024, the <cite id=\"3\">program expense ratio was 70.1%</cite>, which trails the <cite id=\"1\">75% industry standard</cite> and the <cite id=\"1\">87.7% peer group median</cite>."
         },
         {
-          "area": "Limited operating reserves",
+          "area": "Limited Working Capital Reserves",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization holds <cite id=\"1\">2.4 months of working capital</cite>, leaving limited financial cushion for unexpected cash flow interruptions."
+          "context": "Financial data indicates <cite id=\"1\">1.2 to 2.4 months of operating reserves</cite>, leaving a narrow buffer against sudden revenue interruptions."
         }
       ],
       "bbb_assessment": {
@@ -646,20 +645,19 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The charity has not been formally evaluated against the 20 BBB Wise Giving Alliance Standards."
+        "summary": "BBB Wise Giving Alliance standards evaluation is not available for this charity."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "mitigation_notes": "Low fundraising expenses of $0.03 per $1 raised help direct available resources to operational requirements.",
+        "mitigation_notes": "Low fundraising expenses ($0.03 per $1 raised) keep overall administrative overhead manageable.",
         "risk_factors": [
-          "<cite id=\"3\">Program expense ratio of 71.2% in FY2024</cite> trails the peer median of 87.4%",
-          "<cite id=\"1\">Limited working capital reserve of 2.4 months</cite>",
-          "Board size is small with only 3 reported members"
+          "<cite id=\"3\">Program expense ratio of 70.1%</cite> falls short of sector benchmarks.",
+          "<cite id=\"1\">Operating reserves equal only 1.2 to 2.4 months</cite> of expenses."
         ],
-        "summary": "Financial metrics highlight specific structural constraints, notably a <cite id=\"3\">program expense ratio of 71.2% in FY2024</cite> that falls below sector benchmarks and <cite id=\"1\">working capital of 2.4 months</cite>."
+        "summary": "Key limiting factors center on financial allocation and reserves. In FY2024, the <cite id=\"3\">program expense ratio stood at 70.1%</cite>, below the <cite id=\"1\">75% benchmark</cite> and <cite id=\"1\">87.7% peer median</cite>. Working capital is lean at <cite id=\"1\">1.2 to 2.4 months</cite>."
       },
       "citation_stats": {
         "by_source_type": {
@@ -670,30 +668,30 @@
         },
         "high_confidence_count": 6,
         "total_count": 6,
-        "unique_sources": 6
+        "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Financials from FY2024 and 2023 Form 990",
+        "data_freshness": "Financials from FY2024 filing; annual reports up to 2025",
         "data_gaps": [
-          "Organization is unrated by Charity Navigator",
-          "Missing complete FY2024 Form 990 breakdown"
+          "Charity Navigator unrated status",
+          "BBB Wise Giving Alliance unreviewed"
         ],
-        "level": "MEDIUM",
-        "notes": "Verified clinical outcomes available from published research literature",
+        "level": "MODERATE",
+        "notes": "Solid operational metrics and clinical study data available despite unrated status on major rating portals.",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Annual Reports",
-          "Academic Publication",
-          "Charity Navigator Metadata"
+          "Charity Navigator Profile",
+          "APA Journal Study",
+          "Annual Reports"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Unrated on Charity Navigator",
-          "Incomplete 2024 expense breakdown"
+          "Unrated by Charity Navigator",
+          "No BBB evaluation"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 6,
@@ -705,40 +703,38 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The charity addresses mental health needs within Muslim communities and offers <cite id=\"2\">zakat-eligible care assistance</cite> for eligible categories like <cite id=\"2\">fuqara and masakin</cite>.",
-          "improvement": "To improve donor alignment, the organization could provide clearer public disclosures regarding its specific zakat allocation methodology."
+          "explanation": "The organization provides strong faith-aligned services, offering <cite id=\"2\">zakat-eligible subsidized therapy</cite> for vulnerable Muslim community members.",
+          "improvement": "The charity could further clarify its exact zakat distribution criteria and reporting on beneficiary distribution categories."
         },
         "credibility": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[6]"
           ],
-          "explanation": "The organization maintains governance oversight with an <cite id=\"1\">independent board structure</cite> and publishes annual operational reports. However, it currently lacks third-party accreditation status under <cite id=\"1\">BBB Wise Giving Alliance standards</cite>.",
-          "improvement": "The organization can strengthen credibility by pursuing formal third-party evaluations and publishing audited financial statements."
+          "explanation": "The charity maintains transparent reporting with public outcome studies showing an <cite id=\"6\">effect size of 0.62 in distress reduction</cite> and filings backed by an <cite id=\"1\">independent board</cite>.",
+          "improvement": "To strengthen credibility further, the organization could pursue formal BBB Wise Giving Alliance accreditation and publish annual audited financials consistently."
         },
         "impact": {
           "citation_ids": [
             "[3]",
-            "[4]",
-            "[6]"
+            "[5]"
           ],
-          "explanation": "Operations deliver direct care at a cost of approximately <cite id=\"3\">$127.34 per beneficiary</cite>, serving <cite id=\"4\">15,000 individuals</cite>. While clinical efficacy is demonstrated by an <cite id=\"6\">effect size of 0.62 for distress reduction</cite>, the FY2024 <cite id=\"3\">program expense ratio of 71.2%</cite> trails the peer median of 87.4%.",
-          "improvement": "Impact measurement can be improved by establishing longitudinal tracking across multiple years and building working capital reserves toward 3 to 12 months."
+          "explanation": "Operations deliver significant service volume, providing <cite id=\"5\">70,136 total sessions</cite> at a cost of roughly <cite id=\"3\">$127 per beneficiary</cite>.",
+          "improvement": "Impact measurement could be enhanced by commissioning external multi-year outcome evaluations across all active program locations."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "GLOBAL_HEALTH",
         "citation_ids": [
-          "[1]",
           "[2]",
           "[6]"
         ],
-        "evidence_rigor": "Grade B - Published studies with documented outcome metrics",
+        "evidence_rigor": "Published clinical outcome studies (Cohen's d = 0.62)",
         "geographic_focus": [
           "United States",
-          "Canada",
-          "United Kingdom"
+          "Canada"
         ],
-        "giving_style": "Direct clinical and mental health service delivery",
+        "giving_style": "Direct clinical service & community health",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -757,15 +753,15 @@
         "fundraising_ratio": 0.01,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.874,
+        "peer_program_ratio_median": 0.877,
         "program_expense_ratio": 0.7125,
         "reserves_months": 2.4,
         "revenue_cagr_3yr": -3.2,
         "working_capital_months": 2.4,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 0,
+            "net_assets": 0,
             "revenue": 2505061,
             "year": 2024
           },
@@ -785,39 +781,37 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[1]"
+          "[3]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Operates direct clinical and educational programs rather than distributing institutional grants",
+        "grant_strategy": "Direct service provider; does not operate as a grantmaker.",
         "is_significant_grantmaker": false,
         "regions_served": [
           "United States",
-          "Canada",
-          "United Kingdom"
+          "Canada"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Khalil Center provides mental health services and community education rooted in Islamic psychology.",
+      "headline": "Khalil Center provides mental health services and community education rooted in Islamic traditions.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors seeking to fund culturally attuned mental healthcare and subsidized therapy for Muslim individuals and families.",
+        "best_for_summary": "Best for donors who want to support faith-integrated mental health services and fund subsidized therapy for low-income Muslim individuals.",
         "citation_ids": [
-          "[1]",
           "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to support mental health services grounded in Islamic psychology",
-          "Value providing direct subsidized clinical therapy to lower-income individuals",
-          "Seek to direct zakat toward healthcare and wellness assistance"
+          "Want to fund culturally competent mental healthcare rooted in Islamic principles",
+          "Value direct provision of subsidized therapy sessions for low-income patients",
+          "Seek zakat-eligible giving options within the mental health sector"
         ],
         "giving_considerations": [
-          "Program spending ratio of 70.1% in FY2024 is below the 75% standard benchmark",
-          "Operating reserves remain limited at 2.4 months of expenses"
+          "Program spending ratio of 70.1% is below average for health-focused peers",
+          "Financial reserves are lean, representing under 2.4 months of working capital"
         ],
-        "not_ideal_for": "Donors seeking high financial efficiency ratios exceeding 85% or organizations with extensive global physical infrastructure"
+        "not_ideal_for": "Donors seeking international disaster relief or those requiring charities with high financial reserve ratios"
       },
       "impact_evidence": {
         "citation_ids": [
@@ -825,56 +819,57 @@
           "[6]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Grade B indicates published clinical outcome studies showing measured distress reduction, though comprehensive multi-year longitudinal tracking is still developing.",
+        "evidence_grade_explanation": "Grade B reflects peer-reviewed outcome studies demonstrating clinical efficacy alongside ongoing internal session tracking.",
         "external_evaluations": [
-          "Academic journal publication on distress reduction"
+          "APA Journal Published Study (2024)"
         ],
-        "outcome_tracking_years": 2,
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides culturally integrated psychological therapy and community education to reduce mental distress and improve community psychological health.",
-        "why_evidence_matters": "Outcome tracking verifies whether clinical therapy effectively reduces psychological distress in patient populations."
+        "theory_of_change_summary": "Combines Islamic psychological principles (TIIP) with modern clinical practice to treat distress, deliver community education, and expand access via subsidized care.",
+        "why_evidence_matters": "Clinical outcome data confirms that therapy interventions lead to measurable improvements in mental health and distress reduction."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[5]"
         ],
         "founded_year": 2014,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": -3.2,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Additional funding can support the expansion of subsidized clinical sessions and increase operating reserves.",
+        "room_for_funding_explanation": "Demand for subsidized mental health care and practitioner training exceeds current clinic capacity.",
         "strategic_priorities": [
-          "Expand direct clinical services",
-          "Scale practitioner training programs"
+          "Expand subsidized session coverage",
+          "Grow TIIP clinical training programs"
         ],
         "years_operating": 12
       },
       "organizational_capacity": {
         "board_size": 3,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": "Not Specified",
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[3]"
         ],
-        "employees_count": null,
-        "geographic_reach": "United States, Canada, United Kingdom",
+        "employees_count": 0,
+        "geographic_reach": "US, Canada, UK",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": null,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Combines licensed clinical therapy with Islamic psychological frameworks.",
-        "peer_group": "Global Health and Mental Health Service Providers",
+        "differentiator": "Integrates traditional Islamic psychology frameworks directly into licensed clinical mental health care.",
+        "peer_group": "Global Health and Direct Healthcare Organizations",
         "similar_orgs": [
           "IMANA",
           "Muslim Wellness Foundation",
@@ -883,15 +878,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Direct healthcare focus with broader medical services",
+          "differentiator": "Focuses on general healthcare delivery and medical relief globally",
           "name": "IMANA"
         },
         {
-          "differentiator": "Community mental health emphasis with smaller operating scale",
+          "differentiator": "Focuses on community mental health awareness and advocacy",
           "name": "Muslim Wellness Foundation"
         },
         {
-          "differentiator": "Direct clinical healthcare and community wellness focus",
+          "differentiator": "Smaller operational scale with regional community focus",
           "name": "Maristan"
         }
       ],
@@ -900,28 +895,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization demonstrates high fundraising efficiency, spending <cite id=\"1\">$0.03 per $1 raised</cite> in contributions.",
-          "point": "Low fundraising costs"
+          "detail": "The organization keeps fundraising costs minimal, spending <cite id=\"1\">$0.03 per $1 raised</cite> in donations.",
+          "point": "High fundraising efficiency"
         },
         {
           "citation_ids": [
             "[6]"
           ],
-          "detail": "Clinical interventions show a documented <cite id=\"6\">0.62 effect size in distress reduction</cite> in peer-reviewed research.",
-          "point": "Published evidence of distress reduction"
+          "detail": "Published clinical evaluations report a <cite id=\"6\">0.62 effect size in reducing patient distress</cite>.",
+          "point": "Measured outcome effectiveness"
         },
         {
           "citation_ids": [
             "[5]"
           ],
-          "detail": "The organization provided <cite id=\"5\">11,386 subsidized clinical sessions</cite> to support underserved populations.",
-          "point": "Subsidized care for low-income clients"
+          "detail": "Outcomes tracking records <cite id=\"5\">11,386 subsidized therapy sessions</cite> delivered to under-resourced patients.",
+          "point": "Subsidized clinical access"
         }
       ],
       "strengths_deep_dive": [
-        "Khalil Center integrates Islamic psychological principles with clinical practice. Academic research evaluates its therapeutic interventions, documenting an <cite id=\"6\">effect size of 0.62 in reducing psychological distress</cite> among clients. In addition to clinical care, the center maintains strong fundraising efficiency, spending <cite id=\"1\">$0.03 per $1 raised</cite>. The organization expands access to mental healthcare by offering <cite id=\"5\">11,386 subsidized sessions</cite> out of <cite id=\"5\">70,136 total sessions delivered</cite>."
+        "Khalil Center demonstrates measurable clinical outcome tracking alongside direct care provision. Research published on its therapeutic framework documented a <cite id=\"6\">Cohen's d effect size of 0.62</cite> for patient distress reduction, showing meaningful clinical effectiveness. Operating across multiple regions, the charity maintains a high volume of direct services, delivering <cite id=\"5\">70,136 clinical sessions</cite> in a single reporting period. Furthermore, its fundraising costs are exceptionally lean, costing <cite id=\"1\">$0.03 per $1 raised</cite>, ensuring that fundraising activities consume minimal organizational revenue."
       ],
-      "summary": "Khalil Center provides clinical mental health services, community education, and psychological assessments rooted in Islamic psychology <cite id=\"1\">across multiple regions</cite>. In FY2024, the organization reported <cite id=\"3\">$2,505,061 in total revenue</cite>, maintaining a roughly flat financial trajectory compared to prior years. The charity operates as a <cite id=\"2\">zakat-eligible entity</cite>, utilizing dedicated funds to assist qualifying individuals in accessing mental health care. Its clinical programs delivered <cite id=\"5\">70,136 total sessions</cite>, including <cite id=\"5\">11,386 subsidized sessions</cite> for clients in financial need. Financial filings for FY2024 indicate a <cite id=\"3\">program expense ratio of 71.2%</cite>. This spending level falls below the <cite id=\"1\">industry benchmark of 75%</cite> and the <cite id=\"1\">peer median of 87.4%</cite>, reflecting an operational structure with higher administrative and operational overhead relative to peer organizations. On impact, published academic research shows an <cite id=\"6\">effect size of 0.62 for distress reduction</cite> among patients, demonstrating evidence-backed clinical outcomes.",
+      "summary": "Khalil Center provides mental health services and community education rooted in Islamic traditions, offering direct clinical care, psychological assessments, and practitioner training. In FY2024, the organization reported <cite id=\"3\">$2,505,061 in total revenue</cite>, with revenue remaining largely stable across recent fiscal years. Operations delivered <cite id=\"5\">70,136 total sessions</cite>, including <cite id=\"5\">11,386 subsidized sessions</cite> for clients needing financial support. A published study showed an <cite id=\"6\">effect size of d=0.62 for distress reduction</cite> among treated individuals, verifying clinical impact. The charity accepts <cite id=\"2\">zakat donations</cite> directed toward low-income clients (fuqara and masakin). Financial filings from FY2024 show a <cite id=\"3\">70.1% program expense ratio</cite>, which falls below the <cite id=\"1\">75% industry standard benchmark</cite> and the <cite id=\"1\">87.7% peer median</cite>. Fundraising efficiency remains strong, requiring <cite id=\"1\">$0.03 per $1 raised</cite> in contributions.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

@@ -46,7 +46,7 @@
     "programExpenses": 3219189859,
     "adminExpenses": 119685792,
     "fundraisingExpenses": 191613473,
-    "programExpenseRatio": "0.9081",
+    "programExpenseRatio": "0.9118",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 4028321133,
@@ -102,11 +102,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "annual_people_served",
+        "category": "subset_geographic_or_program",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-02T18:45:17.934652+00:00",
-        "verified": true
+        "timestamp": "2026-08-04T00:39:46.912195+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -1602,24 +1602,10 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.redcross.org/donate/dr/washington-wildfires-2026.html",
-  "beneficiariesServedAnnually": 561800,
-  "beneficiariesSource": {
-    "method": "direct",
-    "semantics": {
-      "category": "annual_people_served",
-      "confident": true,
-      "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-02T18:45:17.934652+00:00",
-      "verified": true
-    },
-    "source_name": "Charity Website",
-    "source_path": "website_profile.beneficiaries_served",
-    "source_url": "https://redcross.org/content/dam/redcross/about-us/publications/2023-publications/2023_ESG_Report_FINAL.pdf",
-    "timestamp": "2026-08-02T11:44:56",
-    "value": 561800
-  },
-  "beneficiariesConfidence": "cited",
-  "beneficiariesExcludedFromScoring": false,
+  "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": "needs_review",
+  "beneficiariesExcludedFromScoring": true,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -1666,16 +1652,6 @@
         "other_fiscal_year": 2024,
         "other_source": "charity_navigator",
         "reason": "derived_from_a_different_filing_year"
-      }
-    },
-    {
-      "type": "geographic_mismatch",
-      "severity": "medium",
-      "headline": "Claims 5 geographic areas but no foreign grants on Schedule F",
-      "detail": "Organization lists international operations but IRS filings show no foreign grant activity.",
-      "data_points": {
-        "geographic_areas_claimed": 5,
-        "has_schedule_f_data": false
       }
     },
     {

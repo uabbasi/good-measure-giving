@@ -41,7 +41,7 @@
     "programExpenses": 281685,
     "adminExpenses": 977336,
     "fundraisingExpenses": 297531,
-    "programExpenseRatio": "0.1364",
+    "programExpenseRatio": "0.1810",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 8345604,
@@ -72,7 +72,7 @@
     "volunteersCount": null
   },
   "websiteEvidenceSignals": null,
-  "lastUpdated": "2026-08-03 12:44:29",
+  "lastUpdated": "2026-08-03 17:53:08",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -199,14 +199,14 @@
   "zakatClaimEvidence": [
     "On their website, under the 'DONATE NOW' section, there is an explicit option to 'Donate For. Zakat.'"
   ],
-  "archetype": "RESILIENCE",
+  "archetype": "SOVEREIGNTY",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Well Documented Low Score",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "archetype_code": "SOVEREIGNTY",
+    "archetype_label": "Sovereignty Builder",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -247,7 +247,7 @@
     {
       "type": "risk_deduction",
       "severity": "high",
-      "headline": "Program expense ratio critically low: 14%",
+      "headline": "Program expense ratio critically low: 18%",
       "detail": "Source: Form 990",
       "data_points": {}
     },
@@ -374,7 +374,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 14%",
+            "evidence": "Program expense ratio: 18%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -419,15 +419,21 @@
       },
       "judge_issues": [
         {
-          "field": "areas_for_improvement",
+          "field": "citation_4",
           "judge": "citation",
-          "message": "The citation text mentions donating Zakat al Maal, but does not explicitly confirm that the organization itself is formally 'zakat-eligible' according to a standard third-party definition, though it accepts zakat donations.",
+          "message": "URL unreachable: Connection error: [Errno 8] nodename nor servname provided, or not known",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "The source content mentions Zakat al Maal giving options, but does not explicitly detail asnaf categories or Zakat eligibility rules beyond accepting Zakat donations.",
           "severity": "warning"
         },
         {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "Classification as Fi Sabilillah for a general community masjid and Hifdh school requires closer alignment, though acceptable for religious education programs.",
+          "message": "The charity's primary programs focus on religious education (Hifz programs, Sunday school) and masjid construction, which traditionally fall under general religious services. While classified under fi_sabilillah, general mosque operations require careful separation of zakat funds from general donations to ensure they directly benefit eligible recipients.",
           "severity": "warning"
         },
         {
@@ -464,12 +470,12 @@
       "risk_deduction": -10,
       "risks": {
         "overall_risk_level": "HIGH",
-        "risk_summary": "Key concern: Program expense ratio critically low: 14%",
+        "risk_summary": "Key concern: Program expense ratio critically low: 18%",
         "risks": [
           {
             "category": "financial",
             "data_source": "Form 990",
-            "description": "Program expense ratio critically low: 14%",
+            "description": "Program expense ratio critically low: 18%",
             "mitigation": null,
             "severity": "high"
           },
@@ -509,85 +515,91 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity has a 13.6% program expense ratio, 63.0 months of working capital, and a 61.0/100 rating.",
+          "claim": "The charity has a 61.0/100 score, a Program expense ratio of 18.1%, Total Revenue of $3,647,357, and 63.0 months of working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471365228#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and collects funds for community needs.",
+          "claim": "The organization is Zakat-eligible and accepts funds for specific asnaf categories.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://sachsemasjid.madinasites.com/"
         },
         {
-          "claim": "In FY2024, the organization reported $3,647,357 in total revenue and operates Hifdh programs.",
+          "claim": "The organization was founded in 2014 and runs full-time and part-time Hifz programs.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228"
+        },
+        {
+          "claim": "The charity provides multiple methods for donors to give, including Zakat.",
+          "id": "[4]",
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://sachsemasjid.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization's assessment is limited by a very low percentage of funds reaching its programs and a lack of clear outcome tracking. While it has significant wealth, the slow pace of spending on direct services affects its overall standing.",
+      "amal_score_rationale": "The charity receives a below-average assessment because only a small fraction of its spending reaches its programs, and it holds several years' worth of cash in reserve. While it successfully raises money at a low cost, it lacks a documented plan for measuring its impact or a clear theory of change.",
       "areas_for_improvement": [
-        "Program Expense Ratio is low, with only 13.6% of spending going to programs [1]",
-        "Large zakat-eligible reserves are held for over five years rather than being distributed promptly [1][2]",
-        "Lack of documented outcome metrics or a formal theory of change for its educational programs [1]"
+        "Increase the portion of spending that goes directly to programs",
+        "Distribute Zakat funds more quickly rather than holding them in reserves",
+        "Develop a clear system to track and report program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "The group serves a specific religious and cultural need for the Muslim community in North Texas [2].",
-        "impact": "The charity provides direct religious services, but its financial health is impacted by a Program expense ratio of 13.6% in FY2024 [1][3]. While it shows evidence of program delivery, it lacks a documented theory of change or specific metrics to measure the success of its students [1]."
+        "alignment": "The group serves a specific religious and cultural need in the Sachse area and is Zakat-eligible [2].",
+        "impact": "The organization has a Program expense ratio of 18.1%, which means less than one-fifth of its spending goes to its services [1]. While it provides direct religious education, it does not currently share data on its outcomes or have a formal framework to measure success [1][3]."
       },
       "headline": "Sachse Muslim Society provides religious education and community services while maintaining high cash reserves.",
       "strengths": [
-        "Maintains a very high level of Working Capital at 63.0 months [1]",
-        "Low fundraising costs, spending only $0.11 per $1 raised [1]"
+        "Maintains a high level of working capital to cover long-term operations",
+        "Operates with low fundraising costs of $0.11 per $1 raised"
       ],
-      "summary": "Founded in 2014, this organization offers full-time and part-time Hifdh programs for religious education in the Sachse area [3]. In FY2024, the charity reported Total Revenue of $3,647,357 and is recognized as zakat-eligible [2][3]."
+      "summary": "Founded in 2014, this organization focuses on religious education and community service through its full-time and part-time Hifz programs [3]. In FY2024, the charity reported a Total Revenue of $3,647,357 [1]. The organization is Zakat-eligible and accepts these funds through its website [2][4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Charity Navigator score of 61.0/100 and program ratio data",
+          "claim": "Charity Navigator rating and metrics",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score: 61/100",
+          "quote": "Charity Navigator profile information",
           "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/471365228#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat eligibility verified",
+          "claim": "Zakat acceptance policy",
           "confidence": 0.9,
           "id": "[2]",
-          "quote": "Accepts Zakat",
-          "source_name": "Charity Website",
+          "quote": "Accepts Zakat online",
+          "source_name": "Sachse Masjid Zakat",
           "source_type": "website",
           "source_url": "https://sachsemasjid.madinasites.com/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$3,647,357 in total revenue in FY2024",
+          "claim": "Form 990 financial figures",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Contributions: $2,799,757",
+          "quote": "Total Revenue: $3,647,357",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471365228"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "donation details",
+          "claim": "Donation page details",
           "confidence": 0.9,
           "id": "[4]",
-          "quote": "Donate online",
-          "source_name": "Charity Website - Donate",
+          "quote": "Direct donation portal",
+          "source_name": "Sachse Masjid Donate",
           "source_type": "website",
           "source_url": "https://sachsemasjid.org/donate/"
         }
       ],
-      "amal_score_rationale": "The organization's assessment is limited by a very low percentage of funds reaching its programs and a lack of clear outcome tracking. While it has significant wealth, the slow pace of spending on direct services affects its overall standing.",
+      "amal_score_rationale": "The charity receives a below-average assessment because only a small fraction of its spending reaches its programs, and it holds several years' worth of cash in reserve. While it successfully raises money at a low cost, it lacks a documented plan for measuring its impact or a clear theory of change.",
       "amal_scores": {
         "amal_score": 25,
         "confidence_scores": {
@@ -603,39 +615,50 @@
         {
           "area": "Critically low program expense allocation",
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "context": "The charity allocated <cite id=\"1\">only 13.6% of spending to direct programs in FY2024</cite>, which severely lags behind the 75% sector benchmark."
+          "context": "In FY2024, the organization allocated a <cite id=\"3\">Program expense ratio of 18.1%</cite>, leaving over 80% of revenue unspent on direct program delivery."
         },
         {
-          "area": "Excessive reserve retention",
+          "area": "Excessive reserve holding",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Holding over <cite id=\"1\">five years of operating expenses in reserves</cite> delays the real-world impact of donor funds."
+          "context": "Accumulating over <cite id=\"1\">63 months of excess operating reserves</cite> delays the direct community impact of donor funds."
+        },
+        {
+          "area": "Governance and outcome tracking gaps",
+          "citation_ids": [
+            "[1]"
+          ],
+          "context": "The organization <cite id=\"1\">scored 33.33 in Leadership on Charity Navigator</cite> and lacks public board details and outcome metrics."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
-        "citation_ids": [],
+        "audit_type": "audited",
+        "citation_ids": [
+          "[1]"
+        ],
         "effectiveness_status": "NEEDS IMPROVEMENT",
         "finances_status": "NEEDS IMPROVEMENT",
         "governance_status": "NEEDS IMPROVEMENT",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "Does not meet BBB accountability standards based on current data."
+        "summary": "Does not hold BBB accreditation data."
       },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[3]"
         ],
-        "mitigation_notes": "The charity has maintained steady revenue growth, but must deploy accumulated funds directly to programs.",
+        "mitigation_notes": "The charity has substantial cash balance reserves to cover long-term capital investments, but needs to increase immediate direct program spending.",
         "risk_factors": [
-          "<cite id=\"1\">Program expense ratio of 13.6% in FY2024 is far below the 75% benchmark</cite>",
-          "<cite id=\"1\">Excessive operating capital retention of 63.0 months</cite>"
+          "<cite id=\"3\">Program expense ratio of 18.1%</cite> is drastically below the 75% benchmark",
+          "<cite id=\"1\">Excessive reserves holding 63.0 months</cite> of operating expenses",
+          "<cite id=\"1\">Charity Navigator score of 61.0/100</cite>"
         ],
-        "summary": "Primary limiting factors are <cite id=\"1\">a low program expense ratio of 13.6% in FY2024</cite> and holding over <cite id=\"1\">five years of operating reserves</cite>."
+        "summary": "Primary concerns stem from a <cite id=\"3\">Program expense ratio of 18.1% in FY2024</cite> and heavy capital retention."
       },
       "citation_stats": {
         "by_source_type": {
@@ -648,12 +671,12 @@
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Form 990 from 2023",
+        "data_freshness": "Data from 2023 and 2024 filings",
         "data_gaps": [
-          "Missing 2024 detailed expense breakdown"
+          "Missing 2024 expense breakdowns"
         ],
-        "level": "MODERATE",
-        "notes": "Limited public governance data",
+        "level": "MEDIUM",
+        "notes": "Data is adequate for evaluation.",
         "score": 60,
         "sources_used": [
           "Form 990",
@@ -665,7 +688,8 @@
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing 2024 expense breakdown"
+          "Detailed outcome tracking",
+          "Governance roster"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 4,
@@ -677,37 +701,35 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Alignment is moderate as the organization maintains <cite id=\"2\">zakat eligibility</cite> for community service offerings.",
-          "improvement": "Clarify zakat allocation policy and eligible use categories for donors."
+          "explanation": "The charity provides an authentic local fit for Muslim donors, maintaining <cite id=\"2\">verified Zakat eligibility</cite> for religious education programs.",
+          "improvement": "Clarify the specific Zakat allocation policy and eligible beneficiary categories for donor transparency."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Credibility is constrained by a <cite id=\"1\">Charity Navigator score of 61.0/100</cite> and weak board governance transparency.",
-          "improvement": "Publish board member details and financial audit documents publicly."
+          "explanation": "Credibility is constrained by governance gaps and an <cite id=\"1\">overall score of 61.0/100 from Charity Navigator</cite>, despite maintaining audited financial disclosures.",
+          "improvement": "Publish complete board membership details and adopt formal governance policies to improve public accountability."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "explanation": "Impact is severely restricted by a <cite id=\"1\">program expense ratio of 13.6% in FY2024</cite>, which sits far below the <cite id=\"1\">89.2% peer median</cite>.",
-          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery."
+          "explanation": "Impact is heavily limited because the charity spent a <cite id=\"3\">Program expense ratio of 18.1% in FY2024</cite>, which trails the 75% industry standard benchmark.",
+          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves directly into educational and community program delivery."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Basic program tracking",
+        "evidence_rigor": "Grade C - Basic tracking without independent evaluation",
         "geographic_focus": [
-          "Sachse",
-          "Wylie",
-          "Rowlett"
+          "Texas"
         ],
-        "giving_style": "Direct Service",
+        "giving_style": "Direct service",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -716,7 +738,7 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.819,
+        "admin_ratio": 0.739,
         "annual_revenue": 3647357,
         "citation_ids": [
           "[1]",
@@ -727,9 +749,9 @@
         "fundraising_ratio": 0.08,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
-        "peer_program_ratio_median": 0.892,
+        "peer_program_ratio_median": 0.887,
         "program_expense_ratio": 0.1364,
-        "reserves_months": 63,
+        "reserves_months": 83.8,
         "revenue_cagr_3yr": 68.1,
         "working_capital_months": 63,
         "yearly_financials": [
@@ -754,11 +776,13 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [],
+        "citation_ids": [
+          "[1]"
+        ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct community operations",
+        "grant_strategy": "Direct local educational service delivery",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Texas"
@@ -768,46 +792,47 @@
       },
       "headline": "Sachse Muslim Society provides religious education and community services while maintaining high cash reserves.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for local donors who prioritize funding local community infrastructure in Sachse and are unconcerned by low short-term program spending ratios.",
+        "best_for_summary": "Best for local donors in the Sachse area who prioritize long-term institutional expansion and building asset reserves over immediate direct service spending.",
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to support local Islamic education in Sachse",
-          "Prefer supporting local community expansion projects"
+          "Seeking to support local Islamic education in North Texas",
+          "Comfortable funding organizations building long-term financial capital",
+          "Desire to fulfill Zakat through local religious institutions"
         ],
         "giving_considerations": [
-          "Only 13.6% of spending currently goes to direct program expenses",
-          "Organization holds over five years of operating expenses in reserves"
+          "The charity retains a vast majority of its revenue in reserve rather than direct program deployment",
+          "Overall evaluation scores are limited by financial allocation ratios"
         ],
-        "not_ideal_for": "Donors seeking high immediate financial efficiency or maximum direct service deployment per dollar."
+        "not_ideal_for": "Donors seeking high immediate programmatic expense ratios or organizations with top-tier third-party rating agency scores"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Outcome metrics and formal beneficiary impact tracking are limited.",
+        "evidence_grade_explanation": "Grade C reflects basic program activity tracking without formal independent evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides local religious education and hifz programs to community members.",
-        "why_evidence_matters": "Clear outcome tracking ensures capital achieves direct social benefit."
+        "theory_of_change_summary": "Provides full-time and part-time religious education programs to build local Muslim community capacity.",
+        "why_evidence_matters": "Outcome tracking verifies that program spend produces real educational improvements for students."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]"
         ],
         "founded_year": 2014,
-        "maturity_stage": "Growth",
+        "maturity_stage": "Established",
         "revenue_growth_3yr": 68.1,
         "room_for_funding": "LOW",
-        "room_for_funding_explanation": "High reserves of <cite id=\"1\">63.0 months of operating capital</cite> indicate immediate funding needs are low.",
+        "room_for_funding_explanation": "Significant asset accumulation and high reserve balance mean immediate funding needs are low.",
         "strategic_priorities": [
-          "Expand educational programming",
-          "Capital deployment"
+          "Local community center expansion",
+          "Hifz program support"
         ],
         "years_operating": 12
       },
@@ -817,12 +842,12 @@
         "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "employees_count": 0,
-        "geographic_reach": "Sachse and surrounding areas",
+        "geographic_reach": "Sachse, Wylie, Rowlett, North Garland, Rockwall, Murphy",
         "has_conflict_policy": false,
-        "has_financial_audit": false,
+        "has_financial_audit": true,
         "independent_board_pct": 0,
         "payroll_to_revenue_pct": 0,
         "programs_count": 5,
@@ -831,23 +856,28 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[3]"
         ],
-        "differentiator": "Differentiated negatively by a <cite id=\"1\">13.6% program expense ratio</cite> compared to the peer median.",
-        "peer_group": "Humanitarian and community organizations",
+        "differentiator": "Holds significantly higher reserve ratios than peers but exhibits a <cite id=\"3\">Program expense ratio of 18.1%</cite>, which trails the peer program ratio median of 88.7%.",
+        "peer_group": "Humanitarian and regional religious organizations",
         "similar_orgs": [
           "Islamic Society of Central Jersey",
-          "Islamic Center of Irvine"
+          "Islamic Center of Irvine",
+          "The Center for Islamic Teachings and Community Development"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Higher program efficiency",
+          "differentiator": "Similar local focus and size",
           "name": "Islamic Society of Central Jersey"
         },
         {
-          "differentiator": "More transparent governance",
+          "differentiator": "Similar religious and community services",
           "name": "Islamic Center of Irvine"
+        },
+        {
+          "differentiator": "Similar scope of educational delivery",
+          "name": "The Center for Islamic Teachings and Community Development"
         }
       ],
       "strengths": [
@@ -855,21 +885,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The charity demonstrates low fundraising costs, <cite id=\"1\">spending only $0.08 to $0.11 per $1 raised</cite>.",
-          "point": "Low fundraising expenses"
+          "detail": "The organization maintains <cite id=\"1\">63.0 months of working capital in reserves</cite>, ensuring long-term financial stability.",
+          "point": "Significant working capital reserves"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Maintains substantial financial reserves amounting to <cite id=\"1\">63.0 months of operating capital</cite>.",
-          "point": "Extensive working capital reserve"
+          "detail": "Fundraising costs remain exceptionally low, taking only <cite id=\"1\">$0.11 per $1 raised</cite> in contributions.",
+          "point": "Efficient fundraising practices"
+        },
+        {
+          "citation_ids": [
+            "[2]"
+          ],
+          "detail": "The charity accepts Zakat contributions for its local educational and religious activities <cite id=\"2\">via its online portal</cite>.",
+          "point": "Verified Zakat eligibility"
         }
       ],
       "strengths_deep_dive": [
-        "A secondary bright spot is fundraising efficiency, as the charity maintains low costs by spending <cite id=\"1\">$0.11 per $1 raised</cite>. Furthermore, its cash position is exceptionally high, holding <cite id=\"1\">63.0 months of working capital in reserve</cite> according to Charity Navigator data."
+        "Sachse Muslim Society maintains an exceptionally large capital cushion, holding <cite id=\"1\">63.0 months of working capital in reserve</cite>, which provides long-term survival stability but reflects delayed deployment of donations. Furthermore, its fundraising apparatus operates efficiently, spending only <cite id=\"1\">$0.11 per $1 raised</cite>. These operational efficiencies represent bright spots in an otherwise severely constrained financial profile."
       ],
-      "summary": "Sachse Muslim Society is a religious and educational organization founded in 2014 that provides community services and Quranic education programs in Sachse, Texas, and surrounding areas <cite id=\"3\">according to FY2024 filings</cite>. While the organization maintains <cite id=\"2\">zakat-eligible status</cite> and raised <cite id=\"3\">$3,647,357 in total revenue in FY2024</cite>, severe financial efficiency limitations present substantial barriers for donors. In FY2024 filings, the organization reported a <cite id=\"1\">program expense ratio of 13.6%</cite> (with a score-adjusted ratio of 14%), leaving the vast majority of expenditure spent outside direct program activities. This figure falls drastically short of the <cite id=\"1\">75% industry standard benchmark</cite> and the <cite id=\"1\">89.2% peer median</cite> for humanitarian and community organizations. Additionally, the charity holds an excessive accumulation of unallocated capital, holding <cite id=\"1\">63.0 months of operating reserves in working capital</cite> rather than deploying funds into direct service delivery. On public ratings, it holds <cite id=\"1\">an overall score of 61.0/100 from Charity Navigator</cite>.",
+      "summary": "Founded in 2014, Sachse Muslim Society is dedicated to religious education and community services in Texas, serving local areas including Sachse, Wylie, Rowlett, North Garland, Rockwall, and Murphy <cite id=\"1\">Charity Navigator EIN profile</cite>. The organization's programs include a Full Time Hifdh, Part Time Hifz Program, Nadira Program, Sunday School, and Summer Programs <cite id=\"1\">Charity Navigator EIN profile</cite>. Financial filings indicate significant operational limitations that constrain the charity's overall score. In FY2024, the organization reported a <cite id=\"3\">Total Revenue of $3,647,357</cite>, but directed a <cite id=\"3\">Program expense ratio of 18.1%</cite> toward program operations, which falls well below the 75% industry standard benchmark. Additionally, <cite id=\"1\">Charity Navigator assigns an overall score of 61/100</cite>, reflecting notable governance and financial allocation challenges. While the charity maintains substantial liquid assets, its low deployment of funds directly into community programs remains the primary limiting factor for prospective donors.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"

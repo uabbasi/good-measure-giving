@@ -48,7 +48,7 @@
     "programExpenses": 2064840,
     "adminExpenses": 34781,
     "fundraisingExpenses": 14266,
-    "programExpenseRatio": "0.9843",
+    "programExpenseRatio": "0.9768",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 387525,
@@ -94,7 +94,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:16:21",
+  "lastUpdated": "2026-08-03 17:49:27",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -105,10 +105,10 @@
     "beneficiaries_served_annually": {
       "method": "pattern_match",
       "semantics": {
-        "category": "subset_geographic_or_program",
+        "category": "other",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:15:27.715297+00:00",
+        "timestamp": "2026-08-04T00:35:15.389793+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -466,30 +466,6 @@
       },
       "judge_issues": [
         {
-          "field": "alignment",
-          "judge": "citation",
-          "message": "Could not confirm specific zakat policies beyond general zakat eligibility.",
-          "severity": "warning"
-        },
-        {
-          "field": "alignment",
-          "judge": "citation",
-          "message": "Could not confirm the exact zakat calculation tools provided to donors from the text snippet.",
-          "severity": "warning"
-        },
-        {
-          "field": "alignment",
-          "judge": "citation",
-          "message": "The fetched content is a PDF binary snippet where text could not be fully parsed to confirm the specific claim.",
-          "severity": "warning"
-        },
-        {
-          "field": "cost_per_beneficiary",
-          "judge": "factual",
-          "message": "Cost per beneficiary claim cannot be fully verified from standard structured source metrics.",
-          "severity": "warning"
-        },
-        {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
@@ -548,112 +524,93 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "Sadagaat maintains a Program expense ratio of 98.4% and an overall Charity Navigator score of 97.5/100.",
+          "claim": "The organization maintains a 97.5/100 rating from Charity Navigator.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/472864379#financials"
         },
         {
-          "claim": "The organization is Zakat-eligible and follows specific zakat policies.",
+          "claim": "Sadagaat is recognized as zakat-eligible.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://sadagaat-usa.org/giving/zakat"
         },
         {
-          "claim": "In FY2024, the charity reported a Total Revenue of $2,368,977.",
+          "claim": "In FY2024, Sadagaat managed Total Revenue of $2,368,977.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
         },
         {
-          "claim": "Sadagaat provides tools for Islamic giving and zakat calculation.",
+          "claim": "The charity follows Islamic giving policies.",
           "id": "[4]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://sadagaat-usa.org/zakat-calculator"
         },
         {
-          "claim": "Sadagaat focuses on education for the blind and children not in school, alongside water and health sectors.",
+          "claim": "Its work focuses on improving educational services for the blind and children not enrolled in school.",
           "id": "[5]",
           "source_name": "Download",
           "source_url": "https://sadagaat-usa.org/wp-content/uploads/2026/02/CreateYourOwnFundraising.pdf"
         },
         {
-          "claim": "The charity offers various donation options to support its poverty relief efforts.",
-          "id": "[10]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://sadagaat-usa.org/donate"
+          "claim": "The charity addresses urgent needs and has a proven track record of service.",
+          "id": "[6]",
+          "source_name": "State of CA \u2013 Status",
+          "source_url": "https://sadagaat-usa.org/wp-content/uploads/2024/12/StateOfCalifornia_EntityStatusLetter_2024.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows above-average performance due to its high program spending ratio and strong alignment with Muslim donor needs, though its high cost per beneficiary and lack of a formal theory of change are limiting factors.",
+      "amal_score_rationale": "Sadagaat shows an above-average performance due to its excellent spending efficiency and strong alignment with Muslim donor needs. While its financial health is solid, the lack of a formal theory of change and a high cost per person served are limiting factors.",
       "areas_for_improvement": [
-        "High cost per beneficiary at $2064.84",
-        "Lack of a documented theory of change to explain long-term impact"
+        "Lack of a documented theory of change to explain long-term impact strategies",
+        "Relatively high cost of $2,064.84 per beneficiary"
       ],
       "dimension_explanations": {
-        "alignment": "The organization is a strong fit for Muslim donors as it is Zakat-eligible and follows Islamic giving principles [2][4]. It has a solid track record of service and addresses urgent needs in domestic poverty, though it operates in a space with several other active organizations [5][10].",
-        "impact": "Sadagaat maintains a Program expense ratio of 98.4%, ensuring almost all funds go to direct services [1]. While it has strong evidence of outcomes and good governance, the cost per beneficiary is high at $2064.84 [1]. The charity lacks a documented theory of change, which makes it harder to track how its activities lead to long-term goals [1]."
+        "alignment": "The charity is a strong fit for Muslim donors as it is zakat-eligible and follows Islamic giving policies [2][4]. It addresses urgent needs in domestic poverty and has a proven track record of service [5][6].",
+        "impact": "Sadagaat directs 97.7% of its spending toward programs like healthcare and water access, showing a strong commitment to direct service [1][3]. While it provides clear evidence of its outcomes, the cost to help each person is $2,064.84, and the group does not have a formal theory of change [5]."
       },
-      "headline": "Sadagaat provides essential aid through water, health, and education programs while maintaining high financial efficiency.",
+      "headline": "Sadagaat provides essential health, water, and education services to vulnerable communities through a highly efficient spending model.",
       "strengths": [
-        "High program spending efficiency with 98.4% of funds reaching services",
-        "Strong evidence of program outcomes and verified governance practices"
+        "Maintains a high Program expense ratio of 97.7% in FY2024",
+        "Highly efficient fundraising costs of $0.01 per $1 raised",
+        "Strong evidence of program outcomes and governance practices"
       ],
-      "summary": "In FY2024, Sadagaat managed a Total Revenue of $2,368,977 to support its mission of helping poor and special needs groups [3]. The organization is Zakat-eligible and focuses on improving educational services for blind children and those not enrolled in school [2][5]. It also operates sectors dedicated to feeding, healthcare, and water access [5]."
+      "summary": "In FY2024, Sadagaat managed Total Revenue of $2,368,977 to support its humanitarian programs [3]. The organization maintains a 97.5/100 rating from Charity Navigator and is recognized as zakat-eligible [1][2]. Its work focuses on improving educational services for the blind and children not enrolled in school [5]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-03-28",
-          "claim": "97.5/100 rating from Charity Navigator",
+          "access_date": "2026-01-09",
+          "claim": "97.5/100 overall score from Charity Navigator",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score 97.5 out of 100",
-          "source_name": "Charity Navigator",
+          "quote": "Overall Rating 97.5 out of 100",
+          "source_name": "Charity Navigator - Ratings",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/472864379#financials"
         },
         {
-          "access_date": "2026-03-28",
-          "claim": "zakat eligibility verified",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "verified Zakat program",
+          "confidence": 0.9,
           "id": "[2]",
-          "quote": "Accepts Zakat for fuqara and masakin",
-          "source_name": "Sadagaat USA - Zakat",
+          "quote": "Zakat accepted and distributed to fuqara and masakin",
+          "source_name": "Sadagaat USA - Zakat Policy",
           "source_type": "website",
           "source_url": "https://sadagaat-usa.org/giving/zakat"
         },
         {
-          "access_date": "2026-03-28",
-          "claim": "$2,368,977 in total revenue",
+          "access_date": "2026-01-09",
+          "claim": "Total Revenue of $2,368,977",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue $2,368,977",
+          "quote": "Total Revenue: $2,368,977",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/472864379"
-        },
-        {
-          "access_date": "2026-03-28",
-          "claim": "zakat policy and guidance",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Zakat calculator and distribution guidelines",
-          "source_name": "Sadagaat USA - Zakat Calculator",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/zakat-calculator"
-        },
-        {
-          "access_date": "2026-03-28",
-          "claim": "through dedicated program sectors",
-          "confidence": 0.9,
-          "id": "[5]",
-          "quote": "Sectors: Feeding, Water, Health, Education",
-          "source_name": "Sadagaat USA - Document",
-          "source_type": "website",
-          "source_url": "https://sadagaat-usa.org/wp-content/uploads/2026/02/CreateYourOwnFundraising.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows above-average performance due to its high program spending ratio and strong alignment with Muslim donor needs, though its high cost per beneficiary and lack of a formal theory of change are limiting factors.",
+      "amal_score_rationale": "Sadagaat shows an above-average performance due to its excellent spending efficiency and strong alignment with Muslim donor needs. While its financial health is solid, the lack of a formal theory of change and a high cost per person served are limiting factors.",
       "amal_scores": {
         "amal_score": 73,
         "confidence_scores": {
@@ -667,60 +624,59 @@
       },
       "areas_for_improvement": [
         {
-          "area": "High Per-Beneficiary Cost Structure",
+          "area": "Absence of Published Theory of Change",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Direct service delivery currently averages <cite id=\"1\">$2,064.84 per beneficiary</cite>, limiting total reach."
+          "context": "Sadagaat lacks an explicit, documented causal framework detailing its long-term strategic pathways."
         },
         {
-          "area": "Absence of Documented Theory of Change",
+          "area": "High Unit Cost per Beneficiary",
           "citation_ids": [
-            "[5]"
+            "[1]"
           ],
-          "context": "The charity lacks an explicit formal causal pathway linking short-term aid to multi-year outcomes."
+          "context": "Direct interventions show an average calculated cost of $2,064.84 per beneficiary due to intensive direct services."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [],
-        "effectiveness_status": "NEEDS_REVIEW",
-        "finances_status": "NEEDS_REVIEW",
-        "governance_status": "NEEDS_REVIEW",
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "Sadagaat has not yet been evaluated against BBB Wise Giving Alliance standards."
+        "summary": "BBB Wise Giving Alliance evaluation data is currently unavailable."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[1]"
         ],
-        "mitigation_notes": "The charity maintains 3.6 months of operating reserves and top-tier accountability ratings to ensure fiscal stability while executing intensive direct services.",
+        "mitigation_notes": "Financial management remains highly resilient with 3.6 months of working capital in reserve.",
         "risk_factors": [
-          "<cite id=\"1\">High cost per beneficiary limits total potential reach</cite>",
-          "<cite id=\"5\">Lack of a formal documented theory of change</cite>"
+          "<cite id=\"1\">Absence of a documented formal Theory of Change</cite>",
+          "High cost per beneficiary limits broader population reach"
         ],
-        "summary": "Sadagaat experiences operational limitations related to delivery costs and outcome documentation: <cite id=\"1\">its $2,064.84 cost per beneficiary</cite> is high for the humanitarian sector, and it lacks a published theory of change."
+        "summary": "Primary limitations center on programmatic strategy documentation rather than financial governance. <cite id=\"1\">Sadagaat lacks an explicit theory of change</cite> and records a high unit cost per beneficiary ($2,064.84)."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 4,
-          "website": 5
+          "form990": 2,
+          "rating": 6,
+          "website": 4
         },
         "high_confidence_count": 12,
         "total_count": 12,
-        "unique_sources": 5
+        "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financials current to FY2024 filings",
+        "data_freshness": "Financials from FY2024 Form 990 filings and current rating agency data",
         "data_gaps": [
-          "Missing 2024 expense breakdown"
+          "Missing explicit Theory of Change document"
         ],
         "level": "HIGH",
-        "notes": "Strong rating verification from Charity Navigator and IRS filings.",
+        "notes": "Data is highly consistent across public filing tools and rating platforms.",
         "score": 85,
         "sources_used": [
           "Form 990",
@@ -732,50 +688,48 @@
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Unpublished 2024 Form 990 expense details",
-          "Lacks explicit theory of change"
+          "Unpublished theory of change document"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 12,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
+        "unique_sources": 3,
+        "website_last_crawled": "2026-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "The organization provides a strong fit for Muslim donors through <cite id=\"2\">verified zakat compliance serving the poor and needy</cite> in Sudan.",
-          "improvement": "Expand services to underserved geographies with limited nonprofit coverage."
+          "explanation": "Sadagaat shows strong alignment for Muslim donors through a <cite id=\"2\">dedicated Zakat program</cite> designed for <cite id=\"2\">fuqara and masakin</cite> in Sudan.",
+          "improvement": "Expand services to additional underserved populations or geographies with limited nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Sadagaat maintains <cite id=\"1\">a 97.5/100 rating from Charity Navigator</cite> with 100% independent board members and holds a Candid Platinum Seal of Transparency.",
-          "improvement": "To strengthen credibility further, the charity could publish a formal theory of change and complete BBB Wise Giving Alliance accreditation."
+          "explanation": "Donors can evaluate Sadagaat with high trust due to its <cite id=\"1\">97.5/100 score from Charity Navigator</cite> and holding a Candid Platinum Seal of Transparency. The organization operates under a completely <cite id=\"1\">100% independent board</cite> with verified public disclosures.",
+          "improvement": "To strengthen credibility further, the organization could work toward meeting full BBB Wise Giving Alliance standards."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[5]"
+            "[1]"
           ],
-          "explanation": "Sadagaat delivers direct relief through its feeding, health, water, and education sectors while spending <cite id=\"1\">97.7% of funds on program activities</cite>.",
-          "improvement": "Impact delivery could be improved by establishing cost-efficiency measures to lower the current $2,064.84 per-beneficiary expenditure."
+          "explanation": "Operations are highly direct and cost-effective from an operational standpoint, maintaining a <cite id=\"1\">97.7% program expense ratio in FY2024</cite> which exceeds the <cite id=\"1\">75% industry benchmark</cite>.",
+          "improvement": "Document a clear theory of change with an explicit causal pathway to articulate multi-year impact goals."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[5]"
+          "[1]",
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Outcome tracking verified via Candid",
+        "evidence_rigor": "Grade C - Outcome tracking verified without published RCTs",
         "geographic_focus": [
           "Sudan",
           "United States"
         ],
-        "giving_style": "Direct service delivery",
+        "giving_style": "Direct service and emergency relief",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -795,7 +749,7 @@
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
-        "peer_program_ratio_median": 0.892,
+        "peer_program_ratio_median": 0.887,
         "program_expense_ratio": 0.9843000000000001,
         "reserves_months": 6,
         "revenue_cagr_3yr": 67.1,
@@ -803,8 +757,8 @@
         "working_capital_months": 3.6,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 0,
+            "net_assets": 0,
             "revenue": 2368977,
             "year": 2024
           },
@@ -824,12 +778,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[5]"
+          "[1]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Operates direct programs rather than functioning as a grantmaker.",
+        "grant_strategy": "Direct implementation of programs",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Sudan"
@@ -837,53 +791,52 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Sadagaat provides essential aid through water, health, and education programs while maintaining high financial efficiency.",
+      "headline": "Sadagaat provides essential health, water, and education services to vulnerable communities through a highly efficient spending model.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize maximum financial efficiency and want to support zakat-eligible emergency and developmental relief in Sudan.",
+        "best_for_summary": "Best for donors who want to support direct-service aid and educational support in Sudan through a highly fiscally efficient, Zakat-eligible charity.",
         "citation_ids": [
           "[1]",
           "[2]"
         ],
         "donor_motivations": [
-          "Want to fulfill zakat obligations supporting poor and needy families in Sudan",
-          "Value organizations that direct over 97% of expenses straight to program delivery",
-          "Prefer direct aid across water, health, feeding, and education sectors"
+          "Seeking high financial efficiency where nearly all funds reach programs directly",
+          "Desiring Zakat compliance for primary beneficiaries in Sudan",
+          "Valuing third-party verified transparency and strong Charity Navigator ratings"
         ],
         "giving_considerations": [
-          "Intensive direct support results in a high per-beneficiary cost structure",
-          "Long-term impact evaluations remain unformalized without a published theory of change"
+          "Program interventions reflect higher per-beneficiary costs due to deep direct service",
+          "The charity does not currently publish a formal theory of change document"
         ],
-        "not_ideal_for": "Donors seeking randomized controlled trial (RCT) evidence or those favoring broad-scale low-cost interventions."
+        "not_ideal_for": "Donors requiring randomized controlled trials (RCTs) or academic impact studies before giving."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates verified outcome metrics tracked via Candid, but without published independent impact evaluations or a formal theory of change.",
+        "evidence_grade_explanation": "Grade C indicates verified programmatic tracking through Candid and Charity Navigator without third-party randomized controlled trials.",
         "external_evaluations": [
-          "Candid outcomes tracking"
+          "Charity Navigator Beacon Ratings",
+          "Candid Profile Metrics"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Sadagaat provides targeted basic needs aid in water, healthcare, feeding, and specialized education to improve living conditions in impoverished Sudanese communities.",
-        "why_evidence_matters": "Documenting outcome pathways helps confirm that immediate emergency and education relief leads to permanent poverty reduction."
+        "theory_of_change_summary": "Sadagaat delivers direct relief across feeding, water, health, and special education sectors to alleviate severe community poverty.",
+        "why_evidence_matters": "Clear outcome data ensures donor capital translates into measurable life improvements rather than operational administrative costs."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]",
-          "[5]"
+          "[1]"
         ],
         "founded_year": 2002,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 67.1,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Ongoing crisis conditions in Sudan demand substantial external humanitarian resources, which Sadagaat can absorb through its established program channels.",
+        "room_for_funding_explanation": "Severe crisis needs in Sudan provide immense strategic capacity to deploy additional funding effectively.",
         "strategic_priorities": [
-          "Expand educational services for blind children",
-          "Scale clean water and health relief in Sudan"
+          "Expand water and health sector coverage in Sudan",
+          "Enhance educational programs for special needs children"
         ],
         "years_operating": 24
       },
@@ -893,11 +846,10 @@
         "ceo_compensation_pct_revenue": 0,
         "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[1]"
         ],
         "employees_count": 0,
-        "geographic_reach": "Sudan and United States",
+        "geographic_reach": "Sudan, United States",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
@@ -910,8 +862,8 @@
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Sadagaat stands out with <cite id=\"1\">a 98.4% program expense ratio</cite>, exceeding the peer median.",
-        "peer_group": "Humanitarian Organizations",
+        "differentiator": "Sadagaat distinguishes itself through an exceptionally high <cite id=\"1\">97.7% program expense ratio</cite>, beating the <cite id=\"1\">peer group median of 88.7%</cite>.",
+        "peer_group": "Humanitarian & Education Organizations",
         "similar_orgs": [
           "Muslim American Youth Foundation",
           "Muhsen",
@@ -920,15 +872,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on K-12 education",
+          "differentiator": "Focuses primarily on youth and K-12 education",
           "name": "Muslim American Youth Foundation"
         },
         {
-          "differentiator": "Focuses on special needs support in North America",
+          "differentiator": "Specializes in disability inclusion and special needs support",
           "name": "Muhsen"
         },
         {
-          "differentiator": "Emphasizes domestic faith-based education",
+          "differentiator": "Focuses on education and outreach services",
           "name": "Al-Furqaan Foundation"
         }
       ],
@@ -937,28 +889,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Sadagaat allocated <cite id=\"1\">97.7% of expenses to direct programs</cite> in FY2024, beating the sector benchmark.",
-          "point": "Exceptional Program Efficiency"
+          "detail": "Sadagaat allocates <cite id=\"1\">97.7% of expenses to program activities in FY2024</cite>, easily beating the <cite id=\"1\">75% sector benchmark</cite>.",
+          "point": "Exceptional Program Spending Efficiency"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Holds <cite id=\"1\">a 97.5/100 rating from Charity Navigator</cite> and a Candid Platinum Seal.",
-          "point": "Top-Tier Third-Party Accountability"
+          "detail": "The organization holds <cite id=\"1\">a 97.5/100 rating from Charity Navigator</cite> with perfect sub-scores in culture and leadership.",
+          "point": "High Independent Accountability"
         },
         {
           "citation_ids": [
             "[2]"
           ],
-          "detail": "Maintains dedicated zakat channels serving <cite id=\"2\">fuqara and masakin categories</cite>.",
-          "point": "Verified Zakat Program"
+          "detail": "Sadagaat maintains a <cite id=\"2\">verified Zakat program</cite> serving <cite id=\"2\">fuqara and masakin</cite> alongside an independent board.",
+          "point": "Clear Faith Alignment & Governance"
         }
       ],
       "strengths_deep_dive": [
-        "Sadagaat maintains high financial health and direct impact orientation. In FY2024, the organization spent <cite id=\"1\">97.7% of its budget directly on programs</cite>, outperforming the 89.2% median for peer humanitarian organizations. Independent evaluator Charity Navigator awarded Sadagaat <cite id=\"1\">an overall score of 97.5/100</cite>, backed by full points in leadership and culture. Furthermore, the organization holds a Candid Platinum Seal of Transparency, demonstrating clear operational reporting."
+        "Sadagaat demonstrates remarkable fiscal efficiency, directing <cite id=\"1\">97.7% of total expenses to direct program services in FY2024</cite>. This performance comfortably exceeds the <cite id=\"1\">75% industry standard</cite> and beats the <cite id=\"1\">88.7% peer median ratio</cite> across humanitarian nonprofits. Furthermore, Charity Navigator reports that the charity spends <cite id=\"1\">$0.01 per $1 raised</cite>, indicating highly lean operational overhead. Third-party evaluators endorse this governance framework, awarding the group <cite id=\"1\">a 97.5/100 overall score from Charity Navigator</cite> alongside 100% independent board management."
       ],
-      "summary": "Sadagaat provides essential aid through water, health, and education programs while maintaining high financial efficiency. Founded in 2002, the organization focuses on serving vulnerable populations in Sudan and the United States, particularly targeting educational support for non-enrolled and blind children <cite id=\"5\">through dedicated program sectors</cite>. In FY2024, Sadagaat managed <cite id=\"3\">$2,368,977 in total revenue</cite>, reflecting significant institutional expansion over recent years. The organization operates as a verified <cite id=\"2\">zakat-eligible charity</cite>, directing gifts toward fundamental needs across water, healthcare, feeding, and educational initiatives <cite id=\"2\">in accordance with Islamic principles</cite>. Sadagaat demonstrates strong operational efficiency, directing <cite id=\"1\">97.7% of expenses to program activities</cite> in FY2024. This performance exceeds the humanitarian peer median of 89.2% and comfortably surpasses the 75% industry standard. The charity has earned <cite id=\"1\">a 97.5/100 overall score from Charity Navigator</cite> along with a Candid Platinum Seal of Transparency. However, its intensive direct service model generates a high cost per beneficiary of $2,064.84, and the organization currently lacks a formally documented theory of change to outline long-term outcomes.",
+      "summary": "Sadagaat is a humanitarian organization dedicated to delivering essential health, water, feeding, and educational services to vulnerable populations in Sudan and the United States. In FY2024, the organization managed <cite id=\"3\">Total Revenue of $2,368,977</cite>, reflecting substantial organizational expansion backed by a <cite id=\"3\">three-year revenue growth rate of 67.1%</cite>. Sadagaat operates as an efficient direct-service provider, channeling <cite id=\"1\">97.7% of its budget directly into program expenses</cite>. This spending efficiency significantly exceeds the <cite id=\"1\">75% industry standard</cite> and outperforms the <cite id=\"1\">88.7% peer program ratio median</cite>. The organization maintains high third-party accountability, demonstrated by <cite id=\"1\">a 97.5/100 overall score from Charity Navigator</cite> and holding a Candid Platinum Seal of Transparency. Sadagaat operates a structured Zakat program that serves primary eligible categories including the poor (fuqara) and needy (masakin). While the organization maintains exceptionally low administrative expenses and strong outcome verification, it lacks an explicitly published theory of change and reports a relatively high average cost per beneficiary across its intensive humanitarian interventions.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

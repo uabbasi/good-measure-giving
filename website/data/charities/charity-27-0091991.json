@@ -85,11 +85,11 @@
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "annual_people_served",
-        "confident": true,
+        "category": "reach_or_impressions",
+        "confident": false,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:18:09.453907+00:00",
-        "verified": true
+        "timestamp": "2026-08-04T00:36:56.126607+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -185,24 +185,10 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://www.almaghrib.org/policies",
-  "beneficiariesServedAnnually": 300000,
-  "beneficiariesSource": {
-    "method": "direct",
-    "semantics": {
-      "category": "annual_people_served",
-      "confident": true,
-      "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:18:09.453907+00:00",
-      "verified": true
-    },
-    "source_name": "Charity Website",
-    "source_path": "website_profile.beneficiaries_served",
-    "source_url": "https://almaghrib.org/about-us",
-    "timestamp": "2026-07-19T21:38:43",
-    "value": 300000
-  },
-  "beneficiariesConfidence": "cited",
-  "beneficiariesExcludedFromScoring": false,
+  "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": "needs_review",
+  "beneficiariesExcludedFromScoring": true,
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
@@ -217,14 +203,14 @@
   "zakatClaimEvidence": [
     "AlMaghrib Institute is listed as \"Zakat eligible.\" (Source: https://www.feelingblessed.org/almaghrib)"
   ],
-  "archetype": "SOVEREIGNTY",
+  "archetype": "RESILIENCE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
     "assessment_label": "Context Dependent",
-    "archetype_code": "SOVEREIGNTY",
-    "archetype_label": "Sovereignty Builder",
+    "archetype_code": "RESILIENCE",
+    "archetype_label": "Community Resilience",
     "evidence_stage": "Established",
     "signal_states": {
       "evidence": "Strong",
@@ -276,18 +262,6 @@
       "detail": "Zakat must be distributed promptly per Islamic jurisprudence. Large reserves raise concerns about timely distribution.",
       "data_points": {
         "reserves_months": 24.2
-      }
-    },
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "medium",
-      "headline": "CEO compensation is 5.6% of revenue ($216,728 on $3,845,691)",
-      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 216728,
-        "comp_ratio": 0.0564,
-        "threshold": 0.05,
-        "total_revenue": 3845691
       }
     }
   ],

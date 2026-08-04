@@ -42,7 +42,7 @@
     "programExpenses": 5450475,
     "adminExpenses": 1017894,
     "fundraisingExpenses": 143783,
-    "programExpenseRatio": "0.8173",
+    "programExpenseRatio": "0.8243",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 0,
@@ -88,7 +88,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:42:07",
+  "lastUpdated": "2026-08-03 17:52:46",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -102,7 +102,7 @@
         "category": "reach_or_impressions",
         "confident": false,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:41:31.369153+00:00",
+        "timestamp": "2026-08-04T00:38:25.607976+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -427,9 +427,15 @@
           "severity": "warning"
         },
         {
-          "field": "dimension_explanations.alignment",
+          "field": "summary",
           "judge": "citation",
-          "message": "Could not confirm the claim because the fetched PDF content is unparseable or binary-encoded.",
+          "message": "The provided PDF content for citation 4 is unparseable binary/corrupted text, so the claim could not be confirmed.",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Working capital ratio is stated in months in source data, but no explicit working capital months are detailed in some cited notes.",
           "severity": "warning"
         },
         {
@@ -482,98 +488,108 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the charity managed Total Revenue of $7,286,362.",
+          "claim": "In FY2024, the organization managed $7,286,362 in total revenue and spent 82.4% on programs.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/204423661"
         },
         {
-          "claim": "The organization offers a structured seminary program to help adults study Islamic scholarship and leadership.",
+          "claim": "The association operates the PNW Seminary to help adults study Islamic scholarship and leadership.",
           "id": "[3]",
           "source_name": "mapsredmond.org/wp-content/uploads/2026/07/Finance-Intern-2026.pdf",
           "source_url": "https://mapsredmond.org/wp-content/uploads/2026/07/Finance-Intern-2026.pdf"
         },
         {
-          "claim": "It has a proven track record of connecting community members through its educational programs.",
+          "claim": "The organization maintains facilities for community connection.",
           "id": "[4]",
           "source_name": "mapsredmond.org/wp-content/uploads/2026/07/Marketing-Social-Media-Intern-2026.pdf",
           "source_url": "https://mapsredmond.org/wp-content/uploads/2026/07/Marketing-Social-Media-Intern-2026.pdf"
         },
         {
-          "claim": "While it shows strong evidence of outcomes in its local facility, it currently lacks some governance documentation.",
+          "claim": "The group is working on documenting standard operating procedures.",
           "id": "[5]",
           "source_name": "mapsredmond.org/wp-content/uploads/2026/07/Operational-Processes-Intern-2026.pdf",
           "source_url": "https://mapsredmond.org/wp-content/uploads/2026/07/Operational-Processes-Intern-2026.pdf"
         },
         {
-          "claim": "It maintains a clear theory of change by providing direct services like daily prayers.",
+          "claim": "The organization maintains facilities for daily prayers.",
           "id": "[6]",
           "source_name": "More FAQs",
           "source_url": "https://mapsredmond.org/wp-content/uploads/2026/04/MAPS-Seattle-New-Campus-FAQs.pdf"
         },
         {
-          "claim": "Donors should note that while the charity accepts general donations, it is specifically listed as sadaqah-eligible.",
+          "claim": "Donations are accepted as sadaqah to support its various educational and operational needs.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://mapsredmond.org/donate"
         },
         {
-          "claim": "The charity operates with a high Program expense ratio of 81.7%.",
+          "claim": "The organization maintains an 86.0/100 rating from Charity Navigator.",
           "id": "[9]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/204423661#financials"
         }
       ],
-      "amal_score_rationale": "The association shows a balanced performance with efficient program spending and clear evidence of community impact, though it lacks some standard governance markers.",
+      "amal_score_rationale": "The organization shows a balanced performance with efficient spending on direct services, though its overall assessment is limited by gaps in formal governance documentation.",
       "areas_for_improvement": [
-        "Lack of formal governance documentation or independent board oversight data",
-        "Limited reach outside of the local religious and cultural community"
+        "Lack of documented governance policies according to internal assessments",
+        "Limited geographic reach beyond the Puget Sound region"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is a strong fit for Muslim donors looking to support religious and cultural causes in the Puget Sound area [3][7]. It has a proven track record of connecting community members through its educational programs [4]. Donors should note that while the charity accepts general donations, it is specifically listed as sadaqah-eligible [7].",
-        "impact": "The charity operates with a high Program expense ratio of 81.7%, meaning the majority of its FY2024 spending went directly to its programs [1][9]. It maintains a clear theory of change by providing direct services like daily prayers and leadership training [3][6]. While it shows strong evidence of outcomes in its local facility, it currently lacks some governance documentation [5]."
+        "alignment": "This organization is a strong fit for Muslim donors looking to support religious and cultural causes in the Pacific Northwest [7]. It has a solid track record of serving the local community and maintains an 86.0/100 rating from Charity Navigator [9]. Donations are accepted as sadaqah to support its various educational and operational needs [7].",
+        "impact": "The charity spends 82.4% of its budget directly on programs, which is considered an efficient use of funds [1]. It provides direct services like the PNW Seminary and daily prayers at a cost of approximately $90.84 per beneficiary [3]. While the group shows strong evidence of positive outcomes, it lacks some formal governance records [5]."
       },
-      "headline": "The Muslim Association of Puget Sound provides religious education and community services for adults in the Pacific Northwest.",
+      "headline": "The Muslim Association of Puget Sound provides religious education and community services with a focus on efficient program spending.",
       "strengths": [
-        "High program expense ratio of 81.7% ensures most funds reach community services",
-        "Strong financial stability with 17.3 months of working capital available"
+        "High program expense ratio of 82.4% in FY2024",
+        "Strong financial stability with 17.3 months of working capital"
       ],
-      "summary": "The organization offers a structured seminary program to help adults study Islamic scholarship and leadership [3]. In FY2024, the charity managed Total Revenue of $7,286,362 to support its daily prayers and educational programs [1]."
+      "summary": "In FY2024, the organization managed $7,286,362 in total revenue to support its religious and educational missions [1]. The association operates the PNW Seminary to help adults study Islamic scholarship and leadership [3]. It also maintains facilities for daily prayers and community connection [4][6]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $7,286,362",
+          "claim": "$7,286,362 in total revenue",
           "confidence": 1,
           "id": "[1]",
-          "quote": "Total Revenue $7,286,362",
+          "quote": "Total Revenue: $7,286,362; Program Expense Ratio: 82.4%",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/204423661"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "educational programs and community services",
+          "claim": "an overall score of 86.0/100 from Charity Navigator",
+          "confidence": 0.95,
+          "id": "[2]",
+          "quote": "Overall Score: 86/100",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/204423661#financials"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "the PNW Seminary",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Muslim Association of Puget Sound (MAPS)",
-          "source_name": "MAPS Organizational PDF",
+          "quote": "PNW Seminary provides a structured program for adults to deepen their understanding",
+          "source_name": "mapsredmond.org Finance Intern PDF",
           "source_type": "website",
           "source_url": "https://mapsredmond.org/wp-content/uploads/2026/07/Finance-Intern-2026.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "overall score of 86.0/100 from Charity Navigator",
-          "confidence": 1,
+          "claim": "17.3 months of working capital",
+          "confidence": 0.95,
           "id": "[9]",
-          "quote": "Overall Score 86/100",
+          "quote": "Working Capital Ratio: 17.3 months",
           "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/204423661#financials"
         }
       ],
-      "amal_score_rationale": "The association shows a balanced performance with efficient program spending and clear evidence of community impact, though it lacks some standard governance markers.",
+      "amal_score_rationale": "The organization shows a balanced performance with efficient spending on direct services, though its overall assessment is limited by gaps in formal governance documentation.",
       "amal_scores": {
         "amal_score": 62,
         "confidence_scores": {
@@ -587,22 +603,22 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Governance Transparency",
+          "area": "Board Governance Disclosures",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Public disclosures lack independent board oversight details <cite id=\"1\">in tax filings</cite> [1]."
+          "context": "Public disclosures lack verified details on independent board oversight and formal conflict policies: <cite id=\"[1]\">governance documentation is unverified in tax filings</cite> [1]."
         },
         {
-          "area": "Programmatic Focus",
+          "area": "Geographic Scope",
           "citation_ids": [
             "[3]"
           ],
-          "context": "Services are largely concentrated within <cite id=\"3\">the regional Pacific Northwest area</cite> [3]."
+          "context": "Services are largely limited to the Puget Sound region, restricting broader regional impact: <cite id=\"[3]\">programs focus on local regional communities</cite> [3]."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "none",
+        "audit_type": "audited",
         "citation_ids": [],
         "effectiveness_status": "UNREVIEWED",
         "finances_status": "UNREVIEWED",
@@ -610,78 +626,78 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance standards evaluation is not available for this organization."
+        "summary": "BBB Wise Giving Alliance evaluation is currently unavailable."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "mitigation_notes": "Strong working capital mitigates short-term operational risks.",
+        "mitigation_notes": "The organization maintains high financial reserves (17.3 months) to cushion against financial instability.",
         "risk_factors": [
-          "Board governance data is incomplete in public filings [1]",
-          "Programmatic reach is primarily regional [3]"
+          "<cite id=\"[1]\">Unverified board independence policies</cite> [1]",
+          "<cite id=\"[3]\">Geographic restriction to the Puget Sound area</cite> [3]"
         ],
-        "summary": "Key limiting factors include missing board oversight data in public disclosures."
+        "summary": "Key considerations include limited board transparency and regional concentration: <cite id=\"[1]\">public filings show incomplete board governance data</cite> [1]."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 3,
-          "website": 3
+          "form990": 1,
+          "rating": 2,
+          "website": 1
         },
-        "high_confidence_count": 10,
-        "total_count": 10,
+        "high_confidence_count": 4,
+        "total_count": 4,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Financials from FY2024",
+        "data_freshness": "Financial figures from FY2024",
         "data_gaps": [
-          "Incomplete governance details in Form 990"
+          "Board governance details unverified"
         ],
-        "level": "MEDIUM",
-        "notes": "Core financial numbers verified via tax filings and Charity Navigator ratings.",
-        "score": 60,
+        "level": "MODERATE",
+        "notes": "Solid financial baseline available via Form 990 filings and Charity Navigator ratings.",
+        "score": 67,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "MAPS Website Documents"
+          "MAPS Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 60,
+        "confidence_score": 67,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Incomplete board governance data",
-          "Detailed expense breakdowns"
+          "Unverified board member list",
+          "Lack of explicit governance policies in tax returns"
         ],
-        "ratings_last_updated": "2024",
-        "total_citations": 10,
+        "ratings_last_updated": "2024-12",
+        "total_citations": 4,
         "unique_sources": 3,
-        "website_last_crawled": "2026"
+        "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "MAPS serves the Pacific Northwest community with <cite id=\"3\">religious education and community services</cite> [3]. This charity is sadaqah-eligible.",
-          "improvement": "Expand service scope to reach underserved regional populations with limited nonprofit coverage."
+          "explanation": "The charity provides religious education and cultural programming tailored to local Muslim communities in the Pacific Northwest [3].",
+          "improvement": "Expanding service offerings to underserved populations outside the central metropolitan area could increase community alignment."
         },
         "credibility": {
           "citation_ids": [
             "[1]",
             "[9]"
           ],
-          "explanation": "MAPS maintains <cite id=\"9\">an 86/100 overall score on Charity Navigator</cite> [9]. Independent board data is currently incomplete in public filings [1].",
-          "improvement": "Publish complete independent board oversight policies and director lists to enhance public transparency."
+          "explanation": "The charity holds <cite id=\"[9]\">an 86/100 rating from Charity Navigator</cite> and maintains audited financial records [9]. However, credibility score points are limited because <cite id=\"[1]\">board governance disclosures remain unverified</cite> in standard filings [1].",
+          "improvement": "To improve credibility, the organization could publish an explicit list of independent board members and formal conflict-of-interest policies."
         },
         "impact": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Operations demonstrate direct service delivery, spending <cite id=\"1\">82.4% on program activities</cite> with a $90.84 cost per beneficiary [1].",
-          "improvement": "Document a clear theory of change with explicit causal pathways to track long-term outcomes."
+          "explanation": "Operations demonstrate direct service delivery with <cite id=\"[1]\">an 82.4% program expense ratio in FY2024</cite> and a cost profile of <cite id=\"[1]\">$90.84 per beneficiary</cite> [1].",
+          "improvement": "Documenting a full causal theory of change would strengthen impact clarity."
         }
       },
       "donor_fit_matrix": {
@@ -690,12 +706,12 @@
           "[1]",
           "[3]"
         ],
-        "evidence_rigor": "Grade C - Internal outcome tracking",
+        "evidence_rigor": "Grade C - Internal tracking and program outputs",
         "geographic_focus": [
-          "Pacific Northwest",
-          "United States"
+          "Puget Sound",
+          "Washington State"
         ],
-        "giving_style": "Direct service and education",
+        "giving_style": "Direct local community giving",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ONLY"
@@ -707,27 +723,21 @@
           "[1]",
           "[9]"
         ],
-        "cn_financial_score": 88.71,
+        "cn_financial_score": 88.7,
         "cn_overall_score": 86,
-        "fundraising_ratio": 0,
+        "fundraising_ratio": 0.01,
         "industry_program_ratio": 0.75,
         "peer_count": 2,
-        "peer_program_ratio_median": null,
+        "peer_program_ratio_median": 0.75,
         "program_expense_ratio": 0.8173,
         "reserves_months": 17.3,
         "revenue_cagr_3yr": 8.6,
         "yearly_financials": [
           {
-            "expenses": null,
-            "net_assets": null,
+            "expenses": 6003962,
+            "net_assets": 8147788,
             "revenue": 7286362,
             "year": 2024
-          },
-          {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 0,
-            "year": 2023
           },
           {
             "expenses": 4698986,
@@ -744,87 +754,88 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct service delivery rather than external grantmaking",
+        "grant_strategy": "Operates direct local community service programs rather than major grantmaking.",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "Pacific Northwest"
+          "Puget Sound"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Muslim Association of Puget Sound provides religious education and community services for adults in the Pacific Northwest.",
+      "headline": "The Muslim Association of Puget Sound provides religious education and community services with a focus on efficient program spending.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support local religious education, community services, and interfaith advocacy in the Pacific Northwest through sadaqah giving.",
+        "best_for_summary": "Best for donors who prioritize funding local Muslim community infrastructure, adult religious education, and local social services in the Pacific Northwest through general sadaqah.",
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "donor_motivations": [
-          "Want to build long-term Islamic educational infrastructure in the US",
-          "Value direct local community services and interfaith outreach",
-          "Prefer supporting established regional institutions"
+          "Support local Islamic educational programs and adult scholarship",
+          "Strengthen Pacific Northwest community service networks",
+          "Fund organizations with strong short-term financial reserves"
         ],
         "giving_considerations": [
-          "This charity is sadaqah-eligible",
-          "Impact is focused locally within the Pacific Northwest community",
-          "Public governance details remain limited"
+          "Donations support general sadaqah",
+          "Impact is localized to Washington State rather than national or international emergency zones"
         ],
         "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
-          "[3]"
+          "[1]",
+          "[9]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Tracks program beneficiaries and service outputs internally without external randomized evaluations.",
-        "external_evaluations": [],
-        "outcome_tracking_years": 1,
+        "evidence_grade_explanation": "Grade C reflects outcome data based on internal service metrics and annual output reporting without independent experimental evaluations.",
+        "external_evaluations": [
+          "Charity Navigator Rating"
+        ],
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides community religious education and local social services to foster leadership and social support.",
-        "why_evidence_matters": "Outcome tracking ensures services produce sustainable community benefits."
+        "theory_of_change_summary": "MAPS provides education, religious facilities, and social assistance to build local community resilience.",
+        "why_evidence_matters": "Outcome tracking confirms that local community investments yield direct output metrics like educational delivery and social service connections."
       },
       "long_term_outlook": {
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[6]"
         ],
         "founded_year": 2006,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 8.6,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Revenue growth of 8.6% CAGR supports gradual program expansion across the Puget Sound region.",
+        "room_for_funding_explanation": "With 17.3 months of working capital, the charity has strong reserves while maintaining room to grow its physical campus and programs.",
         "strategic_priorities": [
-          "Expand adult education",
-          "Strengthen community service network"
+          "Expand Seattle campus facilities",
+          "Strengthen adult seminary programming"
         ],
         "years_operating": 20
       },
       "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "Not Disclosed",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[1]"
         ],
-        "employees_count": null,
-        "geographic_reach": "Pacific Northwest",
+        "employees_count": 0,
+        "geographic_reach": "Puget Sound Region, Washington",
         "has_conflict_policy": false,
-        "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
+        "has_financial_audit": true,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 5,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
           "[3]"
         ],
-        "differentiator": "Serves as a regional hub for religious scholarship and local social services in the Pacific Northwest [3].",
-        "peer_group": "Domestic poverty and cultural organizations",
+        "differentiator": "Differentiated by its dual focus on community social services and structured adult scholarship via <cite id=\"[3]\">the PNW Seminary</cite> [3].",
+        "peer_group": "Domestic Religious & Community Organizations",
         "similar_orgs": [
           "Islamic Educational Foundation",
           "Islamic Society of Northwest Suburbs of Chicago",
@@ -833,15 +844,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on religious services and comparable revenue size",
+          "differentiator": "Similar focus on religious services and community facilities",
           "name": "Islamic Educational Foundation"
         },
         {
-          "differentiator": "Suburban community focus with comparable programming",
+          "differentiator": "Similar suburban community center model",
           "name": "Islamic Society of Northwest Suburbs of Chicago"
         },
         {
-          "differentiator": "Local community services focus",
+          "differentiator": "Similar local focus on congregation services",
           "name": "Sachse Muslim Society"
         }
       ],
@@ -850,28 +861,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization allocates <cite id=\"1\">82.4% of its expenses directly to programs</cite> [1].",
-          "point": "High Program Expense Ratio"
+          "detail": "In FY2024, the charity allocated <cite id=\"[1]\">82.4% of its total functional expenses directly to programs</cite> [1].",
+          "point": "High Program Expense Allocation"
         },
         {
           "citation_ids": [
             "[9]"
           ],
-          "detail": "MAPS holds <cite id=\"9\">17.3 months of working capital</cite>, exceeding standard financial stability benchmarks [9].",
-          "point": "Strong Operating Reserves"
+          "detail": "The organization maintains <cite id=\"[9]\">17.3 months of working capital</cite>, offering strong short-term financial stability [9].",
+          "point": "Substantial Operating Reserves"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[1]"
           ],
-          "detail": "The charity earned <cite id=\"9\">an overall score of 86.0/100 from Charity Navigator</cite> [9].",
-          "point": "Favorable Charity Navigator Rating"
+          "detail": "Direct service programs deliver assistance at an estimated <cite id=\"[1]\">$90.84 per beneficiary</cite> across local service initiatives [1].",
+          "point": "Low Cost Per Beneficiary"
         }
       ],
       "strengths_deep_dive": [
-        "MAPS demonstrates steady financial management, spending <cite id=\"1\">82.4% of funds on program services in FY2024</cite> [1]. This program ratio beats the 75% sector benchmark. Financial reserves are robust, with <cite id=\"9\">17.3 months of working capital available</cite> to support ongoing stability [9]. Third-party evaluation reflects these practices, with <cite id=\"9\">a Charity Navigator score of 86.0/100</cite> [9]."
+        "The Muslim Association of Puget Sound maintains a balanced operational model with significant program expenditure. In FY2024, MAPS reported <cite id=\"[1]\">$7,286,362 in total revenue</cite> and directed <cite id=\"[1]\">82.4% of expenses to program services</cite>, exceeding the standard 75% sector benchmark [1]. The organization benefits from strong financial reserves, holding <cite id=\"[9]\">17.3 months of working capital in reserve</cite>, which protects core educational and community programs during economic fluctuations [9]. Additionally, Charity Navigator awards MAPS <cite id=\"[9]\">an overall rating of 86/100</cite>, reflecting solid fiscal management and transparency in core financial reporting [9]."
       ],
-      "summary": "The Muslim Association of Puget Sound (MAPS) provides religious education, daily prayers, and community services for adults and families in the Pacific Northwest [3]. In FY2024, the organization managed <cite id=\"1\">Total Revenue of $7,286,362</cite> to support its regional programs [1]. The organization maintains balanced operational efficiency with <cite id=\"1\">an 81.7% program expense ratio</cite> [1]. Financial stability is a key operational strength, supported by <cite id=\"9\">17.3 months of working capital</cite> in operating reserves [9]. MAPS delivers direct community services across multiple initiatives, including educational programs, interfaith advocacy, and community relief through MAPS-MCRC [3]. The organization maintains <cite id=\"9\">an overall score of 86.0/100 from Charity Navigator</cite> [9]. However, governance disclosure remains limited due to missing independent board information [1]. Overall, MAPS operates as a established regional institution serving local community needs [3].",
+      "summary": "The Muslim Association of Puget Sound (MAPS) provides religious education, daily prayer services, and community programming across the Puget Sound region. In FY2024, the organization managed <cite id=\"[1]\">$7,286,362 in total revenue</cite> to support its local programs [1]. MAPS offers structured programs through the PNW Seminary for adults studying Islamic scholarship and leadership, alongside community support initiatives such as the MAPS-MCRC service branch and the Small Business Resiliency Network [3]. Financial filings from FY2024 show that the charity directed <cite id=\"[1]\">82.4% of its expenses to program services</cite>, meeting standard benchmarks for financial allocation [1]. The organization holds <cite id=\"[2]\">an overall score of 86.0/100 from Charity Navigator</cite>, backed by 17.3 months of working capital reserves that provide operational stability [9]. However, evaluations reveal gaps in formal governance documentation, as board member disclosures and specific governance policies remain unverified in public filings [1]. Furthermore, while MAPS delivers direct services within its local region, its operational footprint remains geographically concentrated in Washington State [3].",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "SADAQAH-ELIGIBLE"
