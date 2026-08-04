@@ -1727,3 +1727,41 @@ defect, not a ratio one. Flagging rather than silently overriding.
 **Tests.** 16 new across `test_the_ratio_divides_the_figures_beside_it.py` and
 `test_an_unknown_fiscal_year_is_not_a_shared_one.py`; suite 2244 -> 2260 green.
 Code commit `969718b`.
+
+### Verification, and one measurement error of my own
+
+The regeneration set was built by diffing `charity_data` against `HEAD~3` —
+but two charities had already been re-synthesized by hand as single-EIN tests
+*before* that point, so they showed no change and were silently left out of
+the batch. 22-3382037 — the flagship case in this whole investigation — kept
+publishing "spends 71.5% of its budget on its educational programs" against a
+corrected 98.5%. Re-measured against the true pre-fix Dolt snapshot
+(`jr968okf57cm1h67ndlvurj84b9pk4ft`): 91 ratios moved, 90 had been
+regenerated, 1 had not. **Diff against the snapshot you took, not against a
+relative offset you took later.**
+
+End-to-end check on the SHIPPED JSON, not the database:
+
+    index                                                    166
+    structured: ratio contradicting its own components         0   (was 53)
+    prose: a stated program % disagreeing with that ratio      0
+
+The prose check needed three passes to be worth anything. A naive "percentage
+near the word program" flagged 99 of 156 pages; nearly all were legitimate —
+industry benchmarks (75%), peer medians, verbatim Charity Navigator citation
+quotes, judge warning text stored in the evaluation, and the deliberately
+relabelled "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)".
+Four genuinely stale narratives survived regeneration and cleared on a plain
+retry — LLM non-determinism, not a prompt defect: both prompts already carry
+the ratio in their MANDATORY VALUES block.
+
+**A note for the editorial queue, not a defect.** The factual judge compares
+narrative claims against Charity Navigator, so where our recomputed ratio now
+differs from CN's pooled one it emits a *warning* (22-3382037: "narrative
+states 98.5% ... Charity Navigator reports 71.54%"). Warnings never gate
+publication. The narrative is right and the warning is right — they are
+measuring different windows.
+
+**Cost.** $26.20 across six runs (pilot 5, main 85, three retries, one missed
+charity). The main run ended at $23.40 of a $40 cap because it FINISHED.
+Measured $0.264/charity.
