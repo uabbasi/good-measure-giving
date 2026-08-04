@@ -42,7 +42,7 @@
     "programExpenses": 1569416,
     "adminExpenses": 1857038,
     "fundraisingExpenses": 51744,
-    "programExpenseRatio": "0.5193",
+    "programExpenseRatio": "0.4512",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 10259811,
@@ -80,7 +80,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:17:40",
+  "lastUpdated": "2026-08-03 17:50:32",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -170,15 +170,14 @@
     "usa"
   ],
   "programFocusTags": [
-    "religious-services",
-    "education-higher"
+    "religious-services"
   ],
   "hideFromCurated": null,
   "theoryOfChange": "Darul Qasim aims to add value to existing paradigms of higher education through the following programs... Darul Qasim aims to offer these academic services through the lens of traditional Sunni understanding \u2014 the added value that incorporates the need to procure salvation in the Hereafter.",
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2001,
-  "scoreSummary": "Darul Qasim shows moderate alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+  "scoreSummary": "Darul Qasim shows moderate alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -262,12 +261,19 @@
         "threshold": 0.05,
         "total_revenue": 2696418
       }
+    },
+    {
+      "type": "risk_deduction",
+      "severity": "high",
+      "headline": "Program expense ratio critically low: 45%",
+      "detail": "Source: Form 990",
+      "data_points": {}
     }
   ],
   "amalEvaluation": {
     "charity_ein": "36-4398970",
     "charity_name": "Darul Qasim",
-    "amal_score": 50,
+    "amal_score": 45,
     "wallet_tag": "ZAKAT-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:17:06",
     "rubric_version": "5.3.0",
@@ -372,7 +378,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 52%",
+            "evidence": "Program expense ratio: 45%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -417,30 +423,6 @@
       },
       "judge_issues": [
         {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "Could not confirm zakat-eligibility or asnaf categories from the fetched content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "Could not confirm specific program names due to unparseable PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_6",
-          "judge": "citation",
-          "message": "Could not confirm the claim due to unparseable PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_7",
-          "judge": "citation",
-          "message": "The donation page confirms the mission and donation methods generally, though specific giving methods are not detailed in the snippet.",
-          "severity": "info"
-        },
-        {
           "field": "charity_navigator.expense_ratio",
           "judge": "crawl_quality",
           "message": "Expenses ($3,478,198) exceed revenue ($2,696,418) by 29%",
@@ -471,11 +453,18 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -2,
+      "risk_deduction": -7,
       "risks": {
-        "overall_risk_level": "MODERATE",
-        "risk_summary": "2 risk(s) identified.",
+        "overall_risk_level": "ELEVATED",
+        "risk_summary": "Key concern: Program expense ratio critically low: 45%",
         "risks": [
+          {
+            "category": "financial",
+            "data_source": "Form 990",
+            "description": "Program expense ratio critically low: 45%",
+            "mitigation": null,
+            "severity": "high"
+          },
           {
             "category": "financial",
             "data_source": "Form 990 / Balance Sheet",
@@ -491,9 +480,9 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -2
+        "total_deduction": -7
       },
-      "score_summary": "Darul Qasim shows moderate alignment and moderate impact, with zakat compliance (minor risk deductions applied).",
+      "score_summary": "Darul Qasim shows moderate alignment and moderate impact, with zakat compliance (significant risk deductions applied).",
       "zakat": {
         "asnaf_category": "fi_sabilillah",
         "bonus_points": 0,
@@ -505,52 +494,46 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In fiscal year 2024, the charity reported a total revenue of $2,696,418 and a program expense ratio of 51.9%.",
+          "claim": "In FY2024, the organization reported total revenue of $2,696,418 and a program expense ratio of 45.1%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/364398970"
         },
         {
-          "claim": "The charity is zakat-eligible and follows specific asnaf categories for distribution.",
+          "claim": "The charity is zakat-eligible and accepts donations to support its mission.",
           "id": "[3]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.darulqasim.org/zakat"
         },
         {
-          "claim": "The organization facilitates religious learning through the Shaykh al-Hind and Intermediate Islamic Studies programs.",
+          "claim": "Programs include the Shaykh al-Hind and Intermediate Islamic Studies tracks.",
           "id": "[4]",
           "source_name": "Download Dr Muhammad\u2019s Lecture Handout",
           "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Dr-Muhammed.pdf"
         },
         {
-          "claim": "The organization focuses on capacity building through religious education and has an established track record.",
+          "claim": "The charity has a verified track record in the field of Islamic education.",
           "id": "[6]",
           "source_name": "Read this Article in PDF Format",
           "source_url": "https://darulqasim.org/wp-content/uploads/2016/06/IslamAndEducation.pdf"
-        },
-        {
-          "claim": "The charity accepts donations through various giving methods to support its mission.",
-          "id": "[7]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://darulqasim.org/donate/"
         }
       ],
-      "amal_score_rationale": "The charity shows average performance because its spending on direct programs is low, and it holds very large cash reserves despite collecting zakat. While it operates with high fundraising efficiency, a significant portion of its revenue is directed toward administrative costs and executive pay.",
+      "amal_score_rationale": "The assessment reflects a low program expense ratio and high executive pay relative to revenue. While the organization is financially stable with significant reserves, less than half of its spending goes directly to its educational programs.",
       "areas_for_improvement": [
-        "Program expense ratio is low at 51.9%",
-        "Large cash reserves may delay the distribution of zakat funds",
-        "CEO compensation represents 7.8% of total revenue"
+        "Program expense ratio is low, with only 45.1% of spending reaching programs [1]",
+        "CEO compensation represents 7.8% of total revenue [1]",
+        "Large cash reserves of 29.3 months may delay the distribution of zakat funds [3]"
       ],
       "dimension_explanations": {
-        "alignment": "Darul Qasim serves a specific need in global Islamic education and has an established track record [6].",
-        "impact": "The organization focuses on capacity building through religious education and has clear evidence of its educational outcomes [4][6]. However, its financial health is impacted by a program expense ratio of 51.9%, meaning nearly half of its spending goes toward non-program costs [1]."
+        "alignment": "The charity serves a specific need for global Islamic education and has a verified track record in its field [6]. It offers a medium fit for Muslim donors as a zakat-eligible institution [3].",
+        "impact": "Darul Qasim focuses on capacity building through programs like the Shaykh al-Hind Program [4]. However, financial health is limited by a program expense ratio of 45.1% in FY2024 [1]. While the organization has clear evidence and outcomes for its curriculum, most of its spending is directed toward administrative or other costs rather than direct program delivery [1][6]."
       },
-      "headline": "Darul Qasim provides Islamic education and Arabic language training through specialized academic programs.",
+      "headline": "Darul Qasim provides Islamic education and Arabic language studies while maintaining high financial reserves.",
       "strengths": [
-        "Maintains a high level of working capital at 29.3 months",
-        "High fundraising efficiency with only $0.02 spent per $1 raised"
+        "Maintains 29.3 months of working capital to ensure long-term stability [1]",
+        "High fundraising efficiency with only $0.02 spent to raise every $1 [1]"
       ],
-      "summary": "The organization facilitates religious learning through the Shaykh al-Hind and Intermediate Islamic Studies programs [4]. In fiscal year 2024, the charity reported a total revenue of $2,696,418 [1]. The charity is zakat-eligible and accepts donations to support its educational mission [3][7]."
+      "summary": "In FY2024, the organization reported total revenue of $2,696,418 to support its religious and educational programs [1]. These programs include the Shaykh al-Hind and Intermediate Islamic Studies tracks [4]. The charity is zakat-eligible and accepts donations to support its mission of imparting knowledge derived from the Prophet Muhammad [3]."
     },
     "rich_narrative": {
       "all_citations": [
@@ -566,45 +549,45 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "29.3 months of working capital",
+          "claim": "29.3 months of working capital in working capital",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Working Capital: 29.3 months",
-          "source_name": "Charity Navigator",
+          "quote": "Working Capital Ratio: 29.3 months",
+          "source_name": "Charity Navigator - Profile Data",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/364398970#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat-eligible programs",
+          "claim": "zakat-eligible",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Zakat categories accepted for students",
+          "quote": "Zakat donations accepted",
           "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.darulqasim.org/zakat"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Shaykh al-Hind Program and Intermediate Islamic Studies",
+          "claim": "Shaykh al-Hind Program",
           "confidence": 0.85,
           "id": "[4]",
-          "quote": "Academic programs in Islamic theology",
-          "source_name": "Download Dr Muhammad\u2019s Lecture Handout",
+          "quote": "Shaykh al-Hind Program details",
+          "source_name": "Download Dr Muhammad's Lecture Handout",
           "source_type": "website",
           "source_url": "https://darulqasim.org/wp-content/uploads/2018/10/Introduction-to-Epistemology-Handout-10-3-15-Dr-Muhammed.pdf"
         }
       ],
-      "amal_score_rationale": "The charity shows average performance because its spending on direct programs is low, and it holds very large cash reserves despite collecting zakat. While it operates with high fundraising efficiency, a significant portion of its revenue is directed toward administrative costs and executive pay.",
+      "amal_score_rationale": "The assessment reflects a low program expense ratio and high executive pay relative to revenue. While the organization is financially stable with significant reserves, less than half of its spending goes directly to its educational programs.",
       "amal_scores": {
-        "amal_score": 50,
+        "amal_score": 45,
         "confidence_scores": {
           "alignment": 27,
           "data_confidence": 0.6,
           "impact": 25
         },
         "confidence_tier": "MEDIUM",
-        "impact_tier": "AVERAGE",
+        "impact_tier": "BELOW_AVERAGE",
         "wallet_tag": "ZAKAT-ELIGIBLE"
       },
       "areas_for_improvement": [
@@ -613,22 +596,21 @@
           "citation_ids": [
             "[1]"
           ],
-          "context": "The program expense ratio of <cite id=\"1\">51.9% in FY2024</cite> means less than half of overall expenses go directly to program delivery."
+          "context": "The organization allocates a <cite id=\"1\">program expense ratio of 45.1%</cite> in FY2024, leaving over half of expenses for overhead."
+        },
+        {
+          "area": "High executive compensation proportion",
+          "citation_ids": [
+            "[2]"
+          ],
+          "context": "The <cite id=\"2\">CEO compensation of $209,869</cite> represents nearly 7.8% of total revenue, which warrants governance oversight."
         },
         {
           "area": "Recent revenue contraction",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Revenue dropped from <cite id=\"1\">$3,290,091 in FY2023 to $2,696,418 in FY2024</cite>, marking an 18% single-year decline."
-        },
-        {
-          "area": "CEO compensation scale",
-          "citation_ids": [
-            "[1]",
-            "[2]"
-          ],
-          "context": "Executive pay of <cite id=\"2\">$209,869 represents approximately 7.8% of total revenue</cite>, which is high for an organization under $5M in budget."
+          "context": "Annual revenue dropped from <cite id=\"1\">$3,290,091 in FY2023 to $2,696,418 in FY2024</cite>."
         }
       ],
       "bbb_assessment": {
@@ -640,56 +622,55 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "Not currently evaluated by BBB Wise Giving Alliance"
+        "summary": "Not currently evaluated under the BBB Wise Giving Alliance 20 standards."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[2]"
         ],
-        "mitigation_notes": "Low fundraising costs of $0.02 per $1 raised help keep direct development expenses minimal.",
+        "mitigation_notes": "The organization maintains significant reserve funds to buffer against short-term revenue drops.",
         "risk_factors": [
-          "<cite id=\"1\">Program expense ratio is 51.9%, well below the 75% benchmark</cite>",
-          "<cite id=\"1\">Revenue declined 18% in FY2024</cite>",
-          "<cite id=\"2\">Large reserve balance of 29.3 months delays capital deployment</cite>"
+          "<cite id=\"1\">Program expense ratio of 45.1% is far below the 75% benchmark</cite>",
+          "<cite id=\"2\">CEO compensation absorbs nearly 7.8% of total revenue</cite>",
+          "<cite id=\"1\">Revenue declined from $3,290,091 to $2,696,418 in FY2024</cite>"
         ],
-        "summary": "The principal concerns stem from financial allocation and recent revenue declines. With a program ratio of <cite id=\"1\">51.9% in FY2024</cite>, a majority of funds support administrative or non-program overhead. Revenue decreased by <cite id=\"1\">18% from FY2023 to FY2024</cite>, while executive compensation consumes <cite id=\"2\">7.8% of total revenue</cite>."
+        "summary": "Primary limiting factors include an inefficient allocation of funds and recent revenue drops. In FY2024, the <cite id=\"1\">program expense ratio of 45.1%</cite> meant less than half of expenditures went to direct programs. Additionally, <cite id=\"1\">revenue fell 18% in FY2024</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 3,
-          "website": 3
+          "form990": 1,
+          "rating": 1,
+          "website": 2
         },
-        "high_confidence_count": 8,
-        "total_count": 10,
+        "high_confidence_count": 4,
+        "total_count": 4,
         "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Financial filings from FY2023/FY2024",
+        "data_freshness": "Financials from FY2023 and FY2024",
         "data_gaps": [
-          "Beneficiary outcome data incomplete",
-          "Not fully rated by Charity Navigator"
+          "Complete FY2024 Form 990 expenses missing"
         ],
         "level": "MODERATE",
-        "notes": "Sufficient financial data available to evaluate efficiency metrics.",
+        "notes": "Data constrained by low program ratio and unrated CN profile status.",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Charity Navigator profile",
-          "Website"
+          "Charity Navigator Profile",
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing clear beneficiary headcount",
-          "Unrated by Charity Navigator"
+          "Missing full FY2024 expense breakdown",
+          "No independent outcome evaluations"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 10,
-        "unique_sources": 4,
+        "total_citations": 4,
+        "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
@@ -697,23 +678,23 @@
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "The organization provides <cite id=\"3\">zakat-eligible programs</cite> and caters directly to religious education needs, serving standard donor categories like <cite id=\"3\">fuqara and masakin</cite>.",
+          "explanation": "Alignment is moderate as the organization provides specialized traditional learning and is <cite id=\"3\">zakat-eligible</cite>.",
           "improvement": "Clarify zakat allocation policy and eligible use categories for donors."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
             "[2]"
           ],
-          "explanation": "Operations are governed by an <cite id=\"2\">independent board</cite>, though lack of complete third-party ratings and high executive compensation relative to total budget weigh on overall governance ratings.",
-          "improvement": "To strengthen credibility, the charity should publish independent financial audits and clarify board oversight policies regarding executive compensation."
+          "explanation": "Credibility is constrained by governance overhead and lack of third-party evaluation seals. <cite id=\"2\">CEO compensation of $209,869</cite> consumes 7.8% of revenue. However, the organization maintains an <cite id=\"2\">independent board percentage of 100%</cite>.",
+          "improvement": "To improve credibility, the charity should document executive compensation benchmarks and seek third-party accountability accreditation."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "While the charity offers documented educational curricula, its program expense ratio of <cite id=\"1\">51.9% in FY2024</cite> is well below the peer median of 87.7%. Furthermore, <cite id=\"1\">cost-per-beneficiary data remains unavailable</cite>.",
-          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed."
+          "explanation": "Impact is severely restricted by spending directness. In FY2024, the <cite id=\"1\">program expense ratio was 51.9%</cite>, which is substantially below the <cite id=\"2\">peer median of 90.5%</cite>.",
+          "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed, and increase the proportion of spending directed toward primary educational programs."
         }
       },
       "donor_fit_matrix": {
@@ -722,11 +703,11 @@
           "[1]",
           "[3]"
         ],
-        "evidence_rigor": "Grade C - Documented curriculum without published beneficiary outcome studies",
+        "evidence_rigor": "Grade C - Internal program documentation",
         "geographic_focus": [
           "USA"
         ],
-        "giving_style": "Capacity building and traditional religious education",
+        "giving_style": "Higher Education & Seminary Support",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -735,17 +716,17 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.529,
+        "admin_ratio": 0.549,
         "annual_revenue": 2696418,
         "citation_ids": [
           "[1]",
           "[2]"
         ],
-        "cn_financial_score": 0,
+        "cn_financial_score": null,
         "fundraising_ratio": 0.02,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.877,
+        "peer_program_ratio_median": 0.905,
         "program_expense_ratio": 0.5193,
         "reserves_months": 25.8,
         "revenue_cagr_3yr": 11.6,
@@ -772,13 +753,11 @@
         ]
       },
       "grantmaking_profile": {
-        "citation_ids": [
-          "[1]"
-        ],
+        "citation_ids": [],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct program delivery rather than external grantmaking",
+        "grant_strategy": "Direct institutional delivery of educational programs.",
         "is_significant_grantmaker": false,
         "regions_served": [
           "USA"
@@ -786,51 +765,52 @@
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "Darul Qasim provides Islamic education and Arabic language training through specialized academic programs.",
+      "headline": "Darul Qasim provides Islamic education and Arabic language studies while maintaining high financial reserves.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support traditional Islamic higher education and Arabic literacy within the United States through zakat-eligible scholarship funds.",
+        "best_for_summary": "Best for donors who prioritize funding traditional higher Islamic scholarship in North America and are comfortable with an organization holding large cash reserves despite low program spending ratios.",
         "citation_ids": [
           "[1]",
+          "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Value institutional Islamic scholarly learning and higher education",
-          "Want to direct zakat toward tuition support for religious students",
-          "Prefer supporting domestic educational infrastructure"
+          "Value traditional Islamic higher education and degree-granting seminaries",
+          "Wish to support institutional capacity building within the US",
+          "Seek zakat-eligible higher education options"
         ],
         "giving_considerations": [
-          "Program ratio is low at 51.9%, meaning overhead takes a substantial share",
-          "Organization holds over two years of operating reserves",
-          "Beneficiary output numbers are not systematically published"
+          "More than half of organizational spending goes toward administrative and non-program expenses",
+          "Organization holds over two years of working capital in reserve",
+          "Annual revenue experienced an 18% decline in FY2024"
         ],
-        "not_ideal_for": "Donors seeking international emergency relief or organizations with a program ratio above 80%"
+        "not_ideal_for": "Donors seeking high program expense efficiency (above 75%) or direct, immediate relief services"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
-          "[6]"
+          "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects documented programs and verified curricula, but lacks published outcome metrics or beneficiary tracking.",
+        "evidence_grade_explanation": "Grade C reflects documented program frameworks and curriculum without independent cost-effectiveness evaluations.",
         "external_evaluations": [],
         "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides advanced instruction in Arabic and traditional Islamic sciences to preserve religious scholarship.",
-        "why_evidence_matters": "Outcome tracking helps confirm whether graduates successfully apply their education to benefit communities."
+        "theory_of_change_summary": "Provides advanced Islamic theological education to train scholars and educators in Western contexts.",
+        "why_evidence_matters": "Outcome tracking ensures educational programs translate into measurable community impact and efficient resource deployment."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[2]"
         ],
         "founded_year": 2001,
         "maturity_stage": "Established",
-        "revenue_growth_3yr": -18,
+        "revenue_growth_3yr": 11.6,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "With 29.3 months of operating reserves, immediate cash needs are low, though revenue declined 18% in FY2024.",
+        "room_for_funding_explanation": "The charity maintains substantial capital reserves exceeding two years of operational expenses, though recent revenue declines suggest potential funding need.",
         "strategic_priorities": [
-          "Expand academic offerings",
-          "Maintain college licensing standard"
+          "Maintain degree accreditation",
+          "Expand specialization programs"
         ],
         "years_operating": 25
       },
@@ -855,28 +835,29 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[2]"
         ],
-        "differentiator": "Focuses on high-level traditional Islamic theology and academic accreditation in the USA.",
-        "peer_group": "Global and religious education organizations",
+        "differentiator": "Darul Qasim lags behind peers in program spending directness, reporting a <cite id=\"1\">program expense ratio of 45.1%</cite> compared to the <cite id=\"2\">peer median of 90.5%</cite>.",
+        "peer_group": "Global Islamic Education Organizations",
         "similar_orgs": [
           "Bayan Islamic Graduate School",
-          "Qalam Education Fund",
-          "Najam Institute Foundation"
+          "Najam Institute Foundation",
+          "Qalam Education Fund"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on higher religious education with direct degree pathways",
+          "differentiator": "Similar focus on higher religious education and similar organizational scale.",
           "name": "Bayan Islamic Graduate School"
         },
         {
-          "differentiator": "Emphasizes community seminary training and retreats",
-          "name": "Qalam Education Fund"
+          "differentiator": "Offers religious educational services with comparable budget constraints.",
+          "name": "Najam Institute Foundation"
         },
         {
-          "differentiator": "Similar scale in traditional Islamic learning",
-          "name": "Najam Institute Foundation"
+          "differentiator": "Focuses on traditional Islamic learning and seminary models.",
+          "name": "Qalam Education Fund"
         }
       ],
       "strengths": [
@@ -884,28 +865,21 @@
           "citation_ids": [
             "[2]"
           ],
-          "detail": "Maintains <cite id=\"2\">29.3 months of working capital</cite> in working capital, providing exceptional short-term financial stability.",
-          "point": "Substantial reserve buffer"
+          "detail": "Darul Qasim holds <cite id=\"2\">29.3 months of working capital in working capital</cite>, offering long-term stability.",
+          "point": "Strong working capital reserves"
         },
         {
           "citation_ids": [
             "[2]"
           ],
-          "detail": "Expends only <cite id=\"2\">$0.02 to raise every $1</cite> in revenue, keeping direct fundraising costs very low.",
-          "point": "Highly efficient fundraising"
-        },
-        {
-          "citation_ids": [
-            "[4]"
-          ],
-          "detail": "Offers structured academic pathways like the <cite id=\"4\">Shaykh al-Hind Program and advanced degree offerings</cite>.",
-          "point": "Established educational curriculum"
+          "detail": "The organization demonstrates strong fundraising efficiency, spending only <cite id=\"2\">$0.02 to raise every $1</cite> in contributions.",
+          "point": "Low fundraising costs"
         }
       ],
       "strengths_deep_dive": [
-        "Darul Qasim demonstrates high efficiency in its fundraising activities, spending <cite id=\"2\">just $0.02 per $1 raised of donor revenue</cite>. Financially, the institution holds a considerable balance sheet buffer, maintaining <cite id=\"2\">29.3 months of operating reserves</cite>. This ensures operational sustainability and protection against immediate financial downturns, although it also creates potential delays in deploying active capital into educational programs."
+        "While financial efficiency scores remain low, Darul Qasim demonstrates stability through its reserve policy. The charity maintains <cite id=\"2\">29.3 months of working capital in working capital</cite>. Additionally, the organization spends only <cite id=\"2\">$0.02 to raise every $1</cite>, keeping direct fundraising costs minimal."
       ],
-      "summary": "Darul Qasim provides Islamic education and Arabic language training through specialized academic programs such as the <cite id=\"4\">Shaykh al-Hind Program and Intermediate Islamic Studies</cite>. In FY2024, the organization reported <cite id=\"1\">total revenue of $2,696,418</cite>, which represents an 18% decline from <cite id=\"1\">$3,290,091 in FY2023</cite>. The charity's program expense ratio stands at 51.9%, leaving more than half of its budget allocated to non-program operational expenses. This financial metric falls significantly below the 75% industry standard and the 87.7% peer median. On the other hand, the charity maintains strong operational stability with <cite id=\"2\">29.3 months of working capital</cite> held in reserve, alongside an efficient fundraising model spending <cite id=\"2\">$0.02 per $1 raised</cite>. Darul Qasim offers <cite id=\"3\">zakat-eligible programs</cite> to support students in need of assistance.",
+      "summary": "Darul Qasim operates in the higher Islamic education sector, providing Arabic language studies and advanced degree programs. Primary limiting factors focus on operational efficiency and resource deployment. In FY2024, the organization reported <cite id=\"1\">total revenue of $2,696,418</cite>. However, <cite id=\"1\">revenue declined by 18%</cite> from the previous fiscal year's total of $3,290,091. Spending efficiency is a major issue. The organization directs a <cite id=\"1\">program expense ratio of 45.1%</cite> toward its core operations. This falls well short of the <cite id=\"2\">75% industry standard</cite> and the <cite id=\"2\">peer program ratio median of 90.5%</cite>. Executive compensation is also high relative to organizational scale. <cite id=\"2\">CEO compensation reached $209,869</cite> in recent filings, representing nearly 7.8% of total revenue. On financial reserves, Darul Qasim holds <cite id=\"2\">29.3 months of working capital in working capital</cite>. This is a substantial financial cushion, but holding large cash reserves can delay the active deployment of charitable funds. The charity maintains active educational tracks such as the <cite id=\"4\">Shaykh al-Hind Program</cite> and is <cite id=\"3\">zakat-eligible</cite>.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "ZAKAT-ELIGIBLE"

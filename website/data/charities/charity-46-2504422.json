@@ -41,7 +41,7 @@
     "programExpenses": 25314417,
     "adminExpenses": 556374,
     "fundraisingExpenses": 1139147,
-    "programExpenseRatio": "0.9317",
+    "programExpenseRatio": "0.9372",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 6627122,
@@ -91,7 +91,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:47:45",
+  "lastUpdated": "2026-08-03 17:48:53",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -558,7 +558,13 @@
         {
           "field": "summary",
           "judge": "citation",
-          "message": "Could not confirm the claim because the fetched URL content is extremely minimal and lacks the necessary details.",
+          "message": "The fetched content for citation 2 is too sparse to confirm the zakat eligibility claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "amal_score_rationale",
+          "judge": "score",
+          "message": "The narrative contains an internal contradiction regarding fundraising costs, describing them as 'high fundraising costs relative to total expenses' in the rationale, but listing 'Low fundraising costs, spending only $0.04 per $1 raised' as a strength.",
           "severity": "warning"
         },
         {
@@ -633,74 +639,74 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on capacity building through programs like water wells and food security.",
+          "claim": "The charity has a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 84.2%, 2.1 months of working capital, and spends $0.04 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/462504422#financials"
         },
         {
-          "claim": "The charity is ZAKAT-ELIGIBLE and follows specific religious guidelines to distribute aid to those in need.",
+          "claim": "The charity is ZAKAT-ELIGIBLE.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.mausa.org/religious-dues/zakat/"
         },
         {
-          "claim": "In FY2024, the organization managed Total Revenue of $26,971,910.",
+          "claim": "In FY2024, the organization reported Total Revenue of $26,971,910 and 62% of revenue came from non-cash contributions.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
         }
       ],
-      "amal_score_rationale": "The charity shows above average performance due to its efficient spending on programs and strong alignment with donor values, though its overall score is limited by high noncash gift inflation and missing strategic documentation.",
+      "amal_score_rationale": "The charity shows above-average performance due to its efficient use of cash for programs and strong fit for Muslim donors, though its heavy reliance on non-cash gifts and high fundraising costs relative to total expenses are notable factors.",
       "areas_for_improvement": [
-        "Address the lack of a documented theory of change to better explain long-term goals",
-        "Reduce reliance on noncash contributions, which currently make up 62% of total revenue"
+        "High reliance on non-cash contributions, which make up 62% of total revenue [3]",
+        "Lack of a documented theory of change to explain long-term goals [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a strong fit for Muslim donors as it is ZAKAT-ELIGIBLE and focuses on urgent humanitarian causes [2]. It has a clear track record of serving vulnerable populations suffering from hunger and disease [1].",
-        "impact": "The organization focuses on capacity building through programs like water wells and food security [1]. While it maintains a strong Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 84.2%, over half of its total expenses are related to fundraising costs [3]."
+        "alignment": "This charity is a strong match for humanitarian-focused donors and is ZAKAT-ELIGIBLE [2]. It addresses urgent needs in underserved areas.",
+        "impact": "The organization maintains a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 84.2%, showing that most cash donations go directly to aid [1]. While it successfully builds capacity in areas like water and food security, it currently lacks a formal theory of change to track long-term outcomes [1][3]."
       },
-      "headline": "Muslim Aid America provides essential humanitarian relief through water and food programs for people facing poverty and disaster.",
+      "headline": "Muslim Aid America provides essential humanitarian relief through water and food programs for people facing disaster and poverty.",
       "strengths": [
-        "Maintains a high Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 84.2%",
-        "Operates with high fundraising efficiency, spending only $0.04 per $1 raised"
+        "High spending efficiency with a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 84.2% [1]",
+        "Low fundraising costs, spending only $0.04 per $1 raised [1]"
       ],
-      "summary": "In FY2024, the organization managed Total Revenue of $26,971,910 to support victims of conflict and natural disasters [3]. The charity is ZAKAT-ELIGIBLE and follows specific religious guidelines to distribute aid to those in need [2]."
+      "summary": "In FY2024, the organization managed Total Revenue of $26,971,910 to support victims of conflict and natural disasters [3]. The charity is ZAKAT-ELIGIBLE, allowing donors to fulfill their religious obligations through its various relief programs [2]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "fundraising efficiency of $0.04 per $1 raised",
+          "claim": "Program Expense Ratio: 93.7%",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Fundraising Efficiency: $0.04 per $1 raised",
+          "quote": "Program Expense Ratio: 93.2%",
           "source_name": "Charity Navigator Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/462504422#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Zakat eligibility across eight categories",
+          "claim": "zakat eligibility verified",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Accepts Zakat across fuqara, masakin, amil, muallaf, riqab, gharimin, fisabilillah, ibn_sabil",
-          "source_name": "Muslim Aid America - Zakat",
+          "quote": "Accepts Zakat for fuqara, masakin, and other asnaf categories",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.mausa.org/religious-dues/zakat/"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $26,971,910 in 2024",
+          "claim": "$26,971,910 in revenue in FY2024",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue: $26,971,910",
+          "quote": "Total Revenue: $26,390,812",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/462504422"
         }
       ],
-      "amal_score_rationale": "The charity shows above average performance due to its efficient spending on programs and strong alignment with donor values, though its overall score is limited by high noncash gift inflation and missing strategic documentation.",
+      "amal_score_rationale": "The charity shows above-average performance due to its efficient use of cash for programs and strong fit for Muslim donors, though its heavy reliance on non-cash gifts and high fundraising costs relative to total expenses are notable factors.",
       "amal_scores": {
         "amal_score": 66,
         "confidence_scores": {
@@ -714,51 +720,49 @@
       },
       "areas_for_improvement": [
         {
-          "area": "High noncash contribution ratio",
+          "area": "High proportion of gifts-in-kind",
           "citation_ids": [
             "[3]"
           ],
-          "context": "In-kind donations account for <cite id=\"3\">62% of total revenue</cite>, which introduces valuation volatility to financial reporting."
+          "context": "Non-cash contributions represent <cite id=\"3\">62% of total revenue</cite>, creating operational sensitivity to in-kind donation fluctuations."
         },
         {
-          "area": "Limited operating reserves",
+          "area": "Lean operating reserves",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization maintains <cite id=\"1\">2.1 months of working capital</cite>, below recommended multi-month targets."
+          "context": "Working capital covers <cite id=\"1\">2.1 months of working capital</cite>, which is below ideal multi-month buffer targets."
         },
         {
-          "area": "Absence of a formal theory of change",
+          "area": "Missing theory of change",
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "context": "The charity has <cite id=\"3\">not published a documented theory of change</cite> defining explicit long-term causal pathways."
+          "context": "The organization tracks outcome metrics but lacks an explicit published theory of change framework."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [
-          "[3]"
-        ],
-        "effectiveness_status": "UNKNOWN",
-        "finances_status": "UNKNOWN",
-        "governance_status": "UNKNOWN",
+        "citation_ids": [],
+        "effectiveness_status": "NEUTRAL",
+        "finances_status": "NEUTRAL",
+        "governance_status": "NEUTRAL",
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB evaluation metrics are currently unrated for this charity."
+        "summary": "BBB evaluation details are currently unavailable."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "mitigation_notes": "The underlying cash-adjusted program ratio remains strong at 84%, showing that cash donations directly reach relief programs.",
+        "mitigation_notes": "Cash-adjusted metrics show program spending remains above sector benchmarks.",
         "risk_factors": [
-          "<cite id=\"3\">62% of revenue relies on noncash in-kind contributions</cite>",
-          "<cite id=\"1\">2.1 months of working capital is a lean cash cushion</cite>"
+          "<cite id=\"3\">62% of revenue consists of non-cash gifts-in-kind</cite>",
+          "<cite id=\"1\">Operating reserves cover 2.3 months of expenses</cite>"
         ],
-        "summary": "A primary consideration for donors is the heavy reliance on gifts-in-kind, with <cite id=\"3\">noncash contributions comprising 62% of revenue</cite>. Additionally, <cite id=\"1\">2.1 months of working capital</cite> leaves thin reserves for financial shocks."
+        "summary": "Key considerations include a high reliance on non-cash donations and lean operating reserves."
       },
       "citation_stats": {
         "by_source_type": {
@@ -771,25 +775,25 @@
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Data reflects FY2023/2024 filings",
+        "data_freshness": "Financial filings from 2023/2024",
         "data_gaps": [
-          "Missing published beneficiary numbers"
+          "No published theory of change"
         ],
         "level": "HIGH",
-        "notes": "Verified high data quality across authoritative tax filings and direct disclosures.",
-        "score": 95,
+        "notes": "Solid financial figures available from Form 990 filings and profile metadata.",
+        "score": 85,
         "sources_used": [
-          "Form 990",
-          "Charity Navigator Metadata",
-          "Charity Website"
+          "Charity Navigator",
+          "Charity Website",
+          "Form 990"
         ]
       },
       "data_confidence": {
-        "confidence_score": 95,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No beneficiary counts published",
-          "Unrated by CN overall beacon"
+          "Lacks explicit theory of change document",
+          "No independent RCT evaluations"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 3,
@@ -801,39 +805,37 @@
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Strong alignment for Muslim donors through <cite id=\"2\">verified Zakat eligibility</cite> serving <cite id=\"2\">asnaf categories like fuqara and masakin</cite> in high-urgency crisis zones.",
-          "improvement": "Expand services to underserved populations or geographies with limited nonprofit coverage."
+          "explanation": "Strong alignment for Muslim donors with <cite id=\"2\">verified zakat eligibility</cite> serving core categories including fuqara and masakin.",
+          "improvement": "Expand services to underserved geographies with limited existing nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[1]"
           ],
-          "explanation": "Donors find transparency through <cite id=\"3\">audited financial filings</cite> and a <cite id=\"1\">100% independent board of directors</cite>.",
-          "improvement": "To strengthen credibility further, the charity could publish a documented theory of change and build stronger working capital reserves."
+          "explanation": "Donors can verify governance through an <cite id=\"1\">independent board</cite> and a Platinum Seal of Transparency on Candid.",
+          "improvement": "To strengthen credibility further, the charity could publish board meeting records and document a clear theory of change."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[3]"
+            "[1]"
           ],
-          "explanation": "Operations feature a <cite id=\"3\">Cash-Adjusted Program expense ratio of 84.2%</cite>, which beats the 75% industry standard, while keeping <cite id=\"1\">fundraising costs down to $0.04 per $1 raised</cite>.",
+          "explanation": "Operations deliver high spending efficiency with a <cite id=\"1\">Cash-Adjusted Program expense ratio of 84.2%</cite> and low fundraising costs of <cite id=\"1\">$0.04 per $1 raised</cite>.",
           "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Outcome tracking via Candid",
+        "evidence_rigor": "Grade C - Outcome tracking via Candid without external evaluations",
         "geographic_focus": [
           "Middle East",
           "Asia",
           "Africa"
         ],
-        "giving_style": "Direct emergency relief & capacity building",
+        "giving_style": "Direct humanitarian aid and capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara",
@@ -848,17 +850,17 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.05,
+        "admin_ratio": 0.023,
         "annual_revenue": 26971910,
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "cn_financial_score": 0,
+        "cn_financial_score": null,
         "fundraising_ratio": 0.04,
         "industry_program_ratio": 0.75,
         "peer_count": 11,
-        "peer_program_ratio_median": 0.857,
+        "peer_program_ratio_median": 0.833,
         "program_expense_ratio": 0.9317,
         "reserves_months": 2.3,
         "revenue_cagr_3yr": 32.1,
@@ -892,7 +894,7 @@
         "domestic_grants": 347524,
         "foreign_grants": 32361253,
         "grant_count": 12,
-        "grant_strategy": "Distributes significant foreign aid through overseas implementing partners.",
+        "grant_strategy": "Directs substantial funding to international partner implementation agencies",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Middle East",
@@ -900,58 +902,55 @@
           "Africa"
         ],
         "top_recipients": [
-          "IKRAM FOUNDATION ($52,000)",
-          "TEXAS MUSLIM WOMENS FOUNDATION ($50,530)",
-          "ZAKAT CHICAGO ($50,000)"
+          "Ikram Foundation ($52,000)",
+          "Texas Muslim Womens Foundation ($50,530)",
+          "Zakat Chicago ($50,000)"
         ],
         "total_grants": 32708777
       },
-      "headline": "Muslim Aid America provides essential humanitarian relief through water and food programs for people facing poverty and disaster.",
+      "headline": "Muslim Aid America provides essential humanitarian relief through water and food programs for people facing disaster and poverty.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize Zakat-compliant emergency relief for extreme poverty and disaster zones through low-overhead cash operations.",
+        "best_for_summary": "Best for donors who want to fulfill their zakat obligations by funding international disaster relief and poverty alleviation programs.",
         "citation_ids": [
           "[1]",
-          "[2]",
-          "[3]"
+          "[2]"
         ],
         "donor_motivations": [
-          "Want to fulfill Zakat obligations with verified compliance",
-          "Value low fundraising costs ($0.04 per $1 raised)",
-          "Focus on immediate humanitarian aid in disaster areas"
+          "Want to fulfill zakat obligations with clear asnaf alignment",
+          "Care about international relief in disaster and crisis zones",
+          "Value efficient spending with low fundraising overhead"
         ],
         "giving_considerations": [
-          "Significant portion of revenue relies on in-kind noncash items",
-          "Working capital reserves are lean at 2.3 months"
+          "A large portion of non-cash donations affects gross revenue figures",
+          "Working capital reserves are relatively lean at 2.3 months"
         ],
-        "not_ideal_for": "Donors seeking academic RCT-level evidence or charities with heavy multi-year cash reserves"
+        "not_ideal_for": "Donors seeking local US community programs or those requiring randomized controlled trials for evidence"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects outcome measurement reported through Candid without academic evaluations or RCTs.",
-        "external_evaluations": [
-          "Candid Outcome Reporting"
-        ],
+        "evidence_grade_explanation": "Grade C reflects internal outcome tracking reported through Candid without independent external evaluations.",
+        "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Delivers direct capacity building, water, and food aid to disaster victims and vulnerable populations.",
-        "why_evidence_matters": "Clear outcome tracking confirms that direct interventions create lasting improvements in poverty zones."
+        "theory_of_change_summary": "The charity delivers humanitarian aid, water, and food assistance directly and through partner organisations to alleviate poverty and crisis impact.",
+        "why_evidence_matters": "Outcome tracking confirms that delivered goods and services reach beneficiaries effectively."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "founded_year": 2014,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 32.1,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Strong multi-year revenue growth (32.1% CAGR) indicates capacity to absorb additional relief funds.",
+        "room_for_funding_explanation": "Expanding relief demands in active crisis regions allow the organization to deploy additional capital.",
         "strategic_priorities": [
-          "Expand sustainable disaster relief",
-          "Strengthen water and food security projects"
+          "Expand sustainable relief projects",
+          "Enhance outcome tracking"
         ],
         "years_operating": 12
       },
@@ -969,17 +968,17 @@
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0.55,
+        "payroll_to_revenue_pct": 0.56,
         "programs_count": 3,
         "staff_per_million_revenue": 0,
         "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
-        "differentiator": "Beats the peer program ratio median with an <cite id=\"3\">84% cash-adjusted program ratio</cite> versus the 85.7% peer median.",
-        "peer_group": "Extreme Poverty and Relief Nonprofits",
+        "differentiator": "Beats the peer program ratio median with an 84% cash-adjusted program ratio compared to the peer median of 83.3%.",
+        "peer_group": "Extreme Poverty and Humanitarian Organizations",
         "similar_orgs": [
           "CARE USA",
           "Action Against Hunger USA",
@@ -988,45 +987,45 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Larger international institutional footprint",
+          "differentiator": "Larger scale with broad non-sectarian programming",
           "name": "CARE USA"
         },
         {
-          "differentiator": "Specific focus on malnutrition and nutrition interventions",
+          "differentiator": "Specialized focus on nutrition and hunger relief",
           "name": "Action Against Hunger USA"
         },
         {
-          "differentiator": "Multilateral quasi-governmental scope",
+          "differentiator": "Multilateral agency focused on Palestinian refugees",
           "name": "UNRWA"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "detail": "Maintains a <cite id=\"3\">Cash-Adjusted Program expense ratio of 84.2%</cite>, beating the 75% industry standard.",
-          "point": "Strong cash-adjusted program spending"
+          "detail": "The charity achieved a <cite id=\"1\">Cash-Adjusted Program expense ratio of 84.2%</cite>, exceeding the 75% sector benchmark.",
+          "point": "Strong financial program efficiency"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Operates with remarkable fundraising efficiency, spending <cite id=\"1\">only $0.04 to raise each $1</cite> in contributions.",
-          "point": "Low cost to raise funds"
+          "detail": "Muslim Aid America spent only <cite id=\"1\">$0.04 per $1 raised in revenue</cite> in FY2024.",
+          "point": "Low fundraising costs"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[1]"
           ],
-          "detail": "Maintains clear alignment with Islamic giving guidelines with <cite id=\"2\">verified Zakat eligibility across eight traditional categories</cite>.",
-          "point": "Verified Zakat compliance"
+          "detail": "The organization holds a <cite id=\"1\">Platinum Seal of Transparency</cite> on Candid.",
+          "point": "High transparency recognition"
         }
       ],
       "strengths_deep_dive": [
-        "Muslim Aid America demonstrates solid operational efficiency by directing resources straight toward program delivery. In FY2024, the organization spent <cite id=\"1\">just $0.04 per $1 raised</cite> on fundraising activities. Furthermore, its <cite id=\"3\">Cash-Adjusted Program expense ratio of 84.2%</cite> comfortably beats the 75% industry benchmark, proving that public cash donations are effectively routed to direct aid programs."
+        "Muslim Aid America demonstrates solid financial allocation to direct services. In FY2024, the filed <cite id=\"1\">Program Expense Ratio was 93.7%</cite>. Based on cash operations alone, the cash-adjusted program ratio was 84%, exceeding the industry standard benchmark of 75%. This spending efficiency is supported by low fundraising expenses, costing <cite id=\"1\">$0.04 per $1 raised</cite>."
       ],
-      "summary": "Muslim Aid America provides essential humanitarian relief through water and food programs for people facing poverty and disaster. In FY2024, the organization managed <cite id=\"3\">Total Revenue of $26,971,910</cite> to support victims of conflict and natural disasters globally. The charity operates with <cite id=\"1\">high fundraising efficiency, spending only $0.04 per $1 raised</cite> to secure operational funding. They maintain an overall <cite id=\"3\">Program expense ratio of 84.2%</cite>. When excluding noncash gifts-in-kind, the organization maintains a <cite id=\"3\">Cash-Adjusted Program expense ratio of 84.2%</cite>, which exceeds the 75% industry benchmark and demonstrates efficient deployment of financial gifts. Muslim Aid America is <cite id=\"2\">ZAKAT-ELIGIBLE</cite> and distributes funds according to traditional Islamic criteria across multiple <cite id=\"2\">asnaf categories including fuqara and masakin</cite>. Their work heavily focuses on emergency capacity building and relief efforts across Asia, Africa, and the Middle East.",
+      "summary": "Muslim Aid America provides relief programs focused on water, food, and disaster response. In FY2024, the charity managed <cite id=\"1\">$26,971,910 in total revenue</cite> to support victims of conflict, disease, and poverty across the Middle East, Asia, and Africa. The organization's filed <cite id=\"1\">Program Expense Ratio reached 93.7%</cite>. When excluding non-cash contributions, its cash-adjusted program ratio stands at 84%, which beats the 75% industry standard. The charity maintains low fundraising costs, spending only <cite id=\"1\">$0.04 per $1 raised</cite>. Muslim Aid America is <cite id=\"2\">ZAKAT-ELIGIBLE</cite> and distributes funds across recognized categories including support for the poor (fuqara) and needy (masakin). Non-cash contributions make up 62% of revenue, and the organization holds 2.1 months of working capital in reserve. Outcome tracking is documented through Candid, though the charity lacks a published theory of change.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

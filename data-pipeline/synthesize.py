@@ -1298,9 +1298,34 @@ def elected_program_expense_ratio(metrics: Any, financials: dict[str, Any]) -> f
     ratio it has no components either, and a standalone ratio is then the only
     thing known about how the money was split; dropping it collapses
     program-ratio scoring the way Al-Furqaan went 0.85 -> None -> impact 8/50.
+
+    Where the election positively REFUSED Charity Navigator's statement -- the
+    two sources naming one fiscal year and disagreeing about it -- the refusal
+    has to hold on this side too. extract_financials consults CN
+    independently, so 82-1670588 kept publishing CN's ratio of 1.0 after the
+    aggregator had already declined to put CN's $105,872 total on the page
+    beside ProPublica's $4,541,420. A ratio does not outlive its statement.
+
+    Holding both components and no ratio is a DECISION, not a gap: the
+    aggregator nulls every expense ratio when expenses exceed 3x revenue
+    (47-5015710, $2,539,788 spent against $510,635 of revenue), and the
+    fallback refilled it from Charity Navigator anyway. What extract_financials
+    may fill is an absence, never a refusal.
     """
     ratio = getattr(metrics, "program_expense_ratio", None)
-    return ratio if ratio is not None else financials.get("program_expense_ratio")
+    if ratio is not None:
+        return ratio
+
+    program = getattr(metrics, "program_expenses", None)
+    total = getattr(metrics, "total_expenses", None)
+    if program is not None and total:
+        return None
+
+    refused = any(
+        (d or {}).get("reason") == "same_fiscal_year_disagreement"
+        for d in (getattr(metrics, "financial_source_discrepancies", None) or [])
+    )
+    return None if refused else financials.get("program_expense_ratio")
 
 
 def realign_income_statement_attribution(

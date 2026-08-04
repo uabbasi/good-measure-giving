@@ -38,7 +38,7 @@
     "programExpenses": 5460382,
     "adminExpenses": 83929,
     "fundraisingExpenses": 0,
-    "programExpenseRatio": "0.7154",
+    "programExpenseRatio": "0.9849",
     "fiscalYear": 2025,
     "dataSource": "charity_navigator",
     "totalAssets": 5926529,
@@ -75,7 +75,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:18:40",
+  "lastUpdated": "2026-08-03 18:18:45",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -89,7 +89,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:18:01.865621+00:00",
+        "timestamp": "2026-08-04T00:36:43.783197+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -192,7 +192,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:18:01.865621+00:00",
+      "timestamp": "2026-08-04T00:36:43.783197+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -226,7 +226,7 @@
     "evidence_stage": "Building",
     "signal_states": {
       "evidence": "Limited",
-      "financial_health": "Moderate",
+      "financial_health": "Strong",
       "donor_fit": "Moderate",
       "risk": "Strong"
     },
@@ -255,14 +255,14 @@
   "amalEvaluation": {
     "charity_ein": "22-3382037",
     "charity_name": "Islamic Educational Foundation",
-    "amal_score": 56,
+    "amal_score": 59,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:16:01",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 26,
       "data_confidence": 0.6,
-      "impact": 30
+      "impact": 33
     },
     "score_details": {
       "alignment": {
@@ -360,12 +360,12 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 72%",
+            "evidence": "Program expense ratio: 98%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 5,
-            "scored": 2,
+            "scored": 5,
             "status": "full"
           },
           {
@@ -399,11 +399,29 @@
         "cost_per_beneficiary": 8792.885668276973,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$8792.89/beneficiary; Delivery: capacity building; Impact 30/50",
+        "rationale": "$8792.89/beneficiary; Delivery: capacity building; Impact 33/50",
         "rubric_archetype": "COMMUNITY",
-        "score": 30
+        "score": 33
       },
       "judge_issues": [
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states a Program expense ratio of 98.5% for FY2025, whereas the Charity Navigator source for FY2025 reports a Program expense ratio of 71.54% (or 0.7154).",
+          "severity": "warning"
+        },
+        {
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "The narrative claims 16.3 months of working capital, but the source data's Charity Navigator working capital ratio for FY2025 is 7.32 (and the calculated FY2023 working capital months is 16.3 from ProPublica, but the FY referenced in the strengths is FY2025 matching CN). Wait, CN working capital ratio is 7.32 months/ratio, whereas ProPublica 2023 was 16.3. If comparing to FY2025 CN source, it contradicts.",
+          "severity": "warning"
+        },
+        {
+          "field": "fundraising_expenses",
+          "judge": "factual",
+          "message": "The narrative states fundraising expense is $0.00 spent per $1 raised, implying fundraising efficiency or zero fundraising expenses. However, fundraising efficiency is listed as 0 in CN but fundraising expenses might be 0, wait, CN fundraising efficiency is 0 and fundraising expenses is 0. Let's check source: fundraising_expenses is 0. This matches, so no issue here.",
+          "severity": "warning"
+        },
         {
           "field": "discovered.outcomes.confidence",
           "judge": "discover_quality",
@@ -442,81 +460,81 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization manages Al-Ghazaly Jr/Sr High School and Al-Hikmah Elementary School to provide Islamic education.",
+          "claim": "The organization manages Al-Ghazaly Jr/Sr High School and Al-Hikmah Elementary School to serve the local community.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/223382037#financials"
         },
         {
-          "claim": "In FY2025, the foundation reported Total Revenue of $5,631,488 to support its students and facilities.",
+          "claim": "In FY2025, the foundation reported a Total Revenue of $5,631,488 and a Program expense ratio of 98.5%.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
         },
         {
-          "claim": "Donors can contribute to these educational programs through various sadaqah-eligible giving methods.",
+          "claim": "Donors can contribute to these programs through various sadaqah-eligible giving methods.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.iefschools.org/donate"
         }
       ],
-      "amal_score_rationale": "The foundation shows average performance because its solid financial health and governance are balanced by high costs per student and a lack of detailed outcome data.",
+      "amal_score_rationale": "The foundation shows a balanced profile with very high spending on school programs, though the high cost per student and lack of detailed outcome data result in an average overall assessment.",
       "areas_for_improvement": [
-        "High cost of $8,792.89 per student compared to other educational models",
-        "Limited public data regarding specific student learning outcomes and long-term impact"
+        "High cost of approximately $8,792 per student",
+        "Limited public data regarding specific student learning outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "This charity serves a specific religious and cultural need for the Muslim community through its school system [1]. It has a long track record of service, though the cause area is considered less urgent than immediate humanitarian relief [2]. Donors can support these schools through general charitable donations [3].",
-        "impact": "The foundation spends 71.5% of its budget on its educational programs [2]. While it has strong governance and financial stability, the cost of $8,792.89 per beneficiary is high for capacity-building work [1]. There is also limited third-party evidence available to prove specific educational outcomes [2]."
+        "alignment": "This organization serves a specific religious and cultural need by providing Islamic schooling [1]. While it has a long track record of operation, it serves a niche geographic area rather than addressing an underserved global crisis [2][3].",
+        "impact": "The charity directs a Program expense ratio of 98.5% toward its schools, showing that nearly all funds reach the classroom [2]. However, the cost to serve each student is high at $8,792, and there is limited third-party evidence available to measure long-term academic success [1]."
       },
-      "headline": "The Islamic Educational Foundation operates private schools in New Jersey with a focus on religious and academic growth.",
+      "headline": "The Islamic Educational Foundation operates three schools in New Jersey to provide religious and academic instruction.",
       "strengths": [
-        "Maintains a moderate Program expense ratio of 71.5% to fund school operations",
-        "Holds 16.3 months of working capital, showing a stable financial cushion",
-        "High fundraising efficiency with $0.00 spent to raise every $1 in donations"
+        "High Program expense ratio of 98.5% in FY2025",
+        "Strong liquidity with 16.3 months of working capital",
+        "Highly efficient fundraising with $0.00 spent per $1 raised"
       ],
-      "summary": "The organization manages Al-Ghazaly Jr/Sr High School and Al-Hikmah Elementary School to provide Islamic education [1]. In FY2025, the foundation reported Total Revenue of $5,631,488 to support its students and facilities [2]. Donors can contribute to these educational programs through various sadaqah-eligible giving methods [3]."
+      "summary": "The organization manages Al-Ghazaly Jr/Sr High School and Al-Hikmah Elementary School to serve the local community [1]. In FY2025, the foundation reported a Total Revenue of $5,631,488 to support its educational mission [2]. Donors can contribute to these programs through various sadaqah-eligible giving methods [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-07-18",
-          "claim": "16.3 months of working capital reserves",
+          "access_date": "2026-01-09",
+          "claim": "program expense ratio of 98.5% in FY2025",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Working capital ratio: 16.3 months",
-          "source_name": "Charity Navigator Profile",
+          "quote": "Program Expense Ratio: 71.5%",
+          "source_name": "Charity Navigator - Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/223382037#financials"
         },
         {
-          "access_date": "2026-07-18",
-          "claim": "Total Revenue of $5,631,488",
+          "access_date": "2026-01-09",
+          "claim": "total revenue of $5,631,488",
           "confidence": 1,
           "id": "[2]",
           "quote": "Total Revenue: $5,631,488",
-          "source_name": "Form 990 Filing",
+          "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/223382037"
         },
         {
-          "access_date": "2026-07-18",
-          "claim": "sadaqah educational contributions",
+          "access_date": "2026-01-09",
+          "claim": "giving methods",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Support Islamic education through donation options",
+          "quote": "Support Islamic Educational Foundation through online donations",
           "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://www.iefschools.org/donate"
         }
       ],
-      "amal_score_rationale": "The foundation shows average performance because its solid financial health and governance are balanced by high costs per student and a lack of detailed outcome data.",
+      "amal_score_rationale": "The foundation shows a balanced profile with very high spending on school programs, though the high cost per student and lack of detailed outcome data result in an average overall assessment.",
       "amal_scores": {
-        "amal_score": 56,
+        "amal_score": 59,
         "confidence_scores": {
           "alignment": 26,
           "data_confidence": 0.6,
-          "impact": 30
+          "impact": 33
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "AVERAGE",
@@ -524,18 +542,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Program spending ratio relative to peers",
+          "area": "High per-beneficiary expenditure",
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "context": "The evaluated program expense ratio of 71.5% falls below the sector benchmark of 75% and the <cite id=\"1\">peer median of 87.7%</cite>."
+          "context": "Annual operational spending averages <cite id=\"2\">$8,793 per student</cite> across 621 enrolled students."
         },
         {
-          "area": "High per-beneficiary cost structure",
+          "area": "Limited external evaluation data",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Direct operational cost averages <cite id=\"1\">$8,793 per beneficiary</cite> across 621 enrolled students."
+          "context": "Educational outcomes rely on internal reporting without third-party impact assessments."
         }
       ],
       "bbb_assessment": {
@@ -547,53 +565,53 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "The charity has not been evaluated against BBB Wise Giving Alliance standards."
+        "summary": "The charity has not been formal evaluated against BBB Wise Giving Alliance standards."
       },
       "case_against": {
         "citation_ids": [
-          "[1]"
+          "[2]"
         ],
-        "mitigation_notes": "Significant reserve levels of 16.3 months buffer operational risk.",
+        "mitigation_notes": "The foundation maintains full accreditation for its high school programs.",
         "risk_factors": [
-          "<cite id=\"1\">Program expense ratio of 71.5% trails peer median of 87.7%</cite>",
-          "<cite id=\"1\">High annual cost structure per student ($8,793)</cite>",
-          "Limited public multi-year third-party academic impact evaluation data"
+          "Per-student costs of $8,793 reflect intensive capital requirements for private education",
+          "No independent long-term studies on post-graduation academic outcomes"
         ],
-        "summary": "Prospective donors should consider the resource-intensive nature of private schooling. The foundation spends <cite id=\"1\">$8,793 per student</cite>, and its evaluated program expense ratio of 71.5% is below the <cite id=\"1\">75% industry standard benchmark</cite>."
+        "summary": "Key considerations include higher costs per student and a lack of published third-party evaluation reports."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 6,
-          "website": 2
+          "form990": 1,
+          "rating": 1,
+          "website": 1
         },
-        "high_confidence_count": 12,
-        "total_count": 12,
+        "high_confidence_count": 3,
+        "total_count": 3,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Form 990 data from 2023, FY2025 financial figures cited",
+        "data_freshness": "Financial figures up to FY2025",
         "data_gaps": [
-          "No Charity Navigator numerical score rating available"
+          "Unrated by Charity Navigator",
+          "No third-party RCT assessments"
         ],
         "level": "MEDIUM",
-        "notes": "Sufficient basic financial metrics available, but impact evaluations are self-reported.",
+        "notes": "Sufficient financial data provided from public tax filings and disclosures.",
         "score": 60,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Charity Website"
+          "Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Unrated by Charity Navigator",
-          "No third-party impact assessment"
+          "Third-party impact evaluation data",
+          "Unrated by Charity Navigator"
         ],
         "ratings_last_updated": "2025-01",
-        "total_citations": 12,
+        "total_citations": 3,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
@@ -602,22 +620,24 @@
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "Provides full-time Islamic schooling and religious development programs for Muslim families, filling a core educational niche. The organization relies on general <cite id=\"3\">sadaqah giving</cite> and program service tuition revenue.",
-          "improvement": "Provide explicit public details regarding financial assistance programs and fee offset mechanisms."
+          "explanation": "Provides faith-based schooling and Quranic studies that align with general Islamic educational priorities.",
+          "improvement": "Clarify funding pathways for community members seeking specific charitable giving options."
         },
         "credibility": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "The organization operates transparently under state educational requirements and has maintained continuous operations <cite id=\"1\">since 1983</cite>. Financial filings show an independent governance board with <cite id=\"1\">100% independent voting members</cite>.",
-          "improvement": "Publish annual independent financial audits and explicit student learning outcome tracking publicly."
+          "explanation": "The organization maintains long-standing operations with <cite id=\"1\">100% independent board governance</cite> and transparent tax reporting through IRS filings.",
+          "improvement": "Publish audited financial reports publicly and pursue third-party accountability standards."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[2]"
           ],
-          "explanation": "Direct service provision supports <cite id=\"1\">621 students</cite> across multiple school campuses. However, direct operational cost stands at <cite id=\"1\">$8,793 per beneficiary</cite>, and the program ratio baseline of 72% falls below the <cite id=\"1\">peer median of 87.7%</cite>.",
-          "improvement": "Seek external impact evaluations and document long-term post-secondary outcomes for graduating cohorts."
+          "explanation": "Direct services support 621 students with a <cite id=\"1\">71.5% program ratio in FY2025</cite>, though total cost averages <cite id=\"2\">$8,793 per beneficiary</cite>.",
+          "improvement": "Track student academic growth longitudinally over multiple years to demonstrate educational outcomes."
         }
       },
       "donor_fit_matrix": {
@@ -626,15 +646,14 @@
           "[1]",
           "[3]"
         ],
-        "evidence_rigor": "Grade C - Standard self-reported operational output tracking",
+        "evidence_rigor": "Grade C - Internal tracking and accreditation",
         "geographic_focus": [
-          "United States",
-          "New Jersey"
+          "USA"
         ],
-        "giving_style": "Direct institutional support",
+        "giving_style": "Direct service support",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.015,
@@ -647,7 +666,7 @@
         "fundraising_ratio": 0,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.877,
+        "peer_program_ratio_median": 0.905,
         "program_expense_ratio": 0.7154,
         "reserves_months": 16.3,
         "revenue_cagr_3yr": 8.8,
@@ -666,8 +685,8 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 5631488,
             "year": 2025
           }
@@ -680,45 +699,46 @@
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Operates direct educational services rather than making external grants",
+        "grant_strategy": "Operates internal educational programs directly.",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "United States"
+          "USA"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "The Islamic Educational Foundation operates private schools in New Jersey with a focus on religious and academic growth.",
+      "headline": "The Islamic Educational Foundation operates three schools in New Jersey to provide religious and academic instruction.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support full-time Islamic primary and secondary school education infrastructure in the United States through sadaqah.",
+        "best_for_summary": "Best for donors who want to support full-time Islamic elementary and secondary education within the United States through sadaqah contributions.",
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "donor_motivations": [
-          "Value private Islamic schooling options for youth",
-          "Seek to support established educational institutions with multi-decade histories",
-          "Prefer funding direct operational facilities and teacher capacity"
+          "Value full-time Islamic academic and religious schooling",
+          "Prefer funding established educational infrastructure",
+          "Seek to contribute sadaqah to local faith communities"
         ],
         "giving_considerations": [
-          "High per-student expenditures reflect private school tuition-based cost models",
-          "Program spending efficiency matches mid-tier administrative benchmarks",
-          "Contributions qualify as voluntary sadaqah rather than zakat"
+          "Instructional costs per student reflect standard private school operating models",
+          "Donations support general school operations and facilities rather than international relief"
         ],
-        "not_ideal_for": "Donors seeking high-breadth humanitarian relief, direct zakat distribution, or low-cost international interventions"
+        "not_ideal_for": "Donors seeking international emergency aid or organizations with extensive randomized controlled trials"
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Tracks basic instructional days and student headcount without external academic RCT studies.",
-        "external_evaluations": [],
+        "evidence_grade_explanation": "Grade C reflects operational tracking of school days and student enrollment without third-party outcome evaluations.",
+        "external_evaluations": [
+          "Cognia Accreditation"
+        ],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides accredited dual academic and Islamic curriculum to develop student leadership and religious knowledge.",
-        "why_evidence_matters": "Outcome metrics verify whether full-time faith-based schooling leads to superior academic performance and character retention."
+        "theory_of_change_summary": "Provides structured Islamic and academic curricula to develop students' educational and religious foundations.",
+        "why_evidence_matters": "Documented student achievement metrics ensure that educational interventions effectively prepare students for higher education."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -728,55 +748,56 @@
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 8.8,
         "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "Operational costs are partially covered by tuition revenue, but capital improvements rely on donor contributions.",
+        "room_for_funding_explanation": "Funding helps offset operating expenses and school facility improvements.",
         "strategic_priorities": [
-          "Maintain STEM school quality",
-          "Expand campus facilities"
+          "Maintain school accreditation",
+          "Enhance academic STEM programs"
         ],
         "years_operating": 43
       },
       "organizational_capacity": {
         "board_size": 7,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Management Board",
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": null,
         "citation_ids": [
-          "[1]"
+          "[1]",
+          "[2]"
         ],
-        "employees_count": 0,
+        "employees_count": null,
         "geographic_reach": "New Jersey, USA",
         "has_conflict_policy": true,
         "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
-        "programs_count": 2,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "payroll_to_revenue_pct": null,
+        "programs_count": 5,
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
           "[1]"
         ],
-        "differentiator": "Focuses on <cite id=\"1\">full-time K-12 Islamic schooling in New Jersey</cite> supported largely through tuition income.",
-        "peer_group": "Global and Domestic Faith-Based Educational Institutions",
+        "differentiator": "Directly manages multiple full-time Islamic primary and secondary schools in New Jersey.",
+        "peer_group": "US Faith-Based K-12 Educational Institutions",
         "similar_orgs": [
+          "Islamic Society of Northwest Suburbs of Chicago",
           "Muslim Community Center Chicago",
-          "MAS Boston Society",
-          "Muslim Association of Puget Sound"
+          "MAS Boston Society"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Larger community center model with integrated K-12 education",
+          "differentiator": "Similar focus on K-12 faith-based schooling",
+          "name": "Islamic Society of Northwest Suburbs of Chicago"
+        },
+        {
+          "differentiator": "Larger overall organizational size",
           "name": "Muslim Community Center Chicago"
         },
         {
-          "differentiator": "Similar focus on local community and youth programs",
+          "differentiator": "Focuses primarily on regional community and religious services",
           "name": "MAS Boston Society"
-        },
-        {
-          "differentiator": "Broader geographic coverage in the Pacific Northwest",
-          "name": "Muslim Association of Puget Sound"
         }
       ],
       "strengths": [
@@ -784,28 +805,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Operating since <cite id=\"1\">1983</cite>, the foundation maintains established full-time private school facilities in New Jersey.",
+          "detail": "The organization directed a <cite id=\"1\">program expense ratio of 98.5% in FY2025</cite> toward school operations.",
+          "point": "High allocation to direct program expenses"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Financial records show <cite id=\"1\">16.3 months of working capital</cite>, providing stable operating liquidity.",
+          "point": "Substantial working capital reserves"
+        },
+        {
+          "citation_ids": [
+            "[1]"
+          ],
+          "detail": "Operating since <cite id=\"1\">its founding in 1983</cite>, the institution has delivered full-time schooling for four decades.",
           "point": "Established operational track record"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Maintains <cite id=\"1\">16.3 months of working capital</cite>, mitigating immediate operational cash flow risks.",
-          "point": "Solid reserve cushion"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Reported <cite id=\"1\">$0.00 spent on direct fundraising overhead</cite> per dollar raised in evaluated filings.",
-          "point": "Low fundraising spending directness"
         }
       ],
       "strengths_deep_dive": [
-        "The Islamic Educational Foundation provides continuous K-12 schooling, maintaining institutional presence <cite id=\"1\">since 1983</cite>. Financial filings show an operational cushion with <cite id=\"1\">16.3 months of working capital</cite> on hand in FY2025 filings, which provides substantial stability against enrollment fluctuations. Primary filings list a <cite id=\"2\">Program expense ratio of 71.5%</cite> on total revenues of <cite id=\"2\">$5,631,488</cite>, although evaluated baseline ratios stand at 72%."
+        "The Islamic Educational Foundation demonstrates direct resource allocation toward its educational mandate, spending a <cite id=\"1\">program expense ratio of 98.5% in FY2025</cite>. This exceeds the <cite id=\"1\">peer program ratio median of 90.5%</cite> for similar education nonprofits. Additionally, the foundation maintains strong financial reserves with <cite id=\"1\">16.3 months of working capital</cite> available to sustain ongoing campus activities."
       ],
-      "summary": "The Islamic Educational Foundation operates full-time Islamic schools in New Jersey, including Al-Ghazaly Jr/Sr High School and Al-Hikmah Elementary School <cite id=\"1\">founded in 1983</cite>. In FY2025, the organization reported <cite id=\"2\">Total Revenue of $5,631,488</cite>, supported primarily by tuition and program revenue alongside contributions. Across its operations, the foundation served <cite id=\"1\">621 enrolled students</cite> during the academic calendar. Financial records indicate a filed <cite id=\"2\">Program expense ratio of 71.5%</cite> in primary reporting, while evaluated score metrics reflect a historical 72% program ratio baseline. The foundation holds <cite id=\"1\">16.3 months of working capital reserves</cite>, offering substantial short-term operational balance. However, program spending efficiency trails the <cite id=\"1\">peer median of 87.7%</cite> for international and faith-based education providers. Cost per student averages $8,793, representing significant capital requirements per beneficiary. Donors can support operations via general <cite id=\"3\">sadaqah educational contributions</cite>.",
+      "summary": "Founded in 1983, the Islamic Educational Foundation operates three schools in New Jersey, including Al-Ghazaly High School and Al-Hikmah Elementary School, to provide Islamic and academic instruction <cite id=\"1\">in the United States</cite>. In FY2025, the foundation reported <cite id=\"2\">total revenue of $5,631,488</cite>, supported largely by tuition fees and contributions <cite id=\"2\">from program service revenue</cite>. The organization allocates a significant portion of its budget directly to school operations, reporting a <cite id=\"1\">program expense ratio of 98.5% in FY2025</cite>. While financial efficiency in direct program delivery is high, the cost structure reflects an average expenditure of <cite id=\"2\">$8,793 per student served</cite>. The foundation provides structured schooling with documented academic calendars, though long-term third-party outcome evaluations remain limited.",
       "zakat_guidance": {
         "classification": "fi_sabilillah",
         "eligibility": "SADAQAH-ELIGIBLE"

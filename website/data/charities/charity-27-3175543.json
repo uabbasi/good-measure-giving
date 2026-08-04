@@ -49,7 +49,7 @@
     "programExpenses": 146501155,
     "adminExpenses": 1086478,
     "fundraisingExpenses": 2751868,
-    "programExpenseRatio": "0.9648",
+    "programExpenseRatio": "0.9745",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 2546893,
@@ -103,7 +103,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:14:00",
+  "lastUpdated": "2026-08-03 17:49:01",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -115,10 +115,10 @@
       "method": "direct",
       "semantics": {
         "category": "annual_people_served",
-        "confident": true,
+        "confident": false,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:13:19.406939+00:00",
-        "verified": true
+        "timestamp": "2026-08-04T00:34:50.630267+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -449,24 +449,10 @@
   "form990ExemptReason": "",
   "noFilings": false,
   "donationUrl": "https://umrelief.org/donate-now/",
-  "beneficiariesServedAnnually": 19700000,
-  "beneficiariesSource": {
-    "method": "direct",
-    "semantics": {
-      "category": "annual_people_served",
-      "confident": true,
-      "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:13:19.406939+00:00",
-      "verified": true
-    },
-    "source_name": "Charity Website",
-    "source_path": "website_profile.beneficiaries_served",
-    "source_url": "https://umrelief.org/wp-content/uploads/2025/02/UMR-2023-Audited-Financial-Statements.pdf",
-    "timestamp": "2026-07-23T13:09:26",
-    "value": 19700000
-  },
-  "beneficiariesConfidence": "cited",
-  "beneficiariesExcludedFromScoring": false,
+  "beneficiariesServedAnnually": null,
+  "beneficiariesSource": null,
+  "beneficiariesConfidence": "needs_review",
+  "beneficiariesExcludedFromScoring": true,
   "evidenceQuality": {
     "hasOutcomeMethodology": 1,
     "hasMultiYearMetrics": 1,
@@ -781,94 +767,94 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization maintains an overall rating of 94.5/100 and has 0.3 months of working capital.",
+          "claim": "The organization maintains an overall rating of 94.5/100 from Charity Navigator and has low working capital.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
         },
         {
-          "claim": "The organization is zakat-eligible and follows Islamic giving policies.",
+          "claim": "The organization is zakat-eligible and focuses on building resilience in marginalized populations.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://umrelief.org/zakat"
         },
         {
-          "claim": "In FY2024, the charity had Total Revenue of $149,888,609, a fundraising efficiency of $0.05 per $1 raised, and a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 47.5%.",
+          "claim": "In FY2024, United Muslim Relief managed $149,888,609 in total revenue and spent $0.05 to raise every $1.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
         },
         {
-          "claim": "The charity focuses on Islamic giving and zakat policy.",
+          "claim": "The charity aligns with Islamic giving principles and zakat policy.",
           "id": "[4]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.umrelief.org/zakat-and-sadaqah"
         },
         {
-          "claim": "The charity serves beneficiaries at a cost of approximately $7.44 per person.",
+          "claim": "The charity reaches many people at a low cost of $7.44 per beneficiary and provides meals and medical care.",
           "id": "[5]",
           "source_name": "Annual Report (2024)",
           "source_url": "https://www.umrelief.org/wp-content/uploads/2025/10/UMR-Annual-Report-2024.pdf"
         },
         {
-          "claim": "The organization operates programs for relief and development.",
+          "claim": "The organization has a documented track record of program outcomes.",
           "id": "[6]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.umrelief.org/wp-content/uploads/2025/07/UMR-2024-Audited-Financial-Statements.pdf"
         },
         {
-          "claim": "The charity relies heavily on non-cash contributions for its revenue.",
+          "claim": "The charity relies heavily on non-cash gifts-in-kind for its total revenue.",
           "id": "[8]",
           "source_name": "Document (PDF)",
           "source_url": "https://www.umrelief.org/wp-content/uploads/2025/07/UMRD_2024_Audited_Financial_Statements.pdf"
         }
       ],
-      "amal_score_rationale": "This charity is an above-average choice because it delivers services at a very low cost per person, though its low cash spending on programs and thin financial reserves are notable concerns.",
+      "amal_score_rationale": "This charity is an above-average choice for donors because it delivers aid at a very low cost per person and maintains high fundraising efficiency. However, its low cash-spending ratio on programs and very thin financial reserves are notable concerns.",
       "areas_for_improvement": [
-        "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) is 47.5%, meaning less than half of cash spending goes to programs [3]",
+        "The Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) is 47.5%, meaning less than half of cash spending goes to programs [3]",
         "Critically low working capital of only 0.3 months creates financial risk [1]",
         "Heavy reliance on non-cash gifts-in-kind for total revenue [8]"
       ],
       "dimension_explanations": {
-        "alignment": "The organization has a strong track record in humanitarian aid and fits the needs of Muslim donors by following strict zakat guidelines [2][4]. It focuses on urgent needs like food and healthcare in underserved areas [5][6].",
-        "impact": "The charity is effective at reaching many people, spending about $7.44 per beneficiary [5]. However, its financial health is weakened by a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 47.5% and very low cash reserves of 0.3 months [1][3]."
+        "alignment": "United Muslim Relief has a high fit for Muslim donors as it is zakat-eligible and serves urgent humanitarian needs [2][4]. It has a documented track record of providing meals, medical care, and education to those in need [5][6].",
+        "impact": "The charity reaches many people at a low cost of $7.44 per beneficiary [5]. While it shows strong evidence of program outcomes, its financial health is weakened by a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 47.5% and very low cash reserves [1][3]."
       },
       "headline": "United Muslim Relief provides low-cost humanitarian aid to underserved communities through zakat-eligible programs.",
       "strengths": [
-        "High fundraising efficiency with a cost of only $0.05 per $1 raised [3]",
+        "High fundraising efficiency with only $0.05 spent to raise every $1 [3]",
         "Low cost per beneficiary at approximately $7.44 [5]",
-        "Strong alignment with Muslim donor priorities through verified zakat programs [2]"
+        "Strong alignment with Muslim donor values through verified zakat programs [2]"
       ],
-      "summary": "In FY2024, United Muslim Relief reported Total Revenue of $149,888,609 to support its global relief efforts [3]. The organization is ZAKAT-ELIGIBLE and focuses on building resilience in marginalized populations through food aid and village development [2][4]. It maintains an overall rating of 94.5/100 from Charity Navigator [1]."
+      "summary": "In FY2024, United Muslim Relief managed $149,888,609 in total revenue to support global health and food security [3]. The organization is zakat-eligible and focuses on building resilience in marginalized populations [2][4]. It maintains an overall rating of 94.5/100 from Charity Navigator [1]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "a 94.5/100 overall score from Charity Navigator",
+          "claim": "overall score of 94.5/100 from Charity Navigator",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score 94.5 out of 100",
-          "source_name": "Charity Navigator Rating",
+          "quote": "Overall Score 94.5",
+          "source_name": "Charity Navigator - Ratings",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/273175543#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "verified Zakat eligibility",
-          "confidence": 0.95,
+          "claim": "verified zakat-eligible programs",
+          "confidence": 0.9,
           "id": "[2]",
-          "quote": "Calculated and distributed according to Islamic guidelines",
-          "source_name": "United Muslim Relief - Zakat",
+          "quote": "Zakat eligible programs",
+          "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://umrelief.org/zakat"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $149,888,609",
+          "claim": "$149,888,609 in total revenue",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue $149,888,609",
+          "quote": "Total Revenue: $149,888,609",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/273175543"
@@ -878,29 +864,29 @@
           "claim": "zakat eligibility, zakat policy",
           "confidence": 0.9,
           "id": "[4]",
-          "quote": "Providing relief through zakat and sadaqah projects",
-          "source_name": "United Muslim Relief - Zakat Policy",
+          "quote": "Zakat and Sadaqah distributions",
+          "source_name": "Charity Website - Zakat and Sadaqah",
           "source_type": "website",
           "source_url": "https://www.umrelief.org/zakat-and-sadaqah"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "served 11,000,000 meals",
-          "confidence": 0.95,
+          "claim": "cost per beneficiary of approximately $7.44",
+          "confidence": 0.85,
           "id": "[5]",
-          "quote": "Meals served: 11,000,000",
+          "quote": "Annual Report outcomes",
           "source_name": "Annual Report (2024)",
-          "source_type": "evaluation",
+          "source_type": "website",
           "source_url": "https://www.umrelief.org/wp-content/uploads/2025/10/UMR-Annual-Report-2024.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "audited financial statement",
+          "claim": "audited financial statements",
           "confidence": 0.95,
           "id": "[8]",
-          "quote": "Independent Auditor's Report",
-          "source_name": "Audited Financial Statements 2024",
-          "source_type": "evaluation",
+          "quote": "Audited Financial Statements",
+          "source_name": "Document (PDF)",
+          "source_type": "website",
           "source_url": "https://www.umrelief.org/wp-content/uploads/2025/07/UMRD_2024_Audited_Financial_Statements.pdf"
         },
         {
@@ -908,13 +894,13 @@
           "claim": "meets all 20 BBB Wise Giving Alliance Standards",
           "confidence": 0.95,
           "id": "[11]",
-          "quote": "Meets all 20 Standards for Charity Accountability",
-          "source_name": "BBB Wise Giving Alliance Review",
+          "quote": "Meets All 20 Standards",
+          "source_name": "BBB Wise Giving Alliance",
           "source_type": "rating",
           "source_url": "https://give.org/charity-reviews/relief-development/united-methodist-committee-on-relief-in-atlanta-ga-9999-3320"
         }
       ],
-      "amal_score_rationale": "This charity is an above-average choice because it delivers services at a very low cost per person, though its low cash spending on programs and thin financial reserves are notable concerns.",
+      "amal_score_rationale": "This charity is an above-average choice for donors because it delivers aid at a very low cost per person and maintains high fundraising efficiency. However, its low cash-spending ratio on programs and very thin financial reserves are notable concerns.",
       "amal_scores": {
         "amal_score": 65,
         "confidence_scores": {
@@ -928,18 +914,18 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Cash-Adjusted Program Ratio Gap",
+          "area": "Low Cash-Adjusted Program Expense Ratio",
           "citation_ids": [
             "[3]"
           ],
-          "context": "While total revenue includes non-cash items, the <cite id=\"3\">cash-adjusted program ratio is 48%</cite>, which falls below the 75% industry benchmark."
+          "context": "While total filed expense ratios appear high due to non-cash items, the <cite id=\"3\">cash-adjusted program ratio is 48%</cite>, below the 75% industry standard."
         },
         {
-          "area": "Critically Low Working Capital",
+          "area": "Limited Working Capital Reserves",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Operating reserves cover only <cite id=\"1\">0.2 months of expenses</cite>, exposing the organization to potential financial disruption during cash flow dips."
+          "context": "The organization maintains <cite id=\"1\">0.3 months of operating reserves</cite>, creating potential continuity risks during funding disruptions."
         }
       ],
       "bbb_assessment": {
@@ -954,44 +940,42 @@
         "review_url": "https://give.org/charity-reviews/relief-development/united-methodist-committee-on-relief-in-atlanta-ga-9999-3320",
         "standards_met": 20,
         "standards_not_met": [],
-        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability."
+        "summary": "Meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability"
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "mitigation_notes": "The charity maintains extremely lean fundraising costs ($0.05 per $1 raised) and holds a 20/20 standard rating from the BBB.",
+        "mitigation_notes": "The organization continues to secure substantial non-cash medical supplies to maintain large-scale health operations.",
         "risk_factors": [
-          "<cite id=\"3\">Cash-adjusted program expense ratio of 47.5% is below the 75% benchmark</cite>",
-          "<cite id=\"1\">Reserves cover only 0.3 months of working capital</cite>",
-          "<cite id=\"3\">High dependency on non-cash gifts-in-kind</cite>"
+          "<cite id=\"3\">Cash-adjusted program expense ratio of 47.5% falls below the 75% benchmark</cite>",
+          "<cite id=\"1\">Working capital reserves cover only 0.3 months of operations</cite>"
         ],
-        "summary": "The main operational risks stem from financial balance structure: <cite id=\"3\">cash-adjusted program spending is 48%</cite> and operating reserves are exceptionally low."
+        "summary": "Primary considerations include financial reliance on non-cash items and low cash reserves. While total filings show high efficiency, the cash-adjusted program ratio is 48%. Operating reserves cover only 0.3 months of expenses."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 2,
           "form990": 1,
           "rating": 2,
-          "website": 2
+          "website": 4
         },
-        "high_confidence_count": 11,
-        "total_count": 11,
+        "high_confidence_count": 7,
+        "total_count": 7,
         "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial filings updated to FY2024",
+        "data_freshness": "Data spans FY2023 Form 990 and FY2024 filings",
         "data_gaps": [
-          "High reliance on non-cash contribution accounting"
+          "Recent complete cash vs in-kind breakdown details"
         ],
         "level": "HIGH",
-        "notes": "Verified source consistency across multiple rating portals.",
+        "notes": "Strong third-party rating presence combined with official filings.",
         "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "BBB Review",
+          "BBB Wise Giving Alliance",
           "Annual Report"
         ]
       },
@@ -999,7 +983,7 @@
         "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "High non-cash contribution share requires granular cash flow disclosure"
+          "Detailed cash vs in-kind breakdown on recent filings"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 11,
@@ -1012,25 +996,25 @@
             "[2]",
             "[4]"
           ],
-          "explanation": "The charity provides an excellent fit for faith-conscious donors through <cite id=\"2\">verified Zakat-eligible programs</cite> supporting underserved populations across Muslim-majority regions.",
-          "improvement": "The charity can enhance alignment by <cite id=\"4\">documenting a clear, formal theory of change</cite> for its global interventions."
+          "explanation": "Maintains exceptional alignment with Muslim donors through <cite id=\"2\">verified zakat eligibility</cite> serving fuqara and masakin in crisis zones.",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
             "[1]",
-            "[3]",
-            "[8]"
+            "[8]",
+            "[11]"
           ],
-          "explanation": "United Muslim Relief maintains an <cite id=\"1\">overall score of 94.5/100 from Charity Navigator</cite> and holds a <cite id=\"3\">Gold Seal of Transparency</cite>. Independent governance is demonstrated through an <cite id=\"8\">audited financial statement</cite> and compliance with accountability practices.",
-          "improvement": "The charity could strengthen board governance by expanding its independent board membership beyond the current <cite id=\"1\">4 members</cite>."
+          "explanation": "Donors can verify governance standards through an <cite id=\"1\">overall score of 94.5/100 from Charity Navigator</cite> and compliance with <cite id=\"11\">all 20 BBB Wise Giving Alliance Standards</cite>. Financial filings are backed by <cite id=\"8\">audited financial statements</cite>.",
+          "improvement": "To strengthen credibility further, the charity could expand its board size beyond 4 members to enhance independent oversight."
         },
         "impact": {
           "citation_ids": [
             "[3]",
             "[5]"
           ],
-          "explanation": "Operations achieve strong cost-efficiency with a cost of <cite id=\"5\">$7.44 per beneficiary</cite>. However, when excluding non-cash donations, the <cite id=\"3\">cash-adjusted program ratio is 48%</cite>, which is below the 75% sector benchmark.",
-          "improvement": "To improve impact ratings, the charity should <cite id=\"3\">increase operating reserves from 0.2 months</cite> toward the standard 3-month threshold to ensure program continuity."
+          "explanation": "Direct service delivery keeps unit costs low at <cite id=\"5\">$7.44 per beneficiary</cite>. However, when excluding non-cash items, the cash-adjusted program ratio is 48%, which falls below the 75% benchmark.",
+          "improvement": "To strengthen impact metrics, the organization should increase cash allocation to direct program activities and build operating reserves."
         }
       },
       "donor_fit_matrix": {
@@ -1039,20 +1023,19 @@
           "[2]",
           "[5]"
         ],
-        "evidence_rigor": "Grade C - Output tracking and verified outcome reporting",
+        "evidence_rigor": "Grade C - Internal outcome tracking and annual reporting",
         "geographic_focus": [
-          "Kenya",
-          "Jordan",
-          "Lebanon",
           "Palestine",
+          "Lebanon",
+          "Kenya",
           "Pakistan"
         ],
-        "giving_style": "Direct service and emergency relief",
+        "giving_style": "Direct humanitarian service",
         "tax_deductible": true,
         "zakat_asnaf_served": [
-          "fuqara (poor)",
-          "masakin (needy)",
-          "gharimin (debtors)"
+          "fuqara",
+          "masakin",
+          "gharimin"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -1068,16 +1051,16 @@
         "fundraising_ratio": 0.006,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.874,
+        "peer_program_ratio_median": 0.877,
         "program_expense_ratio": 0.9648,
-        "reserves_months": 0.2,
+        "reserves_months": 0.3,
         "revenue_cagr_3yr": 191.2,
         "transparency_score": 85,
         "working_capital_months": 0.3,
         "yearly_financials": [
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 149888609,
             "year": 2024
           },
@@ -1102,13 +1085,10 @@
         "domestic_grants": 485850,
         "foreign_grants": 5504329,
         "grant_count": 22,
-        "grant_strategy": "Distributes targeted foreign grants to local implementing partners in acute crisis regions",
+        "grant_strategy": "Distributes targeted foreign grants to support local health and relief partners",
         "is_significant_grantmaker": true,
         "regions_served": [
-          "Kenya",
-          "Jordan",
-          "Lebanon",
-          "Palestine"
+          "International crisis zones"
         ],
         "top_recipients": [
           "Zakat Foundation of America ($72.6K)",
@@ -1118,37 +1098,40 @@
       },
       "headline": "United Muslim Relief provides low-cost humanitarian aid to underserved communities through zakat-eligible programs.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support large-scale, Zakat-eligible emergency health and food aid relief with low direct fundraising overhead.",
+        "best_for_summary": "Best for donors seeking to fulfill zakat obligations through an established global health organization that leverages medical in-kind gifts to expand service scale.",
         "citation_ids": [
           "[1]",
           "[2]",
           "[3]"
         ],
         "donor_motivations": [
-          "Fulfill Zakat obligations through established humanitarian channels",
-          "Support rapid direct aid interventions in global crisis zones",
-          "Maximize beneficiary reach per dollar spent on immediate basic needs"
+          "Want to fulfill zakat duties with an established international NGO",
+          "Care about low per-beneficiary delivery costs in medical and humanitarian aid",
+          "Value third-party accountability marks like Charity Navigator ratings"
         ],
         "giving_considerations": [
           "A significant portion of total revenue consists of non-cash gifts-in-kind",
-          "Cash operating reserves are thin, representing 0.2 months of budget"
+          "Cash spending on direct programs is lower than gross financial figures suggest",
+          "Low financial reserves mean the charity operates with thin emergency buffers"
         ],
-        "not_ideal_for": "Donors who require high cash-to-program spending ratios or those seeking long-term endowment building."
+        "not_ideal_for": "Donors who prefer charities with high cash-only program expense ratios or multi-year cash reserves"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[5]"
+          "[5]",
+          "[11]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates documented operational outputs and verified beneficiary numbers without formal academic randomized controlled trials.",
+        "evidence_grade_explanation": "Grade C indicates documented annual outputs and internal outcome metrics without third-party randomized controlled trials.",
         "external_evaluations": [
-          "Candid Gold Transparency outcome records"
+          "Candid Outcome Reporting",
+          "BBB Governance Review"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "United Muslim Relief delivers direct medical, food, and development assistance to vulnerable global populations to build community resilience.",
-        "why_evidence_matters": "Clear outcome tracking confirms that aid reaches targeted recipients effectively in high-risk crisis environments."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "UMR delivers direct medical aid, health services, and essential supplies to vulnerable populations to build community resilience.",
+        "why_evidence_matters": "Outcome tracking verifies whether health interventions produce lasting reductions in morbidity and community vulnerability."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -1159,11 +1142,10 @@
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 191.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Given the low operating reserves and rising demand for humanitarian aid, the charity can absorb additional funds immediately into direct relief.",
+        "room_for_funding_explanation": "Expanding demand for emergency health services and thin cash reserves provide ample room for additional cash funding.",
         "strategic_priorities": [
-          "Expand healthcare access",
-          "Improve WASH infrastructure",
-          "Strengthen emergency response"
+          "Expand health program reach",
+          "Strengthen organizational cash reserves"
         ],
         "years_operating": 13
       },
@@ -1171,7 +1153,7 @@
         "board_size": 4,
         "ceo_compensation": 500357,
         "ceo_compensation_pct_revenue": 0.33,
-        "ceo_name": "Executive Director",
+        "ceo_name": "Executive Leadership",
         "citation_ids": [
           "[1]",
           "[3]",
@@ -1185,14 +1167,14 @@
         "payroll_to_revenue_pct": 1.2,
         "programs_count": 5,
         "staff_per_million_revenue": 0.3,
-        "volunteers_count": 1000
+        "volunteers_count": 200
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[2]"
         ],
-        "differentiator": "United Muslim Relief stands out for its high volume of direct beneficiary reach and <cite id=\"1\">exceptionally low fundraising costs of $0.05 per dollar</cite>.",
-        "peer_group": "Global Health & Humanitarian Organizations",
+        "differentiator": "Combines extensive medical gift-in-kind distribution with <cite id=\"2\">zakat-compliant relief programs</cite>.",
+        "peer_group": "Global Health & Humanitarian Relief",
         "similar_orgs": [
           "Action Against Hunger USA",
           "CARE USA",
@@ -1201,45 +1183,47 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar global relief focus with higher institutional research base",
+          "differentiator": "Focuses heavily on nutrition and WASH programs globally",
           "name": "Action Against Hunger USA"
         },
         {
-          "differentiator": "Broader global network with larger domestic advocacy footprint",
+          "differentiator": "Operates larger broad-based development networks",
           "name": "CARE USA"
         },
         {
-          "differentiator": "Similar faith-aligned international relief delivery",
+          "differentiator": "Focuses on direct zakat distribution and disaster relief",
           "name": "Baitulmaal, Inc."
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[11]"
           ],
-          "detail": "In FY2024, the organization demonstrated remarkable fundraising efficiency, spending <cite id=\"1\">only $0.02 to raise every $1 in donations</cite>.",
-          "point": "High Fundraising Efficiency"
+          "detail": "Earned an <cite id=\"1\">overall score of 94.5/100 from Charity Navigator</cite> and <cite id=\"11\">meets all 20 BBB Wise Giving Alliance Standards</cite>.",
+          "point": "Strong Third-Party Accountability Ratings"
         },
         {
           "citation_ids": [
             "[5]"
           ],
-          "detail": "Direct delivery models allow the organization to achieve an exceptionally low reach cost of <cite id=\"5\">approximately $7.44 per beneficiary</cite>.",
-          "point": "Low Cost Per Beneficiary"
+          "detail": "Achieves direct service delivery at an estimated <cite id=\"5\">cost per beneficiary of approximately $7.44</cite> across its relief programs.",
+          "point": "Low Unit Cost Delivery"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[2]",
+            "[4]"
           ],
-          "detail": "Programs maintain <cite id=\"2\">verified Zakat eligibility</cite> across traditional categories like fuqara and masakin, offering confidence to Muslim donors.",
-          "point": "Verified Zakat Program Alignment"
+          "detail": "Maintains <cite id=\"2\">verified zakat-eligible programming</cite> serving recognized Islamic distribution categories globally.",
+          "point": "High Zakat Alignment"
         }
       ],
       "strengths_deep_dive": [
-        "United Muslim Relief demonstrates high operational scale, expanding its financial baseline to <cite id=\"3\">$149,888,609 in FY2024 revenue</cite>. This rapid expansion is backed by <cite id=\"11\">full compliance with all 20 BBB Wise Giving Alliance Standards</cite> and a <cite id=\"1\">94.5/100 rating from Charity Navigator</cite>. Programs are structured around direct aid delivery, allowing the charity to provide essential medical care to <cite id=\"5\">118,908 patients</cite> and reach underserved communities efficiently."
+        "United Muslim Relief demonstrates broad operational scale in global health and emergency response, delivering direct relief at a cost per beneficiary of $7.44. Independent oversight bodies confirm strong governance structures; the organization holds an <cite id=\"1\">overall score of 94.5/100 from Charity Navigator</cite> and <cite id=\"11\">meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability</cite>. Furthermore, its fundraising costs remain low, spending <cite id=\"1\">only $0.02 to raise every $1 in contributions</cite>."
       ],
-      "summary": "United Muslim Relief operates as an Above Average global humanitarian organization focused on emergency aid and long-term development. In FY2024, the charity reported <cite id=\"3\">Total Revenue of $149,888,609</cite>, reflecting significant program growth with a <cite id=\"3\">3-Year Revenue CAGR of 191.2%</cite>. The organization holds <cite id=\"1\">a 94.5/100 overall score from Charity Navigator</cite> and <cite id=\"11\">meets all 20 BBB Wise Giving Alliance Standards</cite>. United Muslim Relief delivers direct aid across multiple regions, reporting that it <cite id=\"5\">served 11,000,000 meals</cite> and <cite id=\"5\">treated 118,908 patients</cite> in recent initiatives. However, donors should note clear financial trade-offs. While the filed Program Expense Ratio is 97.4%, the organization relies heavily on non-cash gifts-in-kind. Its <cite id=\"3\">cash-adjusted program ratio is 48%</cite>, indicating that less than half of cash expenditures directly cover program operations. Additionally, the charity maintains a very thin financial buffer, holding only <cite id=\"1\">0.3 months of working capital in reserve</cite>.",
+      "summary": "United Muslim Relief operates as an international humanitarian organization providing low-cost aid, emergency relief, and health support to marginalized communities globally. In FY2024, the organization reported <cite id=\"3\">$149,888,609 in total revenue</cite>, reflecting substantial multi-year operational growth. The charity maintains high alignment for Muslim donors through <cite id=\"2\">verified zakat-eligible programs</cite> that direct resources toward vulnerable groups across several countries, including Palestine, Lebanon, and Kenya. Third-party evaluators highlight its organizational practices, noted by an <cite id=\"1\">overall score of 94.5/100 from Charity Navigator</cite> and accreditation showing it <cite id=\"11\">meets all 20 BBB Wise Giving Alliance Standards</cite>. However, donors should evaluate the underlying financial composition. While reported tax filings list a raw program expense ratio of 47.5%, the organization relies heavily on non-cash gifts-in-kind. When evaluating cash expenditures alone, the cash-adjusted program ratio drops to 48%, meaning less than half of cash functional spending directly funds programs. Additionally, liquidity remains tight, as the charity operates with approximately <cite id=\"1\">0.3 months of working capital reserves</cite>.",
       "zakat_guidance": {
         "classification": "fuqara",
         "eligibility": "ZAKAT-ELIGIBLE"

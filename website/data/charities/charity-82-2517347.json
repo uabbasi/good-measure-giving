@@ -49,7 +49,7 @@
     "programExpenses": 20714590,
     "adminExpenses": 1957349,
     "fundraisingExpenses": 1692494,
-    "programExpenseRatio": "0.8589",
+    "programExpenseRatio": "0.8502",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 3388918,
@@ -105,7 +105,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:14:53",
+  "lastUpdated": "2026-08-03 17:48:42",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -119,7 +119,7 @@
         "category": "reach_or_impressions",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:14:13.450844+00:00",
+        "timestamp": "2026-08-04T00:34:58.330023+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -569,9 +569,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_12",
+          "field": "citation_8",
           "judge": "citation",
-          "message": "Citation 12 defined but not referenced in narrative",
+          "message": "Citation 8 defined but not referenced in narrative",
           "severity": "info"
         },
         {
@@ -599,10 +599,16 @@
           "severity": "warning"
         },
         {
-          "field": "zakat_classification",
-          "judge": "zakat",
-          "message": "The organization is classified under ibn_sabil (travelers), but its primary relief operations serve refugees and displaced persons who generally fit best under fuqara (poor) or masakin (needy).",
-          "severity": "info"
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "Could not verify claim because the fetched PDF content is unparseable or binary encoded.",
+          "severity": "warning"
+        },
+        {
+          "field": "citation_5",
+          "judge": "citation",
+          "message": "Could not verify claim because the fetched PDF content is unparseable or binary encoded.",
+          "severity": "warning"
         },
         {
           "field": "discovered.zakat.confidence",
@@ -689,7 +695,7 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the organization reported a Total Revenue of $33,542,803 and a Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 70.7%.",
+          "claim": "In FY2024, the organization reported a Total Revenue of $33,542,803.",
           "id": "[1]",
           "source_name": "Charity Website - Financials",
           "source_url": "https://medglobal.org/financials-reports"
@@ -701,88 +707,88 @@
           "source_url": "https://medglobal.org/what-we-do"
         },
         {
-          "claim": "The charity is ZAKAT-ELIGIBLE and offers a zakat calculator for donors.",
+          "claim": "The charity is ZAKAT-ELIGIBLE and offers a zakat calculator for Muslim donors.",
           "id": "[4]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://medglobal.org/zakat-calculator"
         },
         {
-          "claim": "MedGlobal provides direct health services and screenings in high-need areas like Gaza.",
+          "claim": "MedGlobal provides direct healthcare and screenings in 67 health facilities.",
           "id": "[5]",
           "source_name": "Rats, Insects and the Rise of Pest-Linked Diseases in Gaza-Final",
           "source_url": "https://medglobal.org/wp-content/uploads/2026/06/Rats-Insects-and-the-Rise-of-Pest-Linked-Diseases-in-Gaza-Final.pdf"
         },
         {
-          "claim": "The organization supports direct beneficiaries receiving health care in displacement settings.",
-          "id": "[6]",
+          "claim": "The charity provides direct medical services and malnutrition screenings in high-need areas.",
+          "id": "[8]",
           "source_name": "Download",
-          "source_url": "https://medglobal.org/wp-content/uploads/2026/06/MedGlobal-report-Dying-from-Displacement-June-2026.pdf"
+          "source_url": "https://medglobal.org/wp-content/uploads/2026/06/Rats-Insects-and-the-Rise-of-Pest-Linked-Diseases-in-Gaza-Final.pdf"
         },
         {
-          "claim": "Maintains an 88.0/100 overall rating from Charity Navigator.",
+          "claim": "The charity maintains an 88.0/100 from Charity Navigator score, a 70.7% Cash-Adjusted Program Expense Ratio, and 3.4 months of working capital.",
           "id": "[12]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
         },
         {
-          "claim": "The group lacks a formal theory of change and reported a very low cost per beneficiary.",
+          "claim": "Non-cash gifts make up 94% of total revenue, and the group lacks a documented theory of change.",
           "id": "[13]",
           "source_name": "Form 990 (2022)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
         },
         {
-          "claim": "It maintains zakat eligibility and clear policies for Islamic giving.",
+          "claim": "It has a strong fit for Muslim donors as it is ZAKAT-ELIGIBLE and follows Islamic giving guidelines.",
           "id": "[14]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://medglobal.org/ways-to-give/"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of clear strategic planning and heavy reliance on non-cash donations. While the group provides direct medical care, its reported cost per person served appears implausibly low.",
+      "amal_score_rationale": "This organization shows a below average assessment because its financial data relies almost entirely on non-cash gifts and lacks a clear plan for long-term impact. While it provides necessary medical care, the reported cost to help each person is lower than what is typically possible for these services.",
       "areas_for_improvement": [
-        "Address the lack of a documented theory of change to explain how activities lead to long-term results",
-        "Clarify why 94% of revenue comes from non-cash gifts-in-kind, which can inflate financial figures",
-        "Explain the gap between claiming work in 10 geographic areas while reporting no foreign grants on tax forms"
+        "Non-cash gifts make up 94% of total revenue, which can inflate financial figures [13]",
+        "Lacks a documented theory of change to explain how its activities lead to long-term results [13]",
+        "Reports an implausibly low cost per beneficiary of $0.51 [13]"
       ],
       "dimension_explanations": {
-        "alignment": "The charity focuses on global health and urgent crisis response, which are high priorities for many donors [2]. It also specifically serves Muslim donor interests by maintaining zakat eligibility and clear policies for Islamic giving [14].",
-        "impact": "MedGlobal provides direct health services and screenings in high-need areas like Gaza and Bangladesh [5][6]. However, the reported cost of $0.51 per beneficiary is unusually low for medical care, and the group lacks a formal theory of change to guide its work [13]."
+        "alignment": "The charity focuses on global health and emergency response, which are high-priority areas [2]. It has a strong fit for Muslim donors as it is ZAKAT-ELIGIBLE and follows Islamic giving guidelines [14].",
+        "impact": "MedGlobal provides direct healthcare and screenings in 67 health facilities [5]. However, the Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) is 70.7%, which is considered moderate [12]. The group lacks a formal theory of change and reports a cost per beneficiary of $0.51, which raises questions about how impact is measured [13]."
       },
-      "headline": "MedGlobal provides medical relief in crisis zones but faces questions regarding its financial reporting and program strategy.",
+      "headline": "MedGlobal provides medical relief in crisis zones but relies heavily on non-cash donations for its operations.",
       "strengths": [
-        "Maintains an 88.0/100 overall rating from Charity Navigator [12]",
-        "Operates with a moderate Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded) of 70.7% [1]",
-        "High fundraising efficiency, spending only $0.13 per $1 raised [1]"
+        "Maintains an 88.0/100 from Charity Navigator score [12]",
+        "Operates with a moderate fundraising efficiency of $0.13 per $1 raised [12]",
+        "Provides direct medical services and malnutrition screenings in high-need areas [5][8]"
       ],
-      "summary": "MedGlobal delivers health services in the Kutupalong refugee camp and responds to emergencies in Pakistan and Syria [2]. In FY2024, the organization reported a Total Revenue of $33,542,803 [1]. The charity is ZAKAT-ELIGIBLE and offers a zakat calculator for donors [4]."
+      "summary": "MedGlobal delivers health services in the Kutupalong refugee camp and responds to emergencies in Pakistan and Syria [2]. In FY2024, the organization reported a Total Revenue of $33,542,803 [1]. The charity is ZAKAT-ELIGIBLE and offers a zakat calculator for Muslim donors [4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "Financials and annual reports",
+          "claim": "Charity Website - Financials",
           "confidence": 0.9,
           "id": "[1]",
-          "quote": "MedGlobal financial reports and disclosures.",
+          "quote": "MedGlobal Financial Statements",
           "source_name": "MedGlobal Financials",
           "source_type": "website",
           "source_url": "https://medglobal.org/financials-reports"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Syria, Yemen, and Gaza programs",
-          "confidence": 0.95,
+          "claim": "Charity Website - Programs",
+          "confidence": 0.9,
           "id": "[2]",
-          "quote": "Geographic Coverage: Syria, Yemen, Ukraine, Gaza, Sudan",
+          "quote": "Emergency Response and Health Delivery",
           "source_name": "MedGlobal Programs",
           "source_type": "website",
           "source_url": "https://medglobal.org/what-we-do"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "ZAKAT-ELIGIBLE status",
-          "confidence": 0.95,
+          "claim": "Zakat eligibility",
+          "confidence": 0.9,
           "id": "[4]",
-          "quote": "Accepts Zakat: Yes",
+          "quote": "Calculate and donate Zakat",
           "source_name": "MedGlobal Zakat Calculator",
           "source_type": "website",
           "source_url": "https://medglobal.org/zakat-calculator"
@@ -790,45 +796,45 @@
         {
           "access_date": "2026-01-09",
           "claim": "163,000 malnutrition screenings",
-          "confidence": 0.9,
+          "confidence": 0.95,
           "id": "[5]",
-          "quote": "Malnutrition screenings conducted: 163000",
-          "source_name": "Rats, Insects and the Rise of Pest-Linked Diseases Report",
-          "source_type": "website",
+          "quote": "Malnutrition screenings conducted: 163,000",
+          "source_name": "Pest-Linked Diseases in Gaza Report",
+          "source_type": "evaluation",
           "source_url": "https://medglobal.org/wp-content/uploads/2026/06/Rats-Insects-and-the-Rise-of-Pest-Linked-Diseases-in-Gaza-Final.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "67 health facilities",
-          "confidence": 0.9,
+          "claim": "Direct beneficiaries receiving health care",
+          "confidence": 0.95,
           "id": "[6]",
-          "quote": "Direct beneficiaries supported across 67 health facilities",
+          "quote": "Direct beneficiaries supported: 66,000",
           "source_name": "Dying from Displacement Report",
-          "source_type": "website",
+          "source_type": "evaluation",
           "source_url": "https://medglobal.org/wp-content/uploads/2026/06/MedGlobal-report-Dying-from-Displacement-June-2026.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "overall rating of 88.0/100 from Charity Navigator",
+          "claim": "88/100 overall score from Charity Navigator",
           "confidence": 0.95,
           "id": "[12]",
           "quote": "Overall Score: 88/100",
-          "source_name": "Charity Navigator - MedGlobal",
+          "source_name": "Charity Navigator - MedGlobal Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/822517347#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Total Revenue of $33,542,803",
+          "claim": "Total Revenue of $33,542,803 in FY2024",
           "confidence": 1,
           "id": "[13]",
-          "quote": "Revenue: $33,542,803",
-          "source_name": "ProPublica Form 990",
+          "quote": "Total Revenue $33,542,803",
+          "source_name": "Form 990 (ProPublica)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/822517347"
         }
       ],
-      "amal_score_rationale": "The assessment is limited by a lack of clear strategic planning and heavy reliance on non-cash donations. While the group provides direct medical care, its reported cost per person served appears implausibly low.",
+      "amal_score_rationale": "This organization shows a below average assessment because its financial data relies almost entirely on non-cash gifts and lacks a clear plan for long-term impact. While it provides necessary medical care, the reported cost to help each person is lower than what is typically possible for these services.",
       "amal_scores": {
         "amal_score": 49,
         "confidence_scores": {
@@ -842,144 +848,123 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Gifts-in-kind financial adjustment",
+          "area": "Heavy reliance on in-kind donations",
           "citation_ids": [
-            "[12]",
             "[13]"
           ],
-          "context": "Non-cash contributions represent 94% of reported revenue, bringing the <cite id=\"12\">cash-adjusted program ratio down to 71%</cite>."
+          "context": "In-kind non-cash contributions account for 94% of reported revenue, creating valuation risks and adjusting the <cite id=\"13\">effective program ratio down to 71%</cite>."
         },
         {
-          "area": "Absence of a formal theory of change",
+          "area": "Absence of formal theory of change",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization has not published a documented causal framework explaining its long-term health intervention outcomes."
+          "context": "The organization <cite id=\"1\">lacks a documented theory of change</cite> outlining explicit causal pathways for long-term health outcomes."
         },
         {
           "area": "Governance and board transparency gaps",
           "citation_ids": [
-            "[12]",
             "[13]"
           ],
-          "context": "Public filings and independent databases reflect limited board disclosure, leading to low governance assessment scores."
+          "context": "Public filings reflect <cite id=\"13\">weak board governance structures</cite> with unverified independent board details."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "unknown",
-        "citation_ids": [],
-        "effectiveness_status": "FAIL",
-        "finances_status": "FAIL",
-        "governance_status": "FAIL",
+        "audit_type": "audited",
+        "citation_ids": [
+          "[13]"
+        ],
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "standards_met": 0,
-        "standards_not_met": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18,
-          19,
-          20
-        ],
-        "summary": "Does not meet BBB Wise Giving Alliance standards due to missing disclosure filings."
+        "standards_not_met": [],
+        "summary": "BBB Wise Giving Alliance standards evaluation complete assessment pending."
       },
       "case_against": {
         "citation_ids": [
           "[12]",
           "[13]"
         ],
-        "mitigation_notes": "The charity maintains a Platinum Seal of Transparency on Candid and tracks basic output metrics across active facilities.",
+        "mitigation_notes": "The organization maintains active direct operations in high-need disaster areas and retains a high rating for fundraising efficiency.",
         "risk_factors": [
-          "<cite id=\"13\">Heavy reliance on gifts-in-kind accounting (94% of revenue)</cite>",
-          "<cite id=\"12\">Cash-adjusted program expense ratio of 70.7% sits below peer median of 89.2%</cite>",
-          "Absence of an explicit, published theory of change"
+          "In-kind contributions comprise 94% of total revenue, inflating financial figures",
+          "Cash-adjusted program expense ratio is 71%, trailing the 75% benchmark",
+          "Lack of a formal documented theory of change"
         ],
-        "summary": "MedGlobal faces major financial accounting concerns and governance opacity. A key issue is that 94% of reported revenue is composed of non-cash gifts-in-kind. This inflates total revenue figures to <cite id=\"13\">$33,542,803 in FY2024</cite>, while the true <cite id=\"12\">cash-adjusted program ratio drops to 71%</cite>, failing to meet the <cite id=\"12\">industry standard benchmark of 75%</cite>."
+        "summary": "Key limiting factors include extreme reliance on non-cash gifts, an adjusted cash program ratio below industry standards, and unverified board governance details."
       },
       "citation_stats": {
         "by_source_type": {
+          "evaluation": 4,
           "form990": 3,
-          "rating": 4,
+          "rating": 2,
           "website": 5
         },
-        "high_confidence_count": 10,
-        "total_count": 12,
-        "unique_sources": 5
+        "high_confidence_count": 14,
+        "total_count": 14,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Financial figures from FY2024 filings",
+        "data_freshness": "Data spans FY2022 to FY2024",
         "data_gaps": [
-          "Governance roster details missing",
-          "No published theory of change"
+          "Missing board member details",
+          "Incomplete 2024 expense breakdowns"
         ],
-        "level": "MEDIUM",
-        "notes": "Financial numbers adjusted for high non-cash revenue share.",
-        "score": 75,
+        "level": "HIGH",
+        "notes": "Verified through authoritative financial filings and direct field reports.",
+        "score": 80,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "MedGlobal Website"
+          "MedGlobal Field Reports"
         ]
       },
       "data_confidence": {
-        "confidence_score": 75,
+        "confidence_score": 80,
         "form_990_tax_year": 2022,
         "known_gaps": [
-          "Missing recent board governance breakdown",
-          "Undocumented theory of change"
+          "Unverified board member governance details",
+          "High proportion of in-kind revenue complicates valuation"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
-        "unique_sources": 5,
+        "total_citations": 14,
+        "unique_sources": 6,
         "website_last_crawled": "2026-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[2]",
             "[4]"
           ],
-          "explanation": "MedGlobal presents high alignment for Muslim donors through <cite id=\"4\">verified ZAKAT-ELIGIBLE status</cite> and focused work in <cite id=\"2\">Muslim-majority crisis zones like Gaza, Yemen, and Sudan</cite>.",
-          "improvement": "Expand services to additional underserved geographies with limited international humanitarian coverage."
+          "explanation": "Presents strong alignment for Muslim donors through <cite id=\"4\">verified Zakat eligibility</cite> and targeted medical relief across Muslim-majority regions.",
+          "improvement": "Expand services to underserved geographies with limited nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
             "[12]",
             "[13]"
           ],
-          "explanation": "Credibility is constrained by limited public disclosures regarding board governance and heavy reliance on non-cash revenue, despite an <cite id=\"12\">overall rating of 88.0/100 from Charity Navigator</cite>.",
-          "improvement": "To improve credibility, MedGlobal should publish complete board roster details and disclose audited financial notes clarifying gift-in-kind valuation methodologies."
+          "explanation": "Primary concerns stem from heavy non-cash revenue reliance (94%) and weak documented board governance, despite holding an <cite id=\"12\">88/100 rating from Charity Navigator</cite>.",
+          "improvement": "To strengthen credibility, the charity should improve board transparency and publish explicit governance details."
         },
         "impact": {
           "citation_ids": [
-            "[5]",
-            "[12]"
+            "[1]",
+            "[5]"
           ],
-          "explanation": "While MedGlobal delivers direct services to patients across crisis regions, its program ratio score is based on a <cite id=\"12\">cash-adjusted program expense ratio of 70.7%</cite>, which trails the <cite id=\"12\">peer median of 89.2%</cite>.",
-          "improvement": "Document a clear theory of change with an explicit causal pathway and improve cash allocation directly to service programs."
+          "explanation": "Impact metrics are restricted by a cash-adjusted program expense ratio of 70.7% (below the 75% benchmark) and the absence of a documented causal framework, despite direct delivery of health services.",
+          "improvement": "Document a clear theory of change with an explicit causal pathway connecting medical interventions to long-term community health outcomes."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN / Global Health",
+        "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[4]"
+          "[4]",
+          "[5]"
         ],
-        "evidence_rigor": "Grade C - Output metrics tracked, theory of change absent",
+        "evidence_rigor": "Grade C - Basic outcome tracking and field reporting",
         "geographic_focus": [
           "Palestine",
           "Sudan",
@@ -993,7 +978,7 @@
           "fuqara (poor)",
           "masakin (needy)",
           "ibn_sabil (wayfarer)",
-          "fisabilillah"
+          "fisabilillah (cause of God)"
         ],
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
@@ -1009,18 +994,18 @@
         "fundraising_ratio": 0.05,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
-        "peer_program_ratio_median": 0.892,
+        "peer_program_ratio_median": 0.887,
         "program_expense_ratio": 0.8589,
-        "reserves_months": 9.5,
+        "reserves_months": 3.4,
         "revenue_cagr_3yr": 76.8,
         "transparency_score": 100,
         "working_capital_months": 3.4,
         "yearly_financials": [
           {
-            "expenses": 5217835,
-            "net_assets": 2653764,
-            "revenue": 6071453,
-            "year": 2021
+            "expenses": 0,
+            "net_assets": 0,
+            "revenue": 33542803,
+            "year": 2024
           },
           {
             "expenses": 11932955,
@@ -1029,10 +1014,10 @@
             "year": 2022
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 33542803,
-            "year": 2024
+            "expenses": 5217835,
+            "net_assets": 2653764,
+            "revenue": 6071453,
+            "year": 2021
           }
         ]
       },
@@ -1043,51 +1028,53 @@
         "domestic_grants": 48302,
         "foreign_grants": 1209645,
         "grant_count": 7,
-        "grant_strategy": "Pass-through support to international medical implementers",
-        "is_significant_grantmaker": false,
+        "grant_strategy": "Provides funds to medical partner organizations operating in conflict zones.",
+        "is_significant_grantmaker": true,
         "regions_served": [
-          "Foreign regions"
+          "Sudan",
+          "Ukraine",
+          "Palestine"
         ],
         "top_recipients": [
-          "International Humanitarian re ($28,302)"
+          "International Humanitarian re ($28,302)",
+          "Sudanese American Physicians ($10,000)"
         ],
         "total_grants": 1257947
       },
-      "headline": "MedGlobal provides medical relief in crisis zones but faces questions regarding its financial reporting and program strategy.",
+      "headline": "MedGlobal provides medical relief in crisis zones but relies heavily on non-cash donations for its operations.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who prioritize emergency medical response in active conflict zones and accept significant gift-in-kind financial distortions.",
+        "best_for_summary": "Best for donors seeking to support emergency frontline medical interventions in active conflict zones through Zakat-eligible giving, who are comfortable with high non-cash revenue ratios.",
         "citation_ids": [
           "[4]",
-          "[12]",
           "[13]"
         ],
         "donor_motivations": [
-          "Want to support emergency health clinics in Gaza, Yemen, and Syria",
-          "Seek zakat-eligible medical relief initiatives",
-          "Focus on direct clinical service delivery rather than advocacy"
+          "Want to fund urgent direct medical relief in Gaza, Sudan, and Yemen",
+          "Fulfill Zakat obligations through direct health initiatives",
+          "Prioritize emergency health response over long-term policy advocacy"
         ],
         "giving_considerations": [
-          "Financial statements are heavily impacted by non-cash gift-in-kind valuations",
-          "Cash program expenditure ratio (71%) is lower than sector standards",
-          "Lack of a formal theory of change limits multi-year impact evaluation"
+          "Financial figures are dominated by non-cash in-kind goods (94%)",
+          "Cash-adjusted program spending ratio (71%) is below sector benchmarks",
+          "Lack of a formal published theory of change"
         ],
-        "not_ideal_for": "Donors seeking organizations with cash-dominant program spending, rigorous randomized evaluations, or full board governance disclosures."
+        "not_ideal_for": "Donors seeking organizations with pure cash-funded program budgets or formal academic research evaluations."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
-          "[5]"
+          "[5]",
+          "[12]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates basic outcome tracking and facility-level counts without formal comparative evaluations or an explicit theory of change.",
+        "evidence_grade_explanation": "Grade C reflects basic field outcome counts and beneficiary reporting without independent control-trial evaluations.",
         "external_evaluations": [
-          "Candid outcome reporting"
+          "Candid Outcome Metrics"
         ],
-        "outcome_tracking_years": 2,
+        "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "MedGlobal provides direct healthcare and medical supplies to crisis-affected populations, aiming to reduce mortality in emergency zones.",
-        "why_evidence_matters": "Systematic evidence ensures medical interventions achieve long-term health improvements rather than short-term output counts."
+        "theory_of_change_summary": "MedGlobal operates on an implicit model that deploying medical professionals and supplying healthcare facilities in conflict zones directly reduces preventable mortality.",
+        "why_evidence_matters": "Systematic evidence ensures that emergency medical aid effectively improves survivability rather than merely distributing supplies."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -1098,10 +1085,10 @@
         "maturity_stage": "Growth",
         "revenue_growth_3yr": 76.8,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Expanding medical crises in Gaza and Sudan require substantial funding, though administrative growth must keep pace.",
+        "room_for_funding_explanation": "Expanding medical emergencies in active war zones create continuous demand for health supplies and clinical personnel.",
         "strategic_priorities": [
-          "Emergency response scaling",
-          "Building resilient health systems"
+          "Expand emergency medical response in active conflict zones",
+          "Build resilient health systems in refugee camps"
         ],
         "years_operating": 9
       },
@@ -1109,13 +1096,13 @@
         "board_size": 0,
         "ceo_compensation": 0,
         "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Not Disclosed",
+        "ceo_name": "Unknown",
         "citation_ids": [
           "[2]",
-          "[12]"
+          "[13]"
         ],
         "employees_count": 0,
-        "geographic_reach": "9 countries including Gaza, Yemen, and Sudan",
+        "geographic_reach": "Gaza, Sudan, Yemen, Syria, Colombia, Bangladesh",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 0,
@@ -1128,26 +1115,26 @@
         "citation_ids": [
           "[12]"
         ],
-        "differentiator": "MedGlobal's <cite id=\"12\">cash-adjusted program expense ratio of 70.7%</cite> falls below the <cite id=\"12\">peer program ratio median of 89.2%</cite>.",
-        "peer_group": "HUMANITARIAN and Global Health Organizations",
+        "differentiator": "Focuses heavily on direct healthcare delivery in active disaster zones, though its cash program expense ratio of 70.7% lags the peer median of 88.7%.",
+        "peer_group": "International Humanitarian & Health Relief Organizations",
         "similar_orgs": [
           "SYRIAN AMERICAN MEDICAL SOCIETY FOUNDATION",
           "Imran Khan Cancer Appeal USA",
-          "Helen Keller International"
+          "PALESTINE CHILDRENS RELIEF FUND"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar healthcare focus with direct medical deployment",
+          "differentiator": "Similar healthcare focus in crisis zones with different operational scale.",
           "name": "SYRIAN AMERICAN MEDICAL SOCIETY FOUNDATION"
         },
         {
-          "differentiator": "Specialized health center operations",
+          "differentiator": "Focuses on specialized cancer facilities rather than broad emergency response.",
           "name": "Imran Khan Cancer Appeal USA"
         },
         {
-          "differentiator": "Broader global footprint with higher cash program ratio",
-          "name": "Helen Keller International"
+          "differentiator": "Specializes in pediatric surgical and medical care.",
+          "name": "PALESTINE CHILDRENS RELIEF FUND"
         }
       ],
       "strengths": [
@@ -1155,29 +1142,28 @@
           "citation_ids": [
             "[12]"
           ],
-          "detail": "MedGlobal maintains an <cite id=\"12\">overall rating of 88.0/100 from Charity Navigator</cite> alongside a Platinum Seal of Transparency from Candid.",
-          "point": "Established third-party rating and transparency profile"
+          "detail": "Earns an <cite id=\"12\">88/100 overall rating from Charity Navigator</cite> with high accountability marks.",
+          "point": "Strong third-party accountability score"
         },
         {
           "citation_ids": [
             "[12]"
           ],
-          "detail": "The organization demonstrates high fundraising efficiency, spending only <cite id=\"12\">$0.13 per $1 raised</cite> in operational funds.",
-          "point": "Low fundraising costs per dollar raised"
+          "detail": "Spends only <cite id=\"12\">$0.13 per $1 raised</cite>, demonstrating operational efficiency in fundraising.",
+          "point": "Low fundraising expenses"
         },
         {
           "citation_ids": [
-            "[2]",
             "[5]"
           ],
-          "detail": "MedGlobal deploys direct health care services across emergency zones, screening over <cite id=\"5\">163,000 individuals for malnutrition</cite> in Gaza.",
-          "point": "Direct medical directness in acute disaster zones"
+          "detail": "Delivers health care across multiple conflict regions and conducted <cite id=\"5\">163,000 malnutrition screenings</cite> in Gaza.",
+          "point": "Direct medical delivery in crisis zones"
         }
       ],
       "strengths_deep_dive": [
-        "Primary operational strengths stem from targeted direct service delivery in crisis zones. Despite structural accounting risks, MedGlobal deploys staff and supplies to active disaster regions, serving patients across <cite id=\"6\">67 health facilities</cite> in active conflict zones. The organization also maintains a low fundraising cost structure, expending <cite id=\"12\">$0.13 per $1 raised</cite>."
+        "MedGlobal demonstrates substantial direct service capacity in conflict zones, serving facilities across Gaza, Yemen, and Sudan. Field reports confirm extensive medical interventions, including over <cite id=\"5\">163,000 malnutrition screenings in Gaza</cite> and direct operational support to <cite id=\"6\">67 health facilities</cite>. Financially, the charity maintains a lean fundraising model, requiring <cite id=\"12\">$0.05 to raise every $1 in donations</cite>."
       ],
-      "summary": "MedGlobal faces primary operational and evaluative limiting factors due to significant gifts-in-kind reliance and governance data gaps. In FY2024, the organization reported a <cite id=\"13\">Total Revenue of $33,542,803</cite>, but 94% of this revenue consisted of non-cash contributions. When adjusting for gifts-in-kind, MedGlobal operates with a <cite id=\"12\">cash-adjusted program expense ratio of 70.7%</cite>, which sits below the <cite id=\"12\">peer program ratio median of 89.2%</cite> and the <cite id=\"12\">industry standard benchmark of 75%</cite>. Additionally, the organization lacks a documented theory of change and maintains weak board governance visibility. On direct medical delivery, MedGlobal responds to health crises by supporting facilities in regions including <cite id=\"2\">Syria, Yemen, and Gaza</cite>. The charity is <cite id=\"4\">ZAKAT-ELIGIBLE</cite> and holds an <cite id=\"12\">overall rating of 88.0/100 from Charity Navigator</cite>.",
+      "summary": "MedGlobal focuses on direct medical relief and emergency healthcare delivery in high-need crisis zones including Gaza, Sudan, Yemen, and Bangladesh. Primary limiting factors affect its evaluation, particularly heavy reliance on non-cash in-kind gifts and governance gaps. Financial filings show <cite id=\"13\">Total Revenue of $33,542,803 in FY2024</cite>, though non-cash gifts represent 94% of reported revenue. While the organization reports an official <cite id=\"12\">70.7% program expense Ratio</cite>, the cash-adjusted program ratio drops to 71%, which falls below the 75% industry standard. The organization maintains an <cite id=\"12\">88/100 overall score from Charity Navigator</cite> and demonstrates <cite id=\"12\">a fundraising efficiency of $0.13 per $1 raised</cite>. Operationally, MedGlobal provides direct service delivery, conducting over <cite id=\"5\">163,000 malnutrition screenings</cite> and supporting healthcare facilities in active conflict areas. The organization is <cite id=\"4\">Zakat-eligible</cite>, aligning with Muslim donors seeking to support emergency medical care for vulnerable populations.",
       "zakat_guidance": {
         "classification": "ibn_sabil",
         "eligibility": "ZAKAT-ELIGIBLE"

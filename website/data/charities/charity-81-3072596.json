@@ -42,7 +42,7 @@
     "programExpenses": 177499,
     "adminExpenses": 106206,
     "fundraisingExpenses": 4953,
-    "programExpenseRatio": "0.7800",
+    "programExpenseRatio": "0.6149",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 64414,
@@ -78,7 +78,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:07:39",
+  "lastUpdated": "2026-08-03 17:51:24",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -92,7 +92,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:06:57.428869+00:00",
+        "timestamp": "2026-08-04T00:36:59.338565+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -256,7 +256,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:06:57.428869+00:00",
+      "timestamp": "2026-08-04T00:36:59.338565+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -278,14 +278,14 @@
     "receivesFoundationGrants": null
   },
   "zakatClaimEvidence": null,
-  "archetype": "RESILIENCE",
+  "archetype": "LEVERAGE",
   "ui_signals_v1": {
     "schema_version": "1.0.0",
     "config_version": "2026-02-15",
     "config_hash": "sha256:f34a1cab323271fd326bb15d4b41e597c9fdf04242d39d99e565295c558ebfcd",
-    "assessment_label": "Promising",
-    "archetype_code": "RESILIENCE",
-    "archetype_label": "Community Resilience",
+    "assessment_label": "Context Dependent",
+    "archetype_code": "LEVERAGE",
+    "archetype_label": "Strategic Advocacy",
     "evidence_stage": "Verified",
     "signal_states": {
       "evidence": "Strong",
@@ -293,8 +293,8 @@
       "donor_fit": "Limited",
       "risk": "Moderate"
     },
-    "recommendation_cue": "Good Match",
-    "recommendation_rationale": "Good donor alignment with manageable risk. Evidence quality is solid but still evolving in places.",
+    "recommendation_cue": "Mixed Signals",
+    "recommendation_rationale": "Context dependent profile. Consider cause fit, risk profile, and evidence maturity before deciding.",
     "used_fallback": false,
     "fallback_reasons": null
   },
@@ -318,14 +318,14 @@
   "amalEvaluation": {
     "charity_ein": "81-3072596",
     "charity_name": "Teach the World Foundation",
-    "amal_score": 55,
+    "amal_score": 53,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:46:00",
     "rubric_version": "5.3.0",
     "confidence_scores": {
       "alignment": 16,
       "data_confidence": 0.8,
-      "impact": 39
+      "impact": 37
     },
     "score_details": {
       "alignment": {
@@ -423,12 +423,12 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 78%",
+            "evidence": "Program expense ratio: 61%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
             "possible": 5,
-            "scored": 4,
+            "scored": 2,
             "status": "full"
           },
           {
@@ -462,15 +462,27 @@
         "cost_per_beneficiary": 7.09996,
         "directness_level": "CAPACITY_BUILDING",
         "impact_design_categories": [],
-        "rationale": "$7.10/beneficiary; Delivery: capacity building; Impact 39/50",
+        "rationale": "$7.10/beneficiary; Delivery: capacity building; Impact 37/50",
         "rubric_archetype": "DIRECT_SERVICE",
-        "score": 39
+        "score": 37
       },
       "judge_issues": [
         {
-          "field": "citation_3",
+          "field": "summary",
           "judge": "citation",
-          "message": "Could not confirm the claim because the fetched PDF content was unparseable/binary data.",
+          "message": "Could not verify claim due to unparseable PDF content.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations",
+          "judge": "citation",
+          "message": "Could not confirm the claim from the fetched content.",
+          "severity": "warning"
+        },
+        {
+          "field": "program_expense_ratio",
+          "judge": "factual",
+          "message": "The narrative states a program expense ratio of 61.5%, whereas the source data (Charity Navigator) reports 78.0%.",
           "severity": "warning"
         },
         {
@@ -511,106 +523,152 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "In FY2024, the foundation managed $363,707 in total revenue and maintained a Program expense ratio of 78.0%.",
+          "claim": "In fiscal year 2024, the foundation reported total revenue of $363,707 and a program expense ratio of 61.5%.",
           "id": "[1]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813072596"
         },
         {
-          "claim": "The organization deploys scalable learning models through its Microschools and InSchool programs and has a cost per beneficiary of $7.10.",
+          "claim": "The organization deploys scalable learning models through its Microschools and InSchool programs to solve global illiteracy.",
           "id": "[3]",
           "source_name": "Outcome Harvesting Report",
           "source_url": "https://www.teachtheworldfoundation.com/s/Outcome-Harvesting-Report.pdf"
         },
         {
-          "claim": "The foundation focuses on reducing the number of low-income children without access to books.",
+          "claim": "This organization focuses on a religious and cultural cause area through its literacy work.",
           "id": "[4]",
           "source_name": "\u201cCauses & Effects of Illiteracy\u201d",
           "source_url": "https://www.teachtheworldfoundation.com/s/Causes-Effects-of-Illiteracy-Presentation.pdf"
         },
         {
-          "claim": "The organization is eligible for sadaqah donations.",
+          "claim": "Contributions are considered sadaqah-eligible.",
           "id": "[7]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.teachtheworldfoundation.com/donate"
+        },
+        {
+          "claim": "The charity holds an overall rating of 84.0/100 from Charity Navigator.",
+          "id": "[9]",
+          "source_name": "Charity Navigator",
+          "source_url": "https://www.charitynavigator.org/ein/813072596#financials"
         }
       ],
-      "amal_score_rationale": "This charity shows a balanced profile with clear evidence of program success and efficient fundraising, though its financial reserves and specific donor alignment are moderate.",
+      "amal_score_rationale": "This charity shows a balance between clear program results and financial challenges. While it proves its impact on student learning, a significant portion of its budget goes toward non-program costs.",
       "areas_for_improvement": [
-        "Limited working capital of only 1.5 months",
-        "Moderate program expense ratio compared to top-tier educational charities"
+        "Low program expense ratio with only 61.5% of spending reaching programs [1]",
+        "Limited financial cushion with only 1.5 months of working capital [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This organization is sadaqah-eligible and focuses on the religious and cultural cause of education [7]. While it has a documented track record of improving literacy rates, it has a lower fit for donors specifically seeking traditional Muslim-led community projects [4].",
-        "impact": "The foundation demonstrates effectiveness through verified outcomes in English reading and math recognition. It maintains moderate spending habits, with a Program expense ratio of 78.0% in FY2024 [1]. The cost to help each student is approximately $7.10, which shows a focus on capacity building [3]."
+        "alignment": "This organization focuses on a religious and cultural cause area through its literacy work [4]. While it has a verified track record of outcomes, it has a lower fit for donors specifically looking for traditional Muslim-led or high-urgency humanitarian relief [9]. Contributions are considered sadaqah-eligible [7].",
+        "impact": "The foundation shows strong evidence of effectiveness, with students improving in English alphabet reading and math recognition. It operates at a low cost of approximately $7.10 per beneficiary [3]. However, its financial health is limited because only 61.5% of expenses go directly to its programs [1]."
       },
       "headline": "Teach the World Foundation uses digital tools to improve literacy for children in underserved communities.",
       "strengths": [
-        "High fundraising efficiency with a cost of only $0.02 per $1 raised",
-        "Verified evidence of outcomes in digital literacy and student confidence"
+        "High fundraising efficiency, spending only $0.02 to raise every $1 [1]",
+        "Strong evidence of program outcomes in reading and math skills [5][6]"
       ],
-      "summary": "The organization deploys scalable learning models through its Microschools and InSchool programs to solve the global illiteracy problem [3]. In FY2024, the foundation managed $363,707 in total revenue to support these educational initiatives [1]."
+      "summary": "The organization deploys scalable learning models through its Microschools and InSchool programs to solve global illiteracy [3]. In fiscal year 2024, the foundation reported total revenue of $363,707 [1]. The charity holds an overall rating of 84.0/100 from Charity Navigator [9]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "$363,707 in total revenue",
-          "confidence": 0.95,
+          "claim": "a total revenue of $363,707",
+          "confidence": 1,
           "id": "[1]",
-          "quote": "Total Revenue: $363,707",
+          "quote": "Total revenue reported in filings",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/813072596"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "Audited Financial Statements",
+          "claim": "Financial Statement (2025)",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Teach the World Foundation Financial Statements",
+          "quote": "Audited Financial Statements",
           "source_name": "Financial Statement (2025)",
-          "source_type": "form990",
+          "source_type": "website",
           "source_url": "https://www.teachtheworldfoundation.com/s/TTWF-Audited-Financials-FY-25.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "confidently operate learning applications",
+          "claim": "Pakistan, Malawi, and Bangladesh",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Children confidently operate learning applications on tablets",
+          "quote": "Teach the World Foundation (TTWF) programs in Malawi, Bangladesh, Pakistan",
           "source_name": "Outcome Harvesting Report",
           "source_type": "website",
           "source_url": "https://www.teachtheworldfoundation.com/s/Outcome-Harvesting-Report.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "math and alphabet recognition",
+          "claim": "Causes & Effects of Illiteracy",
+          "confidence": 0.85,
+          "id": "[4]",
+          "quote": "Global literacy rate increase",
+          "source_name": "Causes & Effects of Illiteracy Presentation",
+          "source_type": "website",
+          "source_url": "https://www.teachtheworldfoundation.com/s/Causes-Effects-of-Illiteracy-Presentation.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "verifiable improvements in reading and math skills",
           "confidence": 0.9,
           "id": "[5]",
-          "quote": "Math Number Recognition 11-20",
+          "quote": "2-D Shape Recognition in English; Addition Question Accuracy",
           "source_name": "Nielsen POC Presentation",
-          "source_type": "website",
+          "source_type": "evaluation",
           "source_url": "https://www.teachtheworldfoundation.com/s/TTW-Nielsen-POC-Presentation-March-10-2017.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "overall score of 84.0/100 from Charity Navigator",
+          "claim": "math number recognition",
+          "confidence": 0.9,
+          "id": "[6]",
+          "quote": "English Alphabet Reading; Math Number Recognition 11-20",
+          "source_name": "Nielsen POC Presentation",
+          "source_type": "evaluation",
+          "source_url": "https://www.teachtheworldfoundation.com/s/TTW-Nielsen-POC-Presentation-March-10-2017.pdf"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "SADAQAH-ELIGIBLE",
+          "confidence": 0.9,
+          "id": "[7]",
+          "quote": "General donation options",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://www.teachtheworldfoundation.com/donate"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "Volunteer options",
+          "confidence": 0.85,
+          "id": "[8]",
+          "quote": "Volunteer opportunities and engagement",
+          "source_name": "Charity Website - Volunteer",
+          "source_type": "website",
+          "source_url": "https://www.teachtheworldfoundation.com/donate-or-help"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "84.0/100 from Charity Navigator",
           "confidence": 0.95,
           "id": "[9]",
-          "quote": "Overall Score 84",
+          "quote": "Overall Score: 84/100; Fundraising Efficiency: $0.01",
           "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/813072596#financials"
         }
       ],
-      "amal_score_rationale": "This charity shows a balanced profile with clear evidence of program success and efficient fundraising, though its financial reserves and specific donor alignment are moderate.",
+      "amal_score_rationale": "This charity shows a balance between clear program results and financial challenges. While it proves its impact on student learning, a significant portion of its budget goes toward non-program costs.",
       "amal_scores": {
-        "amal_score": 55,
+        "amal_score": 53,
         "confidence_scores": {
           "alignment": 16,
           "data_confidence": 0.8,
-          "impact": 39
+          "impact": 37
         },
         "confidence_tier": "HIGH",
         "impact_tier": "AVERAGE",
@@ -618,130 +676,133 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Program expense ratio below peer median",
+          "area": "Program expense ratio below sector standards",
           "citation_ids": [
             "[1]",
             "[9]"
           ],
-          "context": "The organization reported a <cite id=\"1\">78.0% program expense ratio in FY2024</cite>, whereas similar international education charities maintain a <cite id=\"9\">peer median of 87.7%</cite>."
+          "context": "The foundation allocated <cite id=\"1\">78.0% of expenses to programs in FY2024</cite>, which is lower than the 75% sector benchmark and the <cite id=\"9\">90.5% peer median</cite>."
         },
         {
-          "area": "Thin financial safety margin",
+          "area": "Limited operating reserves",
           "citation_ids": [
-            "[9]"
+            "[1]"
           ],
-          "context": "Working capital covers roughly <cite id=\"9\">1.5 to 1.5 months of working capital</cite>, leaving limited cash reserves for sudden financial shocks."
+          "context": "The organization holds only <cite id=\"1\">1.5 months of working capital reserves</cite>, creating operational exposure to financial volatility."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
-        "citation_ids": [
-          "[2]"
-        ],
+        "citation_ids": [],
         "effectiveness_status": "NEUTRAL",
         "finances_status": "NEUTRAL",
         "governance_status": "NEUTRAL",
         "meets_all_standards": false,
-        "standards_met": 0,
+        "standards_met": null,
         "standards_not_met": [],
-        "summary": "No current evaluation available from BBB Wise Giving Alliance."
+        "summary": "BBB Wise Giving Alliance evaluation not available."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[9]"
         ],
-        "mitigation_notes": "Very low fundraising expenditures ($0.02 per $1 raised) keep overall non-program costs focused primarily on administration.",
+        "mitigation_notes": "The foundation maintains low fundraising costs ($0.02 per $1 raised) and published field evaluation reports.",
         "risk_factors": [
-          "<cite id=\"1\">FY2024 program expense ratio of 78.0%</cite> is below the 75% standard benchmark.",
-          "<cite id=\"9\">Working capital reserves</cite> remain tight relative to annual expenditure needs.",
-          "<cite id=\"9\">Small governing board</cite> limits institutional governance capacity."
+          "<cite id=\"1\">Program expense ratio of 61.5%</cite> is well below the standard 75% industry baseline",
+          "<cite id=\"1\">Working capital covers only 1.5 months</cite> of operational expenditures",
+          "<cite id=\"1\">Board governance is limited to 3 members</cite>"
         ],
-        "summary": "The main limiting factors involve a modest program budget share and small organizational scale. In FY2024, the foundation directed <cite id=\"1\">78.0% of total expenses to programs</cite>, falling short of the <cite id=\"9\">87.7% peer median</cite>."
+        "summary": "Primary concerns stem from financial structure constraints: the <cite id=\"1\">program expense ratio was 78.0% in FY2024</cite>, which trails the peer median of 90.5%, and reserves cover only <cite id=\"1\">1.5 months of operation</cite>."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 4,
-          "rating": 2,
-          "website": 4
+          "evaluation": 2,
+          "form990": 1,
+          "rating": 1,
+          "website": 5
         },
-        "high_confidence_count": 10,
-        "total_count": 10,
-        "unique_sources": 5
+        "high_confidence_count": 8,
+        "total_count": 9,
+        "unique_sources": 6
       },
       "confidence": {
-        "data_freshness": "Data from FY2023 to FY2025 filings",
+        "data_freshness": "Form 990 from 2023, Audited Financials 2025",
         "data_gaps": [
-          "Detailed 2024 expense schedule pending full filing"
+          "Small board size",
+          "Limited operating reserves"
         ],
         "level": "HIGH",
-        "notes": "Verified financial data and outcome reports available.",
+        "notes": "Verified numbers match official tax filings and rating agency sources.",
         "score": 80,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Audited Financials"
+          "Outcome Harvesting Report",
+          "Nielsen Presentation"
         ]
       },
       "data_confidence": {
         "confidence_score": 80,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing full 2024 Form 990 line items"
+          "Small board size (3 members)",
+          "Limited working capital reserves"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 10,
+        "total_citations": 9,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[7]"
           ],
-          "explanation": "The organization operates in Muslim-majority countries like Pakistan and Bangladesh, offering general educational access in underserved areas.",
-          "improvement": "Add clear giving documentation specifying whether funds support general educational relief or specific regional programs."
+          "explanation": "The foundation works in Muslim-majority nations like Pakistan and Bangladesh, but does not claim zakat compliance, rendering giving <cite id=\"7\">SADAQAH-ELIGIBLE</cite>.",
+          "improvement": ""
         },
         "credibility": {
           "citation_ids": [
+            "[1]",
             "[9]"
           ],
-          "explanation": "Donors can verify governance standards through an <cite id=\"9\">overall score of 84.0/100 from Charity Navigator</cite> and an independent board structure. The charity holds a Gold Seal of Transparency from Candid.",
-          "improvement": "The charity can strengthen credibility by expanding board size beyond three members and formalizing long-term audited reporting."
+          "explanation": "The organization maintains a <cite id=\"9\">Charity Navigator score of 84.0/100</cite> and earned a Gold Seal of Transparency from Candid. However, governance structure is minimal, operating with a small <cite id=\"1\">3-member board of directors</cite>.",
+          "improvement": "To improve credibility, the charity should expand its board governance structure beyond 3 members and achieve independent accreditation."
         },
         "impact": {
           "citation_ids": [
             "[1]",
             "[3]"
           ],
-          "explanation": "Field testing demonstrates strong evidence with <cite id=\"3\">25,000 beneficiaries served</cite> at low unit costs, though a <cite id=\"1\">program expense ratio of 78.0% in FY2024</cite> leaves notable operational overhead.",
-          "improvement": "Build reserves toward a board-approved target range to protect long-term program stability."
+          "explanation": "Programs reach <cite id=\"3\">25,000 children</cite> across Pakistan, Malawi, and Bangladesh at <cite id=\"1\">$7.10 per beneficiary</cite>. However, the <cite id=\"1\">program expense ratio of 61.5%</cite> remains a clear limitation compared to global education benchmarks.",
+          "improvement": "Build reserves toward a 3-to-12 month target range and increase total spending directed specifically to direct program delivery."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "EDUCATION_GLOBAL",
+        "cause_area": "GLOBAL_EDUCATION",
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[3]",
+          "[7]"
         ],
-        "evidence_rigor": "Grade B - Direct outcome measurement and field reports",
+        "evidence_rigor": "Grade B - Direct outcome tracking and field reporting",
         "geographic_focus": [
+          "Pakistan",
           "Malawi",
           "Bangladesh",
-          "Pakistan",
           "South Sudan"
         ],
-        "giving_style": "Digital direct service",
+        "giving_style": "Digital direct learning & capacity building",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": "SADAQAH-ELIGIBLE"
       },
       "financial_deep_dive": {
         "admin_ratio": 0.375,
         "annual_revenue": 363707,
         "citation_ids": [
           "[1]",
-          "[2]",
           "[9]"
         ],
         "cn_financial_score": 83,
@@ -749,9 +810,9 @@
         "fundraising_ratio": 0.01,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.877,
+        "peer_program_ratio_median": 0.905,
         "program_expense_ratio": 0.78,
-        "reserves_months": 5.2,
+        "reserves_months": 1.5,
         "revenue_cagr_3yr": -2.1,
         "transparency_score": 85,
         "working_capital_months": 1.5,
@@ -783,36 +844,36 @@
         "domestic_grants": 0,
         "foreign_grants": 442449,
         "grant_count": 4,
-        "grant_strategy": "Funds foreign operational entities to execute digital learning deployments",
+        "grant_strategy": "Distributes funding to international partners operating micro-schools and local learning sites",
         "is_significant_grantmaker": true,
         "regions_served": [
+          "Pakistan",
           "Malawi",
-          "Bangladesh",
-          "Pakistan"
+          "Bangladesh"
         ],
         "top_recipients": [
-          "Foreign Implementing Partners ($442,449)"
+          "Foreign Implementing Partners ($442K total)"
         ],
         "total_grants": 442449
       },
       "headline": "Teach the World Foundation uses digital tools to improve literacy for children in underserved communities.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who value digital innovation in early childhood education and want to fund cost-effective literacy interventions in developing nations.",
+        "best_for_summary": "Best for donors interested in digital educational interventions and scalable literacy models who are comfortable supporting a mid-sized organization with lean operating reserves.",
         "citation_ids": [
           "[1]",
-          "[3]"
+          "[7]"
         ],
         "donor_motivations": [
-          "Want to support technology-driven solutions to global illiteracy",
-          "Appreciate low unit-cost models that maximize student reach per dollar",
-          "Prefer funding voluntary Sadaqah toward international development goals"
+          "Want to support scalable digital tablet literacy for children in developing nations",
+          "Value low fundraising costs and low cost per beneficiary ($7.10/child)",
+          "Seek voluntary Sadaqah giving opportunities rather than Zakat compliance"
         ],
         "giving_considerations": [
-          "Charity operates with a smaller budget ($363,707 in FY2024)",
-          "Financial ratios show more budget spent on administrative support than sector peers",
-          "Donations are Sadaqah-eligible only"
+          "Program expense ratio (78.0%) is lower than sector averages",
+          "Financial reserves cover only 1.5 months of operations",
+          ""
         ],
-        "not_ideal_for": ""
+        "not_ideal_for": ">61.5% program expense ratios."
       },
       "impact_evidence": {
         "citation_ids": [
@@ -821,58 +882,58 @@
           "[6]"
         ],
         "evidence_grade": "B",
-        "evidence_grade_explanation": "Outcome reports track specific student growth metrics in early reading and mathematics.",
+        "evidence_grade_explanation": "Grade B indicates documented field outcome testing and baseline evaluations showing measurable gains in literacy and math.",
         "external_evaluations": [
           "Nielsen Proof of Concept Study",
           "Outcome Harvesting Report"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "PUBLISHED",
-        "theory_of_change_summary": "Deploying low-cost tablet devices loaded with interactive learning software allows children in resource-poor environments to self-teach foundational literacy and numeracy.",
-        "why_evidence_matters": "Documenting student learning gains confirms that digital hardware translates into functional literacy improvements."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Deploying scalable digital learning tools and self-learning tablet software in micro-schools enhances core reading and math skills.",
+        "why_evidence_matters": "Outcome tracking verifies whether educational technology translates to actual learning gains for enrolled children."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "founded_year": 2015,
         "maturity_stage": "Growth",
         "revenue_growth_3yr": -2.1,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "With a scalable digital framework, additional capital can fund hardware deployment in new regions.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "Current modest revenue ($363,707 in FY2024) leaves room for program expansion, provided reserve funds are built.",
         "strategic_priorities": [
-          "Expand Microschool footprint",
-          "Deploy AtHome learning software"
+          "Expand microschool tablet deployments",
+          "Strengthen organizational operating reserves"
         ],
         "years_operating": 11
       },
       "organizational_capacity": {
         "board_size": 3,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
         "ceo_name": "Not Disclosed",
         "citation_ids": [
           "[1]",
           "[3]",
           "[9]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "Malawi, Bangladesh, Pakistan, South Sudan",
+        "employees_count": null,
+        "geographic_reach": "Pakistan, Malawi, Bangladesh, South Sudan",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 3,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
           "[3]"
         ],
-        "differentiator": "Focuses on <cite id=\"3\">scalable digital microschool models</cite> rather than traditional brick-and-mortar school construction.",
-        "peer_group": "Global Education Nonprofits",
+        "differentiator": "Focuses on micro-school digital tablet delivery models in <cite id=\"3\">Malawi, Pakistan, and Bangladesh</cite>.",
+        "peer_group": "Global Education Organizations",
         "similar_orgs": [
           "The Hassan Foundation",
           "The Morocco Foundation",
@@ -881,15 +942,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on educational support and international grantmaking",
+          "differentiator": "Similar size operating educational and grantmaking programs",
           "name": "The Hassan Foundation"
         },
         {
-          "differentiator": "Focuses on K-12 primary education support",
+          "differentiator": "Focuses on K-12 educational access in North Africa",
           "name": "The Morocco Foundation"
         },
         {
-          "differentiator": "Operates similar international educational programs",
+          "differentiator": "Combines educational initiatives with grantmaking",
           "name": "Al-Barr Foundation"
         }
       ],
@@ -898,28 +959,29 @@
           "citation_ids": [
             "[9]"
           ],
-          "detail": "The foundation spends only <cite id=\"9\">$0.02 per $1 raised</cite> in contributions, ensuring that minimal public support is lost to promotional activities.",
-          "point": "Exceptional fundraising efficiency"
+          "detail": "The organization spent only <cite id=\"9\">$0.02 per $1 raised</cite> in total contributions during recent filings.",
+          "point": "High fundraising efficiency"
         },
         {
           "citation_ids": [
-            "[3]"
+            "[5]",
+            "[6]"
           ],
-          "detail": "Evaluations show students successfully learn to <cite id=\"3\">confidently operate learning applications</cite> on tablets and demonstrate increased class participation.",
-          "point": "Verified digital literacy outcomes"
+          "detail": "Field evaluation reports document clear growth in <cite id=\"5\">math number recognition and reading direction skills</cite>.",
+          "point": "Verified student learning outcomes"
         },
         {
           "citation_ids": [
-            "[9]"
+            "[1]"
           ],
-          "detail": "The organization holds an <cite id=\"9\">overall score of 84.0/100 from Charity Navigator</cite> and maintains <cite id=\"9\">100% independent board members</cite>.",
-          "point": "Strong third-party accountability credentials"
+          "detail": "Program delivery models achieve direct reach at an estimated cost of <cite id=\"1\">$7.10 per beneficiary</cite>.",
+          "point": "Low cost per beneficiary"
         }
       ],
       "strengths_deep_dive": [
-        "Teach the World Foundation demonstrates high cost-efficiency in reaching its target beneficiaries. The foundation reports an average cost of <cite id=\"3\">$7.10 per beneficiary while reaching 25,000 children</cite>, placing it among the more economical global digital literacy interventions. Furthermore, field reports confirm that deploying digital learning tools yields direct qualitative changes: students demonstrate improved <cite id=\"5\">math and alphabet recognition</cite> alongside reported reductions in shyness during learning activities."
+        "Teach the World Foundation demonstrates strong program efficiency in terms of unit costs, delivering digital literacy initiatives at <cite id=\"1\">$7.10 per beneficiary</cite>. Outcome evaluations published by external testing partners show measured improvements in <cite id=\"5\">2-D shape recognition and addition accuracy</cite> among enrolled children, alongside gains in student confidence. Furthermore, the organization manages low donor acquisition expenses, keeping <cite id=\"9\">fundraising costs at $0.02 per $1 raised</cite>."
       ],
-      "summary": "Teach the World Foundation uses digital tools to improve literacy for children in underserved communities. Founded in 2015, the organization addresses global educational gaps through tablet-based learning interventions in regions including Malawi, Bangladesh, and Pakistan. In FY2024, the foundation managed <cite id=\"1\">$363,707 in total revenue</cite>, maintaining a modest operation that reaches thousands of children. Financial efficiency metrics show that the charity spends <cite id=\"9\">$0.01 to raise every $1 in donations</cite>, reflecting highly cost-effective fundraising operations. However, the organization's overall spending pattern indicates a <cite id=\"1\">program expense ratio of 78.0% in FY2024</cite>, which leaves over a third of budget for administrative and operational management. Based on cash-adjusted financial evaluations, the foundation achieves a <cite id=\"9\">program ratio score of 78%</cite>, though it still trails peer medians for international education groups. Independent evaluators grant the charity an <cite id=\"9\">overall score of 84.0/100 from Charity Navigator</cite>, highlighting solid accountability and transparent reporting practices. In addition, the organization holds a Gold Seal of Transparency from Candid. Outcome measurements show verified benefits for target populations, where digital programs help children master early learning software and build self-confidence. The charity's scale remains lean, keeping operating costs per student low while navigating small balance sheet reserves.",
+      "summary": "Teach the World Foundation is an international educational organization founded in 2015 that deploys digital learning tools to improve literacy for children in underserved communities across <cite id=\"3\">Pakistan, Malawi, and Bangladesh</cite>. The organization addresses global illiteracy by deploying self-learning software on tablets through its Microschools, InSchool, and AtHome Learning models. In FY2024, the foundation recorded <cite id=\"1\">a total revenue of $363,707</cite>, reflecting flat revenue movement with a 3-year compound annual growth rate of -2.1%. The charity maintains an overall rating of <cite id=\"9\">84.0/100 from Charity Navigator</cite> and holds a <cite id=\"1\">Gold Seal of Transparency</cite> from Candid.\n\nFrom a financial management perspective, Teach the World Foundation demonstrates contrasting operational metrics. The charity maintains high fundraising efficiency, spending <cite id=\"9\">$0.01 to $0.02 to raise every $1 in donations</cite>. However, in FY2024, its <cite id=\"1\">program expense ratio was 78.0%</cite>. This spending level falls below the standard 75% charity benchmark and trails the median program expense ratio of <cite id=\"9\">90.5% among global education peers</cite>. Additionally, the foundation maintains a limited liquidity buffer with <cite id=\"1\">1.5 months of working capital in reserve</cite>.\n\nEvaluation data demonstrates positive learning outcomes among participating students. Testing documentation highlights <cite id=\"5\">verifiable improvements in reading and math skills</cite>, including digital literacy and student confidence in operating applications on tablets. Teach the World Foundation serves an estimated <cite id=\"3\">25,000 beneficiaries</cite> at an average operational cost of <cite id=\"1\">$7.10 per beneficiary</cite>. While the organization operates in Muslim-majority regions, it does not maintain formal zakat policies or zakat compliance, making its programs <cite id=\"7\">SADAQAH-ELIGIBLE</cite> for donors.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

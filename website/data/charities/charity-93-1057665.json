@@ -48,7 +48,7 @@
     "programExpenses": 41548350,
     "adminExpenses": 3968375,
     "fundraisingExpenses": 2111528,
-    "programExpenseRatio": "0.8810",
+    "programExpenseRatio": "0.8723",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 93521529,
@@ -95,7 +95,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:13:52",
+  "lastUpdated": "2026-08-03 17:48:52",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -109,7 +109,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:13:07.753936+00:00",
+        "timestamp": "2026-08-04T00:34:31.933559+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -237,7 +237,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-03T19:13:07.753936+00:00",
+      "timestamp": "2026-08-04T00:34:31.933559+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -435,7 +435,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 88%",
+            "evidence": "Program expense ratio: 87%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -480,27 +480,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
-          "judge": "citation",
-          "message": "Citation not fetched or provided in the fetched URL content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "Citation not fetched or provided in the fetched URL content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_9",
-          "judge": "citation",
-          "message": "Citation not fetched or provided in the fetched URL content.",
-          "severity": "warning"
-        },
-        {
           "field": "zakat_classification",
           "judge": "zakat",
-          "message": "The charity is classified as 'amil' (zakat collector/distributor), but its programs primarily serve the poor and needy (fuqara/masakin) through direct humanitarian and medical relief.",
+          "message": "The charity claims zakat eligibility for amil, but programs provide direct relief to poor/needy children (fuqara/masakin).",
           "severity": "warning"
         },
         {
@@ -569,100 +551,95 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains a high program expense ratio.",
-          "id": "[1]",
-          "source_name": "Charity Navigator",
-          "source_url": "https://www.charitynavigator.org/ein/931057665#financials"
-        },
-        {
-          "claim": "The charity is zakat-eligible.",
+          "claim": "The charity is zakat-eligible and uses these funds to provide direct relief to children in need.",
           "id": "[2]",
           "source_name": "Charity Website - Zakat",
           "source_url": "https://www.pcrf.net/zakat-fund"
         },
         {
-          "claim": "In FY2024, the charity had $94,873,840 in revenue, a $0.02 fundraising efficiency, and 40.9 months of working capital.",
+          "claim": "In FY2024, the organization managed $94,873,840 in total revenue and maintained a Program expense ratio of 87.2%.",
           "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
         },
         {
-          "claim": "The mission is to provide free medical care regardless of religion or politics.",
+          "claim": "The charity provides free medical care and humanitarian aid regardless of religion or politics.",
           "id": "[4]",
           "source_name": "Charity Website - About",
           "source_url": "https://www.pcrf.net/about-us"
         },
         {
-          "claim": "The charity provides transparent access to its financial filings.",
-          "id": "[5]",
-          "source_name": "Charity Website - Financials",
-          "source_url": "https://www.pcrf.net/annual-reports"
-        },
-        {
-          "claim": "The charity tracks metrics such as children treated via medical missions.",
+          "claim": "The charity provides medical missions and one-time sponsorships for children.",
           "id": "[6]",
           "source_name": "Annual Report (2023)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
         },
         {
-          "claim": "The charity provides clinical interventions and potable water in Gaza.",
+          "claim": "The organization provides emergency medical surgeries and nutrition aid.",
+          "id": "[7]",
+          "source_name": "Annual Report (2024)",
+          "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
+        },
+        {
+          "claim": "The charity provides clinical interventions and surgical program cases.",
           "id": "[9]",
           "source_name": "Impact Report (2025)",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2025/10/27/02-final-pages-q3-design-1761565903.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows an above-average performance due to its high spending on direct programs and very low fundraising costs. While its financial health is strong, the large amount of cash held in reserve is unusual for a group collecting zakat.",
+      "amal_score_rationale": "This charity shows a positive performance by directing the vast majority of its funds to programs and maintaining very low fundraising costs. However, the high amount of saved cash and missing strategic documentation prevent a higher assessment.",
       "areas_for_improvement": [
-        "The organization holds 40.9 months of working capital, which exceeds typical timelines for distributing zakat funds",
-        "Lack of a publicly documented theory of change to explain long-term strategy"
+        "Lack of a documented theory of change to explain long-term impact strategies",
+        "High cash reserves may conflict with the requirement to distribute zakat funds promptly",
+        "Discrepancy between reported geographic reach and lack of foreign grants on tax filings"
       ],
       "dimension_explanations": {
-        "alignment": "This group is a strong fit for Muslim donors as it is zakat-eligible and serves high-urgency health needs [2][4]. It has a long track record of working in underserved areas.",
-        "impact": "The charity is highly efficient, spending $0.02 to raise every dollar in FY2024 [3]. With a Program expense ratio of 88.1%, most funds go directly to medical care and food [1]. It provides direct services like surgeries and clean water, though it lacks a formal theory of change document [6][9]."
+        "alignment": "This organization is a strong fit for Muslim donors as it is zakat-eligible and serves a high-urgency cause in global health [2][4]. It has a long track record of service, though there is a noted gap between its claimed geographic reach and its official tax reporting regarding foreign grants [3][4].",
+        "impact": "The charity is highly efficient, with a Program expense ratio of 87.2% in FY2024 [3]. It provides direct services at a low cost of approximately $26 per beneficiary [9]. While it shows strong results in medical interventions and nutrition aid, it lacks a formal theory of change to guide its long-term goals [6][7]."
       },
-      "headline": "The Palestine Children's Relief Fund provides essential medical care and humanitarian aid to children across the Middle East.",
+      "headline": "The Palestine Children's Relief Fund provides free medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
       "strengths": [
-        "High spending efficiency with a Program expense ratio of 88.1% in FY2024",
-        "Low fundraising costs of just $0.02 per $1 raised in FY2024",
-        "Strong track record of direct service, including surgeries and nutrition aid in Gaza"
+        "High spending efficiency with a Program expense ratio of 87.2% in FY2024",
+        "Low fundraising costs of only $0.02 per $1 raised in FY2024",
+        "Strong financial reserves with 40.9 months of working capital"
       ],
-      "summary": "The organization delivers free health services and urgent relief to children regardless of their religious or political background [4]. In FY2024, the charity managed $94,873,840 in total revenue to support its medical missions and infrastructure projects [3][5]. It is recognized as zakat-eligible, allowing donors to fulfill their religious obligations through specific relief funds [2]."
+      "summary": "In FY2024, the organization managed $94,873,840 in total revenue to support medical missions and infrastructure projects [3][4]. The charity is zakat-eligible and uses these funds to provide direct relief to children in need [2]. It maintains a strong focus on healthcare capacity building and urgent community response [4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "87.2% of expenses going to programs",
+          "claim": "Charity Navigator Metadata",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 88.1%",
-          "source_name": "Charity Navigator - Financials",
+          "quote": "Working capital: 48.0 months; Fundraising efficiency: $0.02",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/931057665#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "zakat-eligible status",
+          "claim": "zakat eligibility and policy",
           "confidence": 0.95,
           "id": "[2]",
-          "quote": "Accepts Zakat",
+          "quote": "Accepts Zakat for fuqara, masakin, fisabilillah",
           "source_name": "Charity Website - Zakat",
           "source_type": "website",
           "source_url": "https://www.pcrf.net/zakat-fund"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "$94,873,840 in total revenue",
+          "claim": "financial figures and tax data",
           "confidence": 1,
           "id": "[3]",
-          "quote": "Total Revenue: $94,873,840",
+          "quote": "Contributions: $90,655,454; Total Assets: $93,521,529",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/931057665"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "delivers free medical treatment",
+          "claim": "mission and founding history",
           "confidence": 0.95,
           "id": "[4]",
           "quote": "We provide free medical care and humanitarian aid for any child in the Middle East",
@@ -672,36 +649,36 @@
         },
         {
           "access_date": "2026-01-09",
-          "claim": "support its medical missions",
-          "confidence": 0.9,
+          "claim": "financials and annual reports",
+          "confidence": 0.95,
           "id": "[5]",
-          "quote": "Annual reports and financial statements",
+          "quote": "Annual reporting and financial oversight details",
           "source_name": "Charity Website - Financials",
           "source_type": "website",
           "source_url": "https://www.pcrf.net/annual-reports"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "cost of $25.97 per beneficiary",
+          "claim": "2023 annual outcome metrics",
           "confidence": 0.95,
           "id": "[6]",
-          "quote": "Children treated via Medical Missions",
+          "quote": "Children treated via Medical Missions: 1074; Meals distributed in Gaza: 196650",
           "source_name": "Annual Report (2023)",
-          "source_type": "website",
+          "source_type": "evaluation",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2024/12/03/2023-annual-report-1733253189.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "1,324 emergency medical surgeries",
+          "claim": "2024 emergency intervention metrics",
           "confidence": 0.95,
           "id": "[7]",
-          "quote": "Emergency Medical Team Surgeries in Gaza: 1324",
+          "quote": "Emergency Medical Team Surgeries in Gaza: 1324; Children evacuated abroad: 169",
           "source_name": "Annual Report (2024)",
-          "source_type": "website",
+          "source_type": "evaluation",
           "source_url": "https://www.pcrf.net/cached_uploads/download/2026/01/18/annual-report-2024-1768740754.pdf"
         }
       ],
-      "amal_score_rationale": "This charity shows an above-average performance due to its high spending on direct programs and very low fundraising costs. While its financial health is strong, the large amount of cash held in reserve is unusual for a group collecting zakat.",
+      "amal_score_rationale": "This charity shows a positive performance by directing the vast majority of its funds to programs and maintaining very low fundraising costs. However, the high amount of saved cash and missing strategic documentation prevent a higher assessment.",
       "amal_scores": {
         "amal_score": 74,
         "confidence_scores": {
@@ -717,118 +694,121 @@
         {
           "area": "Excessive Reserve Holdings",
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[3]"
           ],
-          "context": "Holds <cite id=\"1\">40.9 months of operating capital</cite> in reserves, which is higher than standard sector guidelines for prompt charitable spending [1]."
+          "context": "Holds 40.9 months of operating capital in reserves, which presents a drawdown delay for zakat funds that require prompt deployment."
         },
         {
-          "area": "Absence of Published Theory of Change",
+          "area": "Absence of Formally Published Theory of Change",
           "citation_ids": [
-            "[4]"
+            "[5]"
           ],
-          "context": "Lacks a <cite id=\"4\">publicly documented theory of change</cite> detailing long-term strategic causal pathways [4]."
+          "context": "Lacks an explicit published theory of change mapping long-term causal pathways, despite tracking volume-based output metrics."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
+        "effectiveness_status": "UNKNOWN",
+        "finances_status": "UNKNOWN",
+        "governance_status": "UNKNOWN",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/children-youth/childrens-hunger-relief-fund-in-santa-rosa-ca-9999-2559",
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB evaluation status unavailable or not currently reviewed."
+        "summary": "BBB Wise Giving Alliance evaluation not fully completed for this entity."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
-          "[4]"
+          "[3]"
         ],
-        "mitigation_notes": "The organization continues expanding emergency relief deployments in Gaza to utilize available capital.",
+        "mitigation_notes": "The organization continues to scale rapid direct response programs in response to humanitarian crises, which may utilize reserves over time.",
         "risk_factors": [
-          "<cite id=\"1\">40.9 months of operating reserves creates accumulation risks for zakat funds</cite>",
-          "<cite id=\"4\">Absence of a formal theory of change</cite>"
+          "Accumulated reserves equal to 40.9 months of working capital may slow immediate mission deployment.",
+          "Lack of a documented causal theory of change limits long-term impact evaluation."
         ],
-        "summary": "Primary concerns center on <cite id=\"1\">holding 40.9 months of financial reserves</cite>, which slows the deployment of charitable funds."
+        "summary": "Primary concerns center on asset deployment efficiency: holding 40.9 months of working capital in reserves creates potential delays in utilizing donated zakat funds."
       },
       "citation_stats": {
         "by_source_type": {
+          "evaluation": 2,
           "form990": 1,
           "rating": 1,
-          "website": 5
+          "website": 3
         },
         "high_confidence_count": 7,
         "total_count": 7,
-        "unique_sources": 5
+        "unique_sources": 7
       },
       "confidence": {
-        "data_freshness": "Financial figures from FY2024 filings",
+        "data_freshness": "Most data from 2023-2024 filings",
         "data_gaps": [
-          "Charity Navigator unrated status"
+          "2024 complete 990 breakdown pending"
         ],
         "level": "HIGH",
-        "notes": "Data is highly comprehensive across recent annual reports and tax filings.",
+        "notes": "Verified financial and program metrics available",
         "score": 95,
         "sources_used": [
           "Form 990",
-          "Charity Navigator Metadata",
-          "Annual Reports",
-          "Website"
+          "Charity Website",
+          "Annual Reports"
         ]
       },
       "data_confidence": {
         "confidence_score": 95,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "No unrated CN overall score available"
+          "Form 990 expense details for 2024 missing from dataset",
+          "Lack of documented theory of change"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 10,
-        "unique_sources": 5,
-        "website_last_crawled": "2025-01"
+        "total_citations": 12,
+        "unique_sources": 7,
+        "website_last_crawled": "2026-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Offers strong alignment for faith-driven donors through <cite id=\"2\">verified zakat eligibility</cite> supporting impoverished children in Palestine, Jordan, and Lebanon.",
-          "improvement": "Expand services to underserved geographies with limited nonprofit coverage."
+          "explanation": "Provides a clear fit for Muslim donors through verified zakat eligibility and relief programs serving poor and needy populations in crisis zones.",
+          "improvement": "Expand services to underserved populations or geographies with limited nonprofit coverage."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[4]"
+            "[3]",
+            "[5]"
           ],
-          "explanation": "Donors can trust the organization's governance based on an <cite id=\"1\">independent board with 100% independent participation</cite> and a <cite id=\"4\">Platinum Seal of Transparency from Candid</cite>.",
-          "improvement": "The charity can strengthen credibility by publishing board meeting minutes and establishing accreditation with the BBB Wise Giving Alliance."
+          "explanation": "Donors can verify organizational transparency through a Candid Platinum Seal of Transparency and complete Form 990 filings showing independent board oversight.",
+          "improvement": "To strengthen credibility further, the charity could publish board meeting minutes and secure full third-party accreditation."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[6]"
+            "[3]",
+            "[7]"
           ],
-          "explanation": "Program delivery is highly efficient with an <cite id=\"1\">88.1% program expense ratio</cite> and a <cite id=\"6\">$25.97 cost per beneficiary</cite> across direct care operations.",
-          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery while keeping a clear operating reserve floor."
+          "explanation": "Operations demonstrate direct service delivery with a cost per beneficiary of approximately $25.97 and an 87.2% program expense ratio in FY2024.",
+          "improvement": "Publish a time-bound plan to deploy excess unrestricted reserves into mission delivery, while keeping a clear operating reserve floor."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "GLOBAL_HEALTH",
         "citation_ids": [
           "[2]",
-          "[4]"
+          "[3]"
         ],
-        "evidence_rigor": "Grade C - Outcome tracking verified via annual reports",
+        "evidence_rigor": "Grade C - Output tracking and program volume documentation",
         "geographic_focus": [
-          "Gaza Strip",
+          "Palestine",
+          "Gaza",
           "West Bank",
           "Lebanon",
           "Jordan",
           "Egypt"
         ],
-        "giving_style": "Direct humanitarian service",
+        "giving_style": "Direct medical service and emergency humanitarian aid",
         "tax_deductible": true,
         "zakat_asnaf_served": [
           "fuqara (poor)",
@@ -838,17 +818,17 @@
         "zakat_status": "ZAKAT-ELIGIBLE"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.108,
+        "admin_ratio": 0.11,
         "annual_revenue": 94873840,
         "citation_ids": [
           "[1]",
           "[3]"
         ],
         "cn_financial_score": null,
-        "fundraising_ratio": 0.02,
+        "fundraising_ratio": 0.018,
         "industry_program_ratio": 0.75,
         "peer_count": 19,
-        "peer_program_ratio_median": 0.874,
+        "peer_program_ratio_median": 0.877,
         "program_expense_ratio": 0.8809999999999999,
         "reserves_months": 40.9,
         "revenue_cagr_3yr": 197.6,
@@ -856,8 +836,8 @@
         "working_capital_months": 40.9,
         "yearly_financials": [
           {
-            "expenses": 0,
-            "net_assets": 0,
+            "expenses": null,
+            "net_assets": null,
             "revenue": 94873840,
             "year": 2024
           },
@@ -877,56 +857,58 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
+          "[3]",
           "[4]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Operates direct programs rather than making secondary grants.",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct service implementation rather than secondary grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
-          "Palestine",
-          "Jordan",
+          "Gaza",
+          "West Bank",
           "Lebanon",
+          "Jordan",
           "Egypt"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
-      "headline": "The Palestine Children's Relief Fund provides essential medical care and humanitarian aid to children across the Middle East.",
+      "headline": "The Palestine Children's Relief Fund provides free medical care and humanitarian aid to children across the Middle East regardless of religion or politics.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors seeking to support urgent pediatric healthcare and direct humanitarian relief in Palestine and the Middle East with zakat-eligible funds.",
+        "best_for_summary": "Best for donors who prioritize urgent pediatric medical aid and direct humanitarian relief in Palestine and the broader Middle East with zakat-eligible contributions.",
         "citation_ids": [
-          "[1]",
           "[2]",
           "[4]"
         ],
         "donor_motivations": [
-          "Want to provide direct surgical and medical care to injured or sick children",
-          "Seek zakat-compliant avenues for humanitarian aid in Gaza and the West Bank",
-          "Value established charities with strong local presence and low fundraising costs"
+          "Seek to fulfill zakat obligations supporting vulnerable children and families",
+          "Prioritize pediatric healthcare and direct surgical interventions in conflict areas",
+          "Value an established organization with a 30+ year track record in the region"
         ],
         "giving_considerations": [
-          "The charity holds substantial financial reserves which may slow immediate spending",
-          "Operations in active conflict zones present ongoing access and logistics challenges"
+          "Large reserve balances mean gifts join a substantial financial cushion",
+          "Operations are concentrated in high-risk conflict zones with complex delivery logistics"
         ],
-        "not_ideal_for": "Donors seeking high-growth startups or those who require randomized controlled trials (RCTs) for intervention efficacy"
+        "not_ideal_for": "Donors seeking hyperlocal US domestic focus or those requiring academic randomized controlled trials for evaluation"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[4]",
+          "[5]",
+          "[6]",
           "[7]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates verified operational tracking and annual reporting of beneficiary metrics, though formal third-party impact trials are not conducted.",
+        "evidence_grade_explanation": "Grade C reflects systematic tracking of output metrics and beneficiary counts across annual reporting, without formal external experimental studies.",
         "external_evaluations": [
-          "Candid Outcome Metrics"
+          "Candid Outcome Metrics Tracking"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Provides free direct medical care, sends volunteer surgical missions, and builds regional health infrastructure to reduce reliance on foreign treatment.",
-        "why_evidence_matters": "Outcome tracking ensures medical interventions successfully reach patients and improve long-term child health."
+        "theory_of_change": "IMPLICIT",
+        "theory_of_change_summary": "The organization provides direct medical missions, surgical sponsorships, and emergency humanitarian relief to reduce pediatric mortality and suffering in underserved regions.",
+        "why_evidence_matters": "Clear outcome metrics verify that financial resources translate into concrete healthcare interventions and beneficiary aid."
       },
       "long_term_outlook": {
         "citation_ids": [
@@ -937,11 +919,11 @@
         "maturity_stage": "Institution",
         "revenue_growth_3yr": 197.6,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Critical ongoing health and reconstruction needs in Gaza demand substantial sustained funding.",
+        "room_for_funding_explanation": "Severe ongoing humanitarian crisis conditions create extensive ongoing funding needs for pediatric medical care and basic supplies.",
         "strategic_priorities": [
-          "Expand Gaza emergency surgical care",
-          "Rebuild medical infrastructure",
-          "Scale child nutrition programs"
+          "Expand urgent Gaza medical relief",
+          "Increase direct surgical sponsorships",
+          "Maintain treatment abroad programs for critical cases"
         ],
         "years_operating": 35
       },
@@ -949,75 +931,78 @@
         "board_size": 11,
         "ceo_compensation": 178650,
         "ceo_compensation_pct_revenue": 0.19,
-        "ceo_name": "N/A",
+        "ceo_name": null,
         "citation_ids": [
           "[1]",
           "[3]",
           "[4]"
         ],
-        "employees_count": 0,
-        "geographic_reach": "Gaza, West Bank, Lebanon, Jordan, Egypt",
+        "employees_count": null,
+        "geographic_reach": "6 countries/territories in the Middle East",
         "has_conflict_policy": true,
         "has_financial_audit": true,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 0,
+        "payroll_to_revenue_pct": null,
         "programs_count": 5,
-        "staff_per_million_revenue": 0,
-        "volunteers_count": 0
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
-          "[4]"
+          "[4]",
+          "[7]"
         ],
-        "differentiator": "Distinguished by direct pediatric medical care and deep operational infrastructure within Palestine.",
+        "differentiator": "Distinguished by specialized focus on pediatric care and medical evacuations in conflict-affected regions.",
         "peer_group": "Global Health and Emergency Relief Organizations",
         "similar_orgs": [
-          "Helen Keller International",
           "SYRIAN AMERICAN MEDICAL SOCIETY FOUNDATION",
+          "Helen Keller International",
           "MedGlobal"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Broader global reach across Africa and Asia",
-          "name": "Helen Keller International"
-        },
-        {
-          "differentiator": "Focuses primarily on healthcare relief in Syria",
+          "differentiator": "Focuses primarily on healthcare and emergency relief in Syria",
           "name": "SYRIAN AMERICAN MEDICAL SOCIETY FOUNDATION"
         },
         {
-          "differentiator": "Operates across diverse international disaster zones",
+          "differentiator": "Broader global footprint focused on vision and nutritional programs",
+          "name": "Helen Keller International"
+        },
+        {
+          "differentiator": "Employs health worker volunteer deployments across multiple international crisis zones",
           "name": "MedGlobal"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[3]",
+            "[5]"
           ],
-          "detail": "Allocated <cite id=\"1\">87.2% of expenses to direct programs</cite> in FY2024, beating the 75% sector benchmark [1].",
-          "point": "High Program Spending Efficiency"
+          "detail": "Directs 87.2% of its expenditure directly to program services in FY2024, beating the 75% sector benchmark.",
+          "point": "High Program Spending Ratio"
         },
         {
           "citation_ids": [
-            "[6]"
+            "[1]",
+            "[3]"
           ],
-          "detail": "Delivers direct health interventions at an estimated <cite id=\"6\">cost of $25.97 per beneficiary</cite> across large-scale programs [6].",
-          "point": "Exceptional Cost-per-Beneficiary Efficiency"
+          "detail": "In FY2024, the charity spent only $0.02 per $1 raised of revenue, demonstrating high fundraising efficiency.",
+          "point": "Low Fundraising Overhead"
         },
         {
           "citation_ids": [
             "[7]"
           ],
-          "detail": "Executed <cite id=\"7\">1,324 emergency medical surgeries</cite> and evacuated <cite id=\"7\">169 children for specialized care</cite> in 2024 [7].",
-          "point": "Proven Frontline Impact in Gaza"
+          "detail": "In 2024, emergency medical teams completed 1,324 surgeries in Gaza and evacuated 169 children abroad for specialized care.",
+          "point": "Significant Direct Medical Impact"
         }
       ],
       "strengths_deep_dive": [
-        "The Palestine Children's Relief Fund demonstrates exceptional operational efficiency on the ground. In FY2024, it reported <cite id=\"3\">$94,873,840 in revenue</cite> while keeping fundraising costs down to <cite id=\"1\">$0.02 per $1 raised</cite> [1][3]. Its program ratio of <cite id=\"1\">87.2%</cite> exceeds the 75% sector standard, ensuring the vast majority of resources directly reach vulnerable children [1]. The organization's field operations in Gaza provided over <cite id=\"7\">26 million nutrition aid packages in 2024</cite> alongside specialized pediatric surgical care [7]."
+        "The Palestine Children's Relief Fund demonstrates direct service delivery through dedicated medical missions and emergency relief operations. In FY2024, the organization reported $94,873,840 in total revenue while maintaining an 87.2% program expense ratio. Financial efficiency is supported by minimal fundraising costs of $0.02 per $1 raised. Their operational reach spans critical regions including Gaza, the West Bank, Lebanon, Jordan, and Egypt. Direct health interventions in 2024 included over 1,300 surgeries performed by specialized teams in Gaza alongside large-scale nutrition distribution."
       ],
-      "summary": "The Palestine Children's Relief Fund provides essential medical care and humanitarian aid to children across the Middle East [4]. Founded in <cite id=\"4\">1991</cite>, the organization delivers free medical treatment and urgent aid regardless of political or religious affiliation [4]. In FY2024, the charity managed <cite id=\"3\">$94,873,840 in total revenue</cite> to fuel wide-ranging health programs [3]. Operations remain financially efficient, with <cite id=\"1\">87.2% of expenses going to programs</cite> and fundraising costs limited to <cite id=\"1\">$0.02 per $1 raised</cite> [1]. During recent crises, the organization mobilized extensive direct aid in Gaza, performing <cite id=\"7\">1,324 emergency surgeries</cite> and delivering over <cite id=\"7\">26 million direct nutrition interventions</cite> in 2024 [7]. It maintains <cite id=\"2\">zakat-eligible status</cite> for funds assisting impoverished and needy families [2]. However, the organization holds <cite id=\"1\">40.9 months of working capital in reserve</cite>, creating a notable delay between donation collection and deployment [1].",
+      "summary": "The Palestine Children's Relief Fund provides free medical care and humanitarian aid to children across the Middle East regardless of religion or politics. Founded in 1991, the organization addresses critical pediatric healthcare needs, operating across Palestine, Gaza, the West Bank, Lebanon, Jordan, and Egypt. In FY2024, the organization managed $94,873,840 in total revenue to scale its direct medical interventions and urgent humanitarian relief operations. The charity maintains a strong program focus, directing $0.87 of every dollar to direct services with minimal fundraising overhead. In 2024 alone, direct emergency responses delivered over 1,300 surgeries in Gaza and provided direct nutrition aid to affected communities. The charity's long-standing operational model combines emergency medical missions, treatment abroad programs, and local infrastructure support, offering a direct mechanism for Muslim donors seeking zakat-eligible global health interventions.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "ZAKAT-ELIGIBLE"

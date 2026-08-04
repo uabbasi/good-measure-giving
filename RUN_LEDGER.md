@@ -1618,7 +1618,16 @@ figure. Withholding ProPublica from the context blocks had not helped,
 because this is a separate and louder channel. CARE USA now states
 $832,911,696 rather than $909,098,267.
 
-## Open: 44 charities publish a ratio that contradicts their own components
+## CLOSED (2026-08-03): the contradicting ratio — see the section after this one
+
+The count below (44) was measured with a coarser tolerance and a wrong claim
+about provenance; the real figure was **53**, and **none** of them were
+"mixed" — every one had its components and its ratio from Charity Navigator.
+The question this section left open ("does CN divide by an expense base we do
+not store?") is answered: **yes, a three-year pooled one.** Resolution and
+evidence in the following section.
+
+## (superseded) Open: 44 charities publish a ratio that contradicts their own components
 
 `program_expense_ratio` disagrees with `program_expenses / total_expenses` on
 **44 of 165** published charities — 39 where Charity Navigator won the
@@ -1637,3 +1646,122 @@ better number is not yet established: CN may divide by an expense base we do
 not store, so this needs investigating before it is "fixed" either way.
 85-3547280 was restored to its last clean evaluation to hold the index at
 166/166.
+
+## Resolved: the ratio now divides the figures beside it (2026-08-03)
+
+**What Charity Navigator's ratio actually is.** `avg_program_expense_ratio` is
+POOLED across the filings CN uses in its rating — `sum(program) / sum(total)`
+over (usually) three years — while `program_expenses` and `total_expenses` come
+from `taxReturns.first`, a single year. The collector says so in a comment at
+`charity_navigator.py:814` ("parse CN's 3-year-average display values"), but
+comments have been wrong here before, so it was checked against CN's own raw
+`taxReturns` block for every published charity where both are recoverable:
+
+    pooled multi-year formula matches CN's ratio : 81 of 81
+    single most-recent year matches             :  0 of 81
+    unexplained                                 :  0
+
+So the two disagree BY CONSTRUCTION, and the disagreement is not a rounding
+artifact — CN pools in years where it has no functional-expense breakdown and
+records the missing program figure as ~0:
+
+    22-3382037   CN 2025  prog 5,460,382 / total 5,544,311 = 0.9849
+                 CN 2024  prog 4,981,072 / total 4,982,244 = 0.9998
+                 CN 2023  prog   152,166 / total 4,281,367 = 0.0355  <- no breakdown
+                 pooled = 10,593,620 / 14,807,922          = 0.7154  <- what we published
+
+The pooled figure is not "wrong". It is a different statistic, and where no
+components exist it is the only thing known about how the money was split
+(dropping it there is what sent Al-Furqaan 0.85 -> None -> impact 8/50). The
+rule adopted: **an external ratio may stand alone; it may not contradict.**
+
+**Three paths let a ratio outlive its statement.** Fixing the first alone
+looked complete and changed nothing on the page — the column is written by a
+different election than the one that was fixed.
+
+1. `charity_metrics_aggregator` preferred CN's pooled ratio over computing from
+   its own components. Now computes from components whenever it holds them.
+2. Gap-fill gated its source-agreement check on
+   `pp_tax_year == cn_fiscal_year`, which is **False when CN names no year at
+   all** — read as "different years, so a gap between them is a real
+   year-over-year change" — so the case with the LEAST evidence that the two
+   describe one filing was the case that skipped the check entirely. This is
+   the same shape as the fiscal-year guards from the previous pass: *a guard
+   that never fires because of how its predicate is written.*
+3. `synthesize.extract_financials` runs a SECOND election and refilled the
+   column from CN after the aggregator had already declined it — both when the
+   statement was refused outright and when the ratio was nulled for unreliable
+   expenses. **What it may fill is an absence, never a refusal.**
+
+**The splice that produced a defamatory page.** EIN 82-1670588 (BASMAH) was
+live with CN's `program_expenses` of 105,872 — the entirety of CN's own
+`total_expenses` — published against ProPublica's FY2023 total of 4,541,420.
+A page reporting that a charity spent **2.3% of its money on programs**,
+assembled from two filings that were never the same filing, with
+`source_attribution` labelling all of it "Charity Navigator". It had regressed
+during the 2026-08-02 repair run from a coherent statement
+(105,000 / 5,000 / 3,400 = 113,400, ratio 0.926). Only 2 charities fleet-wide
+had this shape (the other: 45-5637293), and both are now refused.
+
+**Fleet effect.**
+
+    ratio contradicting its own components : 53 -> 0
+    published ratios that moved            : 90
+    ratios withdrawn as not derivable      : 5   (45-5637293, 47-5015710,
+                                                  52-2283398, 82-1670588,
+                                                  90-0327815)
+    charities whose COMPONENTS changed     : 1   (82-1670588, the bad splice)
+    charities with a ratio                 : 155 of 166
+
+Largest corrections: 82-1670588 1.0 -> withdrawn, 56-2620244 0.678 -> 1.0,
+88-0405956 0.7551 -> 0.472, 22-3382037 0.7154 -> 0.9849, 26-1140201
+0.8511 -> 0.6837, 85-3547280 0.8414 -> 0.9997.
+
+**Not fixed, and deliberately.** 84-5191730 now publishes 0.0 — CN reports
+program 0, admin 13,034, total 13,034 against $604,759 of revenue, and the
+zero IS arithmetically corroborated (`zero_expense_component_is_corroborated`
+passes: the siblings close against the total). 0% is what that filing says.
+If it is wrong, the components are wrong, and that is a component-quality
+defect, not a ratio one. Flagging rather than silently overriding.
+
+**Tests.** 16 new across `test_the_ratio_divides_the_figures_beside_it.py` and
+`test_an_unknown_fiscal_year_is_not_a_shared_one.py`; suite 2244 -> 2260 green.
+Code commit `969718b`.
+
+### Verification, and one measurement error of my own
+
+The regeneration set was built by diffing `charity_data` against `HEAD~3` —
+but two charities had already been re-synthesized by hand as single-EIN tests
+*before* that point, so they showed no change and were silently left out of
+the batch. 22-3382037 — the flagship case in this whole investigation — kept
+publishing "spends 71.5% of its budget on its educational programs" against a
+corrected 98.5%. Re-measured against the true pre-fix Dolt snapshot
+(`jr968okf57cm1h67ndlvurj84b9pk4ft`): 91 ratios moved, 90 had been
+regenerated, 1 had not. **Diff against the snapshot you took, not against a
+relative offset you took later.**
+
+End-to-end check on the SHIPPED JSON, not the database:
+
+    index                                                    166
+    structured: ratio contradicting its own components         0   (was 53)
+    prose: a stated program % disagreeing with that ratio      0
+
+The prose check needed three passes to be worth anything. A naive "percentage
+near the word program" flagged 99 of 156 pages; nearly all were legitimate —
+industry benchmarks (75%), peer medians, verbatim Charity Navigator citation
+quotes, judge warning text stored in the evaluation, and the deliberately
+relabelled "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)".
+Four genuinely stale narratives survived regeneration and cleared on a plain
+retry — LLM non-determinism, not a prompt defect: both prompts already carry
+the ratio in their MANDATORY VALUES block.
+
+**A note for the editorial queue, not a defect.** The factual judge compares
+narrative claims against Charity Navigator, so where our recomputed ratio now
+differs from CN's pooled one it emits a *warning* (22-3382037: "narrative
+states 98.5% ... Charity Navigator reports 71.54%"). Warnings never gate
+publication. The narrative is right and the warning is right — they are
+measuring different windows.
+
+**Cost.** $26.20 across six runs (pilot 5, main 85, three retries, one missed
+charity). The main run ended at $23.40 of a $40 cap because it FINISHED.
+Measured $0.264/charity.

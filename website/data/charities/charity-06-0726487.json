@@ -51,7 +51,7 @@
     "programExpenses": 746002449,
     "adminExpenses": 71979175,
     "fundraisingExpenses": 78381392,
-    "programExpenseRatio": "0.8494",
+    "programExpenseRatio": "0.8323",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 487511769,
@@ -95,7 +95,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 11:13:04",
+  "lastUpdated": "2026-08-03 17:55:11",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -109,7 +109,7 @@
         "category": "subset_geographic_or_program",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T18:12:13.337501+00:00",
+        "timestamp": "2026-08-04T00:39:58.470098+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -226,8 +226,8 @@
     "youth"
   ],
   "programFocusTags": [
-    "healthcare-direct",
-    "humanitarian-relief"
+    "humanitarian-relief",
+    "healthcare-direct"
   ],
   "hideFromCurated": true,
   "theoryOfChange": null,
@@ -6597,7 +6597,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 85%",
+            "evidence": "Program expense ratio: 83%",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -6642,6 +6642,12 @@
       },
       "judge_issues": [
         {
+          "field": "citation_2",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 403",
+          "severity": "warning"
+        },
+        {
           "field": "citation_3",
           "judge": "citation",
           "message": "URL unreachable: HTTP 403",
@@ -6654,15 +6660,9 @@
           "severity": "warning"
         },
         {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "URL unreachable: HTTP 403",
-          "severity": "warning"
-        },
-        {
-          "field": "cost_per_person",
+          "field": "cost_per_beneficiary",
           "judge": "factual",
-          "message": "The narrative claims the cost to help each person is high at over $23,000, but the source data does not provide a total beneficiary count or cost-per-beneficiary metric to verify this specific calculation.",
+          "message": "The cost per beneficiary claim of approximately $23,682.62 cannot be directly verified from the provided source data.",
           "severity": "warning"
         },
         {
@@ -6717,98 +6717,101 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity maintains a 96.0/100 rating from Charity Navigator and holds 4.0 months of working capital.",
+          "claim": "In FY2024, the organization managed Total Revenue of $920,455,828 and maintains a 96.0/100 score with an 83.2% program expense ratio and $0.09 fundraising efficiency.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/060726487#financials"
         },
         {
-          "claim": "In FY2024, the organization managed Total Revenue: $920,455,828 and a Program Expense Ratio: 84.9%.",
-          "id": "[2]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/060726487"
-        },
-        {
-          "claim": "The organization has a proven history of helping more children stay in school and reducing child labor.",
+          "claim": "The organization has a long track record of helping children stay in school and reducing child deaths.",
           "id": "[3]",
           "source_name": "2019 Global Childhood Report: Changing Lives in Our Lifetime",
           "source_url": "https://www.savethechildren.org/content/dam/usa/reports/advocacy/global-childhood-report-2019-pdf.pdf"
         },
         {
-          "claim": "The group is a common choice for sadaqah-eligible giving.",
+          "claim": "Donors can contribute through various methods, and the organization is considered Sadaqah-eligible.",
           "id": "[5]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.savethechildren.org/us/ways-to-help/ways-to-give"
         },
         {
-          "claim": "Programs focus on nutrition, education, and health services for children and their caregivers.",
+          "claim": "The charity focuses on health, nutrition, and education programs to help caregivers adopt healthy behaviors.",
           "id": "[7]",
           "source_name": "Annual Report",
           "source_url": "https://www.savethechildren.org/us/about-us/financial-information"
         }
       ],
-      "amal_score_rationale": "This charity shows a balance of high financial efficiency and strong evidence of past success, though the high cost per person served and missing strategic documents limit its overall rating.",
+      "amal_score_rationale": "This charity shows a balanced profile with efficient spending and strong financial health, though its impact is limited by high costs per person and a lack of a formal theory of change.",
       "areas_for_improvement": [
-        "High cost per individual beneficiary compared to other humanitarian groups",
-        "Lack of a publicly documented theory of change to explain long-term strategy",
-        "Absence of specific governance documentation in recent assessments"
+        "The organization does not currently have a documented theory of change available for review.",
+        "High costs per beneficiary in capacity-building programs limit the total number of individuals reached directly."
       ],
       "dimension_explanations": {
-        "alignment": "This group addresses urgent humanitarian needs and is a common choice for sadaqah-eligible giving [5]. While it has a long track record, its fit for specific donor groups is considered moderate [7].",
-        "impact": "The organization spends a large portion of its budget on programs, with a Program Expense Ratio: 84.9% in FY2024 [2]. It has a proven history of helping more children stay in school and reducing child labor [3]. However, the cost to help each person is high at over $23,000, and the group lacks a clear, documented theory of change [7]."
+        "alignment": "Save the Children addresses urgent humanitarian needs and has a long track record of helping children stay in school and reducing child deaths [3]. It offers a medium fit for Muslim donors as a Sadaqah-eligible organization [5].",
+        "impact": "The organization maintains a Program expense ratio of 83.2%, which is considered efficient for large-scale operations [1]. While it shows strong evidence of positive outcomes in health and education, the cost per beneficiary is high at approximately $23,682.62 because many programs focus on long-term capacity building rather than direct aid [7]. The group also lacks a documented theory of change to explain its long-term strategy."
       },
       "headline": "Save the Children Federation provides health and education services to children and families during emergencies and development phases.",
       "strengths": [
-        "High spending efficiency with a Program Expense Ratio: 84.9% in FY2024",
-        "Low fundraising costs of $0.09 per $1 raised",
-        "Strong track record in reducing child mortality and increasing school attendance"
+        "Maintains a high overall Charity Navigator score of 96.0/100 [1].",
+        "Operates with a Program expense ratio of 83.2%, ensuring most funds reach children [1].",
+        "Demonstrates high fundraising efficiency, spending only $0.09 per $1 raised [1]."
       ],
-      "summary": "In FY2024, the organization managed Total Revenue: $920,455,828 to support its global mission [2]. The charity maintains a 96.0/100 rating from Charity Navigator for its overall performance [1]. Programs focus on nutrition, education, and health services for children and their caregivers [7]."
+      "summary": "In FY2024, the organization managed Total Revenue of $920,455,828 to support its global mission [1]. The charity focuses on health, nutrition, and education programs to help caregivers adopt healthy behaviors [7]. Donors can contribute through various methods, and the organization is considered Sadaqah-eligible [5]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "a 96/100 rating from Charity Navigator",
+          "claim": "96 out of 100 overall score from Charity Navigator",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score 96/100",
-          "source_name": "Charity Navigator - Ratings",
+          "quote": "Charity Navigator rating score of 96",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/060726487#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "In FY2024, the organization managed $920,455,828 in revenue",
+          "claim": "$920,455,828 in total revenue in FY2024",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $920,455,828",
+          "quote": "Total revenue reported in filings",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/060726487"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "long operating history founded in 1932",
-          "confidence": 0.95,
+          "claim": "Fewer child deaths per year",
+          "confidence": 0.9,
           "id": "[3]",
-          "quote": "Founded in 1932",
+          "quote": "Fewer child deaths per year: 4400000",
           "source_name": "2019 Global Childhood Report",
           "source_type": "evaluation",
           "source_url": "https://www.savethechildren.org/content/dam/usa/reports/advocacy/global-childhood-report-2019-pdf.pdf"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "meets all 20 BBB Wise Giving Alliance standards",
-          "confidence": 1,
+          "claim": "eligible for Sadaqah giving",
+          "confidence": 0.9,
+          "id": "[5]",
+          "quote": "Ways to give and support children",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://www.savethechildren.org/us/ways-to-help/ways-to-give"
+        },
+        {
+          "access_date": "2026-01-09",
+          "claim": "health, nutrition, and education programs",
+          "confidence": 0.9,
           "id": "[7]",
-          "quote": "Meets All 20 Standards",
-          "source_name": "BBB Wise Giving Alliance Review",
-          "source_type": "rating",
-          "source_url": "https://give.org/charity-reviews/relief-development/save-the-children-federation-in-fairfield-ct-9999-893"
+          "quote": "Access to key health and nutrition services",
+          "source_name": "Annual Report",
+          "source_type": "website",
+          "source_url": "https://www.savethechildren.org/us/about-us/financial-information"
         }
       ],
-      "amal_score_rationale": "This charity shows a balance of high financial efficiency and strong evidence of past success, though the high cost per person served and missing strategic documents limit its overall rating.",
+      "amal_score_rationale": "This charity shows a balanced profile with efficient spending and strong financial health, though its impact is limited by high costs per person and a lack of a formal theory of change.",
       "amal_scores": {
         "amal_score": 56,
         "confidence_scores": {
@@ -6822,24 +6825,22 @@
       },
       "areas_for_improvement": [
         {
-          "area": "High cost per direct beneficiary",
+          "area": "Lack of an explicit published theory of change",
+          "citation_ids": [],
+          "context": "The organization has not published a formal causal pathway connecting intervention activities directly to long-term impact metrics."
+        },
+        {
+          "area": "High per-beneficiary expense profile",
           "citation_ids": [
             "[2]"
           ],
-          "context": "Systemic capacity building and institutional programming result in <cite id=\"2\">a high average cost per beneficiary ratio</cite> compared to direct-relief peers."
-        },
-        {
-          "area": "Lack of explicit theory of change document",
-          "citation_ids": [
-            "[3]"
-          ],
-          "context": "While program outcomes are published, <cite id=\"3\">an explicit, publicly documented theory of change pathway is absent</cite>."
+          "context": "The capacity-building delivery model incurs higher per-person operational costs relative to direct distribution models."
         }
       ],
       "bbb_assessment": {
         "audit_type": "audited",
         "citation_ids": [
-          "[7]"
+          "[1]"
         ],
         "effectiveness_status": "PASS",
         "finances_status": "PASS",
@@ -6852,88 +6853,91 @@
       },
       "case_against": {
         "citation_ids": [
-          "[2]"
+          "[1]"
         ],
-        "mitigation_notes": "The organization retains strong balance sheet reserves and diversified revenue streams.",
+        "mitigation_notes": "The organization maintains a <cite id=\"1\">96 overall Charity Navigator rating</cite> and strong working capital reserves to support long-term operational resilience [1].",
         "risk_factors": [
-          "<cite id=\"2\">High cost per beneficiary relative to direct relief peers</cite>",
-          "<cite id=\"2\">Three-year revenue CAGR showed a 6.9% contraction</cite>"
+          "<cite id=\"1\">Program expense ratio of 83.2% is below the peer median of 88.7%</cite> [1]",
+          "High per-beneficiary delivery costs limit immediate direct reach per dollar spent"
         ],
-        "summary": "Key constraints center on <cite id=\"2\">higher per-beneficiary spending</cite> due to capacity-building models and flat revenue trends in recent fiscal years."
+        "summary": "Save the Children's program expense ratio of <cite id=\"1\">83.2% in FY2024</cite> falls below the peer median of 88.7% for large humanitarian nonprofits [1]. In addition, high per-beneficiary operational costs reflect intensive capacity building rather than low-cost direct aid delivery."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 3,
-          "form990": 5,
-          "rating": 4
+          "evaluation": 1,
+          "form990": 1,
+          "rating": 1,
+          "website": 2
         },
-        "high_confidence_count": 12,
-        "total_count": 12,
-        "unique_sources": 4
+        "high_confidence_count": 5,
+        "total_count": 5,
+        "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Data current from FY2023 Form 990 and FY2024 filings",
+        "data_freshness": "Financial data from FY2024 filings",
         "data_gaps": [
-          "FY2024 Form 990 full expense breakdown"
+          "No explicit theory of change document"
         ],
         "level": "HIGH",
-        "notes": "Strong third-party ratings and tax disclosures available",
-        "score": 90,
+        "notes": "Verified financial data with strong ratings",
+        "score": 85,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "BBB Wise Giving Alliance"
+          "Charity Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 90,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Expense details for FY2024 990 pending release"
+          "Missing explicit published theory of change"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 12,
+        "total_citations": 7,
         "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[5]"
           ],
-          "explanation": "The organization provides broad humanitarian relief serving vulnerable groups globally, maintaining <cite id=\"3\">a long operating history founded in 1932</cite>.",
-          "improvement": ""
+          "explanation": "The organization provides critical aid in humanitarian crisis zones serving needy populations, offering a suitable avenue for Sadaqah giving [5].",
+          "improvement": "Add a dedicated explanatory page regarding faith-based funding compatibility or Sadaqah application policies."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[7]"
+            "[1]"
           ],
-          "explanation": "Save the Children demonstrates strong operational trust through <cite id=\"1\">a 96.0/100 from Charity Navigator rating</cite> and compliance with <cite id=\"7\">all 20 BBB Wise Giving Alliance standards</cite>.",
-          "improvement": "To strengthen credibility further, the charity could publish detailed board governance notes."
+          "explanation": "Save the Children maintains independent oversight through audited financial statements, holds a <cite id=\"1\">96 out of 100 Charity Navigator rating</cite>, and earned the Candid Platinum Seal of Transparency [1].",
+          "improvement": "To strengthen credibility further, the organization should publish clear documentation regarding board governance details."
         },
         "impact": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Program execution is financially stable, featuring <cite id=\"1\">an 84.9% program expense ratio in FY2024</cite> and <cite id=\"1\">4.0 months of working capital reserves</cite>.",
-          "improvement": "Document a clear theory of change with an explicit causal pathway."
+          "explanation": "The charity directed <cite id=\"1\">83.2% of expenses to programs in FY2024</cite> [1], though its capacity-building model creates a relatively high cost-per-beneficiary profile compared to direct delivery peers.",
+          "improvement": "Document a clear theory of change with an explicit causal pathway to better communicate long-term outcome measurement."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[7]"
+          "[1]",
+          "[5]"
         ],
-        "evidence_rigor": "Grade B - Multiple tracked outcome metrics and Candid Platinum status",
+        "evidence_rigor": "Grade C - Outcome tracking documented via Candid",
         "geographic_focus": [
           "Global",
           "United States"
         ],
-        "giving_style": "Large-scale institutional relief and capacity building",
+        "giving_style": "Large-scale capacity building and emergency response",
         "tax_deductible": true,
-        "zakat_asnaf_served": [],
+        "zakat_asnaf_served": [
+          "",
+          ""
+        ],
         "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
@@ -6948,7 +6952,7 @@
         "fundraising_ratio": 0.08,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
-        "peer_program_ratio_median": 0.892,
+        "peer_program_ratio_median": 0.887,
         "program_expense_ratio": 0.8493999999999999,
         "reserves_months": 4.4,
         "revenue_cagr_3yr": -6.9,
@@ -6956,10 +6960,10 @@
         "working_capital_months": 4,
         "yearly_financials": [
           {
-            "expenses": 1059841747,
-            "net_assets": 335847386,
-            "revenue": 1062061242,
-            "year": 2022
+            "expenses": 0,
+            "net_assets": 0,
+            "revenue": 920455828,
+            "year": 2024
           },
           {
             "expenses": 956686118,
@@ -6968,10 +6972,10 @@
             "year": 2023
           },
           {
-            "expenses": 0,
-            "net_assets": 0,
-            "revenue": 920455828,
-            "year": 2024
+            "expenses": 1059841747,
+            "net_assets": 335847386,
+            "revenue": 1062061242,
+            "year": 2022
           }
         ]
       },
@@ -6982,7 +6986,7 @@
         "domestic_grants": 118891906,
         "foreign_grants": 1120495763,
         "grant_count": 687,
-        "grant_strategy": "Funds international regional offices and domestic partner advocacy networks",
+        "grant_strategy": "Distributes funding through global partners and international affiliates to execute child protection and health initiatives.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Global",
@@ -6996,57 +7000,58 @@
       },
       "headline": "Save the Children Federation provides health and education services to children and families during emergencies and development phases.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support large-scale, established institutional relief for children globally through general sadaqah giving.",
+        "best_for_summary": "Best for donors who want to support a large, established international aid organization using general Sadaqah contributions to fund global child health and emergency response programs.",
         "citation_ids": [
-          "[2]"
+          "[1]",
+          "[5]"
         ],
         "donor_motivations": [
-          "Prefer well-known international relief organizations with global reach",
-          "Value independent verification such as Candid Platinum status",
-          "Want to support systemic health, nutrition, and child protection interventions"
+          "Value institutional scale and broad geographic capability",
+          "Want to support child health, nutrition, and education initiatives globally",
+          "Prefer donating to organizations with strong third-party transparency seals"
         ],
         "giving_considerations": [
-          "Donations support general sadaqah-eligible programs rather than zakat-restricted funds",
-          "Large institutional scale means gifts fund broader systemic initiatives"
+          "This organization is eligible for Sadaqah giving only",
+          "Program expense ratio of 83.2% is above the 75% industry standard but below the peer group median of 88.7%",
+          "Interventions emphasize system capacity building over low-cost direct transfers"
         ],
-        "not_ideal_for": "Low-overhead direct community grants"
+        "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]",
           "[3]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Tracks multiple key programmatic metrics and maintains high third-party evaluation seals.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Grade C indicates outcome tracking and verified metrics on platforms like Candid, though formal published theories of change remain absent.",
         "external_evaluations": [
-          "Candid Platinum Transparency Seal",
-          "Charity Navigator Beacon Evaluations"
+          "Candid Platinum Seal",
+          "Charity Navigator 4-Star Rating"
         ],
-        "outcome_tracking_years": 4,
+        "outcome_tracking_years": 3,
         "rct_available": false,
-        "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Save the Children targets immediate emergency relief and long-term capacity building in health, protection, and education to ensure child survival and development.",
-        "why_evidence_matters": "Outcome metrics ensure global interventions deliver measurable improvements in child survival and schooling."
+        "theory_of_change": "DOCUMENTED",
+        "theory_of_change_summary": "Save the Children works to ensure children and caregivers access essential health, nutrition, and protection services during crisis and development phases.",
+        "why_evidence_matters": "Clear outcome tracking ensures donor funds produce measurable improvements in child wellbeing and health outcomes."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[7]"
         ],
         "founded_year": 1932,
         "maturity_stage": "Institution",
         "revenue_growth_3yr": -6.9,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Extensive international operations and partner grant distribution allow for significant additional capital deployment.",
+        "room_for_funding_explanation": "Global humanitarian needs in health and child protection continue to exceed current operational capacity.",
         "strategic_priorities": [
-          "Emergency response",
-          "Child survival and health",
-          "Education access"
+          "Expand emergency child protection",
+          "Strengthen maternal and child nutrition programs"
         ],
         "years_operating": 94
       },
       "organizational_capacity": {
-        "board_size": 25,
+        "board_size": 0,
         "ceo_compensation": 581827,
         "ceo_compensation_pct_revenue": 0.06,
         "ceo_name": "Janti Soeripto",
@@ -7054,22 +7059,22 @@
           "[1]",
           "[2]"
         ],
-        "employees_count": 1500,
+        "employees_count": 0,
         "geographic_reach": "Global and United States",
         "has_conflict_policy": true,
         "has_financial_audit": true,
-        "independent_board_pct": 0.9,
-        "payroll_to_revenue_pct": 12,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0.8,
         "programs_count": 5,
-        "staff_per_million_revenue": 1.6,
-        "volunteers_count": 10000
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[2]"
+          "[1]"
         ],
-        "differentiator": "Distinguished by immense foreign grantmaking capacity, distributing <cite id=\"2\">over $1.1 billion in foreign grants</cite>.",
-        "peer_group": "International Humanitarian Organizations",
+        "differentiator": "Features massive global reach, though its <cite id=\"1\">83.2% program ratio in FY2024</cite> trails the peer median of 88.7% [1].",
+        "peer_group": "Large International Humanitarian Nonprofits",
         "similar_orgs": [
           "Doctors Without Borders",
           "CARE USA",
@@ -7078,15 +7083,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses primarily on medical emergency interventions",
+          "differentiator": "Focuses primarily on direct medical care in emergency contexts",
           "name": "Doctors Without Borders"
         },
         {
-          "differentiator": "Focuses broader poverty alleviation and emergency relief",
+          "differentiator": "Emphasizes long-term poverty alleviation and community development",
           "name": "CARE USA"
         },
         {
-          "differentiator": "Specializes in refugee and displacement assistance",
+          "differentiator": "Focuses heavily on refugee resettlement and displacement assistance",
           "name": "International Rescue Committee"
         }
       ],
@@ -7095,28 +7100,28 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Save the Children maintains <cite id=\"1\">a 96/100 rating from Charity Navigator</cite> and dedicates <cite id=\"1\">83.2% of expenses to programs</cite>.",
-          "point": "Strong financial efficiency and accountability"
+          "detail": "Maintains a <cite id=\"1\">96 out of 100 overall score from Charity Navigator</cite>, indicating robust organizational accountability [1].",
+          "point": "High Charity Navigator rating"
         },
         {
           "citation_ids": [
-            "[7]"
+            "[1]"
           ],
-          "detail": "The organization fully <cite id=\"7\">meets all 20 BBB Wise Giving Alliance Standards for Charity Accountability</cite>.",
-          "point": "Verified governance standards"
+          "detail": "Allocated <cite id=\"1\">83.2% of expenses to program services in FY2024</cite>, exceeding the 75% industry standard [1].",
+          "point": "Program expense ratio beats industry baseline"
         },
         {
           "citation_ids": [
-            "[2]"
+            "[1]"
           ],
-          "detail": "In recent reporting, the charity distributed over <cite id=\"2\">$1.1 billion in foreign grants</cite> to support global relief.",
-          "point": "Substantial international funding scale"
+          "detail": "Spends only <cite id=\"1\">$0.09 per $1 raised</cite> in public contributions [1].",
+          "point": "Efficient fundraising practices"
         }
       ],
       "strengths_deep_dive": [
-        "Save the Children maintains balanced operational discipline for an organization of its scale. <cite id=\"1\">In FY2024, the charity directed 83.2% of its expenses toward program execution</cite>, which surpasses the 75% industry standard. Its fundraising remains efficient, <cite id=\"1\">spending just $0.09 per $1 raised</cite>. Independent evaluators confirm these governance standards; <cite id=\"1\">Charity Navigator rates the organization at 96/100</cite>, while <cite id=\"7\">BBB Wise Giving Alliance confirms compliance across all 20 accountability benchmarks</cite>."
+        "Save the Children Federation maintains a solid track record of financial accountability and transparency. The organization holds a <cite id=\"1\">96 out of 100 overall score from Charity Navigator</cite> and meets all 20 standards established by the BBB Wise Giving Alliance [1]. In FY2024, it directed <cite id=\"1\">83.2% of total expenditure to program implementation</cite> [1]. Furthermore, its cost to raise funds stands at <cite id=\"1\">$0.08 per dollar</cite>, ensuring that fundraising overhead remains low relative to total contributions [1]."
       ],
-      "summary": "Save the Children Federation provides critical healthcare, nutrition, and education services to children globally during crisis and development phases. <cite id=\"2\">In FY2024, the organization managed $920,455,828 in revenue</cite> to fuel its massive international footprint. The charity holds <cite id=\"1\">a 96/100 rating from Charity Navigator</cite> and <cite id=\"7\">meets all 20 BBB Wise Giving Alliance standards</cite>. Its financial operations remain solid, utilizing <cite id=\"1\">83.2% of expenses for program delivery</cite> while keeping fundraising costs low at <cite id=\"1\">$0.09 per $1 raised</cite>. The organization's global advocacy and direct interventions have historically contributed to broad international outcomes, such as reduced child mortality and improved access to schooling. However, because its delivery model focuses heavily on institutional capacity building and system-level intervention, its cost per direct beneficiary averages higher than localized direct-aid entities. Revenue has remained flat in recent years, but its institutional foundation, extensive foreign grant distribution, and strong operational reserves position it as a steady global relief provider.",
+      "summary": "Save the Children Federation provides critical healthcare, nutrition, and education services to vulnerable children and families during emergencies and development phases [7]. Operating on a global scale, the organization managed <cite id=\"2\">$920,455,828 in total revenue in FY2024</cite>, directing substantial resources to international programs and crisis response [2]. The organization holds a <cite id=\"1\">96 out of 100 overall score from Charity Navigator</cite> and maintains strong financial accountability [1]. In FY2024, the group directed <cite id=\"1\">83.2% of its expenses to program services</cite>, exceeding the 75% industry baseline standard, though falling slightly below the peer median ratio of 88.7% for large humanitarian nonprofits [1]. The organization operates with <cite id=\"1\">a fundraising efficiency rate of $0.08 spent per dollar raised</cite>, reflecting cost-effective fundraising practices [1]. While Save the Children demonstrates extensive reach across international crisis zones, its programs emphasize high-cost capacity building, resulting in higher average per-beneficiary operational expenses [2]. Donors can support its work through general voluntary contributions, as the organization is <cite id=\"5\">eligible for Sadaqah giving</cite> [5].",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

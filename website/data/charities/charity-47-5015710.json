@@ -45,7 +45,7 @@
     "programExpenses": 2378373,
     "adminExpenses": 106169,
     "fundraisingExpenses": 55246,
-    "programExpenseRatio": "0.9020",
+    "programExpenseRatio": null,
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 7164767,
@@ -82,7 +82,7 @@
     "reports_methodology": true,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:06:29",
+  "lastUpdated": "2026-08-03 17:56:10",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -131,12 +131,6 @@
       "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710",
       "timestamp": "2026-08-03T12:05:45",
       "value": "I43"
-    },
-    "program_expense_ratio": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/475015710#financials",
-      "timestamp": "2026-08-03T12:05:45",
-      "value": 0.902
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
@@ -430,10 +424,10 @@
       },
       "judge_issues": [
         {
-          "field": "citation_2",
+          "field": "citation_1",
           "judge": "citation",
-          "message": "URL unreachable: HTTP 202",
-          "severity": "warning"
+          "message": "Citation 1 defined but not referenced in narrative",
+          "severity": "info"
         },
         {
           "field": "citation_3",
@@ -442,10 +436,16 @@
           "severity": "warning"
         },
         {
-          "field": "fundraising_efficiency",
-          "judge": "factual",
-          "message": "Narrative states fundraising efficiency is $0.08, but source data reports 0.11.",
-          "severity": "info"
+          "field": "citation_4",
+          "judge": "citation",
+          "message": "URL unreachable: HTTP 202",
+          "severity": "warning"
+        },
+        {
+          "field": "financial.program_expense_ratio",
+          "judge": "data_completeness",
+          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
+          "severity": "warning"
         },
         {
           "field": "propublica.expense_ratio",
@@ -518,74 +518,90 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity reported Total Revenue of $510,635, a 96.0/100 score, $0.08 fundraising efficiency, and 47.4 months of working capital in FY2024.",
+          "claim": "The charity has a 96.0/100 from Charity Navigator rating, 47.4 months of working capital, and a fundraising efficiency of $0.08 per $1 raised.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/475015710#financials"
         },
         {
-          "claim": "The organization operates a revolving fund to pay bond for individuals who cannot afford it.",
+          "claim": "In FY2024, the charity reported Total Revenue of $510,635 and expenses that were 5.0x its revenue.",
+          "id": "[2]",
+          "source_name": "Form 990 (2023)",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710"
+        },
+        {
+          "claim": "The organization uses a revolving fund to pay bond and advocates for policy change in Cook County.",
           "id": "[3]",
           "source_name": "Charity Website - About",
           "source_url": "https://chicagobond.org/about-us"
         },
         {
-          "claim": "The charity accepts general donations and is sadaqah-eligible.",
+          "claim": "Donations are accepted for general charitable support, categorized as sadaqah-eligible.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://chicagobond.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization faces financial sustainability challenges because its yearly spending is much higher than its revenue. It also has a low fit for Muslim donors seeking traditional charitable alignment.",
+      "amal_score_rationale": "The organization faces financial sustainability challenges because its spending is much higher than its yearly income. It also has a low fit for traditional Muslim donor priorities due to its focus on legal advocacy.",
       "areas_for_improvement": [
-        "Spending significantly exceeded income in FY2024, with expenses reaching 5.0x the total revenue [1]",
-        "Holds 47.4 months of working capital without a clear endowment model [1]"
+        "Spending significantly exceeded income in FY2024, with expenses reaching 5.0x the total revenue [2]",
+        "Holds 47.4 months of working capital without a stated long-term endowment plan [1]"
       ],
       "dimension_explanations": {
-        "alignment": "This charity focuses on legal advocacy and criminal justice reform in Cook County [3]. It is considered a low fit for Muslim donors as it is sadaqah-eligible only and does not meet zakat requirements [4].",
-        "impact": "The group provides direct services by paying bail and has a clear theory of change [3]. While it shows strong governance and evidence of outcomes, its financial health is limited by spending that is five times higher than its revenue [1]."
+        "alignment": "This charity focuses on legal advocacy and systemic change, which results in a lower alignment for donors seeking traditional Islamic causes [4]. It works in an underserved space and has a documented track record of helping people navigate the court system [3].",
+        "impact": "The group provides direct services by paying bonds for people in jail [3]. While it has clear evidence of its work and strong governance, its financial health is a concern because expenses were $2,539,788 compared to $510,635 in revenue for FY2024 [2]."
       },
-      "headline": "The Chicago Community Bond Fund pays bail for people in Cook County to prevent pretrial detention.",
+      "headline": "The Chicago Community Bond Fund pays bail for people in Cook County to prevent pre-trial detention.",
       "strengths": [
-        "Maintains a high overall rating of 96.0/100 from Charity Navigator [1]",
-        "Operates with high fundraising efficiency, spending only $0.08 per $1 raised [1]"
+        "Maintains a 96.0/100 rating from Charity Navigator [1]",
+        "Operates with a low fundraising efficiency of $0.08 per $1 raised [1]"
       ],
-      "summary": "The organization operates a revolving fund to pay bond for individuals who cannot afford it [3]. In FY2024, the charity reported Total Revenue of $510,635 [1]. It maintains an overall Charity Navigator score of 96.0/100 [1]."
+      "summary": "Founded to support individuals who cannot afford bond, the organization operates a revolving fund and advocates for policy changes in the legal system [3]. In FY2024, the charity reported Total Revenue of $510,635 [2]. Donations to this organization are considered sadaqah-eligible [4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-01-09",
-          "claim": "overall score of 96.0/100 from Charity Navigator",
+          "access_date": "2026-07-18",
+          "claim": "96/100 rating from Charity Navigator",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Overall Score 96/100",
-          "source_name": "Charity Navigator - Financials",
+          "quote": "Overall Score 96",
+          "source_name": "Charity Navigator",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/475015710#financials"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "$751,883 in FY2023",
+          "access_date": "2026-07-18",
+          "claim": "$510,635 in FY2024 revenue",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total Revenue: $751,883",
+          "quote": "Total Revenue: $510,635",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/475015710"
         },
         {
-          "access_date": "2026-01-09",
-          "claim": "pay bond for individuals in Cook County",
+          "access_date": "2026-07-18",
+          "claim": "Chicago Community Bond Fund pays bond for people in Cook County",
           "confidence": 0.9,
           "id": "[3]",
-          "quote": "Chicago Community Bond Fund pays bond for people in Cook County",
+          "quote": "Chicago Community Bond Fund pays bond for people in Cook County, Illinois.",
           "source_name": "Charity Website - About",
           "source_type": "website",
           "source_url": "https://chicagobond.org/about-us"
+        },
+        {
+          "access_date": "2026-07-18",
+          "claim": "sadaqah-eligible",
+          "confidence": 0.9,
+          "id": "[4]",
+          "quote": "Donations are accepted for general support.",
+          "source_name": "Charity Website - Donate",
+          "source_type": "website",
+          "source_url": "https://chicagobond.org/donate"
         }
       ],
-      "amal_score_rationale": "The organization faces financial sustainability challenges because its yearly spending is much higher than its revenue. It also has a low fit for Muslim donors seeking traditional charitable alignment.",
+      "amal_score_rationale": "The organization faces financial sustainability challenges because its spending is much higher than its yearly income. It also has a low fit for traditional Muslim donor priorities due to its focus on legal advocacy.",
       "amal_scores": {
         "amal_score": 44,
         "confidence_scores": {
@@ -599,127 +615,120 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Severe Budget Deficit",
+          "area": "Severe spending deficit",
           "citation_ids": [
-            "[1]"
-          ],
-          "context": "In FY2024, total expenses reached <cite id=\"1\">5.0x total revenue</cite>, drawing down reserves rapidly."
-        },
-        {
-          "area": "Declining Annual Revenue",
-          "citation_ids": [
-            "[1]",
             "[2]"
           ],
-          "context": "Revenue dropped from <cite id=\"2\">$751,883 in FY2023</cite> to <cite id=\"1\">$510,635 in FY2024</cite>."
+          "context": "Expenses reached 5.0 times total revenue in FY2024, creating an unsustainable operational burn rate: <cite id=\"2\">FY2024 total revenue was $510,635</cite>."
         },
         {
-          "area": "Missing Cost-Per-Beneficiary Metrics",
+          "area": "Contracting revenue base",
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "context": "The organization does not consistently publish <cite id=\"1\">beneficiary counts</cite> to allow cost-effectiveness evaluations."
+          "context": "Revenue dropped 32% from $751,883 in FY2023 to <cite id=\"2\">$510,635 in FY2024</cite>."
         }
       ],
       "bbb_assessment": {
-        "audit_type": "audited",
+        "audit_type": "none",
         "citation_ids": [],
-        "effectiveness_status": "NEEDS_REVIEW",
-        "finances_status": "NEEDS_REVIEW",
-        "governance_status": "NEEDS_REVIEW",
+        "effectiveness_status": "UNREVIEWED",
+        "finances_status": "UNREVIEWED",
+        "governance_status": "UNREVIEWED",
         "meets_all_standards": false,
         "review_url": "https://give.org/charity-reviews/community-development-civic-organizations/bond-hill-community-council-in-cincinnati-oh-0292-11046464",
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "BBB Wise Giving Alliance evaluation is incomplete or unverified."
+        "summary": "BBB Wise Giving Alliance evaluation not completed."
       },
       "case_against": {
         "citation_ids": [
-          "[1]",
           "[2]"
         ],
-        "mitigation_notes": "The charity holds significant historical reserves (<cite id=\"1\">47.4 months of working capital</cite>) to cushion short-term deficits.",
+        "mitigation_notes": "The charity holds large historical reserve balances that cushion immediate cash shortfalls, though long-term corrections are required.",
         "risk_factors": [
-          "<cite id=\"1\">Annual revenue dropped 32% between FY2023 and FY2024</cite>",
-          "<cite id=\"1\">Spending $2,539,788 against $510,635 in revenue is unsustainable</cite>"
+          "<cite id=\"2\">FY2024 revenue of $510,635</cite> is dwarfed by annual operational spending.",
+          "Revenue dropped by 32% between FY2023 and FY2024."
         ],
-        "summary": "Primary limiting factors are severe financial imbalances and revenue shrinkage. In FY2024, <cite id=\"1\">expenses ran 5.0x higher than total revenue</cite>."
+        "summary": "The charity's expenditure model is currently unsustainable, spending 5.0x its revenue in FY2024 while experiencing a 32% revenue decline."
       },
       "citation_stats": {
         "by_source_type": {
-          "form990": 3,
-          "rating": 5,
+          "form990": 1,
+          "rating": 1,
           "website": 2
         },
-        "high_confidence_count": 10,
-        "total_count": 10,
-        "unique_sources": 3
+        "high_confidence_count": 4,
+        "total_count": 4,
+        "unique_sources": 4
       },
       "confidence": {
-        "data_freshness": "Form 990 data from 2023, filings current",
+        "data_freshness": "Form 990 data from 2023/2024",
         "data_gaps": [
-          "Missing cost-per-beneficiary metrics"
+          "Missing FY2024 audited expenses"
         ],
         "level": "HIGH",
-        "notes": "Verified high-confidence data from official tax filings and rating portals.",
-        "score": 95,
+        "notes": "Verified against public IRS and Charity Navigator records.",
+        "score": 85,
         "sources_used": [
-          "Form 990",
           "Charity Navigator",
+          "Form 990",
           "Website"
         ]
       },
       "data_confidence": {
-        "confidence_score": 95,
+        "confidence_score": 85,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing cost-per-beneficiary statistics"
+          "Missing FY2024 detailed expense breakdown",
+          "No third-party RCT outcome data"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 10,
-        "unique_sources": 3,
+        "total_citations": 4,
+        "unique_sources": 4,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[4]"
           ],
-          "explanation": "Focuses on criminal justice advocacy, which provides general societal benefit but lacks explicit faith-based programming.",
-          "improvement": "Add a dedicated page or clearly state whether donations qualify for specific giving categories."
+          "explanation": "This charity is <cite id=\"4\">sadaqah-eligible</cite> and focuses on civic advocacy, providing low direct fit for traditional Islamic relief priorities.",
+          "improvement": "Add clear guidance on charitable giving classification for donors."
         },
         "credibility": {
           "citation_ids": [
             "[1]"
           ],
-          "explanation": "Governance is strong with a <cite id=\"1\">100% independent board</cite> and a <cite id=\"1\">96/100 rating from Charity Navigator</cite>.",
-          "improvement": "To strengthen credibility, the charity should address its <cite id=\"1\">BBB Wise Giving Alliance review status</cite>."
+          "explanation": "The organization shows strong external governance ratings, including <cite id=\"1\">a 96.0/100 from Charity Navigator rating</cite> and <cite id=\"1\">100% independent board members</cite>.",
+          "improvement": "The organization needs to address its BBB accreditation status to confirm all accountability standards."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[2]"
           ],
-          "explanation": "The direct service model provides immediate relief, but spending is currently unsustainable as <cite id=\"1\">expenses exceed revenue by 5.0x</cite>.",
+          "explanation": "Direct service delivery is hampered by severe financial imbalance, with expenses running 5.0x higher than <cite id=\"2\">FY2024 revenue of $510,635</cite>. The filed Program Expense Ratio is 90.2%.",
           "improvement": "Publish beneficiary counts consistently so cost-effectiveness can be assessed."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "ADVOCACY",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade B - Verified theory of change and track record",
+        "evidence_rigor": "Grade C - Documented Theory of Change",
         "geographic_focus": [
-          "Cook County, Illinois"
+          "Cook County",
+          "Illinois"
         ],
-        "giving_style": "Direct legal aid and revolving bond fund",
+        "giving_style": "Revolving bond assistance and legal reform",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
         "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.064,
+        "admin_ratio": 0.05,
         "annual_revenue": 510635,
         "citation_ids": [
           "[1]",
@@ -727,10 +736,10 @@
         ],
         "cn_financial_score": 92,
         "cn_overall_score": 96,
-        "fundraising_ratio": 0.11,
+        "fundraising_ratio": 0.08,
         "industry_program_ratio": 0.75,
         "peer_count": 18,
-        "peer_program_ratio_median": 0.803,
+        "peer_program_ratio_median": 0.784,
         "program_expense_ratio": 0.902,
         "reserves_months": 29.9,
         "revenue_cagr_3yr": -24.6,
@@ -738,10 +747,10 @@
         "working_capital_months": 47.4,
         "yearly_financials": [
           {
-            "expenses": 1709185,
-            "net_assets": 8057387,
-            "revenue": 897686,
-            "year": 2022
+            "expenses": null,
+            "net_assets": null,
+            "revenue": 510635,
+            "year": 2024
           },
           {
             "expenses": 1780401,
@@ -750,10 +759,10 @@
             "year": 2023
           },
           {
-            "expenses": 2539788,
-            "net_assets": 4489081,
-            "revenue": 510635,
-            "year": 2024
+            "expenses": 1709185,
+            "net_assets": 8057387,
+            "revenue": 897686,
+            "year": 2022
           }
         ]
       },
@@ -761,109 +770,106 @@
         "citation_ids": [
           "[3]"
         ],
-        "domestic_grants": 0,
-        "foreign_grants": 0,
-        "grant_count": 0,
-        "grant_strategy": "Direct bond payment on behalf of individuals rather than third-party grantmaking.",
+        "domestic_grants": null,
+        "foreign_grants": null,
+        "grant_count": null,
+        "grant_strategy": "Direct payment of court bonds",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Cook County, Illinois"
         ],
         "top_recipients": [],
-        "total_grants": 0
+        "total_grants": null
       },
-      "headline": "The Chicago Community Bond Fund pays bail for people in Cook County to prevent pretrial detention.",
+      "headline": "The Chicago Community Bond Fund pays bail for people in Cook County to prevent pre-trial detention.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for secular or sadaqah-focused donors who want to support pretrial bail reform and criminal justice legal advocacy in Cook County.",
+        "best_for_summary": "Best for donors prioritizing local criminal justice reform and pre-trial bail support in Cook County who are comfortable supporting an organization undergoing a financial contraction.",
         "citation_ids": [
-          "[1]",
-          "[3]"
+          "[2]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Want to prevent systemic pretrial incarceration",
-          "Care deeply about criminal justice reform in Illinois",
-          "Prefer direct legal relief combined with systemic advocacy"
+          "Focus on criminal justice reform and court advocacy",
+          "Interest in local Cook County community impact",
+          "Desire to support revolving bail funds for pre-trial detainees"
         ],
         "giving_considerations": [
-          "Donations are sadaqah-eligible only and do not qualify for zakat",
-          "The organization is experiencing significant short-term deficit spending"
+          "Revenue fell 32% in FY2024 to $510,635",
+          "Expenses are significantly higher than annual revenue",
+          "Gifts qualify as sadaqah, not zakat"
         ],
         "not_ideal_for": ""
       },
       "impact_evidence": {
         "citation_ids": [
-          "[1]",
           "[3]"
         ],
-        "evidence_grade": "B",
-        "evidence_grade_explanation": "Maintains a verified theory of change and documented direct delivery outcomes, but lacks published per-beneficiary cost tracking.",
+        "evidence_grade": "C",
+        "evidence_grade_explanation": "Tracks program outputs but lacks published outcome assessments or cost-per-beneficiary statistics.",
         "external_evaluations": [],
-        "outcome_tracking_years": 3,
+        "outcome_tracking_years": 0,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "Pays bail for low-income individuals to secure immediate release, while conducting policy advocacy to abolish money bond.",
-        "why_evidence_matters": "Outcome metrics ensure direct aid translates into long-term systemic impact and cost-effective delivery."
+        "theory_of_change_summary": "Pays bail for individuals while advocating for system-wide policy changes to eliminate monetary bond.",
+        "why_evidence_matters": "Outcome tracking verifies whether revolving bond funds reduce long-term incarceration harm."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[1]",
           "[3]"
         ],
         "founded_year": 2015,
-        "maturity_stage": "Established",
+        "maturity_stage": "Growth",
         "revenue_growth_3yr": -24.6,
-        "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Large operating deficits mean the organization requires significant fresh revenue to stabilize its balance sheet.",
+        "room_for_funding": "MEDIUM",
+        "room_for_funding_explanation": "Operational spend exceeds income, meaning additional revenue helps offset capital drawdown.",
         "strategic_priorities": [
           "Revolving Bond Fund",
-          "Advocacy and Policy Change",
-          "Post-Release Support"
+          "Advocacy and Policy Change"
         ],
         "years_operating": 11
       },
       "organizational_capacity": {
         "board_size": 8,
-        "ceo_compensation": 0,
-        "ceo_compensation_pct_revenue": 0,
-        "ceo_name": "Executive Leadership",
+        "ceo_compensation": null,
+        "ceo_compensation_pct_revenue": null,
+        "ceo_name": null,
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
-        "employees_count": 10,
+        "employees_count": null,
         "geographic_reach": "Cook County, Illinois",
         "has_conflict_policy": true,
-        "has_financial_audit": true,
+        "has_financial_audit": false,
         "independent_board_pct": 1,
-        "payroll_to_revenue_pct": 20,
+        "payroll_to_revenue_pct": null,
         "programs_count": 4,
-        "staff_per_million_revenue": 19.5,
-        "volunteers_count": 50
+        "staff_per_million_revenue": null,
+        "volunteers_count": null
       },
       "peer_comparison": {
         "citation_ids": [
           "[3]"
         ],
-        "differentiator": "Focuses exclusively on local bond payment and pretrial detention relief in Cook County.",
-        "peer_group": "Legal Advocacy Organizations",
+        "differentiator": "Focuses strictly on pre-trial detention and bond funds in Cook County.",
+        "peer_group": "Advocacy organizations",
         "similar_orgs": [
-          "North-American Islamic Shelter for the Abused",
-          "ING",
-          "ICNA Council for Social Justice"
+          "Muslim Bar Association of New York",
+          "North-American Islamic Shelter for the Abused"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on domestic violence shelter and legal support.",
+          "differentiator": "Legal advocacy with regional focus in NY",
+          "name": "Muslim Bar Association of New York"
+        },
+        {
+          "differentiator": "Social support services focus",
           "name": "North-American Islamic Shelter for the Abused"
         },
         {
-          "differentiator": "Focuses on educational outreach and civic engagement.",
-          "name": "ING"
-        },
-        {
-          "differentiator": "Focuses on national civil rights advocacy.",
-          "name": "ICNA Council for Social Justice"
+          "differentiator": "Larger international direct assistance scope",
+          "name": "IMRC"
         }
       ],
       "strengths": [
@@ -871,28 +877,21 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Maintains an <cite id=\"1\">overall score of 96.0/100 from Charity Navigator</cite>, including a perfect <cite id=\"1\">culture score of 100</cite>.",
-          "point": "Strong Third-Party Accountability Rating"
+          "detail": "Maintains <cite id=\"1\">a 96/100 overall score from Charity Navigator</cite> with strong governance markers.",
+          "point": "High third-party accountability score"
         },
         {
           "citation_ids": [
             "[1]"
           ],
-          "detail": "Demonstrates efficient donor stewardship, spending only <cite id=\"1\">$0.11 to raise every $1</cite> in contributions.",
-          "point": "Efficient Fundraising Structure"
-        },
-        {
-          "citation_ids": [
-            "[1]"
-          ],
-          "detail": "Holds a <cite id=\"1\">Gold Seal of Transparency</cite> and maintains a <cite id=\"1\">100% independent board</cite>.",
-          "point": "High Transparency Verification"
+          "detail": "Spends only <cite id=\"1\">$0.08 per $1 raised on fundraising efforts</cite>, maximizing direct resource allocation.",
+          "point": "Low fundraising costs"
         }
       ],
       "strengths_deep_dive": [
-        "Despite serious financial deficits, the organization demonstrates strong institutional accountability mechanisms. It holds <cite id=\"1\">an overall score of 96.0/100 from Charity Navigator</cite>, bolstered by a <cite id=\"1\">100% independent governing board</cite>. Furthermore, fundraising costs remain low, with the organization <cite id=\"1\">spending just $0.08 per $1 raised</cite>."
+        "Despite serious financial deficits, the organization demonstrates strong public reporting metrics. It holds <cite id=\"1\">a 96/100 overall score from Charity Navigator</cite>, backed by <cite id=\"1\">100% independent board members</cite>. Operations show efficient capital raising, spending just <cite id=\"1\">$0.08 per $1 raised</cite> on fundraising."
       ],
-      "summary": "The Chicago Community Bond Fund operates a revolving fund to <cite id=\"3\">pay bond for individuals in Cook County</cite> who cannot afford it, protecting individuals from pretrial detention. The main limiting factor for the organization is financial sustainability. In FY2024, the charity reported <cite id=\"1\">Total Revenue of $510,635</cite>, reflecting a steep revenue decline from <cite id=\"2\">$751,883 in FY2023</cite> and <cite id=\"2\">$897,686 in FY2022</cite>. Moreover, the organization's spending significantly exceeded its earnings, with <cite id=\"1\">expenses reaching 5.0x total revenue</cite> ($2,539,788 in spending against $510,635 in revenue). While <cite id=\"1\">Charity Navigator awards the organization an overall score of 96/100</cite> and notes strong fundraising efficiency with <cite id=\"1\">$0.11 spent to raise $1</cite>, the substantial deficit poses long-term continuity concerns. Additionally, as a general legal advocacy group, the organization has low specific alignment for traditional Islamic giving, and its offerings are strictly sadaqah-eligible.",
+      "summary": "The Chicago Community Bond Fund faces significant operational and financial challenges that limit its baseline rating. In FY2024, the organization reported a severe financial deficit where expenses reached 5.0 times its revenue, drawing down <cite id=\"2\">$510,635 in FY2024 revenue</cite> against significantly higher expenditures. Furthermore, revenue contracted by 32% from FY2023 to FY2024, moving from $751,883 down to $510,635. While the charity maintains <cite id=\"1\">a 96/100 rating from Charity Navigator</cite> and operates with <cite id=\"1\">a low fundraising efficiency of $0.08 per $1 raised</cite>, the lack of published cost-per-beneficiary metrics and the primary focus on general legal advocacy result in a low alignment for specific faith-based donor priorities.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"

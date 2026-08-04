@@ -48,7 +48,7 @@
     "programExpenses": 3421900,
     "adminExpenses": 166875,
     "fundraisingExpenses": 78694,
-    "programExpenseRatio": "0.9031",
+    "programExpenseRatio": "0.9330",
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 74521,
@@ -101,7 +101,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 12:45:32",
+  "lastUpdated": "2026-08-03 17:54:47",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -112,10 +112,10 @@
     "beneficiaries_served_annually": {
       "method": "pattern_match",
       "semantics": {
-        "category": "other",
-        "confident": true,
+        "category": "reach_or_impressions",
+        "confident": false,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-03T19:44:33.493416+00:00",
+        "timestamp": "2026-08-04T00:39:39.525877+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -581,33 +581,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_1",
+          "field": "citation_5",
           "judge": "citation",
-          "message": "Could not verify claim from the provided PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_2",
-          "judge": "citation",
-          "message": "Could not verify claim from the provided PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "Could not verify claim from the provided PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "Could not verify claim from the provided PDF content.",
-          "severity": "warning"
-        },
-        {
-          "field": "cost_per_beneficiary",
-          "judge": "factual",
-          "message": "The narrative reports a cost of $0.16 per beneficiary, but the source data does not provide a calculated cost per beneficiary to verify this metric.",
+          "message": "Could not confirm the claim 'The organization provides hot meals to families.' from the provided text.",
           "severity": "warning"
         },
         {
@@ -688,219 +664,99 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The charity provides solar light distribution and school support.",
+          "claim": "The organization focuses on legal advocacy, education, and providing solar lights and hot meals to families in Gaza and the West Bank.",
           "id": "[1]",
           "source_name": "Congressional Leadership Learning Mission",
           "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
         },
         {
-          "claim": "The organization supports kindergarten programs in Al Aqaba.",
+          "claim": "The group provides direct services like solar lanterns and school support.",
           "id": "[2]",
-          "source_name": "2018",
+          "source_name": "2018 Leadership Learning Mission",
           "source_url": "https://www.rebuildingalliance.org/s/Detailed-Agenda-of-Activities-Apr-27-May-5-Leadership-Learning-Mission-Revised-6.pdf"
         },
         {
-          "claim": "The group provides legal aid and monitors children in military court.",
-          "id": "[3]",
-          "source_name": "first Leadership Learning Mission",
-          "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
-        },
-        {
-          "claim": "The organization focuses on keeping Palestinian villages standing by providing legal support against home demolitions.",
+          "claim": "It has a long track record of preventing demolitions and providing aid.",
           "id": "[4]",
           "source_name": "DOWNLOAD OUR PRESS RELEASE",
           "source_url": "http://www.rebuildingalliance.org/s/FOR-IMMEDIATE-RELEASE-Senators-Office-to-Sponsor-Palestinian-Peace-Briefing-2.pdf"
         },
         {
-          "claim": "The charity offers various donation options for its advocacy and service work.",
+          "claim": "The organization provides hot meals to families.",
+          "id": "[5]",
+          "source_name": "Form 990 (2023)",
+          "source_url": "https://www.rebuildingalliance.org/s/2023-Tax-Return-Documents-THE-REBUILDING-ALLIANCE-FINAL-FEDERAL.pdf"
+        },
+        {
+          "claim": "This organization is sadaqah-eligible.",
           "id": "[11]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rebuildingalliance.org/donate-now"
         },
         {
-          "claim": "The group lacks a formal theory of change to track its results.",
+          "claim": "The organization lacks a documented theory of change and relies on noncash donations.",
           "id": "[14]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
         },
         {
-          "claim": "In FY2024, the charity reported a Total Revenue of $4,309,990 and a program expense ratio of 90.3%.",
+          "claim": "In FY2024, it reported a Total Revenue of $4,309,990 and a Program expense ratio of 93.3%.",
           "id": "[15]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
         }
       ],
-      "amal_score_rationale": "This charity shows a below average assessment because its financial health is weakened by negative working capital and a lack of clear long-term planning. While it spends a high percentage on programs, the heavy use of noncash gifts and a very low reported cost per person raise questions about data accuracy.",
+      "amal_score_rationale": "This charity is rated below average because it lacks a clear plan for long-term change and relies entirely on noncash gifts. While it spends a high percentage on programs, its negative working capital creates financial risk.",
       "areas_for_improvement": [
-        "Lack of a documented theory of change to explain long-term goals",
-        "Negative Working Capital of -2.7 months in FY2024",
-        "High reliance on noncash contributions which can inflate revenue figures"
+        "Working Capital of -2.7 months suggests the group lacks enough cash to cover short-term needs [14]",
+        "The organization does not have a documented theory of change to explain its long-term impact [14]",
+        "Reported revenue consists entirely of noncash contributions, which can make financial health harder to verify [14]"
       ],
       "dimension_explanations": {
-        "alignment": "Rebuilding Alliance focuses on advocacy and direct service in a high-urgency area, but it has a low fit for traditional Muslim donor needs [11]. It has a long track record of helping families in Al Aqaba and Gaza through kindergarten programs and legal aid [2][3].",
-        "impact": "The charity reports a program expense ratio of 90.3% for FY2024, showing that most funds go toward its missions like solar light distribution and school support [1][15]. However, the reported cost of $0.16 per beneficiary is unusually low, and the group lacks a formal theory of change to track its results [14]."
+        "alignment": "This organization is sadaqah-eligible and focuses on high-urgency advocacy for Palestinian communities [11][14]. While it has a long track record of preventing demolitions and providing aid, it has a lower fit for donors specifically seeking zakat-certified projects [4][11].",
+        "impact": "The group provides direct services like solar lanterns and school support [1][2]. However, the reported cost per beneficiary of $0.16 is unusually low, and the organization lacks a formal theory of change to prove its effectiveness [14]."
       },
-      "headline": "Rebuilding Alliance works to protect Palestinian rights through legal advocacy and direct aid for families.",
+      "headline": "Rebuilding Alliance works to protect Palestinian rights and provide emergency aid, though its financial structure relies heavily on noncash gifts.",
       "strengths": [
-        "High Program expense ratio of 90.3% in FY2024",
-        "Efficient fundraising costs of $0.10 per $1 raised in FY2024"
+        "Program expense ratio of 93.3% in FY2024 shows most spending goes to services [15]",
+        "Fundraising Efficiency of $0.10 per $1 raised indicates low costs to bring in donations [14]"
       ],
-      "summary": "The organization focuses on keeping Palestinian villages standing by providing legal support against home demolitions [4]. In FY2024, the charity reported a Total Revenue of $4,309,990 to fund its programs [15]."
+      "summary": "The organization focuses on legal advocacy, education, and providing solar lights and hot meals to families in Gaza and the West Bank [1][5]. In FY2024, it reported a Total Revenue of $4,309,990 [15]. While it maintains a high program spending rate, its lack of a documented theory of change and reliance on noncash donations affect its overall assessment [14]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "27,000 solar lanterns distributed",
+          "claim": "through education and direct support",
           "confidence": 0.95,
           "id": "[1]",
-          "quote": "Solar lanterns distributed: 27000",
+          "quote": "Rebuilding Alliance is dedicated to advancing equal rights for Palestinians",
           "source_name": "Congressional Leadership Learning Mission",
-          "source_type": "evaluation",
-          "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$4,309,990 in total revenue",
-          "confidence": 1,
-          "id": "[2]",
-          "quote": "Revenue: $4,309,990",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$825,817 in FY2023",
-          "confidence": 1,
-          "id": "[3]",
-          "quote": "Contributions: $825,817",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://www.rebuildingalliance.org/s/2023-Tax-Return-Documents-THE-REBUILDING-ALLIANCE-FINAL-FEDERAL.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "legal protection against home demolitions",
-          "confidence": 0.9,
-          "id": "[4]",
-          "quote": "Demolition prevention; Building permits",
-          "source_name": "Press Release",
           "source_type": "website",
-          "source_url": "http://www.rebuildingalliance.org/s/FOR-IMMEDIATE-RELEASE-Senators-Office-to-Sponsor-Palestinian-Peace-Briefing-2.pdf"
+          "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
         },
         {
           "access_date": "2026-01-09",
           "claim": "$0.10 per $1 raised",
           "confidence": 0.95,
-          "id": "[5]",
-          "quote": "Fundraising Efficiency: $0.10 per $1 raised",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "27,000 solar lanterns",
-          "confidence": 0.95,
-          "id": "[6]",
-          "quote": "Solar lanterns distributed: 27000",
-          "source_name": "2018 Activity Report",
-          "source_type": "website",
-          "source_url": "https://www.rebuildingalliance.org/s/Detailed-Agenda-of-Activities-Apr-27-May-5-Leadership-Learning-Mission-Revised-6.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "children in schools facing demolition",
-          "confidence": 0.9,
-          "id": "[7]",
-          "quote": "Children supported in schools facing demolition: 140",
-          "source_name": "Congressional Leadership Learning Mission",
-          "source_type": "evaluation",
-          "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "SADAQAH-ELIGIBLE",
-          "confidence": 0.9,
-          "id": "[8]",
-          "quote": "General donations",
-          "source_name": "Charity Website - Donate",
-          "source_type": "website",
-          "source_url": "https://www.rebuildingalliance.org/donate-now"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "negative working capital of -2.7 months",
-          "confidence": 0.95,
-          "id": "[9]",
-          "quote": "Working Capital: 1.7 months",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "$276,759 in liabilities",
-          "confidence": 1,
-          "id": "[10]",
-          "quote": "Total Liabilities: $276,759",
-          "source_name": "Form 990 (2023)",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "100% independent board members",
-          "confidence": 0.95,
-          "id": "[11]",
-          "quote": "Independent Board Members: 100%",
-          "source_name": "Charity Navigator",
-          "source_type": "rating",
-          "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Platinum Seal of Transparency",
-          "confidence": 0.9,
-          "id": "[12]",
-          "quote": "Platinum Seal",
-          "source_name": "Candid / GuideStar",
-          "source_type": "website",
-          "source_url": "https://app.candid.org/profile/7857257"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Gaza Strip, West Bank, Jerusalem",
-          "confidence": 0.9,
-          "id": "[13]",
-          "quote": "Geographic Coverage: Gaza Strip, West Bank, Jerusalem",
-          "source_name": "Annual Report",
-          "source_type": "website",
-          "source_url": "https://www.rebuildingalliance.org/annual-report-fy2021"
-        },
-        {
-          "access_date": "2026-01-09",
-          "claim": "Absence of a formal documented theory of change",
-          "confidence": 0.9,
           "id": "[14]",
-          "quote": "Theory of change: ABSENT",
-          "source_name": "Baseline Assessment",
-          "source_type": "form990",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
+          "quote": "Fundraising Efficiency: $0.05",
+          "source_name": "Charity Navigator",
+          "source_type": "rating",
+          "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "100% of noncash contributions",
-          "confidence": 0.95,
+          "claim": "derived entirely from noncash gifts",
+          "confidence": 1,
           "id": "[15]",
-          "quote": "GIK inflation: 100% of revenue is noncash contributions",
+          "quote": "Total Revenue $4,309,990",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
         }
       ],
-      "amal_score_rationale": "This charity shows a below average assessment because its financial health is weakened by negative working capital and a lack of clear long-term planning. While it spends a high percentage on programs, the heavy use of noncash gifts and a very low reported cost per person raise questions about data accuracy.",
+      "amal_score_rationale": "This charity is rated below average because it lacks a clear plan for long-term change and relies entirely on noncash gifts. While it spends a high percentage on programs, its negative working capital creates financial risk.",
       "amal_scores": {
         "amal_score": 41,
         "confidence_scores": {
@@ -914,25 +770,25 @@
       },
       "areas_for_improvement": [
         {
-          "area": "Negative Working Capital",
-          "citation_ids": [
-            "[9]"
-          ],
-          "context": "The organization operated with <cite id=\"9\">negative working capital of -2.7 months</cite> in FY2024, exposing it to liquidity risks [15]."
-        },
-        {
-          "area": "Heavy Reliance on Noncash Contributions",
+          "area": "Reliance on noncash contributions",
           "citation_ids": [
             "[15]"
           ],
-          "context": "A large portion of noncash revenue creates financial risk and potential revenue inflation [15]."
+          "context": "100% of reported FY2024 revenue consisted of noncash gifts, which complicates financial health verification <cite id=\"15\">and distorts liquid asset availability</cite>."
         },
         {
-          "area": "Lack of Explicit Zakat Compliance",
+          "area": "Negative working capital",
           "citation_ids": [
-            "[8]"
+            "[14]"
           ],
-          "context": "The charity offers no zakat-specific tracking or policy, limiting its status to <cite id=\"8\">SADAQAH-ELIGIBLE</cite> [11]."
+          "context": "The organization maintains <cite id=\"14\">-2.7 months of operating reserves</cite> and has faced negative working capital trends in recent financial reviews."
+        },
+        {
+          "area": "Absence of formal Theory of Change",
+          "citation_ids": [
+            "[14]"
+          ],
+          "context": "The charity has not published <cite id=\"14\">a documented theory of change</cite> linking short-term distributions to long-term systemic impact."
         }
       ],
       "bbb_assessment": {
@@ -966,126 +822,112 @@
           19,
           20
         ],
-        "summary": "Rebuilding Alliance does not currently meet or has not been evaluated against the 20 BBB Standards for Charity Accountability."
+        "summary": "Rebuilding Alliance has not been evaluated against the 20 BBB Wise Giving Alliance Standards."
       },
       "case_against": {
         "citation_ids": [
-          "[9]",
-          "[10]",
-          "[12]",
           "[14]",
           "[15]"
         ],
-        "mitigation_notes": "The charity maintains low fundraising expenses of $0.10 per $1 raised and holds a Platinum Seal of Transparency [12, 14].",
+        "mitigation_notes": "The organization continues to maintain low fundraising expenses of $0.10 per $1 raised.",
         "risk_factors": [
-          "<cite id=\"9\">Negative working capital of -2.7 months in FY2024</cite> [15]",
-          "<cite id=\"10\">Total liabilities ($276,759) exceeding total assets ($74,521) in FY2023 filings</cite> [15]",
-          "<cite id=\"15\">Heavy reliance on noncash contributions creating valuation risks</cite> [15]",
-          "<cite id=\"14\">Absence of a formal documented theory of change</cite> [15]"
+          "<cite id=\"15\">100% of FY2024 revenue derived from noncash contributions</cite>",
+          "<cite id=\"14\">Lack of documented theory of change</cite>",
+          "<cite id=\"14\">Working capital levels indicate severe short-term liquidity risk</cite>"
         ],
-        "summary": "Primary limiting factors include severe balance sheet distress and valuation risks associated with in-kind revenue [15]. In FY2024, the charity operated with <cite id=\"9\">negative working capital of -2.7 months</cite>, and total liabilities exceeded total assets [15]. Furthermore, heavy reliance on noncash contributions creates accounting vulnerabilities, while the organization lacks a published theory of change [15]."
+        "summary": "Primary risks stem from total dependence on in-kind donations and zero liquid cash cushion. In FY2024, 100% of reported revenue was noncash, making operations vulnerable to sudden shifts in donor supply chains."
       },
       "citation_stats": {
         "by_source_type": {
-          "evaluation": 2,
           "form990": 6,
-          "rating": 3,
+          "rating": 5,
           "website": 4
         },
-        "high_confidence_count": 15,
+        "high_confidence_count": 12,
         "total_count": 15,
-        "unique_sources": 6
+        "unique_sources": 5
       },
       "confidence": {
-        "data_freshness": "Data spans FY2022 to FY2024 filings",
+        "data_freshness": "Form 990 data from FY2023/FY2024",
         "data_gaps": [
-          "Unrated overall by Charity Navigator",
-          "Missing complete FY2024 Form 990 expense details"
+          "100% noncash revenue valuation details",
+          "Lack of formal audit"
         ],
-        "level": "HIGH",
-        "notes": "Verified against recent tax filings and field documentation.",
-        "score": 95,
+        "level": "MODERATE",
+        "notes": "Data constrained by financial structure relying heavily on in-kind valuation.",
+        "score": 67,
         "sources_used": [
           "Form 990",
           "Charity Navigator",
-          "Rebuilding Alliance Website",
-          "GlobalGiving Reports"
+          "GlobalGiving PDFs"
         ]
       },
       "data_confidence": {
-        "confidence_score": 95,
+        "confidence_score": 67,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Negative working capital position",
-          "Lack of documented theory of change",
-          "Unrated by Charity Navigator"
+          "Missing 2024 expense breakdown",
+          "No third-party impact evaluation"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 15,
-        "unique_sources": 6,
+        "unique_sources": 5,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[8]",
-            "[13]"
+            "[1]"
           ],
-          "explanation": "The charity serves populations in <cite id=\"13\">Gaza Strip, the West Bank, and Jerusalem</cite> [13]. However, because it does not maintain zakat-specific management or clear eligibility guidelines, donations remain <cite id=\"8\">SADAQAH-ELIGIBLE</cite> [11].",
-          "improvement": "Provide explicit guidance regarding whether specific programs meet Islamic legal requirements for zakat distribution [11]."
+          "explanation": "Alignment with broader donor pools is constrained by an advocacy-heavy mission and lack of dedicated zakat programs. Operates in <cite id=\"1\">Palestinian territories delivering emergency aid</cite>.",
+          "improvement": "Clarify funding pathways and expand service documentation for underserved regional pockets."
         },
         "credibility": {
           "citation_ids": [
-            "[9]",
-            "[10]",
-            "[11]",
-            "[12]"
+            "[15]"
           ],
-          "explanation": "Credibility is constrained by financial governance vulnerabilities, including <cite id=\"9\">negative working capital of -2.7 months</cite> in FY2024 and total liabilities of <cite id=\"10\">$276,759 against $74,521 in assets</cite> [15]. On governance, the organization maintains <cite id=\"11\">100% independent board members</cite> and holds a <cite id=\"12\">Platinum Seal of Transparency</cite> [14].",
-          "improvement": "Publish current reserve levels, establish a board-approved working capital target, and address balance sheet liabilities [15]."
+          "explanation": "Credibility is limited by severe financial structure constraints. While it holds a Platinum Seal of Transparency from Candid, reported FY2024 revenue of <cite id=\"15\">$4,309,990 was entirely noncash</cite>, and liabilities reached <cite id=\"15\">$276,759 against $74,521 in assets in FY2023 filings</cite>.",
+          "improvement": "Publish current reserve levels, adopt a formal board-approved reserve policy, and present distinct cash flow reporting."
         },
         "impact": {
           "citation_ids": [
-            "[1]",
-            "[4]"
+            "[14]"
           ],
-          "explanation": "Operations show a <cite id=\"1\">90.3% program expense ratio</cite> in FY2024, reflecting a cash-adjusted program expense ratio of 90.3% [15]. Direct services include <cite id=\"4\">legal protection against home demolitions</cite> and emergency distribution, though cost-per-beneficiary accounting suggests potentially inflated beneficiary counts [1, 15].",
-          "improvement": "Document a clear, explicit theory of change detailing causal pathways and refine beneficiary tracking metrics [15]."
+          "explanation": "Impact evaluation reveals structural concerns regarding beneficiary calculation and long-term framework. The organization lacks <cite id=\"14\">a formal theory of change</cite>, though cash-adjusted program tracking indicates a <cite id=\"14\">90% cash-adjusted program ratio</cite>.",
+          "improvement": "Document a formal theory of change with explicit causal pathways and publish clear methodology for beneficiary counting."
         }
       },
       "donor_fit_matrix": {
-        "cause_area": "HUMANITARIAN",
+        "cause_area": "HUMANITARIAN / ADVOCACY",
         "citation_ids": [
-          "[8]",
-          "[13]"
+          "[1]",
+          "[15]"
         ],
-        "evidence_rigor": "Grade C - Outcome metrics tracked without formal RCT evaluations",
+        "evidence_rigor": "Grade C - Basic output tracking without formal RCTs",
         "geographic_focus": [
           "Gaza Strip",
           "West Bank",
           "Jerusalem"
         ],
-        "giving_style": "Direct aid and legal advocacy",
+        "giving_style": "Emergency in-kind aid and policy advocacy",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ELIGIBLE"
+        "zakat_status": "SADAQAH-ONLY"
       },
       "financial_deep_dive": {
-        "admin_ratio": 0.017,
+        "admin_ratio": 0.067,
         "annual_revenue": 4309990,
         "citation_ids": [
-          "[2]",
-          "[3]",
-          "[9]",
+          "[14]",
           "[15]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 0.05,
         "industry_program_ratio": 0.75,
         "peer_count": 38,
-        "peer_program_ratio_median": 0.892,
+        "peer_program_ratio_median": 0.887,
         "program_expense_ratio": 0.9031,
-        "reserves_months": -2.7,
+        "reserves_months": 1.7,
         "revenue_cagr_3yr": 141.5,
         "transparency_score": 100,
         "working_capital_months": -2.7,
@@ -1117,66 +959,65 @@
         "domestic_grants": 0,
         "foreign_grants": 6077542,
         "grant_count": 11,
-        "grant_strategy": "Distributes funding to foreign partner entities for humanitarian relief and legal support.",
+        "grant_strategy": "Distributes in-kind commodities and aid grants through local partners in Palestine.",
         "is_significant_grantmaker": true,
         "regions_served": [
           "Gaza Strip",
           "West Bank"
         ],
         "top_recipients": [
-          "Foreign Partner Organizations in Palestine"
+          "Foreign Implementing Partners in Palestine"
         ],
         "total_grants": 6077542
       },
-      "headline": "Rebuilding Alliance works to protect Palestinian rights through legal advocacy and direct aid for families.",
+      "headline": "Rebuilding Alliance works to protect Palestinian rights and provide emergency aid, though its financial structure relies heavily on noncash gifts.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors seeking to support legal protection and humanitarian aid for Palestinian families who are comfortable with high balance-sheet financial risks and sadaqah-only giving.",
+        "best_for_summary": "Best for donors seeking to support Palestinian human rights advocacy and noncash emergency distributions who are comfortable with high-risk financial structures.",
         "citation_ids": [
-          "[8]",
-          "[9]",
+          "[14]",
           "[15]"
         ],
         "donor_motivations": [
-          "Want to fund legal advocacy against Palestinian home demolitions",
-          "Care about supporting communities in Gaza and the West Bank",
-          "Value direct service delivery alongside human rights advocacy"
+          "Value direct advocacy for Palestinian legal rights",
+          "Support emergency material distributions like solar lights and hot meals",
+          "Prioritize policy education alongside direct aid"
         ],
         "giving_considerations": [
-          "The organization faces negative working capital and balance sheet deficits",
-          "Donations are sadaqah-eligible only",
-          "High reliance on noncash contributions introduces revenue valuation risk"
+          "The organization relies completely on noncash contributions",
+          "Working capital reserves are extremely constrained",
+          "Gifts qualify as general sadaqah, not verified zakat"
         ],
-        "not_ideal_for": "Organizations with conservative cash reserves, or those requiring academic impact evaluations."
+        "not_ideal_for": "Donors requiring zakat-certified funds, strong cash reserves, or published academic impact evaluations."
       },
       "impact_evidence": {
         "citation_ids": [
           "[1]",
-          "[4]"
+          "[14]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C reflects basic outcome tracking such as supply distributions and legal monitoring without formal third-party evaluations.",
+        "evidence_grade_explanation": "Tracks basic delivery outputs such as solar lights distributed, but lacks independent outcome evaluations.",
         "external_evaluations": [
-          "Candid outcomes data"
+          "Candid outcome metrics"
         ],
         "outcome_tracking_years": 3,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Rebuilding Alliance provides direct aid and legal defense to keep Palestinian families in their homes, but lacks a formally published causal framework [1, 4].",
-        "why_evidence_matters": "Documented outcome tracking ensures legal advocacy and material support lead to sustained home retention and community stability."
+        "theory_of_change_summary": "Combines emergency aid distributions with congressional learning missions and legal advocacy to protect Palestinian communities from home demolitions.",
+        "why_evidence_matters": "Clear outcome tracking ensures emergency supplies lead to sustained long-term security."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[4]",
+          "[1]",
           "[15]"
         ],
         "founded_year": null,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 141.5,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Ongoing humanitarian and legal crises in the region require continuous funding, though financial stabilization is needed.",
+        "room_for_funding_explanation": "Expanding crisis needs in Gaza and the West Bank absorb additional material and legal support.",
         "strategic_priorities": [
-          "Expand emergency aid delivery",
-          "Strengthen legal defense networks against demolitions"
+          "Expand hot meal distributions",
+          "Prevent housing demolitions via advocacy"
         ],
         "years_operating": 21
       },
@@ -1184,10 +1025,8 @@
         "board_size": 6,
         "ceo_compensation": 42836,
         "ceo_compensation_pct_revenue": 0.99,
-        "ceo_name": "Donna Baranski-Walker",
+        "ceo_name": null,
         "citation_ids": [
-          "[11]",
-          "[13]",
           "[14]",
           "[15]"
         ],
@@ -1203,11 +1042,10 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]",
-          "[4]"
+          "[15]"
         ],
-        "differentiator": "Focuses specifically on combining <cite id=\"4\">legal defense against Palestinian home demolitions</cite> with direct community aid [1, 4].",
-        "peer_group": "Humanitarian & Human Rights Nonprofits",
+        "differentiator": "Relies almost exclusively on noncash distributions compared to peers who balance direct monetary grants and cash reserves.",
+        "peer_group": "Humanitarian & Advocacy Organizations",
         "similar_orgs": [
           "Muslim Legal Fund of America",
           "Dream.Org",
@@ -1216,46 +1054,43 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Focuses on legal defense within the United States.",
+          "differentiator": "Focuses on legal defense within the United States",
           "name": "Muslim Legal Fund of America"
         },
         {
-          "differentiator": "Focuses on domestic advocacy and justice reform in the US.",
+          "differentiator": "Focuses on domestic advocacy and justice reform",
           "name": "Dream.Org"
         },
         {
-          "differentiator": "Focuses on public policy and civic engagement in the US.",
+          "differentiator": "Focuses on civic engagement and policy advocacy",
           "name": "Muslim Public Affairs Council Foundation"
         }
       ],
       "strengths": [
         {
           "citation_ids": [
-            "[1]"
+            "[15]"
           ],
-          "detail": "In FY2024, the organization directed a <cite id=\"1\">90.3% program expense ratio</cite> toward direct service delivery and legal support programs [15].",
-          "point": "High Program Expense Ratio"
+          "detail": "In FY2024, the charity reported a <cite id=\"15\">93.3% program expense Ratio</cite>, directing most resources toward field distributions.",
+          "point": "High reported program spending ratio"
         },
         {
           "citation_ids": [
-            "[5]"
+            "[14]"
           ],
-          "detail": "The charity maintained an efficient fundraising cost model, spending only <cite id=\"5\">$0.10 per $1 raised</cite> in operational revenue [14].",
-          "point": "Low Fundraising Overhead"
+          "detail": "The organization spent <cite id=\"14\">$0.05 to raise every dollar</cite> in contributions, beating the general industry efficiency benchmark.",
+          "point": "Low fundraising costs"
         },
         {
-          "citation_ids": [
-            "[1]",
-            "[4]"
-          ],
-          "detail": "Program initiatives have distributed over <cite id=\"6\">27,000 solar lanterns</cite> and offered legal defense to villages under threat of demolition [1, 4].",
-          "point": "Documented Field Interventions"
+          "citation_ids": [],
+          "detail": "Rebuilding Alliance publishes organizational metrics to earn a Platinum Seal from Candid.",
+          "point": "Candid Platinum Seal of Transparency"
         }
       ],
       "strengths_deep_dive": [
-        "Rebuilding Alliance concentrates its resources on direct service delivery and targeted advocacy in Palestinian communities [1, 4]. In FY2024, the organization achieved a <cite id=\"1\">90.3% program expense ratio</cite>, aligning with a cash-adjusted program expense ratio of 90.3% [15]. Fundraising activities required only <cite id=\"5\">$0.10 per $1 raised</cite>, ensuring that public support is primarily deployed into active programs [14]. Field evidence demonstrates tangible support outputs, including <cite id=\"6\">27,000 solar lanterns delivered</cite> to families and legal advocacy for <cite id=\"7\">children attending schools under demolition orders</cite> [1, 2]."
+        "Rebuilding Alliance focuses its service model on emergency relief and human rights advocacy in Palestine. During FY2024, it reported a <cite id=\"15\">93.3% program expense Ratio</cite> on total revenue of <cite id=\"15\">$4,309,990</cite>. Field operations have included delivering <cite id=\"1\">27,000 solar lanterns</cite> and distributing emergency hot meals in response to regional crises."
       ],
-      "summary": "Rebuilding Alliance is a U.S.-based non-governmental organization focused on supporting Palestinian rights through legal advocacy, emergency aid, and community assistance [1, 4]. The organization's key operational challenges stem from severe financial health constraints and a non-cash contribution model that introduces risk [15]. In FY2024, the charity reported <cite id=\"2\">$4,309,990 in total revenue</cite>, which marks significant growth from <cite id=\"3\">$825,817 in FY2023</cite> [15]. However, the organization's financial stability remains hindered by a negative working capital position of -2.7 months in FY2024 [15]. Additionally, <cite id=\"4\">100% of reported noncash contributions</cite> create valuation vulnerabilities that impact overall sustainability [15].\n\nDespite these balance sheet risks, Rebuilding Alliance directs a high portion of its cash spending directly to its operations. In FY2024, the charity achieved a <cite id=\"1\">program expense ratio of 90.3%</cite>, corresponding to a cash-adjusted program expense ratio of 90.3% [15]. It also maintained low overhead costs, spending <cite id=\"5\">$0.10 per $1 raised</cite> on fundraising activities [14]. The organization's field operations focus on mitigating home demolitions through legal intervention, distributing emergency supplies, and expanding community infrastructure [1, 4]. Past field reports indicate outcomes such as <cite id=\"6\">27,000 solar lanterns distributed</cite> to families in energy-scarce areas and direct legal advocacy for <cite id=\"7\">children in schools facing demolition</cite> [1, 2]. While the organization operates in Muslim-majority territories, making its offerings <cite id=\"8\">SADAQAH-ELIGIBLE</cite> [11]. Donors evaluating the group must balance its direct field advocacy against persistent financial balance sheet liabilities [15].",
+      "summary": "Rebuilding Alliance is a U.S.-based organization focused on advocacy, rights protection, and emergency aid for Palestinian families in the Gaza Strip and the West Bank <cite id=\"1\">through education and direct support</cite>. Primary limiting factors constrain its public assessment: in FY2024, the organization reported $4,309,990 in total revenue <cite id=\"15\">derived entirely from noncash gifts</cite>, creating structural valuation and verification challenges. Furthermore, it operates without <cite id=\"14\">a documented theory of change</cite> or <cite id=\"14\">sufficient working capital reserves</cite>. The group reported a Program expense ratio of 93.3% in FY2024, reflecting an expense breakdown heavily slanted toward noncash distributions <cite id=\"15\">including hot meals and solar lanterns</cite>. The organization holds a Platinum Seal of Transparency from Candid and incurs low fundraising expenses, incurring <cite id=\"14\">$0.10 per $1 raised</cite>.",
       "zakat_guidance": {
         "classification": null,
         "eligibility": "SADAQAH-ELIGIBLE"
