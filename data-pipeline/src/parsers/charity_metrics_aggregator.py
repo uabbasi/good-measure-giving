@@ -238,6 +238,30 @@ def shared_income_fields_agree(
     return True
 
 
+def sources_may_share_a_filing(
+    pp_tax_year: Optional[int],
+    cn_fiscal_year: Optional[int],
+) -> bool:
+    """Could these two sources be describing the same filing?
+
+    Only a POSITIVE difference rules it out. Agreement between the sources is
+    meaningful evidence within one fiscal year and misleading across two — a
+    gap between different years is a real year-over-year change, not a
+    transcription error (Hikma Health's FY2019 against FY2023).
+
+    An unknown year is not a different year, and it is emphatically not a
+    shared one. Reading it as "different" skipped the agreement check in the
+    exact case with the least evidence that the two describe one filing, and
+    spliced Charity Navigator's whole income statement into ProPublica's:
+    EIN 82-1670588 published CN's program_expenses of 105,872 — the entirety
+    of CN's own total_expenses — against ProPublica's FY2023 total of
+    4,541,420, a page reporting 2.3% of the money spent on programs.
+    """
+    if pp_tax_year is None or cn_fiscal_year is None:
+        return True
+    return pp_tax_year == cn_fiscal_year
+
+
 def elect_income_statement(
     pp_tax_year: Optional[int],
     cn_fiscal_year: Optional[int],
@@ -1851,7 +1875,7 @@ class CharityMetricsAggregator:
             # a gap is a genuine year-over-year change, not a transcription
             # error, so comparing them would mislabel Hikma Health's FY2019-vs-
             # FY2023 recency problem as a same-year source conflict.
-            same_claimed_year = pp_tax_year is None or pp_tax_year == cn_fiscal_year
+            same_claimed_year = sources_may_share_a_filing(pp_tax_year, cn_fiscal_year)
             sources_agree = not same_claimed_year or shared_income_fields_agree(
                 {f: metrics_data.get(f) for f in _INCOME_STMT_FIELDS}, cn_profile
             )
@@ -2092,8 +2116,24 @@ class CharityMetricsAggregator:
         if known_years:
             metrics_data["latest_known_filing_year"] = max(known_years)
 
+        # A ratio does not outlive the statement it was derived from. Where the
+        # two sources positively disagreed about a filing they both claim, the
+        # election keeps the Form 990 whole and refuses CN's figures — and CN's
+        # ratio is one of those figures. Taking it anyway republished the
+        # rejected statement as a bare percentage: 82-1670588 would carry
+        # "100% to programs" from a CN statement whose $105,872 total we had
+        # just declined to put on the page beside ProPublica's $4,541,420.
+        #
+        # Losing on recency is NOT this. A CN filing a year older is still a
+        # real filing, and refusing its ratio too would strip program-ratio
+        # scoring from charities whose only breakdown that is.
+        cn_statement_refused = any(
+            d.get("reason") == "same_fiscal_year_disagreement"
+            for d in (metrics_data.get("financial_source_discrepancies") or [])
+        )
+
         # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
-        if cn_profile:
+        if cn_profile and not cn_statement_refused:
             if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio") is not None:
                 metrics_data["program_expense_ratio"] = cn_profile.get("program_expense_ratio")
             if metrics_data.get("admin_expense_ratio") is None and cn_profile.get("admin_expense_ratio") is not None:
@@ -2132,16 +2172,24 @@ class CharityMetricsAggregator:
                             metrics_data["program_expenses"] = financials["program_expenses"]
                         break  # Use first available
 
-        # Bulletproof: no source supplied a pre-computed ratio, but we hold the
-        # raw components — compute it directly. A 'mixed' income statement
-        # (CN gap-fill) can leave prog/total present but ratio None; without
-        # this, program-ratio scoring silently collapses (Al-Furqaan regressed
-        # 0.85 -> None -> impact 8/50 on a fresh run).
-        if metrics_data.get("program_expense_ratio") is None:
-            prog = metrics_data.get("program_expenses")
-            total = metrics_data.get("total_expenses")
-            if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog >= 0:
-                metrics_data["program_expense_ratio"] = round(min(1.0, prog / total), 4)
+        # The ratio has to divide the components published beside it. Charity
+        # Navigator's `avg_program_expense_ratio` is POOLED across the filings
+        # in its rating — sum(program) / sum(total) over (usually) three years
+        # — while these components are one year, so the two disagree by
+        # construction: 65 of 166 pages showed a ratio that was not the
+        # quotient of the two figures above it. 22-3382037 published
+        # 5,460,382 / 5,544,311 = 0.9849 under a ratio of 0.7154, CN having
+        # pooled in a 2023 filing whose program figure (152,166 of 4,281,367)
+        # is a breakdown it never had.
+        #
+        # An external ratio is still the only thing known when no components
+        # exist, and dropping it there collapses program-ratio scoring
+        # (Al-Furqaan regressed 0.85 -> None -> impact 8/50). It may stand
+        # alone; it may not contradict.
+        prog = metrics_data.get("program_expenses")
+        total = metrics_data.get("total_expenses")
+        if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog >= 0:
+            metrics_data["program_expense_ratio"] = round(min(1.0, prog / total), 4)
 
         # ====================================================================
         # GIK / Noncash contributions (Fix 1)
