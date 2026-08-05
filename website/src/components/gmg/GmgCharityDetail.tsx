@@ -5,6 +5,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
+import { EDITION } from '../../config/siteVersion';
 import { useCharities } from '../../hooks/useCharities';
 import {
   selectSimilarCharities,
@@ -241,7 +242,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           letterSpacing: '0.06em',
         }}
       >
-        {c.rubricVersion && <span>RUBRIC v{c.rubricVersion}</span>}
+        <span>EDITION {EDITION}</span>
         {c.evaluatedOn && <span>· EVALUATED {c.evaluatedOn}</span>}
       </div>
 
@@ -374,7 +375,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
       {/* Methodology details */}
       <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-        <Kicker p={p}>Methodology details {c.rubricVersion && `· rubric v${c.rubricVersion}`}</Kicker>
+        <Kicker p={p}>Methodology details · edition {EDITION}</Kicker>
         {c.strengths.length > 0 && (
           <div style={{ marginTop: 8, marginBottom: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg2 }}>
             <Kicker p={p}>How we evaluate</Kicker>
@@ -659,7 +660,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
       )}
 
       <footer style={{ padding: `14px ${padX}px`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
-        <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} {c.rubricVersion && `· RUBRIC v${c.rubricVersion}`}</span>
+        <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} · EDITION {EDITION}</span>
         <span>HARVEY-BALL MOTIF</span>
       </footer>
 

@@ -10,7 +10,7 @@ import { getEvidenceStageLabel } from '../src/utils/scoreConstants';
 import { MethodologyInsights } from '../components/MethodologyInsights';
 import { CauseAreaMatrix } from '../components/CauseAreaMatrix';
 import { SHOW_AMAL_SCORE } from '../src/featureFlags';
-import { RUBRIC_VERSION } from '../src/config/siteVersion';
+import { EDITION } from '../src/config/siteVersion';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -41,12 +41,13 @@ const CUE_DISPLAY_LABELS: Record<string, string> = {
   'Limited Match': 'Needs Verification',
 };
 
-// Citability stamps. RUBRIC_VERSION is centralized in src/config/siteVersion.ts
-// (mirrored from data-pipeline/src/scorers/v2_scorers.py); both this page and the
-// site-wide version strip import it so they can't drift.
+// Citability stamps. A citation has to stay valid on someone else's page, so
+// it names the EDITION — which moves only when the scores change meaning —
+// rather than the internal rubric semver, which bumps for bug fixes and would
+// date every existing citation the moment it did. See src/config/siteVersion.ts.
 const METHODOLOGY_LAST_UPDATED = 'June 2026';
 const METHODOLOGY_URL = 'https://goodmeasuregiving.org/methodology/';
-const CITATION_TEXT = `Good Measure Giving. (2026). How We Evaluate Charities — Methodology (Rubric v${RUBRIC_VERSION}). Retrieved from ${METHODOLOGY_URL}`;
+const CITATION_TEXT = `Good Measure Giving. (2026). How We Evaluate Charities — Methodology (Edition ${EDITION}). Retrieved from ${METHODOLOGY_URL}`;
 
 // ── Local motif building blocks ────────────────────────────────────────
 
@@ -805,9 +806,9 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <H3 p={p}>Version & Sources</H3>
                   <dl style={{ margin: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                      <dt style={{ fontSize: 14, color: p.sub }}>Rubric version</dt>
+                      <dt style={{ fontSize: 14, color: p.sub }}>Methodology edition</dt>
                       <dd style={{ margin: 0 }}>
-                        <Pill p={p} bg={p.posBg} fg={p.pos}>v{RUBRIC_VERSION}</Pill>
+                        <Pill p={p} bg={p.posBg} fg={p.pos}>{EDITION}</Pill>
                       </dd>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 12 }}>
