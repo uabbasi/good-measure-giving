@@ -71,6 +71,17 @@ from src.utils.scoring_audit import (
 #   2.0.0 — 4-dimension revised (reweighted, new components)
 #   3.0.0 — 3-dimension (Credibility/33 + Impact/33 + Alignment/34)
 #   4.0.0 — 2-dimension (Impact/50 + Alignment/50 + DataConfidence signal)
+#
+# THIS VERSION IS INTERNAL. It is data lineage — it stamps
+# evaluations.rubric_version and the Dolt tags, and answers "which code
+# produced this score?", so it must bump on ANY scoring change, including bug
+# fixes nobody would announce.
+#
+# What the public sees is the EDITION, in website/src/config/siteVersion.ts,
+# which moves only when scores a donor already saw would read differently.
+# Do NOT mirror this string onto the site again: it used to be copied there by
+# hand, the copy drifted, and the site served "METHODOLOGY v5.2.0" over scores
+# this file had already stamped 5.3.0.
 RUBRIC_VERSION = "5.3.0"
 
 # =============================================================================

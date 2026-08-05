@@ -9,7 +9,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { GmgPalette, FONT_MONO } from './tokens';
 import { useCharities } from '../../hooks/useCharities';
-import { RUBRIC_VERSION } from '../../config/siteVersion';
+import { EDITION } from '../../config/siteVersion';
 import { computeVersionStripStats } from './versionStripData';
 
 const DOT = '·';
@@ -39,10 +39,10 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
   // Grouped like a masthead: edition dateline · scope · version, separated by bars.
   const editionGroup = [edition, hijri].filter(Boolean).join(` ${DOT} `); // "JUNE 2026 · 1448 AH"
   const scopeGroup = hasData ? `${stats.totalCount} CHARITIES` : null;
-  const versionGroup = `METHODOLOGY v${RUBRIC_VERSION}${updatedShort ? ` ${DOT} UPDATED ${updatedShort}` : ''}`;
+  const versionGroup = `EDITION ${EDITION}${updatedShort ? ` ${DOT} UPDATED ${updatedShort}` : ''}`;
 
   const desktopGroups = [editionGroup, scopeGroup, versionGroup].filter(Boolean);
-  const mobileLine = [edition, hasData ? `${stats.totalCount} CHARITIES` : null, `v${RUBRIC_VERSION}`]
+  const mobileLine = [edition, hasData ? `${stats.totalCount} CHARITIES` : null, `ED ${EDITION}`]
     .filter(Boolean)
     .join(` ${DOT} `);
 

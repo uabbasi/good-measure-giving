@@ -128,7 +128,6 @@ export interface GmgCharity {
   donateUrl: string | null;
 
   amalScore: number;
-  rubricVersion: string;
   evaluatedOn: string;
   riskLevel: string;
 
@@ -265,7 +264,6 @@ export const adaptCharity = (c: any): GmgCharity => {
     donateUrl: c?.donationUrl || c?.website || null,
 
     amalScore: num(ae?.amal_score),
-    rubricVersion: ae?.rubric_version ?? '',
     evaluatedOn: (ae?.evaluation_date ?? '').slice(0, 10),
     riskLevel: sd?.risks?.overall_risk_level ?? 'LOW',
 

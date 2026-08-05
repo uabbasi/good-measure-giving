@@ -16,6 +16,7 @@ import {
 } from '../src/components/gmg/tokens';
 import { GmgNav } from '../src/components/gmg/chrome';
 import { useIsMobile } from '../src/components/gmg/useIsMobile';
+import { EDITION_HISTORY } from '../src/config/siteVersion';
 
 interface ChangelogEntry {
   date: string; // YYYY-MM or YYYY-MM-DD
@@ -42,7 +43,7 @@ const CHANGELOG: ChangelogEntry[] = [
   {
     date: '2026-06',
     summary:
-      'Added a gold & silver zakat chart to the calculator. Hardened the methodology with a citable scoring formula (Rubric v5.2.0).',
+      'Added a gold & silver zakat chart to the calculator. Hardened the methodology with a citable scoring formula.',
   },
 ];
 
@@ -113,6 +114,70 @@ export const ChangelogPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           Good Measure Giving is a continuously-updated index. Scores, data, and the site itself improve
           as filings, methodology, and coverage evolve. Here's the running record of the bigger changes.
         </p>
+
+        {/* Editions. A number only means something if a reader can find out
+            what it covers, so the mapping is published rather than implied. */}
+        <div
+          style={{
+            marginTop: 44,
+            border: `1px solid ${p.rule}`,
+            borderRadius: 6,
+            padding: isMobile ? 18 : 22,
+            background: p.bg2,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: FONT_MONO,
+              fontSize: 11,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: p.accent2,
+              marginBottom: 14,
+            }}
+          >
+            Methodology editions
+          </div>
+          <p style={{ margin: '0 0 16px', fontSize: 14, lineHeight: 1.6, color: p.sub }}>
+            The edition changes only when scores you have already seen would read differently.
+            Routine fixes, new data sources and re-runs do not move it.
+          </p>
+          <dl style={{ margin: 0 }}>
+            {EDITION_HISTORY.map((e) => (
+              <div
+                key={e.edition}
+                style={{
+                  display: 'flex',
+                  gap: isMobile ? 6 : 20,
+                  flexDirection: isMobile ? 'column' : 'row',
+                  padding: '12px 0',
+                  borderTop: `1px solid ${p.rule}`,
+                }}
+              >
+                <dt
+                  style={{
+                    fontFamily: FONT_MONO,
+                    fontSize: 12,
+                    letterSpacing: '0.04em',
+                    color: p.fg,
+                    flexShrink: 0,
+                    minWidth: isMobile ? undefined : 150,
+                  }}
+                >
+                  {e.edition}
+                  <span style={{ color: p.sub2 }}>
+                    {' '}
+                    {formatDate(e.from)}
+                    {e.until ? `–${formatDate(e.until)}` : '–present'}
+                  </span>
+                </dt>
+                <dd style={{ margin: 0, fontSize: isMobile ? 14 : 15, lineHeight: 1.6, color: p.sub }}>
+                  {e.summary}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
         <ol style={{ listStyle: 'none', margin: '44px 0 0', padding: 0 }}>
           {CHANGELOG.map((entry) => (
