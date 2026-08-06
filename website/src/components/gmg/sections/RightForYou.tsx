@@ -4,12 +4,6 @@
 // page's general rule that "should I trust/like this org" content stays
 // ungated; the deeper risk factors and mitigation notes sit behind the
 // community gate, the same treatment "Is it run well?" gives CEO compensation.
-//
-// `donorFitMatrix.zakatAsnafServed` is typed `string | null` on GmgCharity,
-// but the pipeline actually exports it as a list of asnaf categories (empty
-// for charities where the category doesn't apply) — the adapter passes it
-// through unstripped, so the declared type and the real export shape
-// disagree. Normalized defensively here rather than trusted at face value.
 
 import React from 'react';
 import { Section } from './Section';
@@ -27,12 +21,6 @@ const Fact: React.FC<{ label: string; value: string; p: GmgPalette }> = ({ label
   </div>
 );
 
-const asnafList = (raw: unknown): string[] => {
-  if (Array.isArray(raw)) return raw.filter((x): x is string => typeof x === 'string' && x.trim() !== '');
-  if (typeof raw === 'string' && raw.trim() !== '') return [raw];
-  return [];
-};
-
 export const RightForYou: React.FC<{
   c: GmgCharity;
   p: GmgPalette;
@@ -40,7 +28,7 @@ export const RightForYou: React.FC<{
   padX: number;
 }> = ({ c, p, isMobile, padX }) => {
   const dfm = c.donorFitMatrix;
-  const asnafServed = asnafList(dfm.zakatAsnafServed);
+  const asnafServed = dfm.zakatAsnafServed;
 
   const facts: { label: string; value: string }[] = [];
   if (dfm.causeArea) facts.push({ label: 'Cause area', value: dfm.causeArea });

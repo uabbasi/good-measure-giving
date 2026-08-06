@@ -108,5 +108,38 @@ describe('adaptCharity detail structures', () => {
     expect(c.risks).toEqual([]);
     expect(c.provenance).toEqual([]);
     expect(c.notIdealFor).toEqual([]);
+    expect(c.donorFitMatrix.zakatAsnafServed).toEqual([]);
+  });
+});
+
+describe('donorFitMatrix.zakatAsnafServed is a string list, never a scalar', () => {
+  it('carries the export list entries through when non-empty', () => {
+    const c = adaptCharity(load('charity-04-3810161.json'));
+    expect(c.donorFitMatrix.zakatAsnafServed).toEqual([
+      'fuqara (poor)',
+      'masakin (needy)',
+      'amil (collectors)',
+      'gharimin (debtors)',
+      'fisabilillah (cause of Allah)',
+      'ibn_sabil (wayfarer)',
+    ]);
+  });
+
+  it('yields [] for a charity where the asnaf category legitimately does not apply', () => {
+    const c = adaptCharity(load('charity-04-2535767.json'));
+    expect(c.donorFitMatrix.zakatAsnafServed).toEqual([]);
+  });
+
+  it('cleans and drops non-string entries rather than passing the raw list through', () => {
+    const c = adaptCharity({
+      ein: '00-0000001',
+      name: 'Malformed',
+      amalEvaluation: {
+        rich_narrative: {
+          donor_fit_matrix: { zakat_asnaf_served: ['fuqara (poor)', 42, null, '  masakin (needy)  '] },
+        },
+      },
+    });
+    expect(c.donorFitMatrix.zakatAsnafServed).toEqual(['fuqara (poor)', 'masakin (needy)']);
   });
 });

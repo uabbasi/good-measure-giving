@@ -296,7 +296,7 @@ export interface GmgCharity {
     evidenceRigor: string;
     geographicFocus: string;
     zakatStatus: string;
-    zakatAsnafServed: string | null;
+    zakatAsnafServed: string[];
   };
   /** score_details risks. The export's `mitigation` is null in all 206 rows, so it is not mapped. */
   risks: { category: string; description: string; severity: string; dataSource: string }[];
@@ -583,7 +583,7 @@ export const adaptCharity = (c: any): GmgCharity => {
       evidenceRigor: stripTags(rn?.donor_fit_matrix?.evidence_rigor),
       geographicFocus: stripTags(rn?.donor_fit_matrix?.geographic_focus),
       zakatStatus: stripTags(rn?.donor_fit_matrix?.zakat_status),
-      zakatAsnafServed: rn?.donor_fit_matrix?.zakat_asnaf_served ?? null,
+      zakatAsnafServed: strList(rn?.donor_fit_matrix?.zakat_asnaf_served),
     },
     risks: (Array.isArray(sd?.risks?.risks) ? sd.risks.risks : [])
       .filter((r: unknown): r is Record<string, unknown> => !!r && typeof r === 'object')
