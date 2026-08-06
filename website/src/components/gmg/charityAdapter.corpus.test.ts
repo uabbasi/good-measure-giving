@@ -105,4 +105,15 @@ describe('adaptCharity exposes the newly wired data', () => {
     const withSeries = all.map(adaptCharity).filter((c) => c.financialSeries.length > 0);
     expect(withSeries.length).toBeGreaterThanOrEqual(155);
   });
+
+  it('carries GIK/burn-rate signals matching the measured corpus population', () => {
+    const adapted = all.map(adaptCharity);
+    expect(adapted.filter((c) => c.noncashRatio !== null).length).toBe(62);
+    expect(adapted.filter((c) => c.cashAdjustedProgramRatio !== null).length).toBe(20);
+    expect(adapted.filter((c) => c.domesticBurnRate !== null).length).toBe(32);
+    const atLeastOne = adapted.filter(
+      (c) => c.noncashRatio !== null || c.cashAdjustedProgramRatio !== null || c.domesticBurnRate !== null,
+    );
+    expect(atLeastOne.length).toBe(71);
+  });
 });

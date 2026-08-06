@@ -109,6 +109,25 @@ describe('adaptCharity detail structures', () => {
     expect(c.provenance).toEqual([]);
     expect(c.notIdealFor).toEqual([]);
     expect(c.donorFitMatrix.zakatAsnafServed).toEqual([]);
+    expect(c.noncashRatio).toBeNull();
+    expect(c.cashAdjustedProgramRatio).toBeNull();
+    expect(c.domesticBurnRate).toBeNull();
+  });
+});
+
+describe('GIK/burn-rate signals (noncashRatio, cashAdjustedProgramRatio, domesticBurnRate)', () => {
+  it('guards each field independently — a charity can have one signal without the others', () => {
+    const c = adaptCharity(load('charity-04-2535767.json'));
+    expect(c.noncashRatio).not.toBeNull();
+    expect(c.cashAdjustedProgramRatio).toBeNull();
+    expect(c.domesticBurnRate).toBeNull();
+  });
+
+  it('keeps a real 0 value rather than treating it as absent', () => {
+    const c = adaptCharity(load('charity-13-1760110.json'));
+    expect(c.noncashRatio).toBeCloseTo(0.159, 3);
+    expect(c.cashAdjustedProgramRatio).toBeCloseTo(0.783, 3);
+    expect(c.domesticBurnRate).toBe(0);
   });
 });
 

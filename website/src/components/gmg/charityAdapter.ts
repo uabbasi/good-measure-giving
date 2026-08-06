@@ -172,6 +172,10 @@ export interface GmgCharity {
   fundraisingExpenses: number | null;
   totalAssets: number | null;
   netAssets: number | null;
+  /** Gift-in-kind and burn-rate signals. Sparse: 71/166 charities have at least one. */
+  noncashRatio: number | null;
+  cashAdjustedProgramRatio: number | null;
+  domesticBurnRate: number | null;
 
   // narrative
   headline: string;
@@ -436,6 +440,9 @@ export const adaptCharity = (c: any): GmgCharity => {
     fundraisingExpenses: numOrNull(fin?.fundraisingExpenses),
     totalAssets: numOrNull(fin?.totalAssets),
     netAssets: numOrNull(fin?.netAssets),
+    noncashRatio: numOrNull(fin?.noncashRatio),
+    cashAdjustedProgramRatio: numOrNull(fin?.cashAdjustedProgramRatio),
+    domesticBurnRate: numOrNull(fin?.domesticBurnRate),
 
     headline: stripTags(narrative?.headline) || c?.scoreSummary || c?.mission || c?.name || '',
     summary: stripTags(narrative?.summary) || stripTags(c?.mission),
