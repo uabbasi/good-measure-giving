@@ -1,6 +1,10 @@
 // The browse index carries no targeting block — only causeTags — so a row's
 // geography has to be read out of the tag vocabulary. Insertion order here
-// is the display order, so output is stable regardless of tag order.
+// is the display order (by corpus frequency), so output is stable
+// regardless of tag order.
+//
+// `international` is deliberately excluded: it is a scope marker, not a
+// place, and does not belong in a "Where it works" geography facet.
 
 export const REGION_TAGS: Record<string, string> = {
   usa: 'United States',
@@ -12,6 +16,22 @@ export const REGION_TAGS: Record<string, string> = {
   syria: 'Syria',
   yemen: 'Yemen',
   india: 'India',
+  jordan: 'Jordan',
+  somalia: 'Somalia',
+  afghanistan: 'Afghanistan',
+  kenya: 'Kenya',
+  ukraine: 'Ukraine',
+  indonesia: 'Indonesia',
+  turkey: 'Türkiye',
+  haiti: 'Haiti',
+  iraq: 'Iraq',
+  egypt: 'Egypt',
+  'south-africa': 'South Africa',
+  nigeria: 'Nigeria',
+  ethiopia: 'Ethiopia',
+  myanmar: 'Myanmar',
+  kashmir: 'Kashmir',
+  malaysia: 'Malaysia',
 };
 
 export const regionsFromCauseTags = (raw: unknown): string[] => {

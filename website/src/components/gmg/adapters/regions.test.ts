@@ -12,6 +12,14 @@ describe('regionsFromCauseTags', () => {
     expect(regionsFromCauseTags(['grantmaking', 'fuqara', 'youth'])).toEqual([]);
   });
 
+  it('maps a long-tail geography tag added after the initial top-30 cut', () => {
+    expect(regionsFromCauseTags(['somalia'])).toEqual(['Somalia']);
+  });
+
+  it('does not treat the scope marker "international" as a region', () => {
+    expect(regionsFromCauseTags(['international', 'grantmaking'])).toEqual([]);
+  });
+
   it('preserves the order given in REGION_TAGS so output is stable', () => {
     const keys = Object.keys(REGION_TAGS);
     const out = regionsFromCauseTags([keys[2], keys[0]]);
@@ -47,6 +55,6 @@ describe('regions against the real index', () => {
     const rows = index.charities as Array<Record<string, unknown>>;
     expect(rows).toHaveLength(166);
     const withRegion = rows.filter((c) => regionsFromCauseTags(c.causeTags).length > 0);
-    expect(withRegion.length).toBeGreaterThanOrEqual(80);
+    expect(withRegion.length).toBeGreaterThanOrEqual(95);
   });
 });
