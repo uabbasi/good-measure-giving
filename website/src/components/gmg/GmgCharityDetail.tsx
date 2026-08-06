@@ -38,6 +38,7 @@ import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
+import { expenseSplit } from './sections/expenseSplit';
 
 const usd = (n: number | null): string => {
   if (n == null) return '—';
@@ -513,18 +514,10 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               <Kicker p={p}>{c.fiscalYear ? `FY${c.fiscalYear} · IRS 990` : 'IRS 990'}</Kicker>
             )}
           </div>
-          {c.programRatioPct != null && (() => {
-            // Derive the split from the real filed expense figures when available
-            // (so the bar matches the dollar amounts shown below it); fall back to
-            // the program ratio alone otherwise. Remainder math prevents >100%.
-            const prog = c.programExpenses ?? 0;
-            const admin = c.adminExpenses ?? 0;
-            const fund = c.fundraisingExpenses ?? 0;
-            const denom = prog + admin + fund;
-            const hasBreakdown = denom > 0;
-            const progPct = hasBreakdown ? Math.round((prog / denom) * 100) : c.programRatioPct;
-            const adminPct = hasBreakdown ? Math.round((admin / denom) * 100) : Math.max(0, 100 - c.programRatioPct);
-            const fundPct = Math.max(0, 100 - progPct - adminPct);
+          {(() => {
+            const split = expenseSplit(c);
+            if (!split) return null;
+            const { progPct, adminPct, fundPct } = split;
             return (
               <div style={{ marginBottom: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: p.sub2, marginBottom: 4 }}>
