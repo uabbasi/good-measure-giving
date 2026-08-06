@@ -182,5 +182,5 @@ describe('RunWell', () => {
       rendered += 1;
     }
     expect(rendered).toBe(files.length);
-  });
+  }, 30000); // renders 166 charities x 2 layouts; generous margin under worker contention
 });

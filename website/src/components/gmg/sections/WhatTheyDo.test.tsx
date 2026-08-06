@@ -84,5 +84,5 @@ describe('WhatTheyDo', () => {
       unmount();
     }
     expect(rendered).toBe(files.length);
-  });
+  }, 30000); // renders 166 charities; generous margin under worker contention
 });
