@@ -5,6 +5,20 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import type { KeyConcernType, KeyConcernSeverity } from '../../../../types';
+
+// Compile-time guard. The runtime assertions in this file describe the shipped
+// JSON; they cannot catch someone narrowing these unions back down while the
+// data stays put. These types fail `tsc` if that happens.
+type Assert<T extends true> = T;
+type _SeverityCoversCorpus = Assert<
+  'high' | 'medium' | 'low' extends KeyConcernSeverity ? true : false
+>;
+type _TypeCoversCorpus = Assert<
+  | 'gik_inflation' | 'domestic_burn' | 'zakat_hoarding' | 'risk_deduction' | 'data_quality'
+  | 'ceo_comp_excessive' | 'geographic_mismatch' | 'high_fundraising_ratio'
+  | 'implausible_cpb' | 'revenue_expense_mismatch' extends KeyConcernType ? true : false
+>;
 
 const dir = path.resolve(__dirname, '../../../../data/charities');
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
