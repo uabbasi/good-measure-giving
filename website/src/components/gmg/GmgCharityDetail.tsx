@@ -28,9 +28,6 @@ import {
   RatingLabel,
   Tag,
   Kicker,
-  Star8,
-  Bar,
-  Stacked,
   Bismillah,
   Figure,
 } from './primitives';
@@ -38,8 +35,15 @@ import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
-import { expenseSplit } from './sections/expenseSplit';
 import { dataVintage } from './sections/dataVintage';
+import { WhatTheyDo } from './sections/WhatTheyDo';
+import { WhereMoneyGoes } from './sections/WhereMoneyGoes';
+import { TrustTheNumbers } from './sections/TrustTheNumbers';
+import { RunWell } from './sections/RunWell';
+import { RightForYou } from './sections/RightForYou';
+import { HowItCompares } from './sections/HowItCompares';
+import { SectionRail, type RailSection } from './SectionRail';
+import { CitedText, SourceList, collectCitations } from './CitedText';
 
 const usd = (n: number | null): string => {
   if (n == null) return '—';
@@ -59,6 +63,17 @@ const usd = (n: number | null): string => {
 
 const usdFull = (n: number | null): string =>
   n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+
+// The six donor-question sections, in spine order — shared between the
+// section list below and the SectionRail so the two can never drift apart.
+const RAIL_SECTIONS: RailSection[] = [
+  { id: 'what-they-do', label: 'What they do' },
+  { id: 'money', label: 'Where money goes' },
+  { id: 'trust', label: 'Trust the numbers' },
+  { id: 'run-well', label: 'Run well' },
+  { id: 'right-for-you', label: 'Right for you' },
+  { id: 'compares', label: 'How it compares' },
+];
 
 // Module-scope cards — kept out of the render body so they keep a stable
 // identity across renders (p + sectionBorder come in as props).
@@ -208,8 +223,10 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
   // Data vintage: 990 filings run ~2 years behind; older than that is a
   // mild red flag worth surfacing to donors. See dataVintage.ts for why age
-  // comes from the pipeline rather than the wall clock.
-  const { fyAge, fyDated } = dataVintage(c);
+  // comes from the pipeline rather than the wall clock. Only `fyDated` is
+  // needed here — the stat strip's "· dated" note is the only consumer left
+  // on this page; TrustTheNumbers computes its own copy for the full badge.
+  const { fyDated } = dataVintage(c);
 
   const statCells: [string, string, string][] = [
     ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
@@ -255,10 +272,16 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {c.name}
             </h1>
             <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2, marginTop: 8, letterSpacing: '0.03em' }}>
-              {[c.address, c.ein && `EIN ${c.ein}`, c.founded && `Founded ${c.founded}`].filter(Boolean).join(' · ')}
+              {[c.address, c.region, c.ein && `EIN ${c.ein}`, c.founded && `Founded ${c.founded}`].filter(Boolean).join(' · ')}
             </div>
+            {c.headline && (
+              <p style={{ fontSize: 14, color: p.sub, lineHeight: 1.5, margin: '10px 0 0', maxWidth: 620 }}>
+                {c.headline}
+              </p>
+            )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
               <Tag tone="accent" p={p}>{c.wallet}</Tag>
+              {c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
               {c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
               {c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
               {c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
@@ -339,38 +362,24 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         ))}
       </section>
 
-      {/* About + Quick facts */}
-      <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1.6fr) minmax(0, 1fr)', gap: 20 }}>
-        <div>
-          <Kicker p={p}>About</Kicker>
-          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 28, lineHeight: 1.15, margin: '8px 0 12px', letterSpacing: '-0.02em' }}>
-            {c.headline}
-          </h2>
-          {c.summary && <p style={{ fontSize: 13.5, lineHeight: 1.65, color: p.sub, margin: 0 }}>{c.summary}</p>}
-        </div>
-        <div style={{ border: sectionBorder, borderRadius: 6, padding: 14, background: p.bg2 }}>
-          <Kicker p={p}>Quick facts</Kicker>
-          <div style={{ marginTop: 10, fontSize: 12 }}>
-            {([
-              ['Category', c.category],
-              ['Region', c.region],
-              ['Programs', c.programs.join(', ')],
-              ['Populations', c.populations.join(', ')],
-              ['Founded', c.founded ? `${c.founded}${c.trackRecordYears ? ` · ${c.trackRecordYears} yrs` : ''}` : ''],
-              ['Wallet', c.wallet],
-              ['Asnaf', c.asnaf || (c.claimsZakat ? 'Claims zakat' : '')],
-              ['Risk level', c.riskLevel],
-            ] as [string, string][])
-              .filter(([, v]) => v)
-              .map(([k, v], i, arr) => (
-                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 0', borderBottom: i < arr.length - 1 ? sectionBorder : 'none' }}>
-                  <span style={{ color: p.sub, flexShrink: 0 }}>{k}</span>
-                  <span style={{ color: k === 'Risk level' ? (p[riskTone(c.riskLevel)] as string) : p.fg, fontWeight: k === 'Risk level' ? 600 : 400, fontFamily: FONT_MONO, fontSize: 11, textAlign: 'right' }}>{v}</span>
-                </div>
-              ))}
+      {/* The six donor-question sections, with a scroll-spy rail on desktop
+          and a sticky jump menu on mobile (SectionRail switches on isMobile). */}
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '160px 1fr', gap: isMobile ? 0 : 24 }}>
+        {!isMobile && (
+          <div style={{ paddingLeft: padX, paddingTop: 24 }}>
+            <SectionRail sections={RAIL_SECTIONS} p={p} isMobile={false} />
           </div>
+        )}
+        <div style={{ minWidth: 0 }}>
+          {isMobile && <SectionRail sections={RAIL_SECTIONS} p={p} isMobile />}
+          <WhatTheyDo c={c} p={p} isMobile={isMobile} padX={padX} />
+          <WhereMoneyGoes c={c} p={p} isMobile={isMobile} padX={padX} />
+          <TrustTheNumbers c={c} p={p} isMobile={isMobile} padX={padX} />
+          <RunWell c={c} p={p} isMobile={isMobile} padX={padX} />
+          <RightForYou c={c} p={p} isMobile={isMobile} padX={padX} />
+          <HowItCompares c={c} p={p} isMobile={isMobile} padX={padX} />
         </div>
-      </section>
+      </div>
 
       {/* Methodology details */}
       <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
@@ -397,209 +406,36 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             </div>
           </div>
         )}
+        {/* Independent of the strengths block above — a charity can have
+            growth areas without strengths, or vice versa. */}
+        {c.growthAreas.length > 0 && (
+          <div style={{ marginBottom: 14 }}>
+            <Kicker p={p}>Growth areas</Kicker>
+            <div style={{ display: 'grid', gap: 4, marginTop: 6 }}>
+              {c.growthAreas.map((s) => (
+                <div key={s} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '4px 0', fontSize: 12.5, color: p.fg }}>
+                  <span style={{ color: p.caution }}>−</span>
+                  <span>{s}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
           <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} />
           <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} />
         </div>
-      </section>
-
-      {/* Best for */}
-      {(c.bestForSummary || c.idealFor.length > 0 || c.considerations.length > 0) && (
-        <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-          <Kicker p={p}>Best for</Kicker>
-          {c.bestForSummary && (
-            <p style={{ fontFamily: FONT_DISPLAY, fontSize: 22, color: p.fg, lineHeight: 1.35, margin: '8px 0 16px', letterSpacing: '-0.01em', maxWidth: 1000 }}>
-              {c.bestForSummary}
-            </p>
-          )}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-            {c.idealFor.length > 0 && (
-              <div style={{ border: `1px solid ${p.pos}`, borderRadius: 6, padding: 14, background: p.posBg }}>
-                <div style={{ fontSize: 12, color: p.pos, fontWeight: 600, marginBottom: 8 }}>✓ Ideal for donors who:</div>
-                {c.idealFor.map((t) => (
-                  <div key={t} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '5px 0', fontSize: 12.5, color: p.fg, lineHeight: 1.5 }}>
-                    <span style={{ color: p.pos }}>+</span>
-                    <span>{t}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            {c.considerations.length > 0 && (
-              <div style={{ border: `1px solid ${p.caution}`, borderRadius: 6, padding: 14, background: p.cautionBg }}>
-                <div style={{ fontSize: 12, color: p.caution, fontWeight: 600, marginBottom: 8 }}>! Consider:</div>
-                {c.considerations.map((t) => (
-                  <div key={t} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '5px 0', fontSize: 12.5, color: p.fg, lineHeight: 1.5 }}>
-                    <span style={{ color: p.caution }}>−</span>
-                    <span>{t}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          {c.caseAgainst && (
-            <div style={{ marginTop: 14, padding: '10px 14px', background: p.negBg, borderRadius: 4, fontSize: 12.5, color: p.neg, lineHeight: 1.5 }}>
-              <span style={{ fontWeight: 600 }}>⊘ May not fit: </span>
-              {c.caseAgainst}
+        {/* Credibility has no numeric score in the export (unlike Impact/Alignment),
+            so it gets a plain cited explanation rather than a HarveyBall card. */}
+        {c.cited.dimensionExplanations.credibility.length > 0 && (
+          <div style={{ marginTop: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
+            <Kicker p={p}>Credibility</Kicker>
+            <div style={{ marginTop: 8 }}>
+              <CitedText segments={c.cited.dimensionExplanations.credibility} p={p} size={13} />
             </div>
-          )}
-        </section>
-      )}
-
-      {/* Balanced view */}
-      {(c.strengths.length > 0 || c.growthAreas.length > 0) && (
-        <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-          <Kicker p={p}>Balanced view</Kicker>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginTop: 12 }}>
-            <div>
-              <div style={{ fontSize: 12, color: p.pos, fontWeight: 600, marginBottom: 6 }}>Strengths</div>
-              {c.strengths.map((s) => (
-                <div key={s.point} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '4px 0', fontSize: 12.5, color: p.fg }}>
-                  <span style={{ color: p.pos }}>+</span>
-                  <span>{s.point}</span>
-                </div>
-              ))}
-            </div>
-            {c.growthAreas.length > 0 && (
-              <div>
-                <div style={{ fontSize: 12, color: p.caution, fontWeight: 600, marginBottom: 6 }}>Growth areas</div>
-                {c.growthAreas.map((s) => (
-                  <div key={s} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '4px 0', fontSize: 12.5, color: p.fg }}>
-                    <span style={{ color: p.caution }}>−</span>
-                    <span>{s}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <SourceList citations={collectCitations(c.cited.dimensionExplanations.credibility)} p={p} />
           </div>
-        </section>
-      )}
-
-      {/* Financials + Zakat */}
-      <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-        <div style={{ border: sectionBorder, borderRadius: 6, padding: 14 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: 0, letterSpacing: '-0.02em' }}>Financials</h3>
-            {fyDated ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
-                <span
-                  aria-label={`Latest available financials are from FY${c.fiscalYear} — ${fyAge} years old`}
-                  style={{
-                    fontFamily: FONT_MONO,
-                    fontSize: 10,
-                    letterSpacing: '0.18em',
-                    textTransform: 'uppercase',
-                    color: p.caution,
-                    background: p.cautionBg,
-                    padding: '2px 6px',
-                    borderRadius: 4,
-                  }}
-                >
-                  FY{c.fiscalYear} · IRS 990 · DATED DATA
-                </span>
-                {/* Visible (not tooltip-only) explainer so touch-device donors — who never
-                    see a `title` attribute — understand why the chip appears. */}
-                {c.form990Exempt ? (
-                  <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>
-                    Not required to file — exempt from IRS 990
-                  </span>
-                ) : (
-                  <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, color: p.sub2 }}>
-                    {fyAge} years since last filed 990
-                  </span>
-                )}
-              </div>
-            ) : (
-              <Kicker p={p}>{c.fiscalYear ? `FY${c.fiscalYear} · IRS 990` : 'IRS 990'}</Kicker>
-            )}
-          </div>
-          {(() => {
-            const split = expenseSplit(c);
-            if (!split) return null;
-            const { progPct, adminPct, fundPct } = split;
-            return (
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: p.sub2, marginBottom: 4 }}>
-                  <span>Expense allocation</span>
-                  <span>{usd(c.totalRevenue)} revenue</span>
-                </div>
-                <Stacked
-                  h={10}
-                  segs={[
-                    { pct: progPct, color: p.accent },
-                    { pct: adminPct, color: p.accent2 },
-                    { pct: fundPct, color: p.warn },
-                  ]}
-                />
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8, fontSize: 11 }}>
-                  <span><span style={{ color: p.accent }}>■</span> Programs {progPct}%</span>
-                  <span><span style={{ color: p.accent2 }}>■</span> Admin {adminPct}%</span>
-                  <span><span style={{ color: p.warn }}>■</span> Fundraising {fundPct}%</span>
-                </div>
-              </div>
-            );
-          })()}
-          <div style={{ borderTop: sectionBorder, marginTop: 10, paddingTop: 8, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 4, fontSize: 11.5 }}>
-            {([
-              ['Total revenue', usdFull(c.totalRevenue)],
-              ['Program expenses', usdFull(c.programExpenses)],
-              ['Admin expenses', usdFull(c.adminExpenses)],
-              ['Fundraising', usdFull(c.fundraisingExpenses)],
-              ['Net assets', usdFull(c.netAssets)],
-              ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—'],
-            ] as [string, string][]).map(([k, v]) => (
-              <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '4px 0' }}>
-                <span style={{ color: p.sub }}>{k}</span>
-                <span style={{ color: p.fg, fontFamily: FONT_MONO, fontSize: 10.5 }}>{v}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ border: sectionBorder, borderRadius: 6, padding: 14, background: p.bg2 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
-            <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, margin: 0, letterSpacing: '-0.02em' }}>Zakat verification</h3>
-            <Tag tone={c.claimsZakat ? 'accent' : 'muted'} p={p}>{c.claimsZakat ? 'Pass' : 'Sadaqah'}</Tag>
-          </div>
-          {c.zakatEvidence && (
-            <p style={{ fontFamily: FONT_DISPLAY, fontStyle: 'italic', fontSize: 14, color: p.fg, lineHeight: 1.5, margin: 0 }}>
-              “{c.zakatEvidence}”
-            </p>
-          )}
-          {c.asnaf && (
-            <div style={{ marginTop: 12, paddingTop: 10, borderTop: sectionBorder }}>
-              <Kicker p={p}>Asnaf category</Kicker>
-              <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                <Tag tone="accent" p={p}>{c.asnaf}</Tag>
-              </div>
-            </div>
-          )}
-          <div style={{ marginTop: 12, paddingTop: 10, borderTop: sectionBorder }}>
-            <Kicker p={p}>Third-party verification</Kicker>
-            <div style={{ marginTop: 6 }}>
-              {([
-                ['Charity Navigator', c.awards.cn, c.awards.cnUrl],
-                ['Candid Seal', c.awards.candid, c.awards.candidUrl],
-                ['BBB Wise Giving', c.awards.bbb, c.awards.bbbUrl],
-              ] as [string, string | null, string | null][])
-                .filter(([, v]) => v)
-                .map(([k, v, href], i, arr) => (
-                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: i < arr.length - 1 ? sectionBorder : 'none', fontSize: 11.5 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: p.fg }}>
-                      <Star8 size={9} color={p.accent} fill={p.accent} strokeWidth={0} />
-                      {href ? (
-                        <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: p.fg }}>
-                          {k} ↗
-                        </a>
-                      ) : (
-                        k
-                      )}
-                    </span>
-                    <span style={{ fontFamily: FONT_MONO, color: p.sub2, fontSize: 10.5 }}>{v}</span>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </div>
+        )}
       </section>
 
       {/* Similar charities — ungated, SSR-crawlable: links render for every visitor
