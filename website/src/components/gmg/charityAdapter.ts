@@ -4,6 +4,10 @@
 
 import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } from './rating';
 import { regionsFromCauseTags, regionLabel } from './adapters/regions';
+import {
+  buildCitationIndex, anchorConcerns, aggregateGrants, buildFinancialSeries,
+  type CitationIndex, type AnchoredConcerns, type GrantFlows, type FinancialYear,
+} from './adapters';
 
 export interface GmgRow {
   ein: string;
@@ -192,6 +196,15 @@ export interface GmgCharity {
     cn: string | null; candid: string | null; bbb: string | null;
     cnUrl: string | null; candidUrl: string | null; bbbUrl: string | null;
   };
+
+  /** Resolved citation index; narrative text is parsed against this. */
+  citations: CitationIndex;
+  /** keyConcerns grouped by the page section they caveat. */
+  concerns: AnchoredConcerns;
+  /** Most-recent-year grant aggregation; null when the charity makes no grants. */
+  grantFlows: GrantFlows | null;
+  /** Multi-year revenue/expense series, zeros normalized to null. */
+  financialSeries: FinancialYear[];
 }
 
 // Lightweight per-row projection for the index table.
@@ -351,5 +364,10 @@ export const adaptCharity = (c: any): GmgCharity => {
       candidUrl: awards?.candidUrl ?? null,
       bbbUrl: awards?.bbbReviewUrl ?? null,
     },
+
+    citations: buildCitationIndex(rn?.all_citations, c),
+    concerns: anchorConcerns(c?.keyConcerns),
+    grantFlows: aggregateGrants(c?.grantsData),
+    financialSeries: buildFinancialSeries(rn?.financial_deep_dive?.yearly_financials),
   };
 };

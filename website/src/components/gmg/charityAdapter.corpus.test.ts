@@ -57,3 +57,24 @@ describe('adaptRow over the real index', () => {
     expect(rows.filter((r) => r.region !== 'Multi').length).toBeGreaterThanOrEqual(80);
   });
 });
+
+describe('adaptCharity exposes the newly wired data', () => {
+  it('carries a citation index for every charity', () => {
+    const adapted = all.map(adaptCharity);
+    expect(adapted.every((c) => c.citations.ordered.length > 0)).toBe(true);
+  });
+
+  it('carries anchored concerns totalling the corpus count', () => {
+    const total = all.map(adaptCharity).reduce((n, c) => n + c.concerns.all.length, 0);
+    expect(total).toBe(343);
+  });
+
+  it('carries grant flows for exactly the grantmaking charities', () => {
+    expect(all.map(adaptCharity).filter((c) => c.grantFlows !== null)).toHaveLength(81);
+  });
+
+  it('carries a financial series for most charities', () => {
+    const withSeries = all.map(adaptCharity).filter((c) => c.financialSeries.length > 0);
+    expect(withSeries.length).toBeGreaterThanOrEqual(155);
+  });
+});
