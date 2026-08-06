@@ -24,6 +24,9 @@ const charityWater = () => load('charity-22-3936753.json');
 const withNamedRecipients = () => load('charity-04-2535767.json');
 // No grantsData at all -> grantFlows is null.
 const noGrants = () => load('charity-01-0548371.json');
+// All three GIK signals present, including domesticBurnRate: 0 (a real
+// value, not an absent one).
+const allGikSignals = () => load('charity-13-1760110.json');
 
 describe('WhereMoneyGoes', () => {
   it('renders the expense split derived from real filed figures', () => {
@@ -106,6 +109,55 @@ describe('WhereMoneyGoes', () => {
     expect(c.grantFlows).toBeNull();
     const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).not.toContain('Total granted');
+  });
+
+  it('renders all three GIK/burn-rate signals with a plain-language gloss', () => {
+    const c = allGikSignals();
+    expect(c.noncashRatio).not.toBeNull();
+    expect(c.cashAdjustedProgramRatio).not.toBeNull();
+    expect(c.domesticBurnRate).toBe(0);
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    // Values, rounded to whole percent.
+    expect(container.textContent).toContain('16%');
+    expect(container.textContent).toContain('78%');
+    expect(container.textContent).toContain('0%');
+    // domesticBurnRate: 0 must still render its label — a falsy-value bug
+    // would drop this fact even though 0 is a real, present signal.
+    expect(container.textContent).toContain('Domestic spending share');
+    // Non-expert glosses, not bare numbers.
+    expect(container.textContent).toContain('gift');
+    expect(container.textContent).toContain('cash');
+  });
+
+  it('renders only the GIK signals a charity actually has', () => {
+    const c = withNamedRecipients(); // noncashRatio present, the other two null
+    expect(c.noncashRatio).not.toBeNull();
+    expect(c.cashAdjustedProgramRatio).toBeNull();
+    expect(c.domesticBurnRate).toBeNull();
+    const { container, queryByText } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).toContain('Non-cash share of revenue');
+    expect(queryByText('Program ratio, cash only')).toBeNull();
+    expect(queryByText('Domestic spending share')).toBeNull();
+  });
+
+  it('collapses the GIK block cleanly when a charity has none of the three signals', () => {
+    const c = noGrants();
+    expect(c.noncashRatio).toBeNull();
+    expect(c.cashAdjustedProgramRatio).toBeNull();
+    expect(c.domesticBurnRate).toBeNull();
+    const { queryByText } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    expect(queryByText('Non-cash share of revenue')).toBeNull();
+    expect(queryByText('Program ratio, cash only')).toBeNull();
+    expect(queryByText('Domestic spending share')).toBeNull();
+  });
+
+  it('lays out GIK signals as a single column on mobile and a grid on desktop', () => {
+    const c = allGikSignals();
+    const { container: mobile } = render(<WhereMoneyGoes c={c} p={p} isMobile={true} padX={16} />);
+    expect(mobile.innerHTML).toContain('grid-template-columns: 1fr;');
+
+    const { container: desktop } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    expect(desktop.innerHTML).toContain('repeat(auto-fit');
   });
 
   it('always mounts the section wrapper even for a minimal charity', () => {

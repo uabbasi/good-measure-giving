@@ -1,6 +1,8 @@
 // "Where your money goes" — the expense split (computed once, in
 // `expenseSplit`, so it can never disagree with the Financials card), the
-// multi-year revenue/expense trend, and how grants flow out the door.
+// multi-year revenue/expense trend, how grants flow out the door, and the
+// gift-in-kind/burn-rate signals that flag when those figures might be
+// padded or inflated.
 //
 // Grant totals, the domestic/foreign split, and the regional breakdown are
 // public. Individual named recipients sit behind the community gate. Some
@@ -11,8 +13,10 @@
 // list, which would wrongly imply named recipients exist but are just hidden.
 //
 // GIK signals (noncashRatio, cashAdjustedProgramRatio, domesticBurnRate) are
-// NOT rendered here: they live on the raw `financials` object but `adaptCharity`
-// (frozen) does not expose them on `GmgCharity`. See task-4-report.md.
+// sparse (71/166 charities have at least one) and each is guarded
+// independently — a charity can have one without the others. Each is shown
+// as a label plus a plain-language gloss, not a bare ratio, since "noncash
+// ratio: 0.43" means nothing to a non-expert donor.
 
 import React from 'react';
 import { Section } from './Section';
@@ -36,6 +40,23 @@ const usd = (n: number | null): string => {
   }).format(n);
 };
 
+const pct = (n: number): string => `${Math.round(n * 100)}%`;
+
+const GikFact: React.FC<{ label: string; value: string; gloss: string; p: GmgPalette }> = ({
+  label,
+  value,
+  gloss,
+  p,
+}) => (
+  <div style={{ border: `1px solid ${p.rule}`, borderRadius: 6, padding: 12, background: p.bg2 }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+      <Kicker p={p}>{label}</Kicker>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 13, color: p.fg }}>{value}</span>
+    </div>
+    <p style={{ fontSize: 12, color: p.sub, lineHeight: 1.5, margin: '6px 0 0' }}>{gloss}</p>
+  </div>
+);
+
 export const WhereMoneyGoes: React.FC<{
   c: GmgCharity;
   p: GmgPalette;
@@ -44,6 +65,29 @@ export const WhereMoneyGoes: React.FC<{
 }> = ({ c, p, isMobile, padX }) => {
   const split = expenseSplit(c);
   const gf = c.grantFlows;
+
+  const gikFacts: { label: string; value: string; gloss: string }[] = [];
+  if (c.noncashRatio != null) {
+    gikFacts.push({
+      label: 'Non-cash share of revenue',
+      value: pct(c.noncashRatio),
+      gloss: `${pct(c.noncashRatio)} of contributions came as donated goods or services (gifts-in-kind), not cash.`,
+    });
+  }
+  if (c.cashAdjustedProgramRatio != null) {
+    gikFacts.push({
+      label: 'Program ratio, cash only',
+      value: pct(c.cashAdjustedProgramRatio),
+      gloss: `With donated goods stripped out, ${pct(c.cashAdjustedProgramRatio)} of the charity's actual cash spending went to programs.`,
+    });
+  }
+  if (c.domesticBurnRate != null) {
+    gikFacts.push({
+      label: 'Domestic spending share',
+      value: pct(c.domesticBurnRate),
+      gloss: `${pct(c.domesticBurnRate)} of spending stayed in the US rather than going out as grants to foreign organizations.`,
+    });
+  }
 
   return (
     <Section id="money" title="Where your money goes" p={p} padX={padX}>
@@ -71,6 +115,24 @@ export const WhereMoneyGoes: React.FC<{
             <span>
               <span style={{ color: p.warn }}>■</span> Fundraising {split.fundPct}%
             </span>
+          </div>
+        </div>
+      )}
+
+      {gikFacts.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <Kicker p={p}>Gift-in-kind &amp; overhead signals</Kicker>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: 10,
+              marginTop: 8,
+            }}
+          >
+            {gikFacts.map((f) => (
+              <GikFact key={f.label} label={f.label} value={f.value} gloss={f.gloss} p={p} />
+            ))}
           </div>
         </div>
       )}
