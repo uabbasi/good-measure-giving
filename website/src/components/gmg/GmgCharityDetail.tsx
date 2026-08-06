@@ -39,7 +39,6 @@ import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity, GmgDimension } from './charityAdapter';
 import { expenseSplit } from './sections/expenseSplit';
-import { dataVintage } from './sections/dataVintage';
 
 const usd = (n: number | null): string => {
   if (n == null) return '—';
@@ -207,9 +206,12 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   };
 
   // Data vintage: 990 filings run ~2 years behind; older than that is a
-  // mild red flag worth surfacing to donors. See dataVintage.ts for why age
-  // comes from the pipeline rather than the wall clock.
-  const { fyAge, fyDated } = dataVintage(c);
+  // mild red flag worth surfacing to donors. Age comes from the pipeline's
+  // own data_age_years (computed once at evaluation time) rather than the
+  // wall clock, so a prerendered page never disagrees with itself at
+  // hydration as the calendar rolls forward.
+  const fyAge = c.dataAgeYears;
+  const fyDated = fyAge != null && fyAge >= 3;
 
   const statCells: [string, string, string][] = [
     ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
