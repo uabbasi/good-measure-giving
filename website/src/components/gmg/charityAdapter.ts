@@ -144,7 +144,10 @@ export interface GmgCharity {
   donateUrl: string | null;
 
   amalScore: number;
+  /** amalEvaluation.evaluation_date — when the rubric last scored this charity. Not shown on the page: it goes stale whenever the pipeline re-exports without re-scoring. See `updatedOn`. */
   evaluatedOn: string;
+  /** lastUpdated — when this record was last exported. This, not `evaluatedOn`, is what the page's utility row displays. */
+  updatedOn: string;
   riskLevel: string;
 
   impact: GmgDimension;
@@ -412,6 +415,7 @@ export const adaptCharity = (c: any): GmgCharity => {
 
     amalScore: num(ae?.amal_score),
     evaluatedOn: (ae?.evaluation_date ?? '').slice(0, 10),
+    updatedOn: (c?.lastUpdated ?? '').slice(0, 10),
     riskLevel: sd?.risks?.overall_risk_level ?? 'LOW',
 
     impact: buildDimension(sd?.impact, cs?.impact, 50),

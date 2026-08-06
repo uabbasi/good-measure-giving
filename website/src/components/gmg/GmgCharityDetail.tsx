@@ -259,7 +259,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         }}
       >
         <span>EDITION {EDITION}</span>
-        {c.evaluatedOn && <span>· EVALUATED {c.evaluatedOn}</span>}
+        {c.updatedOn && <span>· UPDATED {c.updatedOn}</span>}
       </div>
 
       <Bismillah p={p} />
