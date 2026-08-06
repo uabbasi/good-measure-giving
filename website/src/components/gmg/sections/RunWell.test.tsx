@@ -127,6 +127,31 @@ describe('RunWell', () => {
     }
   });
 
+  // allZerosAndFalse (above) has no governance-anchored concern at all — its
+  // "governance and risks" coverage was accidentally exercising byAnchor.risks
+  // only, so removing the byAnchor.governance spread from the ConcernList call
+  // left all 11 prior tests in this file green. withGovernanceConcern is the
+  // one fixture with a real governance concern (ceo_comp_excessive); this
+  // pins it directly.
+  //
+  // Asserting on `concern.headline` would ALSO stay green with the spread
+  // removed: fleet-wide, every ceo_comp_excessive concern's headline is a
+  // verbatim duplicate of a `risks[].description` string, which "Risks on
+  // file" above renders unconditionally regardless of ConcernList. `detail`
+  // ("For orgs with revenue $5-50M...") is unique to the ConcernList
+  // rendering, so it's the one load-bearing thing to check here.
+  it('renders a governance-anchored concern for a charity that actually has one', () => {
+    mockMember.mockReturnValue(false);
+    const c = withGovernanceConcern();
+    const governanceConcerns = c.concerns.byAnchor.governance;
+    expect(governanceConcerns.length).toBeGreaterThan(0);
+    const { container } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
+    for (const concern of governanceConcerns) {
+      expect(concern.detail).toBeTruthy();
+      expect(container.textContent).toContain(concern.detail);
+    }
+  });
+
   it('lays out capacity facts as a single column on mobile and a multi-column grid on desktop', () => {
     const c = fullCapacityNoRisks();
     const { container: mobile } = render(<RunWell c={c} p={p} isMobile={true} padX={16} />);
