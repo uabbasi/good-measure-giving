@@ -57,7 +57,11 @@ const SEVERITY_RANK: Record<ConcernSeverity, number> = { high: 0, medium: 1, low
 const toSeverity = (v: unknown): ConcernSeverity => {
   const s = String(v ?? '').toLowerCase();
   if (s === 'high' || s === 'medium' || s === 'low') return s;
-  return 'low';
+  // Fail toward visibility, not away from it. 'high' would falsely trip the
+  // header's high-severity indicator; 'low' would bury a malformed value or
+  // a future severity (e.g. 'critical') under 215 legitimate low concerns.
+  // 'medium' surfaces it without overstating it.
+  return 'medium';
 };
 
 const toDataPoints = (v: unknown): Record<string, string | number | boolean> => {

@@ -36,6 +36,16 @@ describe('anchorConcerns', () => {
     expect(r.all[0].severity).toBe('low');
   });
 
+  it('defaults an unrecognized severity string to medium, not low', () => {
+    const r = anchorConcerns([{ type: 'data_quality', severity: 'critical', headline: 'x', detail: 'd' }]);
+    expect(r.all[0].severity).toBe('medium');
+  });
+
+  it('defaults a missing severity to medium, not low', () => {
+    const r = anchorConcerns([{ type: 'data_quality', headline: 'x', detail: 'd' }]);
+    expect(r.all[0].severity).toBe('medium');
+  });
+
   it('sorts high before medium before low within an anchor', () => {
     const r = anchorConcerns([
       { type: 'gik_inflation', severity: 'low', headline: 'L', detail: '' },
