@@ -3,10 +3,14 @@
 // program/population/geography facts, plus any concerns anchored to what the
 // org actually does.
 //
-// `evidence.theoryOfChange` (the evaluator's framing) and the root-level
-// `theoryOfChange` (the charity's own words, present on a smaller share of
-// the corpus) are different fields from different sources and are rendered
-// separately rather than merged — they can disagree.
+// `evidence.theoryOfChange` is a status enum (DOCUMENTED/IMPLICIT/PUBLISHED/
+// DEVELOPING/ABSENT/STRONG), not prose — it renders as a badge, never as the
+// explanation itself. The actual prose comes from two different sources:
+// `evidence.theoryOfChangeSummary` (the evaluator's one- or two-sentence
+// gloss, present on nearly every charity) and the root-level `theoryOfChange`
+// (the charity's own longer-form words, present on a smaller share of the
+// corpus). Both can render together; they can also disagree, so neither is
+// merged into the other.
 
 import React from 'react';
 import { Section } from './Section';
@@ -104,17 +108,23 @@ export const WhatTheyDo: React.FC<{
       </div>
     )}
 
-    {c.evidence.theoryOfChange && (
+    {(c.evidence.theoryOfChange || c.evidence.theoryOfChangeSummary) && (
       <div style={{ marginBottom: 16 }}>
-        <Kicker p={p}>Theory of change</Kicker>
-        <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.6, margin: '6px 0 0' }}>{c.evidence.theoryOfChange}</p>
-      </div>
-    )}
-
-    {c.theoryOfChange && (
-      <div style={{ marginBottom: 16 }}>
-        <Kicker p={p}>In the charity's own words</Kicker>
-        <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.6, margin: '6px 0 0' }}>{c.theoryOfChange}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <Kicker p={p}>Theory of change</Kicker>
+          {c.evidence.theoryOfChange && <Tag p={p}>{c.evidence.theoryOfChange}</Tag>}
+        </div>
+        {c.evidence.theoryOfChangeSummary && (
+          <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.6, margin: '8px 0 0' }}>
+            {c.evidence.theoryOfChangeSummary}
+          </p>
+        )}
+        {c.theoryOfChange && (
+          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '8px 0 0' }}>
+            <span style={{ color: p.sub2, fontWeight: 500 }}>In the charity&rsquo;s own words: </span>
+            {c.theoryOfChange}
+          </p>
+        )}
       </div>
     )}
 

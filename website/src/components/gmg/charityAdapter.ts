@@ -248,7 +248,10 @@ export interface GmgCharity {
   evidence: {
     grade: string | null;
     gradeExplanation: string;
+    /** impact_evidence.theory_of_change — a status enum (DOCUMENTED/IMPLICIT/PUBLISHED/DEVELOPING/ABSENT/STRONG), not prose. Render as a badge, not an explanation; see `theoryOfChangeSummary` for the actual prose. */
     theoryOfChange: string;
+    /** impact_evidence.theory_of_change_summary (166/166) — one or two sentences of actual prose explaining the theory of change. */
+    theoryOfChangeSummary: string;
     whyEvidenceMatters: string;
     externalEvaluations: string[];
     outcomeTrackingYears: number | null;
@@ -538,6 +541,7 @@ export const adaptCharity = (c: any): GmgCharity => {
       grade: rn?.impact_evidence?.evidence_grade ?? null,
       gradeExplanation: stripTags(rn?.impact_evidence?.evidence_grade_explanation),
       theoryOfChange: stripTags(rn?.impact_evidence?.theory_of_change),
+      theoryOfChangeSummary: stripTags(rn?.impact_evidence?.theory_of_change_summary),
       whyEvidenceMatters: stripTags(rn?.impact_evidence?.why_evidence_matters),
       externalEvaluations: strList(rn?.impact_evidence?.external_evaluations),
       outcomeTrackingYears: numOrNull(rn?.impact_evidence?.outcome_tracking_years),

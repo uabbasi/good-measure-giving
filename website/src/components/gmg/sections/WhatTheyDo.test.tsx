@@ -66,6 +66,22 @@ describe('WhatTheyDo', () => {
     if (c.evidence.gradeExplanation) expect(container.textContent).toContain(c.evidence.gradeExplanation);
   });
 
+  it('renders the theory-of-change summary prose, not the bare status enum, as the explanation', () => {
+    const c = richNoGrants();
+    expect(c.evidence.theoryOfChangeSummary).toBeTruthy();
+    expect(c.evidence.theoryOfChangeSummary).not.toBe(c.evidence.theoryOfChange);
+    const { getByText, container } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+
+    // The real prose renders as the explanation.
+    expect(getByText(c.evidence.theoryOfChangeSummary)).toBeInTheDocument();
+
+    // The status enum still renders (as a badge, a legitimate signal), but a
+    // regression that renders it as a standalone paragraph — presenting
+    // "DOCUMENTED" as if it were a sentence of narrative — must fail here.
+    const paragraphs = Array.from(container.querySelectorAll('p'));
+    expect(paragraphs.some((el) => el.textContent === c.evidence.theoryOfChange)).toBe(false);
+  });
+
   it('renders external evaluations as a list', () => {
     const c = richNoGrants();
     expect(c.evidence.externalEvaluations.length).toBeGreaterThan(0);
