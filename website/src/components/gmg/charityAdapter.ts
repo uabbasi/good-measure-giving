@@ -270,12 +270,20 @@ export const adaptCharity = (c: any): GmgCharity => {
     founded,
     trackRecordYears: founded ? 2026 - founded : null,
     category: c?.category ?? c?.primaryCategory ?? '',
+    // `region` must be the same canonical label the browse index shows
+    // (adaptRow, below) — Phase 3 builds a region facet on that vocabulary,
+    // and a detail page disagreeing with its own index row would be a bug a
+    // donor could actually see. So the canonical cause-tag vocabulary always
+    // wins; free-text `targeting.geographicCoverage` is only a fallback for
+    // charities with no region cause-tag. Don't invert this precedence —
+    // `geography` (below) is the place for the fuller free-text list.
     region: (() => {
+      const canonical = regionsFromCauseTags(c?.causeTags);
+      if (canonical.length > 0) return regionLabel(canonical);
       const fromTargeting = Array.isArray(c?.targeting?.geographicCoverage)
         ? c.targeting.geographicCoverage.filter((g: unknown): g is string => typeof g === 'string')
         : [];
-      if (fromTargeting.length > 0) return regionLabel(fromTargeting);
-      return regionLabel(regionsFromCauseTags(c?.causeTags));
+      return regionLabel(fromTargeting);
     })(),
     wallet: walletLabel(ae?.wallet_tag ?? c?.walletTag),
     donateUrl: c?.donationUrl || c?.website || null,

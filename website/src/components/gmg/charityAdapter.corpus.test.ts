@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { adaptCharity, adaptRow } from './charityAdapter';
+import { regionsFromCauseTags } from './adapters/regions';
 
 const dir = path.resolve(__dirname, '../../../data/charities');
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
@@ -31,6 +32,19 @@ describe('adaptCharity over the real corpus', () => {
   it('does not fall back to the literal "Multi" for most charities', () => {
     const multi = all.map(adaptCharity).filter((c) => c.region === 'Multi');
     expect(multi.length).toBeLessThanOrEqual(60);
+  });
+
+  it('agrees with the index row region whenever a region cause-tag is present', () => {
+    const byEin = new Map(index.map((row) => [row.ein as string, row]));
+    let checked = 0;
+    for (const c of all) {
+      const indexRow = byEin.get(c.ein);
+      if (!indexRow || regionsFromCauseTags((indexRow as any).causeTags).length === 0) continue;
+      checked += 1;
+      expect(adaptCharity(c).region).toBe(adaptRow(indexRow).region);
+    }
+    // Sanity: this must actually exercise real charities, not vacuously pass.
+    expect(checked).toBeGreaterThan(0);
   });
 
   it('carries award URLs through so the page can link them', () => {
