@@ -40,6 +40,13 @@ const usd = (n: number | null): string => {
   }).format(n);
 };
 
+// Full, non-compacted dollar figures — distinct from the compact `usd` above
+// (used for the grant totals). Only ever called on an already-guarded,
+// non-null value: see `figures` below, which omits a row entirely rather
+// than calling this with null.
+const usdFull = (n: number): string =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+
 const pct = (n: number): string => `${Math.round(n * 100)}%`;
 
 const GikFact: React.FC<{ label: string; value: string; gloss: string; p: GmgPalette }> = ({
@@ -65,6 +72,19 @@ export const WhereMoneyGoes: React.FC<{
 }> = ({ c, p, isMobile, padX }) => {
   const split = expenseSplit(c);
   const gf = c.grantFlows;
+
+  // The exact dollar figures behind the percentages above. Each is guarded
+  // independently and the row is omitted entirely when null — these fields
+  // are legitimately absent for some charities, and a blank cell or a
+  // fabricated "$0" would misstate a fact this page's premise (traceable
+  // claims) depends on.
+  const figures: [string, string][] = [];
+  if (c.totalRevenue != null) figures.push(['Total revenue', usdFull(c.totalRevenue)]);
+  if (c.programExpenses != null) figures.push(['Program expenses', usdFull(c.programExpenses)]);
+  if (c.adminExpenses != null) figures.push(['Admin expenses', usdFull(c.adminExpenses)]);
+  if (c.fundraisingExpenses != null) figures.push(['Fundraising', usdFull(c.fundraisingExpenses)]);
+  if (c.netAssets != null) figures.push(['Net assets', usdFull(c.netAssets)]);
+  if (c.reserveMonths != null) figures.push(['Reserves', `${c.reserveMonths} mo`]);
 
   const gikFacts: { label: string; value: string; gloss: string }[] = [];
   if (c.noncashRatio != null) {
@@ -116,6 +136,27 @@ export const WhereMoneyGoes: React.FC<{
               <span style={{ color: p.warn }}>■</span> Fundraising {split.fundPct}%
             </span>
           </div>
+
+          {figures.length > 0 && (
+            <div
+              style={{
+                borderTop: `1px solid ${p.rule}`,
+                marginTop: 10,
+                paddingTop: 8,
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: 4,
+                fontSize: 11.5,
+              }}
+            >
+              {figures.map(([k, v]) => (
+                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '4px 0' }}>
+                  <span style={{ color: p.sub }}>{k}</span>
+                  <span style={{ color: p.fg, fontFamily: FONT_MONO, fontSize: 10.5 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

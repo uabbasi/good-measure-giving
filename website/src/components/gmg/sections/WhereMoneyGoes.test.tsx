@@ -36,6 +36,46 @@ describe('WhereMoneyGoes', () => {
     expect(container.textContent).toContain('Expense allocation');
   });
 
+  it('renders the exact dollar figures behind the expense-split percentages', () => {
+    // charity-04-2535767 (withNamedRecipients) has all four figures filed.
+    const c = withNamedRecipients();
+    expect(c.programExpenses).not.toBeNull();
+    expect(c.adminExpenses).not.toBeNull();
+    expect(c.fundraisingExpenses).not.toBeNull();
+    expect(c.netAssets).not.toBeNull();
+
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).toContain('Program expenses');
+    expect(container.textContent).toContain('$43,724,145');
+    expect(container.textContent).toContain('Admin expenses');
+    expect(container.textContent).toContain('$3,667,068');
+    expect(container.textContent).toContain('Fundraising');
+    expect(container.textContent).toContain('$2,888,100');
+    expect(container.textContent).toContain('Net assets');
+    expect(container.textContent).toContain('$61,915,117');
+  });
+
+  it('omits a figure row rather than rendering it blank or as $0 when that field is unfiled', () => {
+    // charity-93-1556038: programExpenses/adminExpenses/fundraisingExpenses
+    // are filed, but netAssets is specifically null — the one-field-missing
+    // case a "guard the whole grid" implementation would get wrong. Only one
+    // year of financials, so the multi-year trend chart (which has its own,
+    // unrelated "Net assets" series legend) does not render and cannot mask
+    // a false pass on the assertion below.
+    const c = load('charity-93-1556038.json');
+    expect(c.financialSeries.length).toBeLessThan(2);
+    expect(c.programExpenses).not.toBeNull();
+    expect(c.netAssets).toBeNull();
+
+    const { container, queryByText } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    // The fields that ARE filed still render.
+    expect(container.textContent).toContain('Program expenses');
+    // The missing field's label must not appear at all — not as a blank
+    // value next to it, and never fabricated as $0.
+    expect(queryByText('Net assets')).toBeNull();
+    expect(container.textContent).not.toContain('$0');
+  });
+
   it('renders the multi-year trend chart only when there are >= 2 years', () => {
     const withSeries = load('charity-01-0548371.json');
     expect(withSeries.financialSeries.length).toBeGreaterThanOrEqual(2);
