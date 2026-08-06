@@ -228,7 +228,7 @@ export interface GmgCharity {
       credibility: CitedSegment[];
     };
     strengths: { point: string; detail: CitedSegment[] }[];
-    growthAreas: CitedSegment[][];
+    growthAreas: { point: string; detail: CitedSegment[] }[];
     strengthsDeepDive: CitedSegment[][];
   };
   /** keyConcerns grouped by the page section they caveat. */
@@ -505,15 +505,17 @@ export const adaptCharity = (c: any): GmgCharity => {
         point: stripTags(s?.point || s?.area || ''),
         detail: cite(s?.detail || s?.context || ''),
       })),
-      // Priority is context-first (not area-first, unlike the plain
-      // `growthAreas` label above): `context` is where the pipeline actually
-      // attaches citations (measured fleet-wide at 321 references), while
-      // `area` is just a short heading rarely worth a citation. The two
-      // fields intentionally carry different content here, same as
-      // strengths.detail vs strengths.point.
+      // Mirrors `cited.strengths`: the label and its cited prose travel
+      // together as a pair, so a consumer can never assume the two carry the
+      // same content. `point` matches the plain `growthAreas` label above;
+      // `detail` is the cited `context`, where the pipeline actually attaches
+      // citations (measured fleet-wide at 321 references).
       growthAreas: improvementsRaw
-        .map((x) => (typeof x === 'string' ? cite(x) : cite(x?.context || x?.area || x?.point || '')))
-        .filter((segs) => segs.length > 0)
+        .map((x) => ({
+          point: asAreaText(x),
+          detail: typeof x === 'string' ? cite(x) : cite(x?.context || ''),
+        }))
+        .filter((g) => g.detail.length > 0)
         .slice(0, 4),
       strengthsDeepDive: deepDiveRaw.filter((s): s is string => typeof s === 'string').map(cite),
     },

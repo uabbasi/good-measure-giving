@@ -36,7 +36,7 @@ describe('adaptCharity.cited', () => {
         ...c.cited.dimensionExplanations.alignment,
         ...c.cited.dimensionExplanations.credibility,
         ...c.cited.strengths.flatMap((s) => s.detail),
-        ...c.cited.growthAreas.flat(),
+        ...c.cited.growthAreas.flatMap((g) => g.detail),
         ...c.cited.strengthsDeepDive.flat(),
       ];
       for (const seg of all) {
@@ -71,6 +71,21 @@ describe('adaptCharity.cited', () => {
     expect(c.cited.growthAreas).toEqual([]);
     expect(c.cited.strengthsDeepDive).toEqual([]);
     expect(c.cited.dimensionExplanations.impact).toEqual([]);
+  });
+
+  it('keeps growthAreas label and cited detail paired, so they cannot drift', () => {
+    // cited.growthAreas.point must be the same label plain growthAreas shows —
+    // otherwise a consumer could reasonably assume the two arrays describe the
+    // same items in the same order and be wrong.
+    for (const f of files) {
+      const c = adaptCharity(load(f));
+      if (c.growthAreas.length === 0) continue;
+      expect(c.cited.growthAreas.length).toBeGreaterThan(0);
+      c.cited.growthAreas.forEach((g, i) => {
+        expect(g.point).not.toBe('');
+        expect(g.point).toBe(c.growthAreas[i]);
+      });
+    }
   });
 
   it('covers the corpus — most charities carry cited segments in the summary', () => {
