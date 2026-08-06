@@ -42,7 +42,9 @@ export const ConcernList: React.FC<{ concerns: Concern[]; p: GmgPalette }> = ({ 
               {concern.headline}
             </div>
             {concern.detail && (
-              <div style={{ fontSize: 12, color: p.sub, marginTop: 4, lineHeight: 1.5 }}>{concern.detail}</div>
+              <div style={{ fontSize: 12, color: p.sub, marginTop: 4, lineHeight: 1.5, maxWidth: '75ch' }}>
+                {concern.detail}
+              </div>
             )}
           </div>
         );

@@ -153,7 +153,7 @@ export const RightForYou: React.FC<{
       {c.cited.caseAgainstSummary.length > 0 && (
         <div style={{ marginBottom: 20 }}>
           <Kicker p={p}>The case against</Kicker>
-          <div style={{ marginTop: 6 }}>
+          <div style={{ marginTop: 6, maxWidth: '75ch' }}>
             <CitedText segments={c.cited.caseAgainstSummary} p={p} size={13.5} />
           </div>
           <SourceList citations={collectCitations(c.cited.caseAgainstSummary)} p={p} />
@@ -163,7 +163,7 @@ export const RightForYou: React.FC<{
       {hasCaseAgainstDetail && (
         <div style={{ marginBottom: 20 }}>
           <GatedBlock label="Full risk analysis" p={p}>
-            <div style={{ display: 'grid', gap: 10 }}>
+            <div style={{ display: 'grid', gap: 10, maxWidth: '75ch' }}>
               {c.caseAgainstFactors.length > 0 && (
                 <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
                   {c.caseAgainstFactors.map((f, i) => (

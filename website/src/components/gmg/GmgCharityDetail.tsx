@@ -264,6 +264,12 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
       <Bismillah p={p} />
 
+      {/* Content max-width — without it, body copy ran the full viewport
+          (~180 characters per line at 1440px). The chrome above (nav,
+          Bismillah bar, utility row) stays full-bleed; only the page's own
+          content is capped and centered. */}
+      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+
       {/* Header */}
       <section style={{ padding: `22px ${padX}px 18px`, borderBottom: sectionBorder }}>
         <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -425,7 +431,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         {c.cited.dimensionExplanations.credibility.length > 0 && (
           <div style={{ marginTop: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
             <Kicker p={p}>Credibility</Kicker>
-            <div style={{ marginTop: 8 }}>
+            <div style={{ marginTop: 8, maxWidth: '75ch' }}>
               <CitedText segments={c.cited.dimensionExplanations.credibility} p={p} size={13} />
             </div>
             <SourceList citations={collectCitations(c.cited.dimensionExplanations.credibility)} p={p} />
@@ -491,6 +497,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} · EDITION {EDITION}</span>
         <span>HARVEY-BALL MOTIF</span>
       </footer>
+
+      </div>
 
       <GmgFooter p={p} isMobile={isMobile} />
     </div>

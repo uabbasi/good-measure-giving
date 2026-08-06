@@ -60,7 +60,7 @@ export const HowItCompares: React.FC<{
       )}
 
       {c.cited.peerDifferentiator.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 20, maxWidth: '75ch' }}>
           <CitedText segments={c.cited.peerDifferentiator} p={p} size={13.5} />
           <SourceList citations={collectCitations(c.cited.peerDifferentiator)} p={p} />
         </div>
@@ -164,12 +164,12 @@ export const HowItCompares: React.FC<{
             )}
           </div>
           {outlook.roomForFundingExplanation && (
-            <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '10px 0 0' }}>
+            <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '10px 0 0', maxWidth: '75ch' }}>
               {outlook.roomForFundingExplanation}
             </p>
           )}
           {outlook.strategicPriorities.length > 0 && (
-            <div style={{ marginTop: 12 }}>
+            <div style={{ marginTop: 12, maxWidth: '75ch' }}>
               <Kicker p={p}>Strategic priorities</Kicker>
               <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
                 {outlook.strategicPriorities.map((sp, i) => (
@@ -184,7 +184,7 @@ export const HowItCompares: React.FC<{
       {c.cited.strengthsDeepDive.length > 0 && (
         <div>
           <GatedBlock label="Strengths in depth" p={p}>
-            <div style={{ display: 'grid', gap: 12 }}>
+            <div style={{ display: 'grid', gap: 12, maxWidth: '75ch' }}>
               {c.cited.strengthsDeepDive.map((segs, i) => (
                 <div key={i}>
                   <CitedText segments={segs} p={p} size={13} />

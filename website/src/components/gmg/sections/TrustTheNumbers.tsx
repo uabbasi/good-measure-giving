@@ -156,7 +156,9 @@ export const TrustTheNumbers: React.FC<{
       {c.bbb.summary && (
         <div style={{ marginTop: 20 }}>
           <Kicker p={p}>BBB Wise Giving Alliance</Kicker>
-          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '6px 0 10px' }}>{c.bbb.summary}</p>
+          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '6px 0 10px', maxWidth: '75ch' }}>
+            {c.bbb.summary}
+          </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {c.bbb.effectivenessStatus && <Tag p={p}>Effectiveness: {c.bbb.effectivenessStatus}</Tag>}
             {c.bbb.financesStatus && <Tag p={p}>Finances: {c.bbb.financesStatus}</Tag>}

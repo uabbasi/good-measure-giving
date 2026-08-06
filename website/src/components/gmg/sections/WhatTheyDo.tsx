@@ -19,6 +19,7 @@ import { CitedText, SourceList, collectCitations } from '../CitedText';
 import { Tag, Kicker } from '../primitives';
 import { GmgPalette, FONT_DISPLAY, FONT_MONO } from '../tokens';
 import { riskTone } from '../rating';
+import { useIsMobile } from '../useIsMobile';
 import type { GmgCharity } from '../charityAdapter';
 
 const TagRow: React.FC<{ label: string; items: string[]; p: GmgPalette }> = ({ label, items, p }) => {
@@ -44,6 +45,10 @@ export const WhatTheyDo: React.FC<{
   padX: number;
 }> = ({ c, p, isMobile, padX }) => {
   const sectionBorder = `1px solid ${p.rule}`;
+  // The 1.6fr/1fr split gets cramped well before the 768px mobile
+  // breakpoint — the Quick facts column runs comma-joined lists (Programs,
+  // Populations) in ~35% of the width. Collapse to one column earlier.
+  const isNarrow = useIsMobile('(max-width: 1100px)');
   return (
   <Section id="what-they-do" title="What they do, and is it real?" p={p} padX={padX}>
     {/* About + Quick facts — the two-column opener from the original design.
@@ -53,7 +58,7 @@ export const WhatTheyDo: React.FC<{
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1.6fr) minmax(0, 1fr)',
+        gridTemplateColumns: isNarrow ? '1fr' : 'minmax(0, 1.6fr) minmax(0, 1fr)',
         gap: 20,
         marginBottom: 20,
         paddingBottom: 20,
@@ -65,7 +70,9 @@ export const WhatTheyDo: React.FC<{
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 28, lineHeight: 1.15, margin: '8px 0 12px', letterSpacing: '-0.02em' }}>
           {c.headline}
         </h2>
-        {c.summary && <p style={{ fontSize: 13.5, lineHeight: 1.65, color: p.sub, margin: 0 }}>{c.summary}</p>}
+        {c.summary && (
+          <p style={{ fontSize: 13.5, lineHeight: 1.65, color: p.sub, margin: 0, maxWidth: '75ch' }}>{c.summary}</p>
+        )}
       </div>
       <div style={{ border: sectionBorder, borderRadius: 6, padding: 14, background: p.bg2 }}>
         <Kicker p={p}>Quick facts</Kicker>
@@ -88,6 +95,11 @@ export const WhatTheyDo: React.FC<{
       </div>
     </div>
 
+    {/* Running prose reads badly at full container width (~180 characters
+        per line on a wide screen) — cap it to a readable measure. Tag
+        grids and cards below this cluster are left alone; they're already
+        column-constrained. */}
+    <div style={{ maxWidth: '75ch' }}>
     {c.cited.summary.length > 0 && (
       <div style={{ marginBottom: 16 }}>
         <CitedText segments={c.cited.summary} p={p} size={14} />
@@ -138,6 +150,7 @@ export const WhatTheyDo: React.FC<{
         </ul>
       </div>
     )}
+    </div>
 
     {(c.programs.length > 0 || c.populations.length > 0 || c.geography.length > 0) && (
       <div

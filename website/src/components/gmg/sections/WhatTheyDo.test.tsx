@@ -7,6 +7,18 @@ import { WhatTheyDo } from './WhatTheyDo';
 import { gmgPalette } from '../tokens';
 import { adaptCharity } from '../charityAdapter';
 
+// jsdom doesn't implement matchMedia. WhatTheyDo now calls the real
+// useIsMobile() internally (for the intermediate About/Quick-facts
+// breakpoint) rather than only receiving it as a prop, so it needs a stub —
+// same convention as the hooks tests that stub LandingThemeProvider's
+// matchMedia call.
+window.matchMedia = ((query: string) => ({
+  matches: false,
+  media: query,
+  addEventListener: () => {},
+  removeEventListener: () => {},
+})) as unknown as typeof window.matchMedia;
+
 const p = gmgPalette(false);
 const dir = path.resolve(__dirname, '../../../../data/charities');
 const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')));
@@ -37,6 +49,50 @@ describe('WhatTheyDo', () => {
     const summaryIdx = html.indexOf('Sources');
     expect(headlineIdx).toBeGreaterThan(-1);
     expect(headlineIdx).toBeLessThan(summaryIdx);
+  });
+
+  it('collapses the About/Quick-facts grid to one column before the 768px mobile breakpoint', () => {
+    // useIsMobile is a single binary breakpoint at 768px, so the 1.6fr/1fr
+    // split otherwise stayed two columns at any width above that — cramped
+    // well before actual mobile. Simulate a mid-size viewport (matches the
+    // intermediate 1100px query but not an actual mobile one) and confirm
+    // the grid has already collapsed.
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query === '(max-width: 1100px)',
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+
+    const c = richNoGrants();
+    const { getByText } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+    let grid: HTMLElement | null = getByText('Quick facts');
+    while (grid && grid.style.display !== 'grid') grid = grid.parentElement;
+    expect(grid?.style.gridTemplateColumns).toBe('1fr');
+
+    window.matchMedia = original;
+  });
+
+  it('keeps the About/Quick-facts grid at two columns above the intermediate breakpoint', () => {
+    const c = richNoGrants();
+    // Module-level stub (top of file) always reports matches: false.
+    const { getByText } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+    let grid: HTMLElement | null = getByText('Quick facts');
+    while (grid && grid.style.display !== 'grid') grid = grid.parentElement;
+    expect(grid?.style.gridTemplateColumns).toBe('minmax(0, 1.6fr) minmax(0, 1fr)');
+  });
+
+  it('caps the evidence prose cluster to a readable measure', () => {
+    // The complaint was ~180 characters per line at 1440px — a container
+    // running full width with no measure cap. Every block in this prose
+    // cluster (cited summary, evidence grade, theory of change, external
+    // evaluations) must sit inside a capped-width ancestor.
+    const c = richNoGrants();
+    const { getByText } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+    let capped: HTMLElement | null = getByText(c.evidence.gradeExplanation);
+    while (capped && capped.style.maxWidth !== '75ch') capped = capped.parentElement;
+    expect(capped).not.toBeNull();
   });
 
   it('renders the cited summary and its source list', () => {

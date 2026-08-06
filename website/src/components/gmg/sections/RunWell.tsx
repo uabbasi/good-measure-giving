@@ -129,7 +129,9 @@ export const RunWell: React.FC<{
                   >
                     {risk.category}
                   </div>
-                  <div style={{ fontSize: 12, color: p.sub, marginTop: 4, lineHeight: 1.5 }}>{risk.description}</div>
+                  <div style={{ fontSize: 12, color: p.sub, marginTop: 4, lineHeight: 1.5, maxWidth: '75ch' }}>
+                    {risk.description}
+                  </div>
                 </div>
               );
             })}
