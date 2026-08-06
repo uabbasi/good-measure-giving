@@ -274,11 +274,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: p.sub2, marginTop: 8, letterSpacing: '0.03em' }}>
               {[c.address, c.region, c.ein && `EIN ${c.ein}`, c.founded && `Founded ${c.founded}`].filter(Boolean).join(' · ')}
             </div>
-            {c.headline && (
-              <p style={{ fontSize: 14, color: p.sub, lineHeight: 1.5, margin: '10px 0 0', maxWidth: 620 }}>
-                {c.headline}
-              </p>
-            )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
               <Tag tone="accent" p={p}>{c.wallet}</Tag>
               {c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}

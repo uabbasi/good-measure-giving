@@ -17,6 +17,28 @@ const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join
 const richNoGrants = () => load('charity-01-0548371.json');
 
 describe('WhatTheyDo', () => {
+  it('renders the About lede and Quick facts card ahead of the cited summary', () => {
+    const c = richNoGrants();
+    const { container, getByText } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+
+    expect(getByText('About')).toBeInTheDocument();
+    expect(getByText(c.headline)).toBeInTheDocument();
+    expect(getByText('Quick facts')).toBeInTheDocument();
+    // A representative sample of quick-facts rows this fixture has values for.
+    expect(getByText(c.category)).toBeInTheDocument();
+    expect(getByText(c.riskLevel)).toBeInTheDocument();
+
+    // Composition, not just presence: the headline must appear before the
+    // cited summary text in document order — a regression that keeps both
+    // fields but drops the About block (e.g. moves the headline back into
+    // page header meta only) would still pass a bare "is present" check.
+    const html = container.innerHTML;
+    const headlineIdx = html.indexOf(c.headline);
+    const summaryIdx = html.indexOf('Sources');
+    expect(headlineIdx).toBeGreaterThan(-1);
+    expect(headlineIdx).toBeLessThan(summaryIdx);
+  });
+
   it('renders the cited summary and its source list', () => {
     const c = richNoGrants();
     expect(c.cited.summary.length).toBeGreaterThan(0);
