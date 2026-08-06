@@ -6,7 +6,9 @@ import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } 
 import { regionsFromCauseTags, regionLabel } from './adapters/regions';
 import {
   buildCitationIndex, anchorConcerns, aggregateGrants, buildFinancialSeries,
+  parseCitedText,
   type CitationIndex, type AnchoredConcerns, type GrantFlows, type FinancialYear,
+  type CitedSegment,
 } from './adapters';
 
 export interface GmgRow {
@@ -199,6 +201,27 @@ export interface GmgCharity {
 
   /** Resolved citation index; narrative text is parsed against this. */
   citations: CitationIndex;
+  /**
+   * The same narrative content as the plain-text fields above, but parsed into
+   * renderable segments so inline <cite> markers can be shown. Both forms exist
+   * deliberately: the plain strings feed meta descriptions and the compare page,
+   * where markup would be wrong; these feed the detail page, where the citation
+   * is the point. Parsed here rather than at each render site so section
+   * components stay dumb.
+   */
+  cited: {
+    summary: CitedSegment[];
+    caseAgainstSummary: CitedSegment[];
+    peerDifferentiator: CitedSegment[];
+    dimensionExplanations: {
+      impact: CitedSegment[];
+      alignment: CitedSegment[];
+      credibility: CitedSegment[];
+    };
+    strengths: { point: string; detail: CitedSegment[] }[];
+    growthAreas: CitedSegment[][];
+    strengthsDeepDive: CitedSegment[][];
+  };
   /** keyConcerns grouped by the page section they caveat. */
   concerns: AnchoredConcerns;
   /** Most-recent-year grant aggregation; null when the charity makes no grants. */
@@ -258,10 +281,26 @@ export const adaptCharity = (c: any): GmgCharity => {
   const improvementsRaw: any[] = Array.isArray(narrative?.areas_for_improvement)
     ? narrative.areas_for_improvement
     : [];
+  const deepDiveRaw: any[] = Array.isArray(rn?.strengths_deep_dive) ? rn.strengths_deep_dive : [];
   const asAreaText = (x: any): string =>
     typeof x === 'string' ? stripTags(x) : stripTags(x?.area || x?.point || x?.context || '');
 
   const addr = [loc?.address, loc?.city, loc?.state].filter(Boolean).join(', ');
+
+  const citationIndex = buildCitationIndex(rn?.all_citations, c);
+  const cite = (text: unknown): CitedSegment[] => parseCitedText(text, citationIndex);
+  // `dimension_explanations` reads from `narrative` (rich-or-baseline), not `rn`
+  // alone — baseline narratives carry this field too, just as plain strings
+  // rather than `{ explanation }` objects, and a rich-only read would silently
+  // go empty for any charity that hasn't been promoted to a rich narrative yet.
+  const de = narrative?.dimension_explanations ?? {};
+  const deText = (k: string): unknown => {
+    const entry = (de as Record<string, unknown>)[k];
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+      return (entry as Record<string, unknown>).explanation;
+    }
+    return entry;
+  };
 
   return {
     name: c?.name ?? 'Charity',
@@ -373,7 +412,32 @@ export const adaptCharity = (c: any): GmgCharity => {
       bbbUrl: awards?.bbbReviewUrl ?? null,
     },
 
-    citations: buildCitationIndex(rn?.all_citations, c),
+    citations: citationIndex,
+    cited: {
+      summary: cite(narrative?.summary),
+      caseAgainstSummary: cite(rn?.case_against?.summary),
+      peerDifferentiator: cite(rn?.peer_comparison?.differentiator),
+      dimensionExplanations: {
+        impact: cite(deText('impact')),
+        alignment: cite(deText('alignment')),
+        credibility: cite(deText('credibility')),
+      },
+      strengths: strengthsRaw.slice(0, 3).map((s) => ({
+        point: stripTags(s?.point || s?.area || ''),
+        detail: cite(s?.detail || s?.context || ''),
+      })),
+      // Priority is context-first (not area-first, unlike the plain
+      // `growthAreas` label above): `context` is where the pipeline actually
+      // attaches citations (measured fleet-wide at 321 references), while
+      // `area` is just a short heading rarely worth a citation. The two
+      // fields intentionally carry different content here, same as
+      // strengths.detail vs strengths.point.
+      growthAreas: improvementsRaw
+        .map((x) => (typeof x === 'string' ? cite(x) : cite(x?.context || x?.area || x?.point || '')))
+        .filter((segs) => segs.length > 0)
+        .slice(0, 4),
+      strengthsDeepDive: deepDiveRaw.filter((s): s is string => typeof s === 'string').map(cite),
+    },
     concerns: anchorConcerns(c?.keyConcerns),
     grantFlows: aggregateGrants(c?.grantsData),
     financialSeries: buildFinancialSeries(rn?.financial_deep_dive?.yearly_financials),
