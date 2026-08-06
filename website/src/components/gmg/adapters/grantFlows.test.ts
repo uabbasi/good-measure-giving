@@ -121,23 +121,47 @@ describe('aggregateGrants against the real corpus', () => {
       .reduce((sum, r) => sum + (r.amount as number), 0);
   };
 
-  it('aggregates the 81 grantmaking charities without throwing or going negative', () => {
-    let withGrants = 0;
-    let fullyAnonymous = 0;
+  // Same year-filtering as above, but a plain existence check rather than a
+  // sum — a $0 identifiable grant would zero out the total above while still
+  // producing a topRecipients entry, so the "any recipients?" question needs
+  // its own derivation from the raw JSON rather than reusing the sum.
+  const hasIdentifiableRecipientForMostRecentYear = (rows: Array<Record<string, unknown>>): boolean => {
+    const years = rows
+      .map((r) => r.tax_year)
+      .filter((y): y is number => typeof y === 'number');
+    const taxYear = years.length > 0 ? Math.max(...years) : null;
+    const inYear = rows.filter((r) => (taxYear === null ? true : r.tax_year === taxYear));
+    return inYear.some((r) => typeof r.amount === 'number' && (r.recipient_name || r.recipient_ein));
+  };
+
+  it('yields grant flows iff the raw record has non-empty grantsData', () => {
+    for (const f of files) {
+      const d = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+      const hasRawGrants = Array.isArray(d.grantsData) && d.grantsData.length > 0;
+      const r = aggregateGrants(d.grantsData);
+      expect(r !== null).toBe(hasRawGrants);
+    }
+  });
+
+  it('aggregates grantmaking charities without throwing or going negative, and lists recipients iff the raw year has an identifiable one', () => {
+    let checked = 0;
     for (const f of files) {
       const d = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
       const r = aggregateGrants(d.grantsData);
       if (r === null) continue;
-      withGrants += 1;
+      checked += 1;
       expect(r.totalAmount).toBeGreaterThanOrEqual(0);
       expect(r.topRecipients.length).toBeLessThanOrEqual(10);
       expect(r.domestic.amount + r.foreign.amount).toBe(r.totalAmount);
-      if (r.topRecipients.length === 0) fullyAnonymous += 1;
 
       const identifiableTotal = identifiableTotalForMostRecentYear(d.grantsData);
       expect(r.unattributed.amount + identifiableTotal).toBe(r.totalAmount);
+
+      const hasIdentifiable = hasIdentifiableRecipientForMostRecentYear(d.grantsData);
+      expect(r.topRecipients.length > 0).toBe(hasIdentifiable);
+      if (!hasIdentifiable) expect(r.unattributed.amount).toBeGreaterThan(0);
     }
-    expect(withGrants).toBe(81);
-    expect(fullyAnonymous).toBe(26);
+    // Sanity: this must actually exercise real grantmaking charities.
+    expect(checked).toBeGreaterThan(0);
   });
 });

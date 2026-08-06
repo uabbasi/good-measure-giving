@@ -86,7 +86,7 @@ describe('anchorConcerns against the real corpus', () => {
       anchored += r.all.length;
       expect(Object.values(r.byAnchor).reduce((n, v) => n + v.length, 0)).toBe(r.all.length);
     }
-    expect(raw).toBe(343);
-    expect(anchored).toBe(343);
+    expect(raw).toBeGreaterThan(0); // sanity: don't let this pass vacuously at raw === anchored === 0
+    expect(anchored).toBe(raw);
   });
 });

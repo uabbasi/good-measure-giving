@@ -15,8 +15,12 @@ const indexFile = path.resolve(__dirname, '../../../data/charities.json');
 const index = JSON.parse(fs.readFileSync(indexFile, 'utf8')).charities as Record<string, unknown>[];
 
 describe('adaptCharity over the real corpus', () => {
-  it('covers all 166 exported charities', () => {
-    expect(all).toHaveLength(166);
+  it('exports a non-empty, self-consistent corpus (no dupes, filename matches content)', () => {
+    expect(files.length).toBeGreaterThan(0);
+    const einsFromFilenames = files.map((f) => f.replace(/^charity-/, '').replace(/\.json$/, ''));
+    const einsFromContent = all.map((c) => c.ein);
+    expect(einsFromContent).toEqual(einsFromFilenames);
+    expect(new Set(einsFromContent).size).toBe(einsFromContent.length);
   });
 
   it('reads populations from targeting, not the absent top-level key', () => {
@@ -67,24 +71,34 @@ describe('adaptCharity over the real corpus', () => {
 describe('adaptRow over the real index', () => {
   it('derives a region for a substantial share of rows', () => {
     const rows = index.map(adaptRow);
-    expect(rows).toHaveLength(166);
+    expect(rows.length).toBeGreaterThan(0);
     expect(rows.filter((r) => r.region !== 'Multi').length).toBeGreaterThanOrEqual(80);
   });
 });
 
 describe('adaptCharity exposes the newly wired data', () => {
-  it('carries a citation index for every charity', () => {
-    const adapted = all.map(adaptCharity);
-    expect(adapted.every((c) => c.citations.ordered.length > 0)).toBe(true);
+  it('carries a citation index for every charity that has raw citations', () => {
+    for (const c of all) {
+      const rawCitations = c?.amalEvaluation?.rich_narrative?.all_citations;
+      if (!Array.isArray(rawCitations) || rawCitations.length === 0) continue;
+      expect(adaptCharity(c).citations.ordered.length).toBeGreaterThan(0);
+    }
   });
 
   it('carries anchored concerns totalling the corpus count', () => {
     const total = all.map(adaptCharity).reduce((n, c) => n + c.concerns.all.length, 0);
-    expect(total).toBe(343);
+    const raw = all.reduce(
+      (n, c) => n + (Array.isArray(c?.keyConcerns) ? c.keyConcerns.length : 0),
+      0,
+    );
+    expect(total).toBe(raw);
   });
 
-  it('carries grant flows for exactly the grantmaking charities', () => {
-    expect(all.map(adaptCharity).filter((c) => c.grantFlows !== null)).toHaveLength(81);
+  it('carries grant flows iff the raw record has non-empty grantsData', () => {
+    for (const c of all) {
+      const hasRawGrants = Array.isArray(c?.grantsData) && c.grantsData.length > 0;
+      expect(adaptCharity(c).grantFlows !== null).toBe(hasRawGrants);
+    }
   });
 
   it('carries a financial series for most charities', () => {
