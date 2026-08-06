@@ -51,6 +51,22 @@ describe('WhatTheyDo', () => {
     expect(headlineIdx).toBeLessThan(summaryIdx);
   });
 
+  it('renders the narrative summary exactly once, not once plain and once cited', () => {
+    // c.summary and c.cited.summary are parsed from the SAME source field
+    // (narrative.summary) — rendering both is the same paragraph twice. The
+    // plain, uncited version's fingerprint is a <p> whose entire text is
+    // the raw summary string; the cited version breaks that string up with
+    // inline citation markers, so it never produces this exact match.
+    const c = richNoGrants();
+    const { container } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+    const plainDuplicates = Array.from(container.querySelectorAll('p')).filter(
+      (el) => el.textContent === c.summary,
+    );
+    expect(plainDuplicates).toHaveLength(0);
+    // The cited version must still be the one thing that renders it.
+    expect(container.textContent).toContain('Sources');
+  });
+
   it('collapses the About/Quick-facts grid to one column before the 768px mobile breakpoint', () => {
     // useIsMobile is a single binary breakpoint at 768px, so the 1.6fr/1fr
     // split otherwise stayed two columns at any width above that — cramped

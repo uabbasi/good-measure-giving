@@ -52,9 +52,11 @@ export const WhatTheyDo: React.FC<{
   return (
   <Section id="what-they-do" title="What they do, and is it real?" p={p} padX={padX}>
     {/* About + Quick facts — the two-column opener from the original design.
-        `c.headline` is a one-sentence editorial statement; the cited summary
-        below is the fuller narrative. They are different content and both
-        render, deliberately. */}
+        `c.headline` is a one-sentence editorial statement and the ONLY prose
+        this block renders. `c.summary` is the same underlying narrative as
+        the cited version below (adaptCharity builds `cited.summary` from
+        that same field) — rendering both here would show the identical
+        paragraph twice, once plain and once with citations. */}
     <div
       style={{
         display: 'grid',
@@ -70,9 +72,6 @@ export const WhatTheyDo: React.FC<{
         <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 28, lineHeight: 1.15, margin: '8px 0 12px', letterSpacing: '-0.02em' }}>
           {c.headline}
         </h2>
-        {c.summary && (
-          <p style={{ fontSize: 13.5, lineHeight: 1.65, color: p.sub, margin: 0, maxWidth: '75ch' }}>{c.summary}</p>
-        )}
       </div>
       <div style={{ border: sectionBorder, borderRadius: 6, padding: 14, background: p.bg2 }}>
         <Kicker p={p}>Quick facts</Kicker>

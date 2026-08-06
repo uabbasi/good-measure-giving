@@ -46,6 +46,14 @@ describe('regionLabel', () => {
   it('falls back to Multi only when nothing is known', () => {
     expect(regionLabel([])).toBe('Multi');
   });
+
+  it('stops naming an arbitrary leading region once the list gets long', () => {
+    // REGION_TAGS order is corpus frequency, not this charity's emphasis —
+    // "Palestine +12" for a 40-country operation implies Palestine is the
+    // charity's lead region, which is not a fact this data supports.
+    const many = ['Palestine', 'Syria', 'Yemen', 'Pakistan'];
+    expect(regionLabel(many)).toBe('Multi-region (4)');
+  });
 });
 
 describe('regions against the real index', () => {

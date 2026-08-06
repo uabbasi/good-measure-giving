@@ -47,5 +47,11 @@ export const regionsFromCauseTags = (raw: unknown): string[] => {
 export const regionLabel = (regions: string[]): string => {
   if (regions.length === 0) return 'Multi';
   if (regions.length === 1) return regions[0];
+  // Naming the first tag reads as a real "leading region" for a short list,
+  // but REGION_TAGS order is corpus frequency, not this charity's own
+  // emphasis — past a handful of matches, leading with one is arbitrary
+  // (e.g. an org in 40+ countries reading "Palestine +12"). Say so plainly
+  // instead of picking a tag to feature.
+  if (regions.length > 3) return `Multi-region (${regions.length})`;
   return `${regions[0]} +${regions.length - 1}`;
 };

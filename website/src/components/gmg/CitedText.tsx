@@ -26,7 +26,10 @@ export const CitedText: React.FC<{
                 fontFamily: FONT_MONO,
                 fontSize: size * 0.62,
                 color: p.accent,
-                marginLeft: 1,
+                // A marker directly against a digit (e.g. "1933⁶") reads as
+                // an exponent rather than a citation — enough gap to read
+                // as a separate mark, always, not just after digits.
+                marginLeft: '0.2em',
                 verticalAlign: 'super',
                 lineHeight: 0,
               }}

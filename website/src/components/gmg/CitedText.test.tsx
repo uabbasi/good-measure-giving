@@ -47,6 +47,16 @@ describe('CitedText', () => {
     const sup = container.querySelector('sup');
     expect(sup?.getAttribute('aria-label')).toContain('IRS Form 990');
   });
+
+  it('separates the marker from the text it follows, so a digit before it does not read as an exponent', () => {
+    // e.g. "Founded in 1933<sup>6</sup>" must not visually merge into "19336".
+    const digitAdjacent: CitedSegment[] = [{ kind: 'cited', text: 'Founded in 1933', citation: c1 }];
+    const { container } = render(<CitedText segments={digitAdjacent} p={p} />);
+    const sup = container.querySelector('sup') as HTMLElement | null;
+    expect(sup?.style.marginLeft).not.toBe('');
+    expect(sup?.style.marginLeft).not.toBe('0px');
+    expect(sup?.style.marginLeft).not.toBe('1px');
+  });
 });
 
 describe('collectCitations', () => {
