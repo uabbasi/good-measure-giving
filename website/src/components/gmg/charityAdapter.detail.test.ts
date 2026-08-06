@@ -74,8 +74,17 @@ describe('adaptCharity detail structures', () => {
 
   it('keeps root theoryOfChange separate from the impact-evidence one', () => {
     const a = all();
-    expect(a.filter((c) => c.theoryOfChange !== null).length).toBeGreaterThanOrEqual(110);
+    const withRoot = a.filter((c) => c.theoryOfChange !== null);
+    expect(withRoot.length).toBeGreaterThanOrEqual(110);
+    // evidence.theoryOfChange is 166/166 — if root were ever aliased to it,
+    // this count would also jump to 166. A gap here is what proves the two
+    // fields have genuinely different population, not just different names.
+    expect(withRoot.length).toBeLessThan(166);
     expect(a.filter((c) => c.evidence.theoryOfChange !== '').length).toBe(166);
+    // Population differing isn't enough on its own — assert the two fields
+    // actually carry different text for at least one charity where both exist.
+    const bothPresent = withRoot.filter((c) => c.evidence.theoryOfChange !== '');
+    expect(bothPresent.some((c) => c.theoryOfChange !== c.evidence.theoryOfChange)).toBe(true);
   });
 
   // `ideal_donor_profile.not_ideal_for` is exported as a single prose string
