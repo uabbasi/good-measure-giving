@@ -53,6 +53,15 @@ const numOrNull = (v: unknown): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
+const boolOrNull = (v: unknown): boolean | null => {
+  if (typeof v === 'boolean') return v;
+  if (v === 1 || v === 0) return v === 1;
+  return null;
+};
+
+const strList = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string').map(stripTags).filter(Boolean) : [];
+
 export interface GmgCriterion {
   name: string;
   rating: Rating;
@@ -228,6 +237,76 @@ export interface GmgCharity {
   grantFlows: GrantFlows | null;
   /** Multi-year revenue/expense series, zeros normalized to null. */
   financialSeries: FinancialYear[];
+
+  evidence: {
+    grade: string | null;
+    gradeExplanation: string;
+    theoryOfChange: string;
+    whyEvidenceMatters: string;
+    externalEvaluations: string[];
+    outcomeTrackingYears: number | null;
+  };
+  capacity: {
+    ceoName: string | null;
+    ceoCompensation: number | null;
+    ceoCompensationPctRevenue: number | null;
+    boardSize: number | null;
+    independentBoardPct: number | null;
+    hasConflictPolicy: boolean | null;
+    hasFinancialAudit: boolean | null;
+    employeesCount: number | null;
+    volunteersCount: number | null;
+    programsCount: number | null;
+    geographicReach: string;
+  };
+  peers: {
+    peerGroup: string;
+    differentiator: string;
+    peerCount: number | null;
+    programRatioMedian: number | null;
+    industryProgramRatio: number | null;
+    cnOverallScore: number | null;
+    transparencyScore: number | null;
+    similarOrganizations: { name: string; differentiator: string }[];
+  };
+  bbb: {
+    summary: string;
+    auditType: string | null;
+    effectivenessStatus: string | null;
+    financesStatus: string | null;
+    governanceStatus: string | null;
+    standardsMet: number | null;
+    reviewUrl: string | null;
+  };
+  outlook: {
+    maturityStage: string;
+    roomForFunding: string;
+    roomForFundingExplanation: string;
+    strategicPriorities: string[];
+    yearsOperating: number | null;
+    revenueGrowth3yr: number | null;
+  };
+  // Named `donorFitMatrix`, not `donorFit` — that name is already taken by the
+  // browse-consistent Harvey-ball signal rating above (ui_signals_v1). This is
+  // a different shape (rich_narrative.donor_fit_matrix) and a same-named
+  // property here would be a duplicate-identifier error against a different type.
+  donorFitMatrix: {
+    causeArea: string;
+    givingStyle: string;
+    evidenceRigor: string;
+    geographicFocus: string;
+    zakatStatus: string;
+    zakatAsnafServed: string | null;
+  };
+  /** score_details risks. The export's `mitigation` is null in all 206 rows, so it is not mapped. */
+  risks: { category: string; description: string; severity: string; dataSource: string }[];
+  /** Per-field provenance. `sourceUrl` is null for entries the export never gave a URL. */
+  provenance: { field: string; sourceName: string; sourceUrl: string | null; fiscalYear: number | null }[];
+  notIdealFor: string[];
+  caseAgainstFactors: string[];
+  caseAgainstMitigation: string;
+  /** Root-level theoryOfChange (116/166) — NOT evidence.theoryOfChange, which is a different field. */
+  theoryOfChange: string | null;
 }
 
 // Lightweight per-row projection for the index table.
@@ -441,5 +520,102 @@ export const adaptCharity = (c: any): GmgCharity => {
     concerns: anchorConcerns(c?.keyConcerns),
     grantFlows: aggregateGrants(c?.grantsData),
     financialSeries: buildFinancialSeries(rn?.financial_deep_dive?.yearly_financials),
+
+    evidence: {
+      grade: rn?.impact_evidence?.evidence_grade ?? null,
+      gradeExplanation: stripTags(rn?.impact_evidence?.evidence_grade_explanation),
+      theoryOfChange: stripTags(rn?.impact_evidence?.theory_of_change),
+      whyEvidenceMatters: stripTags(rn?.impact_evidence?.why_evidence_matters),
+      externalEvaluations: strList(rn?.impact_evidence?.external_evaluations),
+      outcomeTrackingYears: numOrNull(rn?.impact_evidence?.outcome_tracking_years),
+    },
+    capacity: {
+      ceoName: rn?.organizational_capacity?.ceo_name ?? null,
+      ceoCompensation: numOrNull(rn?.organizational_capacity?.ceo_compensation),
+      ceoCompensationPctRevenue: numOrNull(rn?.organizational_capacity?.ceo_compensation_pct_revenue),
+      boardSize: numOrNull(rn?.organizational_capacity?.board_size),
+      independentBoardPct: numOrNull(rn?.organizational_capacity?.independent_board_pct),
+      hasConflictPolicy: boolOrNull(rn?.organizational_capacity?.has_conflict_policy),
+      hasFinancialAudit: boolOrNull(rn?.organizational_capacity?.has_financial_audit),
+      employeesCount: numOrNull(rn?.organizational_capacity?.employees_count),
+      volunteersCount: numOrNull(rn?.organizational_capacity?.volunteers_count),
+      programsCount: numOrNull(rn?.organizational_capacity?.programs_count),
+      geographicReach: stripTags(rn?.organizational_capacity?.geographic_reach),
+    },
+    peers: {
+      peerGroup: stripTags(rn?.peer_comparison?.peer_group),
+      differentiator: stripTags(rn?.peer_comparison?.differentiator),
+      peerCount: numOrNull(rn?.financial_deep_dive?.peer_count),
+      programRatioMedian: numOrNull(rn?.financial_deep_dive?.peer_program_ratio_median),
+      industryProgramRatio: numOrNull(rn?.financial_deep_dive?.industry_program_ratio),
+      cnOverallScore: numOrNull(rn?.financial_deep_dive?.cn_overall_score),
+      transparencyScore: numOrNull(rn?.financial_deep_dive?.transparency_score),
+      similarOrganizations: (Array.isArray(rn?.similar_organizations) ? rn.similar_organizations : [])
+        .filter((s: unknown): s is Record<string, unknown> => !!s && typeof s === 'object')
+        .map((s: Record<string, unknown>) => ({
+          name: stripTags(s.name),
+          differentiator: stripTags(s.differentiator),
+        }))
+        .filter((s: { name: string }) => s.name !== ''),
+    },
+    bbb: {
+      summary: stripTags(rn?.bbb_assessment?.summary),
+      auditType: rn?.bbb_assessment?.audit_type ?? null,
+      effectivenessStatus: rn?.bbb_assessment?.effectiveness_status ?? null,
+      financesStatus: rn?.bbb_assessment?.finances_status ?? null,
+      governanceStatus: rn?.bbb_assessment?.governance_status ?? null,
+      standardsMet: numOrNull(rn?.bbb_assessment?.standards_met),
+      reviewUrl: rn?.bbb_assessment?.review_url ?? null,
+    },
+    outlook: {
+      maturityStage: stripTags(rn?.long_term_outlook?.maturity_stage),
+      roomForFunding: stripTags(rn?.long_term_outlook?.room_for_funding),
+      roomForFundingExplanation: stripTags(rn?.long_term_outlook?.room_for_funding_explanation),
+      strategicPriorities: strList(rn?.long_term_outlook?.strategic_priorities),
+      yearsOperating: numOrNull(rn?.long_term_outlook?.years_operating),
+      revenueGrowth3yr: numOrNull(rn?.long_term_outlook?.revenue_growth_3yr),
+    },
+    donorFitMatrix: {
+      causeArea: stripTags(rn?.donor_fit_matrix?.cause_area),
+      givingStyle: stripTags(rn?.donor_fit_matrix?.giving_style),
+      evidenceRigor: stripTags(rn?.donor_fit_matrix?.evidence_rigor),
+      geographicFocus: stripTags(rn?.donor_fit_matrix?.geographic_focus),
+      zakatStatus: stripTags(rn?.donor_fit_matrix?.zakat_status),
+      zakatAsnafServed: rn?.donor_fit_matrix?.zakat_asnaf_served ?? null,
+    },
+    risks: (Array.isArray(sd?.risks?.risks) ? sd.risks.risks : [])
+      .filter((r: unknown): r is Record<string, unknown> => !!r && typeof r === 'object')
+      .map((r: Record<string, unknown>) => ({
+        category: stripTags(r.category),
+        description: stripTags(r.description),
+        severity: String(r.severity ?? ''),
+        dataSource: stripTags(r.data_source),
+      }))
+      .filter((r: { description: string }) => r.description !== ''),
+    provenance: Object.entries((c?.sourceAttribution ?? {}) as Record<string, unknown>)
+      .filter(([, v]) => !!v && typeof v === 'object' && !Array.isArray(v))
+      .map(([field, v]) => {
+        const rec = v as Record<string, unknown>;
+        return {
+          field,
+          sourceName: stripTags(rec.source_name),
+          sourceUrl: typeof rec.source_url === 'string' && rec.source_url !== '' ? rec.source_url : null,
+          fiscalYear: numOrNull(rec.fiscal_year),
+        };
+      })
+      .filter((p) => p.sourceName !== ''),
+    // `not_ideal_for` is exported as a single prose string, not a list (confirmed
+    // fleet-wide: 166/166 occurrences are strings, never arrays) — strList()
+    // would silently discard it every time. Wrap the non-empty string instead.
+    notIdealFor: (() => {
+      const s = stripTags(idp?.not_ideal_for);
+      return s ? [s] : [];
+    })(),
+    caseAgainstFactors: strList(rn?.case_against?.risk_factors),
+    caseAgainstMitigation: stripTags(rn?.case_against?.mitigation_notes),
+    // Root-level theoryOfChange (116/166) — NOT evidence.theoryOfChange, which is a different field.
+    theoryOfChange: typeof c?.theoryOfChange === 'string' && c.theoryOfChange !== ''
+      ? stripTags(c.theoryOfChange)
+      : null,
   };
 };
