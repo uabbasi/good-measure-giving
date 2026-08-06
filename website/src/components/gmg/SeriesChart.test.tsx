@@ -46,6 +46,32 @@ describe('SeriesChart', () => {
     expect((d.match(/[ML]/g) ?? []).length).toBe(2);
   });
 
+  it('restarts the path after a middle null, not just after a trailing one', () => {
+    // The only null in the top-level fixture is trailing (2024). A regression
+    // that stops drawing entirely on the first null instead of resuming after
+    // it would still pass that test — this fixture puts the gap in the middle
+    // so the points after it must still show up.
+    const withMiddleGap = [
+      { year: 2021, revenue: 1000, expenses: 900, netAssets: 500 },
+      { year: 2022, revenue: 1100, expenses: null, netAssets: 550 },
+      { year: 2023, revenue: 1200, expenses: 1000, netAssets: 600 },
+      { year: 2024, revenue: 1300, expenses: 1050, netAssets: 650 },
+    ];
+    const { container } = render(<SeriesChart series={withMiddleGap} p={p} />);
+    const expensePath = container.querySelector('[data-series="expenses"]');
+    const d = expensePath?.getAttribute('d') ?? '';
+
+    // Two subpaths (2021 alone; 2023-2024 joined), three points total.
+    expect((d.match(/M/g) ?? []).length).toBe(2);
+    expect((d.match(/[ML]/g) ?? []).length).toBe(3);
+
+    // The points after the gap must actually be drawn, not dropped.
+    const pts = points(d);
+    expect(pts).toHaveLength(3);
+    expect(pts[1][0]).toBeCloseTo((2 / 3) * 100, 1); // 2023 is index 2 of 4
+    expect(pts[2][0]).toBeCloseTo(100, 1); // 2024 is the last point
+  });
+
   it('plots a negative value strictly below the zero baseline, not clamped to it', () => {
     const withNegative = [
       { year: 2022, revenue: 1000, expenses: 900, netAssets: -200 },
@@ -74,6 +100,20 @@ describe('SeriesChart', () => {
     expect(svg?.getAttribute('role')).toBe('img');
     expect(svg?.getAttribute('aria-label')).toMatch(/2022/);
     expect(svg?.getAttribute('aria-label')).toMatch(/2024/);
+  });
+
+  it('degrades the aria-label to "not reported" for a series with no values at all', () => {
+    const expensesAlwaysNull = [
+      { year: 2022, revenue: 1000, expenses: null, netAssets: 500 },
+      { year: 2023, revenue: 1200, expenses: null, netAssets: 600 },
+    ];
+    const { container } = render(<SeriesChart series={expensesAlwaysNull} p={p} />);
+    const label = container.querySelector('svg')?.getAttribute('aria-label') ?? '';
+    expect(label).toMatch(/Expenses not reported/);
+    // The series that did report should still carry real figures, not have
+    // "not reported" bleed over from the null one.
+    expect(label).toMatch(/Revenue 1K in 2023/);
+    expect(label).toMatch(/Net assets 600 in 2023/);
   });
 });
 
