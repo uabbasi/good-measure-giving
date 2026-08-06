@@ -19,8 +19,17 @@ export interface GrantFlows {
   totalAmount: number;
   domestic: { amount: number; count: number };
   foreign: { amount: number; count: number };
+  /**
+   * Ranked, identifiable recipients only (a reported name or EIN). Some
+   * charities' Schedule I/F reports every grant with neither — large
+   * batches of small, separately-made payments (e.g. disaster relief to
+   * individual households) are the common case — so `topRecipients` can be
+   * empty even when `totalAmount` is large; see `unattributed`.
+   */
   topRecipients: GrantRecipient[];
   byRegion: { region: string; amount: number; count: number }[];
+  /** Grants with no identifiable recipient — reported as a total, never itemized. */
+  unattributed: { amount: number; count: number };
 }
 
 const TOP_N = 10;
@@ -52,13 +61,13 @@ export const aggregateGrants = (raw: unknown): GrantFlows | null => {
   let grantCount = 0;
   const domestic = { amount: 0, count: 0 };
   const foreign = { amount: 0, count: 0 };
+  const unattributed = { amount: 0, count: 0 };
 
   for (const r of inYear) {
     const amount = numOrNull(r.amount);
     if (amount === null) continue;
 
     const rawName = strOrNull(r.recipient_name);
-    const name = rawName ?? 'Unnamed recipient';
     const ein = strOrNull(r.recipient_ein);
     const isForeign = r.is_foreign === true || r.is_foreign === 1;
     const region = strOrNull(r.region);
@@ -78,19 +87,27 @@ export const aggregateGrants = (raw: unknown): GrantFlows | null => {
       regions.set(region, { amount: cur.amount + amount, count: cur.count + 1 });
     }
 
+    // Rows with neither an EIN nor a name are not known to be the same
+    // recipient as one another — Schedule I/F omits both for large batches
+    // of small, separately-made grants (e.g. disaster relief to individual
+    // households), and some charities report every grant this way. These
+    // are counted in the totals above but never itemized or merged into a
+    // fabricated "Unnamed recipient" that would misrepresent many payments
+    // as a single giant one.
+    if (rawName === null && ein === null) {
+      unattributed.amount += amount;
+      unattributed.count += 1;
+      continue;
+    }
+
     // Merge repeat rows that identify the same recipient (by EIN, or by name
-    // when no EIN is reported). Rows with neither an EIN nor a name are not
-    // known to be the same recipient as one another — Schedule I/F omits
-    // both for large batches of small, separately-made grants (e.g. disaster
-    // relief to individual households) — so each such row stays its own
-    // entry instead of collapsing into one fabricated "Unnamed recipient"
-    // that would misrepresent many payments as a single giant one.
-    const key = ein ?? rawName?.toLowerCase() ?? `__anon-${grantCount}`;
+    // when no EIN is reported).
+    const key = ein ?? (rawName as string).toLowerCase();
     const prev = byRecipient.get(key);
     if (prev) prev.amount += amount;
     else
       byRecipient.set(key, {
-        name, ein, amount, purpose: strOrNull(r.purpose), isForeign, region,
+        name: rawName ?? 'Unnamed recipient', ein, amount, purpose: strOrNull(r.purpose), isForeign, region,
       });
   }
 
@@ -108,5 +125,6 @@ export const aggregateGrants = (raw: unknown): GrantFlows | null => {
     byRegion: Array.from(regions.entries())
       .map(([region, v]) => ({ region, amount: v.amount, count: v.count }))
       .sort((a, b) => b.amount - a.amount),
+    unattributed,
   };
 };

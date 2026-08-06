@@ -72,14 +72,58 @@ describe('aggregateGrants', () => {
     expect(r?.grantCount).toBe(1);
     expect(r?.totalAmount).toBe(100);
   });
+
+  it('excludes anonymous rows from topRecipients but still counts them in totals', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: 'Alpha Relief', recipient_ein: '11-1111111', amount: 100 }),
+      row({ recipient_name: null, recipient_ein: null, amount: 900 }),
+    ]);
+    expect(r?.topRecipients.map((x) => x.name)).toEqual(['Alpha Relief']);
+    expect(r?.grantCount).toBe(2);
+    expect(r?.totalAmount).toBe(1000);
+    expect(r?.unattributed).toEqual({ amount: 900, count: 1 });
+  });
+
+  it('never merges anonymous rows into a single fabricated recipient', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: null, recipient_ein: null, amount: 500 }),
+      row({ recipient_name: null, recipient_ein: null, amount: 700 }),
+      row({ recipient_name: null, recipient_ein: null, amount: 300 }),
+    ]);
+    expect(r?.topRecipients).toEqual([]);
+    expect(r?.unattributed).toEqual({ amount: 1500, count: 3 });
+  });
+
+  it('an all-anonymous charity yields an empty topRecipients and a non-zero unattributed', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: null, recipient_ein: null, amount: 88000000 }),
+    ]);
+    expect(r?.topRecipients).toEqual([]);
+    expect(r?.unattributed).toEqual({ amount: 88000000, count: 1 });
+  });
 });
 
 describe('aggregateGrants against the real corpus', () => {
   const dir = path.resolve(__dirname, '../../../../data/charities');
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
 
+  // Independently reproduces "usable amount in the most recent tax year"
+  // from the raw JSON, so the reconciliation check below doesn't just
+  // restate aggregateGrants's own internal bookkeeping back at itself.
+  const identifiableTotalForMostRecentYear = (rows: Array<Record<string, unknown>>): number => {
+    const years = rows
+      .map((r) => r.tax_year)
+      .filter((y): y is number => typeof y === 'number');
+    const taxYear = years.length > 0 ? Math.max(...years) : null;
+    const inYear = rows.filter((r) => (taxYear === null ? true : r.tax_year === taxYear));
+    return inYear
+      .filter((r) => typeof r.amount === 'number' && (r.recipient_name || r.recipient_ein))
+      .reduce((sum, r) => sum + (r.amount as number), 0);
+  };
+
   it('aggregates the 81 grantmaking charities without throwing or going negative', () => {
     let withGrants = 0;
+    let fullyAnonymous = 0;
     for (const f of files) {
       const d = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
       const r = aggregateGrants(d.grantsData);
@@ -88,7 +132,12 @@ describe('aggregateGrants against the real corpus', () => {
       expect(r.totalAmount).toBeGreaterThanOrEqual(0);
       expect(r.topRecipients.length).toBeLessThanOrEqual(10);
       expect(r.domestic.amount + r.foreign.amount).toBe(r.totalAmount);
+      if (r.topRecipients.length === 0) fullyAnonymous += 1;
+
+      const identifiableTotal = identifiableTotalForMostRecentYear(d.grantsData);
+      expect(r.unattributed.amount + identifiableTotal).toBe(r.totalAmount);
     }
     expect(withGrants).toBe(81);
+    expect(fullyAnonymous).toBe(26);
   });
 });
