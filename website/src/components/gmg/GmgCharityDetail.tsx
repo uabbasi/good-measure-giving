@@ -586,16 +586,22 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             <Kicker p={p}>Third-party verification</Kicker>
             <div style={{ marginTop: 6 }}>
               {([
-                ['Charity Navigator', c.awards.cn],
-                ['Candid Seal', c.awards.candid],
-                ['BBB Wise Giving', c.awards.bbb],
-              ] as [string, string | null][])
+                ['Charity Navigator', c.awards.cn, c.awards.cnUrl],
+                ['Candid Seal', c.awards.candid, c.awards.candidUrl],
+                ['BBB Wise Giving', c.awards.bbb, c.awards.bbbUrl],
+              ] as [string, string | null, string | null][])
                 .filter(([, v]) => v)
-                .map(([k, v], i, arr) => (
+                .map(([k, v, href], i, arr) => (
                   <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: i < arr.length - 1 ? sectionBorder : 'none', fontSize: 11.5 }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: p.fg }}>
                       <Star8 size={9} color={p.accent} fill={p.accent} strokeWidth={0} />
-                      {k}
+                      {href ? (
+                        <a href={href} target="_blank" rel="noopener noreferrer" style={{ color: p.fg }}>
+                          {k} ↗
+                        </a>
+                      ) : (
+                        k
+                      )}
                     </span>
                     <span style={{ fontFamily: FONT_MONO, color: p.sub2, fontSize: 10.5 }}>{v}</span>
                   </div>

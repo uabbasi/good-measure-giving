@@ -3,6 +3,7 @@
 // sensible fallback so the proof surface renders for any charity/tier.
 
 import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } from './rating';
+import { regionsFromCauseTags, regionLabel } from './adapters/regions';
 
 export interface GmgRow {
   ein: string;
@@ -187,7 +188,10 @@ export interface GmgCharity {
   claimsZakat: boolean;
   zakatEvidence: string | null;
 
-  awards: { cn: string | null; candid: string | null; bbb: string | null };
+  awards: {
+    cn: string | null; candid: string | null; bbb: string | null;
+    cnUrl: string | null; candidUrl: string | null; bbbUrl: string | null;
+  };
 }
 
 // Lightweight per-row projection for the index table.
@@ -206,10 +210,7 @@ export const adaptRow = (c: any): GmgRow => {
     ein: c?.ein ?? '',
     name: c?.name ?? 'Charity',
     cause: c?.category ?? c?.primaryCategory ?? '—',
-    region:
-      (Array.isArray(c?.geographicCoverage) && c.geographicCoverage[0]) ||
-      c?.targeting?.primary_region ||
-      'Multi',
+    region: regionLabel(regionsFromCauseTags(c?.causeTags)),
     wallet: walletLabel(ae?.wallet_tag),
     walletIsZakat: (ae?.wallet_tag ?? '').toUpperCase().includes('ZAKAT'),
     impact: ratingFromDimension(num(cs?.impact), 50),
@@ -256,10 +257,13 @@ export const adaptCharity = (c: any): GmgCharity => {
     founded,
     trackRecordYears: founded ? 2026 - founded : null,
     category: c?.category ?? c?.primaryCategory ?? '',
-    region:
-      (Array.isArray(c?.geographicCoverage) && c.geographicCoverage[0]) ||
-      c?.targeting?.primary_region ||
-      'Multi',
+    region: (() => {
+      const fromTargeting = Array.isArray(c?.targeting?.geographicCoverage)
+        ? c.targeting.geographicCoverage.filter((g: unknown): g is string => typeof g === 'string')
+        : [];
+      if (fromTargeting.length > 0) return regionLabel(fromTargeting);
+      return regionLabel(regionsFromCauseTags(c?.causeTags));
+    })(),
     wallet: walletLabel(ae?.wallet_tag ?? c?.walletTag),
     donateUrl: c?.donationUrl || c?.website || null,
 
@@ -316,10 +320,13 @@ export const adaptCharity = (c: any): GmgCharity => {
       .map((p: any) => (typeof p === 'string' ? p : p?.name))
       .filter(Boolean)
       .slice(0, 6),
-    populations: (Array.isArray(c?.populationsServed) ? c.populationsServed : [])
+    populations: (Array.isArray(c?.targeting?.populationsServed) ? c.targeting.populationsServed : [])
+      .filter((p: unknown): p is string => typeof p === 'string')
       .map(titleCase)
       .slice(0, 6),
-    geography: (Array.isArray(c?.geographicCoverage) ? c.geographicCoverage : []).slice(0, 6),
+    geography: (Array.isArray(c?.targeting?.geographicCoverage) ? c.targeting.geographicCoverage : [])
+      .filter((g: unknown): g is string => typeof g === 'string')
+      .slice(0, 6),
     overall: (() => {
       const sv = numOrNull(ae?.amal_score);
       return sv == null ? null : ratingFromGmgScore(sv);
@@ -340,6 +347,9 @@ export const adaptCharity = (c: any): GmgCharity => {
       cn: Array.isArray(awards?.cnBeacons) && awards.cnBeacons.length ? awards.cnBeacons[0] : null,
       candid: awards?.candidSeal ?? null,
       bbb: awards?.bbbStatus ?? null,
+      cnUrl: awards?.cnUrl ?? null,
+      candidUrl: awards?.candidUrl ?? null,
+      bbbUrl: awards?.bbbReviewUrl ?? null,
     },
   };
 };
