@@ -27,6 +27,11 @@ const compact = (n: number): string => {
   return `${Math.round(n)}`;
 };
 
+// Dollar-formatted compact figure for on-chart labels — `compact` alone (used
+// in the aria-label above) is unitless by design, but a label sitting next to
+// a plotted line needs the $ to read as a magnitude rather than a bare number.
+const money = (n: number): string => (n < 0 ? `-$${compact(-n)}` : `$${compact(n)}`);
+
 export const SeriesChart: React.FC<{
   series: FinancialYear[];
   p: GmgPalette;
@@ -73,51 +78,104 @@ export const SeriesChart: React.FC<{
     return d.trim();
   };
 
+  // The most recent year each series actually reported — used both for the
+  // aria-label and for the on-chart value labels below. A series can go
+  // quiet before the series as a whole ends (see financialSeries.ts: the
+  // pipeline writes 0, normalized to null, for the current year's expenses
+  // and net assets while revenue is already known), so this is a reverse
+  // search per series, not just the last row.
+  const lastReported = (key: Key): { i: number; v: number; year: number } | null => {
+    for (let i = series.length - 1; i >= 0; i--) {
+      const v = series[i][key];
+      if (v !== null) return { i, v, year: series[i].year };
+    }
+    return null;
+  };
+
   const years = series.map((r) => r.year);
-  const label = `Financial series ${years[0]} to ${years[years.length - 1]}: ${SERIES.map(
-    ({ key, label: l }) => {
-      const last = [...series].reverse().find((r) => r[key] !== null);
-      return last ? `${l} ${compact(last[key] as number)} in ${last.year}` : `${l} not reported`;
-    },
-  ).join('; ')}`;
+  const label = `Financial series ${years[0]} to ${years[years.length - 1]}: ${SERIES.map(({ key, label: l }) => {
+    const last = lastReported(key);
+    return last ? `${l} ${compact(last.v)} in ${last.year}` : `${l} not reported`;
+  }).join('; ')}`;
 
   return (
     <div>
-      <svg
-        viewBox={`0 0 ${W} ${height}`}
-        preserveAspectRatio="none"
-        style={{ width: '100%', height, display: 'block' }}
-        role="img"
-        aria-label={label}
-      >
-        {min < 0 && (
-          <line
-            data-baseline="zero"
-            x1={0}
-            x2={W}
-            y1={y(0)}
-            y2={y(0)}
-            stroke={p.rule}
-            strokeWidth={0.5}
-            vectorEffect="non-scaling-stroke"
-          />
-        )}
-        {SERIES.map(({ key }) => {
-          const d = pathFor(key);
-          if (d === '') return null;
-          return (
-            <path
-              key={key}
-              data-series={key}
-              d={d}
-              fill="none"
-              stroke={colors[key]}
-              strokeWidth={1.5}
+      {/* Axis scale, in plain figures — without it, three series sharing one
+          linear axis read as flat lines with no sense of magnitude. */}
+      <div style={{ fontSize: 10, color: p.sub2, marginBottom: 4, fontFamily: FONT_MONO }}>
+        Scale {money(min)} – {money(max)}
+      </div>
+      <div style={{ position: 'relative', width: '100%', height }}>
+        <svg
+          viewBox={`0 0 ${W} ${height}`}
+          preserveAspectRatio="none"
+          style={{ width: '100%', height, display: 'block' }}
+          role="img"
+          aria-label={label}
+        >
+          {min < 0 && (
+            <line
+              data-baseline="zero"
+              x1={0}
+              x2={W}
+              y1={y(0)}
+              y2={y(0)}
+              stroke={p.rule}
+              strokeWidth={0.5}
               vectorEffect="non-scaling-stroke"
             />
-          );
-        })}
-      </svg>
+          )}
+          {SERIES.map(({ key }) => {
+            const d = pathFor(key);
+            if (d === '') return null;
+            return (
+              <path
+                key={key}
+                data-series={key}
+                d={d}
+                fill="none"
+                stroke={colors[key]}
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
+              />
+            );
+          })}
+        </svg>
+        {/* Value labels — HTML overlay, not SVG text. The plot above uses
+            preserveAspectRatio="none" so its two axes scale independently;
+            SVG <text> in that coordinate system would stretch horizontally.
+            Percentage-positioned HTML avoids that distortion entirely. */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          {SERIES.map(({ key }) => {
+            const lp = lastReported(key);
+            if (lp === null) return null;
+            const leftPct = x(lp.i);
+            const topPct = (y(lp.v) / height) * 100;
+            const nearRightEdge = leftPct > 85;
+            return (
+              <span
+                key={key}
+                data-value-label={key}
+                style={{
+                  position: 'absolute',
+                  left: `${leftPct}%`,
+                  top: `${topPct}%`,
+                  transform: `translate(${nearRightEdge ? '-100%' : '4px'}, -50%)`,
+                  fontFamily: FONT_MONO,
+                  fontSize: 9.5,
+                  fontWeight: 600,
+                  color: colors[key],
+                  background: p.bg,
+                  padding: '0 2px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {money(lp.v)}
+              </span>
+            );
+          })}
+        </div>
+      </div>
       <div
         style={{
           display: 'flex',

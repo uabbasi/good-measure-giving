@@ -115,6 +115,39 @@ describe('SeriesChart', () => {
     expect(label).toMatch(/Revenue 1K in 2023/);
     expect(label).toMatch(/Net assets 600 in 2023/);
   });
+
+  it('labels the last reported point of each series with its actual value', () => {
+    // Otherwise-identical charts render as flat, numberless lines — this is
+    // the exact bug the fix addresses. `series`'s 2024 row has expenses and
+    // netAssets null, so their "last reported" point is 2023, not 2024;
+    // revenue's is 2024. A regression that always reads the final row
+    // (rather than searching backward per series) would mislabel or drop
+    // the expenses/netAssets figures.
+    const { container } = render(<SeriesChart series={series} p={p} />);
+    expect(container.querySelector('[data-value-label="revenue"]')?.textContent).toBe('$2K');
+    expect(container.querySelector('[data-value-label="expenses"]')?.textContent).toBe('$1K');
+    expect(container.querySelector('[data-value-label="netAssets"]')?.textContent).toBe('$600');
+  });
+
+  it('omits the value label for a series that never reported', () => {
+    const expensesAlwaysNull = [
+      { year: 2022, revenue: 1000, expenses: null, netAssets: 500 },
+      { year: 2023, revenue: 1200, expenses: null, netAssets: 600 },
+    ];
+    const { container } = render(<SeriesChart series={expensesAlwaysNull} p={p} />);
+    expect(container.querySelector('[data-value-label="expenses"]')).toBeNull();
+    expect(container.querySelector('[data-value-label="revenue"]')).not.toBeNull();
+  });
+
+  it('states the axis scale so a shared linear axis carries a sense of magnitude', () => {
+    // The chart's actual complaint: revenue/expenses/net-assets share one
+    // scale with no numbers on it, so a huge series and a small one both
+    // look like flat lines. The scale caption is the minimum fix.
+    const { container } = render(<SeriesChart series={series} p={p} />);
+    expect(container.textContent).toContain('Scale');
+    expect(container.textContent).toContain('$0'); // the axis always includes zero
+    expect(container.textContent).toContain('$2K'); // max across the fixture (1500)
+  });
 });
 
 describe('SeriesChart against the real corpus', () => {
