@@ -12,15 +12,25 @@ export enum RatingColor {
 export type CharityTier = 'rich' | 'baseline' | 'hidden';
 
 // Key concern types for data-driven red flags
-export type KeyConcernType = 'gik_inflation' | 'domestic_burn' | 'zakat_hoarding' | 'risk_deduction' | 'data_quality';
-export type KeyConcernSeverity = 'high' | 'medium';
+export type KeyConcernType =
+  | 'gik_inflation'
+  | 'domestic_burn'
+  | 'zakat_hoarding'
+  | 'risk_deduction'
+  | 'data_quality'
+  | 'ceo_comp_excessive'
+  | 'geographic_mismatch'
+  | 'high_fundraising_ratio'
+  | 'implausible_cpb'
+  | 'revenue_expense_mismatch';
+export type KeyConcernSeverity = 'high' | 'medium' | 'low';
 
 export interface KeyConcern {
   type: KeyConcernType;
   severity: KeyConcernSeverity;
   headline: string;
   detail: string | null;
-  data_points: Record<string, number>;
+  data_points: Record<string, string | number | boolean>;
 }
 
 export interface DimensionEvaluation {
@@ -1057,6 +1067,18 @@ export interface TraditionalZakatEvaluation {
   };
 }
 
+// A row from Form 990 Schedule I/F, as exported. Real key set verified
+// across all 12,502 grant rows in the corpus — no shape variation.
+export interface GrantRecord {
+  amount: number | null;
+  is_foreign: boolean | number | null;
+  purpose: string | null;
+  recipient_ein: string | null;
+  recipient_name: string | null;
+  region: string | null;
+  tax_year: number | null;
+}
+
 export interface CharityProfile {
   id?: string; // Optional - may be derived from ein
   name: string;
@@ -1082,7 +1104,8 @@ export interface CharityProfile {
   financials?: CharityFinancials; // Top-level financials (preferred)
   websiteEvidenceSignals?: WebsiteEvidenceSignals | null; // Transparency indicators from website
   baselineGovernance?: BaselineGovernance | null; // Governance for baseline charities (no rich narrative)
-  rawData: CharityRawData;
+  /** Never present in the exported JSON — 0 of 166 files carry it. */
+  rawData?: CharityRawData;
   impactAssessment?: ImpactAssessment; // Optional for pipeline-generated charities
   confidenceAssessment?: ConfidenceAssessment; // Optional for pipeline-generated charities
   amalEvaluation?: AmalEvaluation; // Amal Impact Matrix evaluation
@@ -1134,7 +1157,7 @@ export interface CharityProfile {
   // Theory of change (from website/PDFs)
   theoryOfChange?: string | null;
   // Grants data (from Form 990 Schedule I/F)
-  grantsData?: Array<{ name?: string; recipient?: string; amount?: number }> | null;
+  grantsData?: GrantRecord[] | null;
   // Targeting data
   targeting?: {
     populationsServed?: string[] | null;
