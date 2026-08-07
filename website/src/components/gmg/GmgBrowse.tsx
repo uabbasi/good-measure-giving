@@ -165,15 +165,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const active = isFacetActive(state);
-    let tag = document.querySelector('meta[name="robots"][data-gmg-facets]');
+    const tag = document.querySelector('meta[name="robots"][data-gmg-facets]');
     if (active && !tag) {
-      tag = document.createElement('meta');
-      tag.setAttribute('name', 'robots');
-      tag.setAttribute('content', 'noindex,follow');
-      tag.setAttribute('data-gmg-facets', '');
-      document.head.appendChild(tag);
-    } else if (!active && tag) {
-      tag.remove();
+      const newTag = document.createElement('meta');
+      newTag.setAttribute('name', 'robots');
+      newTag.setAttribute('content', 'noindex,follow');
+      newTag.setAttribute('data-gmg-facets', '');
+      document.head.appendChild(newTag);
     }
     return () => { document.querySelector('meta[name="robots"][data-gmg-facets]')?.remove(); };
   }, [state]);

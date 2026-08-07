@@ -159,4 +159,18 @@ describe('BrowseFacets', () => {
     expect(screen.getByRole('button', { name: /More filters \(1\)/ })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /United States/ })).toBeNull();
   });
+
+  // Under scope=muslim, Nigeria (region) and Environment & Climate (cause)
+  // both drop to 0 matching charities in the real corpus — verified directly
+  // against data/charities.json, not asserted from a mocked fixture. Neither
+  // is selected, so the zero-count rule should hide both, the same way it
+  // already hides zero-count asnaf. Only the asnaf case had a test before.
+  it('omits zero-count region and cause values under a narrowed scope, not just asnaf', async () => {
+    const user = userEvent.setup();
+    const initial: FacetState = { ...INITIAL_FACET_STATE, scope: 'muslim' };
+    render(<Harness initial={initial} />);
+    await user.click(screen.getByRole('button', { name: /More filters/ }));
+    expect(within(groupFor('Where it works')).queryByRole('button', { name: /Nigeria/ })).toBeNull();
+    expect(within(groupFor('Cause')).queryByRole('button', { name: /Environment & Climate/ })).toBeNull();
+  });
 });

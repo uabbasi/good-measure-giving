@@ -82,11 +82,7 @@ export const facetReducer = (state: FacetState, action: FacetAction): FacetState
       return { ...state, scope: action.value };
     case 'toggle': {
       const { facet, value } = action;
-      if (facet === 'size') return { ...state, size: toggleValue(state.size, value as SizeBand) };
-      if (facet === 'cause') return { ...state, cause: toggleValue(state.cause, value) };
-      if (facet === 'asnaf') return { ...state, asnaf: toggleValue(state.asnaf, value) };
-      if (facet === 'region') return { ...state, region: toggleValue(state.region, value) };
-      return { ...state, evidence: toggleValue(state.evidence, value) };
+      return { ...state, [facet]: toggleValue(state[facet] as string[], value) };
     }
     case 'clearFacet':
       return { ...state, [action.facet]: [] };
@@ -140,10 +136,24 @@ export const applyFacets = (rows: GmgRow[], state: FacetState): GmgRow[] =>
     return true;
   });
 
-// For each value of `facet`, how many rows would match if that value were
-// added to the current selection: apply `query` plus every constraint EXCEPT
-// this facet's own, then tally. This is what keeps a pill's count honest
-// (non-zero for values not yet selected) as the user narrows.
+// For each value of `facet`, how many rows match with that facet's own
+// constraint removed (every other constraint still applies): apply `query`
+// plus every constraint EXCEPT this facet's own, then tally. This is what
+// keeps a pill's count honest (non-zero for values not yet selected) as the
+// user narrows — it is not "if this value were added to the current
+// selection", which for a second-or-later pick would be the larger OR'd
+// union instead.
+//
+// Keyed by FacetKey (rather than a switch) so a sixth facet fails to compile
+// here, the same way `toggle` above can't silently misroute one.
+const FACET_VALUES: Record<FacetKey, (row: GmgRow) => string[]> = {
+  cause: (row) => [row.causeKey],
+  asnaf: (row) => row.asnafTags,
+  region: (row) => row.regionTags,
+  size: (row) => (row.sizeBand !== null ? [row.sizeBand] : []),
+  evidence: (row) => [row.verification],
+};
+
 export const facetCounts = (rows: GmgRow[], state: FacetState, facet: FacetKey): Record<string, number> => {
   const candidates = applyFacets(rows, { ...state, [facet]: [] });
   const counts: Record<string, number> = {};
@@ -151,24 +161,9 @@ export const facetCounts = (rows: GmgRow[], state: FacetState, facet: FacetKey):
     if (!key) return;
     counts[key] = (counts[key] ?? 0) + 1;
   };
+  const values = FACET_VALUES[facet];
   for (const row of candidates) {
-    switch (facet) {
-      case 'cause':
-        bump(row.causeKey);
-        break;
-      case 'asnaf':
-        row.asnafTags.forEach(bump);
-        break;
-      case 'region':
-        row.regionTags.forEach(bump);
-        break;
-      case 'size':
-        if (row.sizeBand !== null) bump(row.sizeBand);
-        break;
-      case 'evidence':
-        bump(row.verification);
-        break;
-    }
+    values(row).forEach(bump);
   }
   return counts;
 };
