@@ -9,7 +9,7 @@
 // every facet control stays a real <button>, never a link.
 
 import '@testing-library/jest-dom';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
@@ -130,10 +130,35 @@ describe('GmgBrowse SEO guard', () => {
     renderBrowse();
     await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
 
+    // The URL write is debounced (Task 3) — wait for it to fire rather than
+    // asserting immediately.
+    await waitFor(() => expect(replaceSpy).toHaveBeenCalled());
     expect(pushSpy).not.toHaveBeenCalled();
-    expect(replaceSpy).toHaveBeenCalled();
     const lastUrl = replaceSpy.mock.calls[replaceSpy.mock.calls.length - 1][2] as string;
     expect(lastUrl).toContain('wallet=zakat');
+  });
+
+  // `query` lives in the same state the URL-sync effect depends on, so
+  // typing a search term one keystroke at a time used to fire one
+  // history.replaceState per keystroke — browsers rate-limit the history
+  // API, and Safari has historically thrown SecurityError past that limit.
+  // The debounce should collapse a burst of keystrokes into a single write.
+  it('debounces a burst of keystrokes into one URL write, with the final URL correct', async () => {
+    const replaceSpy = vi.spyOn(window.history, 'replaceState');
+    const user = userEvent.setup();
+    renderBrowse();
+
+    const query = 'islamic relief';
+    await user.type(screen.getByPlaceholderText('Search charities, EINs, causes…'), query);
+
+    // The 300ms debounce hasn't elapsed yet — none of the 14 keystrokes
+    // should have written to the URL synchronously.
+    expect(replaceSpy).not.toHaveBeenCalled();
+
+    await waitFor(() => expect(replaceSpy).toHaveBeenCalled());
+    expect(replaceSpy.mock.calls.length).toBeLessThan(query.length);
+    const lastUrl = replaceSpy.mock.calls[replaceSpy.mock.calls.length - 1][2] as string;
+    expect(lastUrl).toContain('q=islamic+relief');
   });
 
   it('restores facet state from an existing query string on mount', () => {
@@ -155,8 +180,10 @@ describe('GmgBrowse SEO guard', () => {
 
     await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
 
+    // The URL write is debounced (Task 3) — wait for it to fire rather than
+    // asserting immediately.
+    await waitFor(() => expect(window.location.search).toContain('wallet=zakat'));
     expect(window.location.search).toContain('utm_source=newsletter');
-    expect(window.location.search).toContain('wallet=zakat');
   });
 
   it('renders no anchor elements for facet controls', async () => {

@@ -149,14 +149,24 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   // Merge into the existing query string rather than replacing it wholesale —
   // params this page doesn't own (utm_source, gclid, the ?type= font preview,
   // …) must survive both mount and every later facet change.
+  //
+  // Debounced: `query` lives in this same state, so every keystroke in the
+  // search box would otherwise fire its own history.replaceState — browsers
+  // rate-limit the history API and Safari has historically thrown
+  // SecurityError past that limit. The cleanup below cancels a pending write
+  // whenever state changes again before it fires, so a burst of keystrokes
+  // (or facet clicks) collapses into one write, 300ms after things go quiet.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    for (const k of ['q', 'wallet', 'scope', 'cause', 'asnaf', 'region', 'size', 'evidence']) params.delete(k);
-    for (const [k, v] of new URLSearchParams(facetStateToSearch(state))) params.set(k, v);
-    const qs = params.toString();
-    const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`;
-    window.history.replaceState(window.history.state, '', url);
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      for (const k of ['q', 'wallet', 'scope', 'cause', 'asnaf', 'region', 'size', 'evidence']) params.delete(k);
+      for (const [k, v] of new URLSearchParams(facetStateToSearch(state))) params.set(k, v);
+      const qs = params.toString();
+      const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`;
+      window.history.replaceState(window.history.state, '', url);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [state]);
 
   // The static /browse/index.html is indexable and canonical. A filtered view is
