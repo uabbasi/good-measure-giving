@@ -4,7 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useReducer, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -25,11 +25,12 @@ import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 import { charityPath } from '../../lib/paths';
+import { BrowseFacets } from './BrowseFacets';
+import { INITIAL_FACET_STATE, facetReducer, applyFacets } from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
 type SortDir = 'asc' | 'desc';
-type WalletFilter = 'all' | 'zakat' | 'sadaqah';
 
 const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
 
@@ -55,88 +56,6 @@ const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = (
     <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
   </span>
 );
-
-const FilterPills: React.FC<{
-  p: GmgPalette;
-  padX: number;
-  query: string;
-  setQuery: (v: string) => void;
-  wallet: WalletFilter;
-  setWallet: (v: WalletFilter) => void;
-  total: number;
-  zakatCount: number;
-  resultCount: number;
-  isMobile: boolean;
-}> = ({ p, padX, query, setQuery, wallet, setWallet, total, zakatCount, resultCount, isMobile }) => {
-  const sectionBorder = `1px solid ${p.rule}`;
-  const inputStyle: React.CSSProperties = {
-    flex: '1 1 240px',
-    minWidth: 0,
-    padding: '8px 12px',
-    borderRadius: 99,
-    border: sectionBorder,
-    background: p.bg,
-    color: p.fg,
-    fontFamily: FONT_TEXT,
-    fontSize: 16,
-    outline: 'none',
-  };
-  const pill = (active: boolean): React.CSSProperties => ({
-    padding: '3px 9px',
-    borderRadius: 99,
-    cursor: 'pointer',
-    fontFamily: FONT_MONO,
-    fontSize: 9.5,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    border: `1px solid ${active ? p.chip : p.rule}`,
-    background: active ? p.chip : 'transparent',
-    color: active ? p.chipFg : p.sub,
-  });
-  return (
-    <section
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 10,
-        alignItems: 'center',
-        padding: `10px ${padX}px`,
-        background: p.bg2,
-        borderBottom: sectionBorder,
-        fontSize: 12,
-      }}
-    >
-      <label htmlFor="gmg-browse-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-        Search charities
-      </label>
-      <input
-        id="gmg-browse-search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search charities, EINs, causes…"
-        style={inputStyle}
-      />
-      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-        <Kicker p={p}>Wallet</Kicker>
-        {(
-          [
-            ['all', `All ${total}`],
-            ['zakat', `Zakat ${zakatCount}`],
-            ['sadaqah', `Sadaqah ${total - zakatCount}`],
-          ] as [WalletFilter, string][]
-        ).map(([key, label]) => (
-          <button key={key} onClick={() => setWallet(key)} style={pill(wallet === key)}>
-            {label}
-          </button>
-        ))}
-      </span>
-      <span style={{ flex: 1 }} />
-      <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
-        {resultCount} of {total}{!isMobile ? ' · Click a column to sort' : ''}
-      </span>
-    </section>
-  );
-};
 
 const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: FontTheme; count: number }> = ({
   p,
@@ -210,8 +129,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     ['--gmg-arabic' as any]: ft.arabic,
   };
 
-  const [query, setQuery] = useState('');
-  const [wallet, setWallet] = useState<WalletFilter>('all');
+  const [state, dispatch] = useReducer(facetReducer, INITIAL_FACET_STATE);
   // Default: by overall GMG band (best first). It's a band, not a numeric rank,
   // and unscored charities fall to the bottom rather than getting a fake score.
   const [sortBy, setSortBy] = useState<SortKey>('overall');
@@ -240,16 +158,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     () => (charities || []).map(adaptRow).filter((r) => r.ein),
     [charities],
   );
-  const zakatCount = useMemo(() => allRows.filter((r) => r.walletIsZakat).length, [allRows]);
 
   const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const r = allRows.filter((row) => {
-      if (wallet === 'zakat' && !row.walletIsZakat) return false;
-      if (wallet === 'sadaqah' && row.walletIsZakat) return false;
-      if (q && !(`${row.name} ${row.ein} ${row.cause}`.toLowerCase().includes(q))) return false;
-      return true;
-    });
+    const r = applyFacets(allRows, state);
     const dir = sortDir === 'asc' ? 1 : -1;
     return [...r].sort((a, b) => {
       let v = 0;
@@ -283,7 +194,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       if (v === 0 && sortBy !== 'name') v = a.name.localeCompare(b.name);
       return v;
     });
-  }, [allRows, query, wallet, sortBy, sortDir]);
+  }, [allRows, state, sortBy, sortDir]);
 
   const sectionBorder = `1px solid ${p.rule}`;
   const hrefFor = charityPath;
@@ -307,17 +218,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   return shell(
     <>
       <SubHeader p={p} padX={padX} isMobile={isMobile} ft={ft} count={allRows.length} />
-      <FilterPills
+      <BrowseFacets
+        state={state}
+        dispatch={dispatch}
+        rows={allRows}
         p={p}
         padX={padX}
-        query={query}
-        setQuery={setQuery}
-        wallet={wallet}
-        setWallet={setWallet}
-        total={allRows.length}
-        zakatCount={zakatCount}
-        resultCount={rows.length}
         isMobile={isMobile}
+        total={allRows.length}
+        resultCount={rows.length}
       />
 
       {rows.length === 0 ? (
@@ -328,13 +237,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             No charities match
           </p>
           <p style={{ fontSize: 15, color: p.sub2, margin: '10px 0 20px' }}>
-            {query.trim()
-              ? <>Nothing in the index matches “{query.trim()}”.</>
+            {state.query.trim()
+              ? <>Nothing in the index matches “{state.query.trim()}”.</>
               : 'No charities match the current filter.'}
           </p>
           <button
             type="button"
-            onClick={() => { setQuery(''); setWallet('all'); }}
+            onClick={() => dispatch({ type: 'clearAll' })}
             style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', padding: '10px 18px', borderRadius: 999, border: `1px solid ${p.rule}`, background: 'transparent', color: p.fg, cursor: 'pointer' }}
           >
             Clear filters
