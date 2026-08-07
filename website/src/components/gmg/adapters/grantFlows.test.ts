@@ -103,6 +103,52 @@ describe('aggregateGrants', () => {
   });
 });
 
+describe('unattributedByPurpose', () => {
+  it('buckets unattributed grants by purpose, largest first', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: null, recipient_ein: null, amount: 500, purpose: 'Water and sanitation' }),
+      row({ recipient_name: null, recipient_ein: null, amount: 300, purpose: 'Water and sanitation' }),
+      row({ recipient_name: null, recipient_ein: null, amount: 200, purpose: 'Emergency relief' }),
+    ]);
+    expect(r?.unattributedByPurpose).toEqual([
+      { purpose: 'Water and sanitation', amount: 800, count: 2 },
+      { purpose: 'Emergency relief', amount: 200, count: 1 },
+    ]);
+  });
+
+  it('excludes bare numeric/code purposes from the breakdown but keeps them in the unattributed total', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: null, recipient_ein: null, amount: 100, purpose: '14' }),
+      row({ recipient_name: null, recipient_ein: null, amount: 50, purpose: '5,10' }),
+      row({ recipient_name: null, recipient_ein: null, amount: 900, purpose: 'Health' }),
+    ]);
+    expect(r?.unattributedByPurpose).toEqual([{ purpose: 'Health', amount: 900, count: 1 }]);
+    expect(r?.unattributed).toEqual({ amount: 1050, count: 3 });
+  });
+
+  it('omits unattributed rows with no purpose at all', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: null, recipient_ein: null, amount: 700, purpose: null }),
+    ]);
+    expect(r?.unattributedByPurpose).toEqual([]);
+    expect(r?.unattributed).toEqual({ amount: 700, count: 1 });
+  });
+
+  it('never includes purposes from identifiable (named) grants', () => {
+    const r = aggregateGrants([
+      row({ recipient_name: 'Alpha Relief', recipient_ein: '11-1111111', amount: 900, purpose: 'Should not appear' }),
+      row({ recipient_name: null, recipient_ein: null, amount: 100, purpose: 'Should appear' }),
+    ]);
+    expect(r?.unattributedByPurpose).toEqual([{ purpose: 'Should appear', amount: 100, count: 1 }]);
+  });
+
+  it('caps the purpose breakdown at ten, like topRecipients', () => {
+    const rows = Array.from({ length: 25 }, (_, i) =>
+      row({ recipient_name: null, recipient_ein: null, purpose: `Purpose ${i}`, amount: i + 1 }));
+    expect(aggregateGrants(rows)?.unattributedByPurpose).toHaveLength(10);
+  });
+});
+
 describe('aggregateGrants against the real corpus', () => {
   const dir = path.resolve(__dirname, '../../../../data/charities');
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
@@ -162,6 +208,30 @@ describe('aggregateGrants against the real corpus', () => {
       if (!hasIdentifiable) expect(r.unattributed.amount).toBeGreaterThan(0);
     }
     // Sanity: this must actually exercise real grantmaking charities.
+    expect(checked).toBeGreaterThan(0);
+  });
+
+  it('never surfaces a bare numeric/code purpose as a category, and never inflates the unattributed total', () => {
+    let checked = 0;
+    for (const f of files) {
+      const d = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+      const r = aggregateGrants(d.grantsData);
+      if (r === null || r.unattributed.amount === 0) continue;
+      checked += 1;
+      expect(r.unattributedByPurpose.length).toBeLessThanOrEqual(10);
+      for (const u of r.unattributedByPurpose) {
+        // A purpose that is nothing but digits and separators (e.g. "14",
+        // "5,10" — sampled from the corpus as NTEE/SDG-style codes some
+        // filers put in this field) is not a human-readable category.
+        expect(/^[0-9][0-9.,;/\s-]*$/.test(u.purpose)).toBe(false);
+        expect(u.amount).toBeGreaterThan(0);
+      }
+      // The breakdown is a subset of the unattributed rows (numeric-code and
+      // purpose-less rows are dropped from it), so it can never sum to more
+      // than the total it is explaining.
+      const purposeTotal = r.unattributedByPurpose.reduce((s, u) => s + u.amount, 0);
+      expect(purposeTotal).toBeLessThanOrEqual(r.unattributed.amount);
+    }
     expect(checked).toBeGreaterThan(0);
   });
 });
