@@ -3,13 +3,25 @@
 // sensible fallback so the proof surface renders for any charity/tier.
 
 import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } from './rating';
-import { regionsFromCauseTags, regionLabel } from './adapters/regions';
+import {
+  regionsFromCauseTags, regionLabel, regionKeysFromCauseTags, asnafKeysFromCauseTags,
+} from './adapters/regions';
 import {
   buildCitationIndex, anchorConcerns, aggregateGrants, buildFinancialSeries,
   parseCitedText,
   type CitationIndex, type AnchoredConcerns, type GrantFlows, type FinancialYear,
   type CitedSegment,
 } from './adapters';
+
+export type SizeBand = 'lt1m' | '1to10m' | '10to100m' | 'gte100m';
+
+const toSizeBand = (revenue: number | null): SizeBand | null => {
+  if (revenue == null) return null;
+  if (revenue < 1e6) return 'lt1m';
+  if (revenue < 1e7) return '1to10m';
+  if (revenue < 1e8) return '10to100m';
+  return 'gte100m';
+};
 
 export interface GmgRow {
   ein: string;
@@ -31,6 +43,15 @@ export interface GmgRow {
   risk: Rating; // Strong = low risk / strong risk-management
   donorFit: Rating;
   revenue: number | null; // annual revenue — the "Size" column
+  /** Enum key behind `cause` — the facet key. `cause` stays the display label. */
+  causeKey: string;
+  /** Region keys from causeTags; empty for the 69 charities with no region tag. */
+  regionTags: string[];
+  /** Asnaf keys from causeTags; empty for the 65 with none. */
+  asnafTags: string[];
+  isMuslimLed: boolean;
+  /** null for the 7 charities with no revenue figure. */
+  sizeBand: SizeBand | null;
 }
 
 const stripTags = (s: unknown): string =>
@@ -331,6 +352,7 @@ export const adaptRow = (c: any): GmgRow => {
   const pr = numOrNull(fin?.programExpenseRatio ?? c?.rawData?.program_expense_ratio);
   const states = sig?.signal_states ?? {};
   const scoreVal = numOrNull(ae?.amal_score);
+  const revenue = numOrNull(c?.totalRevenue ?? fin?.totalRevenue);
   return {
     ein: c?.ein ?? '',
     name: c?.name ?? 'Charity',
@@ -347,7 +369,12 @@ export const adaptRow = (c: any): GmgRow => {
     financialHealth: signalToRating(states?.financial_health),
     risk: signalToRating(states?.risk),
     donorFit: signalToRating(states?.donor_fit),
-    revenue: numOrNull(c?.totalRevenue ?? fin?.totalRevenue),
+    revenue,
+    causeKey: c?.primaryCategory ?? '',
+    regionTags: regionKeysFromCauseTags(c?.causeTags),
+    asnafTags: asnafKeysFromCauseTags(c?.causeTags),
+    isMuslimLed: c?.isMuslimCharity === true,
+    sizeBand: toSizeBand(revenue),
   };
 };
 

@@ -159,7 +159,7 @@ interface Col {
   label: string;
   tip?: string;
   width?: number;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 }
 const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },

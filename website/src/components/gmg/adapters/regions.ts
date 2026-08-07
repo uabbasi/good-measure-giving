@@ -55,3 +55,33 @@ export const regionLabel = (regions: string[]): string => {
   if (regions.length > 3) return `Multi-region (${regions.length})`;
   return `${regions[0]} +${regions.length - 1}`;
 };
+
+// The eight asnaf are the Qur'anic categories of zakat recipient. Only four
+// appear in the corpus; the other four are listed so the facet does not need
+// changing when the pipeline starts emitting them, and a value with a zero
+// count is simply not rendered.
+export const ASNAF_TAGS: Record<string, string> = {
+  fuqara: 'Fuqara (the poor)',
+  masakin: 'Masakin (the needy)',
+  amilin: 'Amilin (zakat administrators)',
+  muallaf: 'Muallaf (reconciliation of hearts)',
+  riqab: 'Riqab (freeing captives)',
+  gharimin: 'Gharimin (the indebted)',
+  fisabilillah: 'Fisabilillah (in the path of God)',
+  'ibn-sabil': 'Ibn al-Sabil (the wayfarer)',
+};
+
+const keysPresent = (raw: unknown, vocabulary: Record<string, string>): string[] => {
+  if (!Array.isArray(raw)) return [];
+  const present = new Set(
+    raw.filter((t): t is string => typeof t === 'string').map((t) => t.toLowerCase()),
+  );
+  return Object.keys(vocabulary).filter((key) => present.has(key));
+};
+
+/** Region *keys* (e.g. 'usa'), as opposed to display names from regionsFromCauseTags. */
+export const regionKeysFromCauseTags = (raw: unknown): string[] =>
+  keysPresent(raw, REGION_TAGS);
+
+export const asnafKeysFromCauseTags = (raw: unknown): string[] =>
+  keysPresent(raw, ASNAF_TAGS);
