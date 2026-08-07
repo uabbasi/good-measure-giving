@@ -146,10 +146,16 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   // Facet state is shareable but must never create a crawlable URL or a
   // history entry: replaceState only, and the prerender emits just /browse.
+  // Merge into the existing query string rather than replacing it wholesale —
+  // params this page doesn't own (utm_source, gclid, the ?type= font preview,
+  // …) must survive both mount and every later facet change.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const search = facetStateToSearch(state);
-    const url = `${window.location.pathname}${search}${window.location.hash}`;
+    const params = new URLSearchParams(window.location.search);
+    for (const k of ['q', 'wallet', 'scope', 'cause', 'asnaf', 'region', 'size', 'evidence']) params.delete(k);
+    for (const [k, v] of new URLSearchParams(facetStateToSearch(state))) params.set(k, v);
+    const qs = params.toString();
+    const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`;
     window.history.replaceState(window.history.state, '', url);
   }, [state]);
 

@@ -142,6 +142,23 @@ describe('GmgBrowse SEO guard', () => {
     expect(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ })).toHaveAttribute('aria-pressed', 'true');
   });
 
+  // The URL sync effect must MERGE facet params into the query string, not
+  // replace it wholesale — otherwise anything this page doesn't own
+  // (utm_source, gclid, a hand-typed ?type=) is wiped on mount and again on
+  // every later state change.
+  it('preserves a non-facet query param on mount and after a facet click', async () => {
+    window.history.pushState({}, '', '/browse?utm_source=newsletter');
+    const user = userEvent.setup();
+    renderBrowse();
+
+    expect(window.location.search).toContain('utm_source=newsletter');
+
+    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
+
+    expect(window.location.search).toContain('utm_source=newsletter');
+    expect(window.location.search).toContain('wallet=zakat');
+  });
+
   it('renders no anchor elements for facet controls', async () => {
     const user = userEvent.setup();
     renderBrowse();

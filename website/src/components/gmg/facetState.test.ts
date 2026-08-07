@@ -53,6 +53,23 @@ describe('facetReducer', () => {
     expect(applyFacets(rows, s)).toHaveLength(52);
   });
 
+  // region and asnaf are multi-valued row fields (a charity can carry several
+  // region/asnaf tags), so they route through `intersects` rather than the
+  // `matchesOneOf` helper the 'ORs within a facet' test above exercises for
+  // cause. Nothing previously pinned that a multi-value selection on either
+  // one is still an OR, not an AND.
+  it('ORs within the region facet (usa alone is 52, usa+palestine is 69 — not 16)', () => {
+    let s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'region', value: 'usa' });
+    s = facetReducer(s, { type: 'toggle', facet: 'region', value: 'palestine' });
+    expect(applyFacets(rows, s)).toHaveLength(69);
+  });
+
+  it('ORs within the asnaf facet (fuqara+muallaf is 91 — not 18)', () => {
+    let s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'asnaf', value: 'fuqara' });
+    s = facetReducer(s, { type: 'toggle', facet: 'asnaf', value: 'muallaf' });
+    expect(applyFacets(rows, s)).toHaveLength(91);
+  });
+
   it('treats a search query as not-a-facet', () => {
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'query', value: 'islamic' });
     expect(isFacetActive(s)).toBe(false);
