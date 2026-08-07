@@ -74,6 +74,20 @@ export const ASNAF_TAGS: Record<string, string> = {
   'ibn-sabil': 'Ibn al-Sabil (the wayfarer)',
 };
 
+// causeTags the pipeline emits that are neither a place (REGION_TAGS) nor a
+// zakat category (ASNAF_TAGS) — population, program-type, and methodology
+// descriptors. Listed explicitly so the drift guard in regions.test.ts can
+// tell a genuinely new geography tag (which belongs in REGION_TAGS) apart
+// from one of these, instead of either kind silently going unclassified.
+export const KNOWN_NON_GEOGRAPHIC_TAGS: readonly string[] = [
+  'faith-based', 'muslim-led', 'educational', 'medical', 'grantmaking',
+  'direct-relief', 'food', 'emergency-response', 'youth', 'systemic-change',
+  'scalable-model', 'low-income', 'water-sanitation', 'advocacy',
+  'capacity-building', 'direct-service', 'refugees', 'women', 'research',
+  'conflict-zone', 'orphans', 'shelter', 'vocational', 'long-term-development',
+  'legal-aid', 'psychosocial', 'disabled', 'international',
+];
+
 const keysPresent = (raw: unknown, vocabulary: Record<string, string>): string[] => {
   if (!Array.isArray(raw)) return [];
   const present = new Set(
