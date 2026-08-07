@@ -5,7 +5,7 @@ import { adaptRow } from './charityAdapter';
 import { buildCharitiesIndex } from '../../hooks/useCharities';
 import {
   INITIAL_FACET_STATE, facetReducer, applyFacets, facetCounts,
-  isFacetActive, facetStateToSearch, facetStateFromSearch, CAUSE_KEYS,
+  isFacetActive, facetStateToSearch, facetStateFromSearch, CAUSE_KEYS, EVIDENCE_VALUES,
 } from './browseFacets';
 
 const index = JSON.parse(readFileSync(join(__dirname, '../../../data/charities.json'), 'utf-8'));
@@ -75,6 +75,16 @@ describe('facetReducer', () => {
   it('CAUSE_KEYS matches the distinct causeKey values across the corpus exactly', () => {
     const distinct = new Set(rows.map((r) => r.causeKey).filter(Boolean));
     expect(new Set(CAUSE_KEYS)).toEqual(distinct);
+  });
+
+  it('EVIDENCE_VALUES matches the distinct verification values across the corpus exactly', () => {
+    const distinct = new Set(rows.map((r) => r.verification).filter(Boolean));
+    expect(new Set(EVIDENCE_VALUES)).toEqual(distinct);
+    const total = EVIDENCE_VALUES.reduce(
+      (sum, v) => sum + rows.filter((r) => r.verification === v).length,
+      0,
+    );
+    expect(total).toBe(166);
   });
 });
 

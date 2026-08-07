@@ -53,8 +53,10 @@ export const CAUSE_KEYS = [
 
 const SIZE_BANDS: readonly SizeBand[] = ['lt1m', '1to10m', '10to100m', 'gte100m'];
 
-// The four ui_signals_v1.evidence_stage values found across the corpus.
-const EVIDENCE_VALUES = ['Verified', 'Established', 'Early', 'Building'];
+// The four ui_signals_v1.evidence_stage (row.verification) values found
+// across the corpus. Exported so the test suite can assert this list can't
+// silently drift from the data, the same way CAUSE_KEYS is guarded above.
+export const EVIDENCE_VALUES = ['Verified', 'Established', 'Early', 'Building'] as const;
 
 export const INITIAL_FACET_STATE: FacetState = {
   query: '',
@@ -202,6 +204,6 @@ export const facetStateFromSearch = (search: string): FacetState => {
     asnaf: csv(params, 'asnaf').filter((v) => v in ASNAF_TAGS),
     region: csv(params, 'region').filter((v) => v in REGION_TAGS),
     size: csv(params, 'size').filter((v): v is SizeBand => SIZE_BANDS.includes(v as SizeBand)),
-    evidence: csv(params, 'evidence').filter((v) => EVIDENCE_VALUES.includes(v)),
+    evidence: csv(params, 'evidence').filter((v) => (EVIDENCE_VALUES as readonly string[]).includes(v)),
   };
 };
