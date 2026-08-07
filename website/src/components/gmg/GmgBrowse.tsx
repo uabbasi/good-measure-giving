@@ -4,7 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
-import React, { useMemo, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -26,10 +26,17 @@ import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 import { charityPath } from '../../lib/paths';
 import { BrowseFacets } from './BrowseFacets';
-import { INITIAL_FACET_STATE, facetReducer, applyFacets } from './facetState';
+import {
+  facetReducer,
+  applyFacets,
+  facetStateToSearch,
+  facetStateFromSearch,
+  isFacetActive,
+} from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
+const EVIDENCE_RANK: Record<string, number> = { Verified: 4, Established: 3, Building: 2, Early: 1 };
+type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'programPct' | 'evidence' | 'size';
 type SortDir = 'asc' | 'desc';
 
 const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
@@ -86,6 +93,8 @@ const COLS: Col[] = [
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
   { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
+  { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
+  { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },
   { key: 'size', label: 'Size', tip: 'Annual revenue from the latest filing.', width: 76, align: 'right' },
 ];
 
@@ -129,7 +138,39 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     ['--gmg-arabic' as any]: ft.arabic,
   };
 
-  const [state, dispatch] = useReducer(facetReducer, INITIAL_FACET_STATE);
+  const [state, dispatch] = useReducer(
+    facetReducer,
+    undefined,
+    () => facetStateFromSearch(typeof window === 'undefined' ? '' : window.location.search),
+  );
+
+  // Facet state is shareable but must never create a crawlable URL or a
+  // history entry: replaceState only, and the prerender emits just /browse.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const search = facetStateToSearch(state);
+    const url = `${window.location.pathname}${search}${window.location.hash}`;
+    window.history.replaceState(window.history.state, '', url);
+  }, [state]);
+
+  // The static /browse/index.html is indexable and canonical. A filtered view is
+  // the same page with a query string; ?type= previously leaked crawl budget
+  // here, so tell a JS-rendering crawler explicitly not to index filtered states.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const active = isFacetActive(state);
+    let tag = document.querySelector('meta[name="robots"][data-gmg-facets]');
+    if (active && !tag) {
+      tag = document.createElement('meta');
+      tag.setAttribute('name', 'robots');
+      tag.setAttribute('content', 'noindex,follow');
+      tag.setAttribute('data-gmg-facets', '');
+      document.head.appendChild(tag);
+    } else if (!active && tag) {
+      tag.remove();
+    }
+    return () => { document.querySelector('meta[name="robots"][data-gmg-facets]')?.remove(); };
+  }, [state]);
   // Default: by overall GMG band (best first). It's a band, not a numeric rank,
   // and unscored charities fall to the bottom rather than getting a fake score.
   const [sortBy, setSortBy] = useState<SortKey>('overall');
@@ -184,6 +225,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           break;
         case 'donorFit':
           v = RANK[a.donorFit] - RANK[b.donorFit];
+          break;
+        case 'programPct':
+          v = (a.programPct ?? -1) - (b.programPct ?? -1);
+          break;
+        case 'evidence':
+          v = (EVIDENCE_RANK[a.verification] ?? 0) - (EVIDENCE_RANK[b.verification] ?? 0);
           break;
         case 'size':
           v = (a.revenue ?? -1) - (b.revenue ?? -1);
@@ -304,6 +351,16 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <Kicker p={p}>Donor fit</Kicker>
                   <RatingCell rating={row.donorFit} p={p} />
                 </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Kicker p={p}>Program %</Kicker>
+                  <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: p.fg }}>
+                    {row.programPct == null ? '—' : `${row.programPct}%`}
+                  </span>
+                </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Kicker p={p}>Evidence</Kicker>
+                  <Tag tone="muted" p={p}>{row.verification}</Tag>
+                </span>
               </div>
             </div>
           ))}
@@ -388,6 +445,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.financialHealth} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.risk} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.donorFit} p={p} /></td>
+                  <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
+                    {row.programPct == null ? '—' : `${row.programPct}%`}
+                  </td>
+                  <td style={{ padding: '8px 6px' }}>
+                    <Tag tone="muted" p={p}>{row.verification}</Tag>
+                  </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
                     {fmtMoney(row.revenue)}
                   </td>
