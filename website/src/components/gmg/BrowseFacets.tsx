@@ -29,6 +29,11 @@ interface FacetOption {
   label: string;
   count: number;
   selected: boolean;
+  // Only set where the visible "{label} {count}" text collides with another
+  // group's (e.g. Wallet's and Scope's "All" both read "All 166" by
+  // default) — otherwise the button's accessible name is just its text, as
+  // before.
+  ariaLabel?: string;
 }
 
 // Module-scope so identity is stable across renders (see the note in
@@ -42,13 +47,14 @@ const FacetGroup: React.FC<{
 }> = ({ label, p, options, pill, onSelect }) => {
   if (options.length === 0) return null;
   return (
-    <span style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+    <span role="group" aria-label={label} style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
       <Kicker p={p}>{label}</Kicker>
       {options.map((opt) => (
         <button
           key={opt.key}
           type="button"
           aria-pressed={opt.selected}
+          aria-label={opt.ariaLabel}
           onClick={() => onSelect(opt.key)}
           style={pill(opt.selected)}
         >
@@ -100,22 +106,22 @@ export const BrowseFacets: React.FC<{
 
   const toggle = (facet: FacetKey) => (value: string) => dispatch({ type: 'toggle', facet, value });
 
-  const walletOptions: FacetOption[] = useMemo(
-    () => ([
-      { key: 'all', label: 'All', count: applyFacets(rows, { ...state, wallet: 'all' }).length, selected: state.wallet === 'all' },
+  const walletOptions: FacetOption[] = useMemo(() => {
+    const allCount = applyFacets(rows, { ...state, wallet: 'all' }).length;
+    return [
+      { key: 'all', label: 'All', ariaLabel: `Wallet: All ${allCount}`, count: allCount, selected: state.wallet === 'all' },
       { key: 'zakat', label: 'Zakat', count: applyFacets(rows, { ...state, wallet: 'zakat' }).length, selected: state.wallet === 'zakat' },
       { key: 'sadaqah', label: 'Sadaqah', count: applyFacets(rows, { ...state, wallet: 'sadaqah' }).length, selected: state.wallet === 'sadaqah' },
-    ]),
-    [rows, state],
-  );
+    ];
+  }, [rows, state]);
 
-  const scopeOptions: FacetOption[] = useMemo(
-    () => ([
-      { key: 'all', label: 'All', count: applyFacets(rows, { ...state, scope: 'all' }).length, selected: state.scope === 'all' },
+  const scopeOptions: FacetOption[] = useMemo(() => {
+    const allCount = applyFacets(rows, { ...state, scope: 'all' }).length;
+    return [
+      { key: 'all', label: 'All', ariaLabel: `Scope: All ${allCount}`, count: allCount, selected: state.scope === 'all' },
       { key: 'muslim', label: 'Muslim-led', count: applyFacets(rows, { ...state, scope: 'muslim' }).length, selected: state.scope === 'muslim' },
-    ]),
-    [rows, state],
-  );
+    ];
+  }, [rows, state]);
 
   const sizeCounts = useMemo(() => facetCounts(rows, state, 'size'), [rows, state]);
   const sizeOptions: FacetOption[] = useMemo(
@@ -200,7 +206,7 @@ export const BrowseFacets: React.FC<{
           style={inputStyle}
         />
         <span style={{ flex: 1 }} />
-        <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
+        <span aria-live="polite" style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
           {resultCount} of {total}{!isMobile ? ' · Click a column to sort' : ''}
         </span>
       </div>
@@ -238,13 +244,14 @@ export const BrowseFacets: React.FC<{
         <button
           type="button"
           aria-expanded={open}
+          aria-controls="gmg-browse-more-filters"
           onClick={() => setOpen((o) => !o)}
           style={pill(open)}
         >
           More filters{moreCount > 0 ? ` (${moreCount})` : ''} {open ? '▴' : '▾'}
         </button>
         {open && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+          <div id="gmg-browse-more-filters" style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
             <FacetGroup label="Cause" p={p} pill={pill} options={causeOptions} onSelect={toggle('cause')} />
             <FacetGroup label="Where it works" p={p} pill={pill} options={regionOptions} onSelect={toggle('region')} />
             <FacetGroup label="Zakat asnaf" p={p} pill={pill} options={asnafOptions} onSelect={toggle('asnaf')} />

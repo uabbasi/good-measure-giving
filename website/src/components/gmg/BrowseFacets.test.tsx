@@ -150,7 +150,7 @@ describe('BrowseFacets', () => {
     render(<Harness initial={initial} />);
     const wallet = groupFor('Wallet');
     expect(within(wallet).getByRole('button', { name: 'Zakat 90' })).toHaveAttribute('aria-pressed', 'true');
-    expect(within(wallet).getByRole('button', { name: 'All 166' })).toHaveAttribute('aria-pressed', 'false');
+    expect(within(wallet).getByRole('button', { name: 'Wallet: All 166' })).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('keeps the expander closed by default on mobile even when an inner facet is already active, but still shows the count', () => {
@@ -172,5 +172,23 @@ describe('BrowseFacets', () => {
     await user.click(screen.getByRole('button', { name: /More filters/ }));
     expect(within(groupFor('Where it works')).queryByRole('button', { name: /Nigeria/ })).toBeNull();
     expect(within(groupFor('Cause')).queryByRole('button', { name: /Environment & Climate/ })).toBeNull();
+  });
+
+  // Wallet's and Scope's "All" pill both read "All 166" by default, and a
+  // screen-reader user tabbing the strip has no way to tell them apart. Every
+  // button in the (fully expanded) strip must have a distinct accessible
+  // name. None of these buttons use aria-labelledby, a title attribute, or
+  // nested images, so aria-label (when set) or else the normalized text
+  // content is the accessible name — the same precedence the real Accessible
+  // Name computation uses for a plain <button>.
+  const accessibleName = (el: HTMLElement): string =>
+    (el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/\s+/g, ' ').trim();
+
+  it('gives no two buttons in the strip the same accessible name', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Harness />);
+    await user.click(screen.getByRole('button', { name: /More filters/ }));
+    const names = Array.from(container.querySelectorAll('button')).map(accessibleName);
+    expect(new Set(names).size).toBe(names.length);
   });
 });
