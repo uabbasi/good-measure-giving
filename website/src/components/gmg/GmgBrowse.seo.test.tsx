@@ -41,8 +41,33 @@ const mockCharities = Array.from({ length: 6 }, (_, i) => ({
   financials: { programExpenseRatio: 0.8 },
 }));
 
+// A charity with no filed program-expense ratio. Deliberately omits
+// `financials` entirely (not `financials: { programExpenseRatio: null }`) so
+// adaptRow's real fallback chain — financials.programExpenseRatio ??
+// rawData.program_expense_ratio — is what produces the null, the same way a
+// real under-filed charity would.
+const NULL_PROGRAM_PCT_CHARITY = {
+  ein: '99-9999999',
+  name: 'Unreported Program Charity',
+  category: 'Humanitarian Relief',
+  primaryCategory: 'HUMANITARIAN',
+  totalRevenue: 5_000_000,
+  isMuslimCharity: false,
+  amalEvaluation: {
+    wallet_tag: 'SADAQAH-ONLY',
+    amal_score: 60,
+    confidence_scores: { impact: 30, alignment: 30, dataConfidence: 0.5 },
+  },
+  ui_signals_v1: {
+    signal_states: { financial_health: 'moderate', risk: 'moderate', donor_fit: 'moderate' },
+    evidence_stage: 'Early',
+  },
+};
+
+const allMockCharities = [...mockCharities, NULL_PROGRAM_PCT_CHARITY];
+
 vi.mock('../../hooks/useCharities', () => ({
-  useCharities: () => ({ charities: mockCharities, summaries: mockCharities, loading: false, error: null }),
+  useCharities: () => ({ charities: allMockCharities, summaries: allMockCharities, loading: false, error: null }),
 }));
 
 // The desktop table also has a "Wallet" column header, so every lookup is
@@ -122,5 +147,23 @@ describe('GmgBrowse SEO guard', () => {
     renderBrowse();
     await user.click(screen.getByRole('button', { name: /More filters/ }));
     expect(facetsSection().querySelectorAll('a')).toHaveLength(0);
+  });
+});
+
+// This project has already shipped a null-coerced-to-zero bug on this exact
+// page (a null revenue rendered as "$0" via `|| 0` in summaryToProfile,
+// fixed in Task 1 of this plan). A null program ratio rendering as "0%"
+// would be the same failure mode, and worse: it states as fact that a real
+// charity spent nothing on programs.
+describe('GmgBrowse Program % column', () => {
+  it('renders the em dash for a charity with no reported program ratio, never "0%"', () => {
+    renderBrowse();
+    const nameCell = screen.getByText('Unreported Program Charity');
+    const row = nameCell.closest('tr') as HTMLElement;
+    // Column order per COLS (GmgBrowse.tsx): checkbox, name, cause, wallet,
+    // overall, finances, risk, donorFit, programPct, evidence, size, chevron.
+    const programPctCell = row.querySelectorAll('td')[8];
+    expect(programPctCell).toHaveTextContent('—');
+    expect(programPctCell).not.toHaveTextContent('0%');
   });
 });
