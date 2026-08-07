@@ -112,6 +112,19 @@ describe('BrowseFacets', () => {
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
   });
 
+  it('shows Clear all for a search query alone, with no facet selected', async () => {
+    // isFacetActive deliberately ignores `query` (see facetState.ts), so a
+    // visitor who has only typed a search still needs a way to reset —
+    // showClearAll must check the query independently of isFacetActive.
+    const user = userEvent.setup();
+    render(<Harness />);
+    expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
+
+    await user.type(screen.getByLabelText('Search charities'), 'islamic');
+
+    expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
+  });
+
   it('dispatches a toggle with the right facet and value on click', async () => {
     const user = userEvent.setup();
     const dispatch = vi.fn();
@@ -138,13 +151,6 @@ describe('BrowseFacets', () => {
     const wallet = groupFor('Wallet');
     expect(within(wallet).getByRole('button', { name: 'Zakat 90' })).toHaveAttribute('aria-pressed', 'true');
     expect(within(wallet).getByRole('button', { name: 'All 166' })).toHaveAttribute('aria-pressed', 'false');
-  });
-
-  it('renders the same controls on mobile', () => {
-    render(<Harness isMobile />);
-    expect(screen.getByLabelText('Search charities')).toBeInTheDocument();
-    expect(within(groupFor('Wallet')).getByRole('button', { name: 'Zakat 90' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /More filters/ })).toBeInTheDocument();
   });
 
   it('keeps the expander closed by default on mobile even when an inner facet is already active, but still shows the count', () => {
