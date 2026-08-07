@@ -22,6 +22,11 @@ const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join
 const charityWater = () => load('charity-22-3936753.json');
 // Has named topRecipients (10) — the ordinary gated-list case.
 const withNamedRecipients = () => load('charity-04-2535767.json');
+// Save the Children — most recent tax year has BOTH named domestic
+// recipients ($55.5M named) and anonymous foreign grants ($550.7M
+// unattributed). This is the case Fix 1 covers: a ternary previously
+// rendered only the named list here, hiding the unattributed total.
+const bothNamedAndUnattributed = () => load('charity-06-0726487.json');
 // No grantsData at all -> grantFlows is null.
 const noGrants = () => load('charity-01-0548371.json');
 // All three GIK signals present, including domesticBurnRate: 0 (a real
@@ -101,6 +106,49 @@ describe('WhereMoneyGoes', () => {
     expect(container.textContent).toMatch(/\$88(\.0)?M/);
     // No gate/sign-in prompt should appear here — there is nothing gated to tease.
     expect(queryByText('Sign in')).toBeNull();
+  });
+
+  it('explains anonymous grants by IRS form design, not by inventing a disaster-relief/households reason', () => {
+    const c = charityWater();
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    const text = container.textContent ?? '';
+    // The old copy claimed these were commonly disaster relief paid to
+    // individual households — false, and it implies the money went to
+    // individuals rather than (typically) foreign implementing
+    // organizations. Every anonymous row in the corpus is actually a
+    // foreign grant that Schedule F reports without a name field at all.
+    expect(text).not.toContain('individual households');
+    expect(text).not.toContain('disaster relief');
+    expect(text.toLowerCase()).toContain('outside the us');
+    expect(text.toLowerCase()).toContain('schedule f');
+  });
+
+  it('shows a by-purpose breakdown for the unattributed total when purposes are available', () => {
+    const c = charityWater();
+    expect(c.grantFlows!.unattributedByPurpose.length).toBeGreaterThan(0);
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    for (const u of c.grantFlows!.unattributedByPurpose) {
+      expect(container.textContent).toContain(u.purpose);
+    }
+  });
+
+  it('renders both the named recipients and the unattributed total for a charity with both, instead of hiding one', () => {
+    mockMember.mockReturnValue(false);
+    const c = bothNamedAndUnattributed();
+    expect(c.grantFlows!.topRecipients.length).toBeGreaterThan(0);
+    expect(c.grantFlows!.unattributed.amount).toBeGreaterThan(0);
+
+    const { container, queryByText } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    // The gate for named recipients is present (there IS something to gate)...
+    expect(queryByText('Sign in')).not.toBeNull();
+    for (const r of c.grantFlows!.topRecipients) {
+      expect(queryByText(r.name)).toBeNull();
+    }
+    // ...and the public unattributed total is ALSO present, not suppressed
+    // by the gated block existing. Before the fix this branch was an
+    // if/else, so this total never rendered when topRecipients was non-empty.
+    expect(container.textContent).toContain('90 grants');
+    expect(container.textContent).toMatch(/\$550\.7M/);
   });
 
   it('gates topRecipients behind CommunityGate when they exist, but keeps totals and byRegion public', () => {

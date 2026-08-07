@@ -5,12 +5,16 @@
 // padded or inflated.
 //
 // Grant totals, the domestic/foreign split, and the regional breakdown are
-// public. Individual named recipients sit behind the community gate. Some
-// charities report large batches of grants with no identifiable recipient
-// (Schedule I/F omits both name and EIN for e.g. disaster relief paid
-// directly to households) — when that leaves `topRecipients` empty, the
-// unattributed total is stated plainly instead of rendering an empty gated
-// list, which would wrongly imply named recipients exist but are just hidden.
+// public. Individual named recipients sit behind the community gate. Every
+// foreign grant (Schedule F, Part II) has no identifiable recipient at
+// all — the IRS's own instructions tell filers to leave the name and EIN
+// columns blank there, for every grant regardless of size, so this is IRS
+// form design rather than a gap in the charity's disclosure. Named
+// recipients and the unattributed foreign total are rendered together,
+// whenever each is non-empty: a charity can have both (named domestic
+// grants alongside anonymous foreign ones), and hiding either would either
+// disappear real money from the page or wrongly imply named recipients
+// exist but are just hidden.
 //
 // GIK signals (noncashRatio, cashAdjustedProgramRatio, domesticBurnRate) are
 // sparse (71/166 charities have at least one) and each is guarded
@@ -230,8 +234,8 @@ export const WhereMoneyGoes: React.FC<{
             </div>
           )}
 
-          <div style={{ marginTop: 12 }}>
-            {gf.topRecipients.length > 0 ? (
+          <div style={{ marginTop: 12, display: 'grid', gap: 12 }}>
+            {gf.topRecipients.length > 0 && (
               <GatedBlock label="Grant recipients" p={p}>
                 <div style={{ display: 'grid', gap: 6 }}>
                   {gf.topRecipients.map((r, i) => (
@@ -248,14 +252,32 @@ export const WhereMoneyGoes: React.FC<{
                   ))}
                 </div>
               </GatedBlock>
-            ) : (
-              gf.unattributed.amount > 0 && (
+            )}
+
+            {gf.unattributed.amount > 0 && (
+              <div>
                 <div style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.5 }}>
-                  {usd(gf.unattributed.amount)} across {gf.unattributed.count} grants with no reported
-                  recipient — common for disaster relief and other payments made directly to individual
-                  households.
+                  {usd(gf.unattributed.amount)} across {gf.unattributed.count} grants made outside the
+                  US, with no recipient named. Form 990's foreign-grants schedule (Schedule F) reports
+                  these by region and purpose rather than by name — that's how the IRS collects this
+                  data, not a gap in what the charity disclosed.
                 </div>
-              )
+                {gf.unattributedByPurpose.length > 0 && (
+                  <div style={{ marginTop: 10 }}>
+                    <Kicker p={p}>By purpose</Kicker>
+                    <div style={{ display: 'grid', gap: 4, marginTop: 6, fontSize: 12 }}>
+                      {gf.unattributedByPurpose.map((u) => (
+                        <div key={u.purpose} style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                          <span style={{ color: p.sub }}>{u.purpose}</span>
+                          <span style={{ fontFamily: FONT_MONO, color: p.fg }}>
+                            {usd(u.amount)} ({u.count})
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
