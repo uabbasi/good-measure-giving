@@ -43,8 +43,8 @@ describe('regionLabel', () => {
     expect(regionLabel(['Palestine', 'Syria', 'Yemen'])).toBe('Palestine +2');
   });
 
-  it('falls back to Multi only when nothing is known', () => {
-    expect(regionLabel([])).toBe('Multi');
+  it('renders nothing when no geography was extracted, rather than claiming Multi', () => {
+    expect(regionLabel([])).toBe('');
   });
 
   it('stops naming an arbitrary leading region once the list gets long', () => {

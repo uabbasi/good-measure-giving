@@ -45,7 +45,10 @@ export const regionsFromCauseTags = (raw: unknown): string[] => {
 };
 
 export const regionLabel = (regions: string[]): string => {
-  if (regions.length === 0) return 'Multi';
+  // Empty input means we extracted no geography at all, not "multiple
+  // regions" — 'Multi' would be a confident claim about a place we don't
+  // know. Say nothing; both consumers drop an empty region cleanly.
+  if (regions.length === 0) return '';
   if (regions.length === 1) return regions[0];
   // Naming the first tag reads as a real "leading region" for a short list,
   // but REGION_TAGS order is corpus frequency, not this charity's own
