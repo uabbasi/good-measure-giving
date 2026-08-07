@@ -55,3 +55,36 @@ describe('adaptRow facet fields', () => {
     expect(humanitarian.every((r) => r.cause === 'Humanitarian Relief')).toBe(true);
   });
 });
+
+// The corpus-driven tests above happen to contain zero charities at exactly
+// $1M/$10M/$100M, so mutating a `<` to `<=` at any of the three toSizeBand
+// boundaries doesn't turn them red — that gap holds regardless of which
+// values happen to exist in data/charities.json today. These assertions pin
+// each boundary directly, independent of corpus coincidence, via a minimal
+// row rather than the exported band function.
+const rowWithRevenue = (totalRevenue: number | null) => adaptRow({ ein: '00-0000000', totalRevenue });
+
+describe('adaptRow sizeBand boundaries (pure values, not corpus-dependent)', () => {
+  it('bands just under, at, and just over the $1M boundary', () => {
+    expect(rowWithRevenue(999_999).sizeBand).toBe('lt1m');
+    expect(rowWithRevenue(1_000_000).sizeBand).toBe('1to10m');
+    expect(rowWithRevenue(1_000_001).sizeBand).toBe('1to10m');
+  });
+
+  it('bands just under, at, and just over the $10M boundary', () => {
+    expect(rowWithRevenue(9_999_999).sizeBand).toBe('1to10m');
+    expect(rowWithRevenue(10_000_000).sizeBand).toBe('10to100m');
+    expect(rowWithRevenue(10_000_001).sizeBand).toBe('10to100m');
+  });
+
+  it('bands just under, at, and just over the $100M boundary', () => {
+    expect(rowWithRevenue(99_999_999).sizeBand).toBe('10to100m');
+    expect(rowWithRevenue(100_000_000).sizeBand).toBe('gte100m');
+    expect(rowWithRevenue(100_000_001).sizeBand).toBe('gte100m');
+  });
+
+  it('leaves null revenue unbanded, distinct from a genuine filed zero', () => {
+    expect(rowWithRevenue(null).sizeBand).toBeNull();
+    expect(rowWithRevenue(0).sizeBand).toBe('lt1m');
+  });
+});
