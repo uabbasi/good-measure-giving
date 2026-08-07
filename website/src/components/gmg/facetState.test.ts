@@ -6,7 +6,7 @@ import { buildCharitiesIndex } from '../../hooks/useCharities';
 import {
   INITIAL_FACET_STATE, facetReducer, applyFacets, facetCounts,
   isFacetActive, facetStateToSearch, facetStateFromSearch, CAUSE_KEYS, EVIDENCE_VALUES,
-} from './browseFacets';
+} from './facetState';
 
 const index = JSON.parse(readFileSync(join(__dirname, '../../../data/charities.json'), 'utf-8'));
 const rows = buildCharitiesIndex(index).charities.map(adaptRow);
