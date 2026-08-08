@@ -507,7 +507,11 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                   }}
                 >
                   {sc.name}
-                  {sc.amalScore != null && (
+                  {/* Score is member-only. This block is ungated so its links stay
+                      crawlable, but a charity's own score is hidden on its own page —
+                      leaving the score here would publish every score anyway, via the
+                      23 peer pages each charity appears on. Links: public. Scores: not. */}
+                  {isMember && sc.amalScore != null && (
                     <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 4 }}>
                       {sc.amalScore}/100
                     </div>

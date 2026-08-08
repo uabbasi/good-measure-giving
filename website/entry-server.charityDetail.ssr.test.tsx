@@ -89,8 +89,19 @@ describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous w
     expect(html).toContain('6 cited claims from 6 sources');
     expect(html).toContain('Grant flow analysis across 703 grants');
 
-    // 4. The index-derived similar-charities block stays public.
+    // 4. The index-derived similar-charities block stays public — its LINKS
+    // are the point (crawlable /charity/<ein>/ hrefs). Its peers' SCORES are
+    // not: every charity appears in ~23 peers' similar-lists, so rendering
+    // scores here would republish every score we just hid, on pages we do not
+    // control the gating of. Peer names visible, peer scores absent.
     expect(html).toContain('Similar charities');
+    expect(html).toContain('Zakat-Eligible Peer One');
+    // React emits `70<!-- -->/100` for adjacent text expressions during SSR, so
+    // a plain toContain('70/100') can never match and would pass no matter what
+    // this code did. Match the comment optionally. (The prerenderer strips those
+    // comments, which is what makes the built HTML look like plain `70/100`.)
+    expect(html).not.toMatch(/70(<!-- -->)?\/100/); // peer amalScore
+    expect(html).not.toMatch(/68(<!-- -->)?\/100/); // peer amalScore
 
     // 5. Nothing evaluative leaked: no scores, no financial figures, no
     // conviction/quality tags, no section headings, no data-section
