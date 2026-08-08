@@ -81,16 +81,26 @@ describe('WhereMoneyGoes', () => {
     expect(container.textContent).not.toContain('$0');
   });
 
-  it('renders the multi-year trend chart only when there are >= 2 years', () => {
+  it('gates the multi-year trend chart behind the community gate when there are >= 2 years', () => {
+    mockMember.mockReturnValue(false);
     const withSeries = load('charity-01-0548371.json');
     expect(withSeries.financialSeries.length).toBeGreaterThanOrEqual(2);
     const { container } = render(<WhereMoneyGoes c={withSeries} p={p} isMobile={false} padX={16} />);
-    expect(container.querySelector('svg')).not.toBeNull();
+    expect(container.querySelector('svg')).toBeNull();
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
 
     const noSeries = load('charity-20-8085421.json');
     expect(noSeries.financialSeries.length).toBeLessThan(2);
     const { container: container2 } = render(<WhereMoneyGoes c={noSeries} p={p} isMobile={false} padX={16} />);
     expect(container2.querySelector('svg')).toBeNull();
+    expect(container2.textContent).not.toContain('Multi-year trend');
+  });
+
+  it('shows the multi-year trend chart to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
+    const withSeries = load('charity-01-0548371.json');
+    const { container } = render(<WhereMoneyGoes c={withSeries} p={p} isMobile={false} padX={16} />);
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('states the unattributed total plainly instead of rendering an empty recipient list', () => {
@@ -104,8 +114,10 @@ describe('WhereMoneyGoes', () => {
     // The unattributed total (~$88.0M across 56 grants) must be stated.
     expect(container.textContent).toContain('56 grants');
     expect(container.textContent).toMatch(/\$88(\.0)?M/);
-    // No gate/sign-in prompt should appear here — there is nothing gated to tease.
-    expect(queryByText('Sign in')).toBeNull();
+    // No "Grant recipients" gate/teaser should appear here — there are no
+    // named recipients to tease. (This fixture's multi-year trend chart IS
+    // separately gated — that is unrelated to grants and covered above.)
+    expect(queryByText('Grant recipients')).toBeNull();
   });
 
   it('explains anonymous grants by IRS form design, not by inventing a disaster-relief/households reason', () => {
@@ -140,7 +152,7 @@ describe('WhereMoneyGoes', () => {
 
     const { container, queryByText } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
     // The gate for named recipients is present (there IS something to gate)...
-    expect(queryByText('Sign in')).not.toBeNull();
+    expect(queryByText('Grant recipients')).not.toBeNull();
     for (const r of c.grantFlows!.topRecipients) {
       expect(queryByText(r.name)).toBeNull();
     }

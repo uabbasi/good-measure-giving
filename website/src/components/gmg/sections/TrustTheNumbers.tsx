@@ -1,7 +1,15 @@
-// "Can you trust these numbers?" — entirely public. Hiding a charity's
-// problems or the sourcing of its figures behind a sign-in is the wrong
-// trade, and this is the most SEO-valuable content on the page. No
-// GatedBlock appears anywhere in this section.
+// "Can you trust these numbers?" — data vintage, sourced-claims count, the
+// concern list, the provenance table, and the verification-badge LINKS
+// (awards.cnUrl/candidUrl/bbbUrl — hard facts from the raw charity record)
+// are public. Hiding a charity's problems or the sourcing of its figures
+// behind a sign-in is the wrong trade, and this is the most SEO-valuable
+// content on the page.
+//
+// The BBB Wise Giving Alliance ASSESSMENT (rich_narrative.bbb_assessment —
+// summary, standards met, effectiveness/finances/governance statuses, and
+// its own review link) is a different thing from the badge link above and
+// is rich-narrative-only, so it sits behind the community gate like every
+// other rich-only block on this page.
 //
 // Concerns here are `byAnchor.trust` only — data-quality caveats with no
 // other home (7 of 343 fleet-wide) — not the full `concerns.all`. Every
@@ -15,6 +23,7 @@
 import React from 'react';
 import { Section } from './Section';
 import { ConcernList } from './ConcernList';
+import { GatedBlock } from '../GatedBlock';
 import { Tag, Kicker } from '../primitives';
 import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
@@ -155,26 +164,28 @@ export const TrustTheNumbers: React.FC<{
 
       {c.bbb.summary && (
         <div style={{ marginTop: 20 }}>
-          <Kicker p={p}>BBB Wise Giving Alliance</Kicker>
-          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '6px 0 10px', maxWidth: '75ch' }}>
-            {c.bbb.summary}
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {c.bbb.effectivenessStatus && <Tag p={p}>Effectiveness: {c.bbb.effectivenessStatus}</Tag>}
-            {c.bbb.financesStatus && <Tag p={p}>Finances: {c.bbb.financesStatus}</Tag>}
-            {c.bbb.governanceStatus && <Tag p={p}>Governance: {c.bbb.governanceStatus}</Tag>}
-            {c.bbb.standardsMet != null && <Tag p={p}>{c.bbb.standardsMet} standards met</Tag>}
-          </div>
-          {c.bbb.reviewUrl && (
-            <a
-              href={c.bbb.reviewUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
-            >
-              Read the BBB review ↗
-            </a>
-          )}
+          <GatedBlock label="BBB Wise Giving Alliance" p={p}>
+            <Kicker p={p}>BBB Wise Giving Alliance</Kicker>
+            <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '6px 0 10px', maxWidth: '75ch' }}>
+              {c.bbb.summary}
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {c.bbb.effectivenessStatus && <Tag p={p}>Effectiveness: {c.bbb.effectivenessStatus}</Tag>}
+              {c.bbb.financesStatus && <Tag p={p}>Finances: {c.bbb.financesStatus}</Tag>}
+              {c.bbb.governanceStatus && <Tag p={p}>Governance: {c.bbb.governanceStatus}</Tag>}
+              {c.bbb.standardsMet != null && <Tag p={p}>{c.bbb.standardsMet} standards met</Tag>}
+            </div>
+            {c.bbb.reviewUrl && (
+              <a
+                href={c.bbb.reviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+              >
+                Read the BBB review ↗
+              </a>
+            )}
+          </GatedBlock>
         </div>
       )}
 

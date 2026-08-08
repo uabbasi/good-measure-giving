@@ -27,17 +27,38 @@ const withMedian = () => load('charity-04-3810161.json');
 const noMedian = () => load('charity-13-1837442.json');
 
 describe('HowItCompares', () => {
-  it('renders the peer group and the cited differentiator with its source list', () => {
+  it('gates the entire peer-comparison block, including the peer group and cited differentiator', () => {
+    mockMember.mockReturnValue(false);
     const c = withMedian();
     expect(c.peers.peerGroup).toBeTruthy();
     expect(c.cited.peerDifferentiator.length).toBeGreaterThan(0);
+    const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(c.peers.peerGroup);
+    expect(container.textContent).not.toContain('Sources');
+    expect(container.querySelector('sup')).toBeNull();
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+  });
+
+  it('shows the peer group and the cited differentiator with its source list to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
+    const c = withMedian();
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain(c.peers.peerGroup);
     expect(container.textContent).toContain('Sources');
     expect(container.querySelector('sup')).not.toBeNull();
   });
 
-  it('renders a three-bar program-ratio comparison when a peer median exists', () => {
+  it('gates the three-bar program-ratio comparison behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const c = withMedian();
+    expect(c.programRatioPct).toBe(94);
+    const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain('Peer median');
+    expect(container.textContent).not.toContain('Program ratio vs. peers');
+  });
+
+  it('shows a three-bar program-ratio comparison when a peer median exists, to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = withMedian();
     expect(c.programRatioPct).toBe(94);
     expect(c.peers.programRatioMedian).toBeCloseTo(0.892);
@@ -50,7 +71,8 @@ describe('HowItCompares', () => {
     expect(container.textContent).toContain('Industry');
   });
 
-  it('renders a two-bar comparison (no peer median) without a Peer median row', () => {
+  it('shows a two-bar comparison (no peer median) without a Peer median row, to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = noMedian();
     expect(c.peers.programRatioMedian).toBeNull();
     expect(c.peers.industryProgramRatio).not.toBeNull();
@@ -87,7 +109,18 @@ describe('HowItCompares', () => {
     expect(container.textContent).toContain(`${c.outlook.revenueGrowth3yr}%`);
   });
 
-  it('renders similarOrganizations as unlinked context, not as anchors', () => {
+  it('gates similarOrganizations behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const c = withMedian();
+    expect(c.peers.similarOrganizations.length).toBeGreaterThan(0);
+    const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
+    for (const org of c.peers.similarOrganizations) {
+      expect(container.textContent).not.toContain(org.name);
+    }
+  });
+
+  it('shows similarOrganizations as unlinked context to a signed-in community member, not as anchors', () => {
+    mockMember.mockReturnValue(true);
     const c = withMedian();
     expect(c.peers.similarOrganizations.length).toBeGreaterThan(0);
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
@@ -100,7 +133,18 @@ describe('HowItCompares', () => {
     }
   });
 
-  it('renders long-term outlook facts and strategic priorities publicly', () => {
+  it('gates long-term outlook facts and strategic priorities behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const c = withMedian();
+    const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(c.outlook.roomForFundingExplanation);
+    for (const sp of c.outlook.strategicPriorities) {
+      expect(container.textContent).not.toContain(sp);
+    }
+  });
+
+  it('shows long-term outlook facts and strategic priorities to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = withMedian();
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain(c.outlook.maturityStage);
@@ -134,6 +178,7 @@ describe('HowItCompares', () => {
   });
 
   it('lays out the outlook facts as a single column on mobile and a multi-column grid on desktop', () => {
+    mockMember.mockReturnValue(true);
     const c = withMedian();
     const { container: mobile } = render(<HowItCompares c={c} p={p} isMobile={true} padX={16} />);
     expect(mobile.innerHTML).toContain('grid-template-columns: 1fr;');

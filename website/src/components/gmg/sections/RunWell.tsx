@@ -1,8 +1,10 @@
-// "Is it run well?" — organizational capacity and governance facts are
-// public (several are legitimately null and guarded independently); only
-// CEO compensation sits behind the community gate. Risks and their
-// anchored concerns are public too, since "is this org well-run" is a
-// question a donor should be able to answer without signing in.
+// "Is it run well?" — organizational capacity (CEO name, board size and
+// independence, conflict/audit policy, staff and volunteer counts,
+// geographic reach) is entirely rich_narrative-only and sits behind ONE
+// community gate, CEO compensation included. Risks (score_details, not the
+// narrative) and their anchored concerns are public, since "is this org
+// well-run" is a question a donor should be able to answer without signing
+// in even when the deeper capacity facts are gated.
 
 import React from 'react';
 import { Section } from './Section';
@@ -63,40 +65,44 @@ export const RunWell: React.FC<{
   if (cap.programsCount != null) facts.push({ label: 'Programs', value: cap.programsCount.toLocaleString() });
   if (cap.geographicReach) facts.push({ label: 'Geographic reach', value: cap.geographicReach });
 
+  const hasCapacity = facts.length > 0 || hasCeoComp;
+
   return (
     <Section id="run-well" title="Is it run well?" p={p} padX={padX}>
-      {facts.length > 0 && (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: 14,
-            marginBottom: 20,
-          }}
-        >
-          {facts.map((f) => (
-            <Fact key={f.label} label={f.label} value={f.value} p={p} />
-          ))}
-        </div>
-      )}
-
-      {hasCeoComp && (
+      {hasCapacity && (
         <div style={{ marginBottom: 20 }}>
-          <GatedBlock label="CEO compensation" p={p}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
-              {cap.ceoCompensation != null && (
-                <span>
-                  <span style={{ color: p.sub }}>Compensation</span>{' '}
-                  <strong style={{ color: p.fg }}>{usd(cap.ceoCompensation)}</strong>
-                </span>
-              )}
-              {cap.ceoCompensationPctRevenue != null && (
-                <span>
-                  <span style={{ color: p.sub }}>% of revenue</span>{' '}
-                  <strong style={{ color: p.fg }}>{cap.ceoCompensationPctRevenue}%</strong>
-                </span>
-              )}
-            </div>
+          <GatedBlock label="Organizational capacity" p={p}>
+            {facts.length > 0 && (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))',
+                  gap: 14,
+                  marginBottom: hasCeoComp ? 16 : 0,
+                }}
+              >
+                {facts.map((f) => (
+                  <Fact key={f.label} label={f.label} value={f.value} p={p} />
+                ))}
+              </div>
+            )}
+
+            {hasCeoComp && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
+                {cap.ceoCompensation != null && (
+                  <span>
+                    <span style={{ color: p.sub }}>Compensation</span>{' '}
+                    <strong style={{ color: p.fg }}>{usd(cap.ceoCompensation)}</strong>
+                  </span>
+                )}
+                {cap.ceoCompensationPctRevenue != null && (
+                  <span>
+                    <span style={{ color: p.sub }}>% of revenue</span>{' '}
+                    <strong style={{ color: p.fg }}>{cap.ceoCompensationPctRevenue}%</strong>
+                  </span>
+                )}
+              </div>
+            )}
           </GatedBlock>
         </div>
       )}

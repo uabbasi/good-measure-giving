@@ -1,11 +1,14 @@
-// "How it compares" — this charity's peer group and its program-ratio
-// standing against the peer median and industry benchmark are public; the
-// raw comparison figures (CN score, transparency score, peer count, 3yr
-// revenue growth) sit behind the community gate, and the strengths deep dive
-// is gated too. `similarOrganizations` carries no EIN and can't be resolved
-// to a charity page, so it renders as unlinked context — visually distinct
-// from the linkable "Similar charities" block elsewhere on the page, which
-// this section does not touch.
+// "How it compares" — every fact on this page is rich_narrative-only
+// (`peer_comparison`, the peer figures inside `financial_deep_dive`,
+// `long_term_outlook`, `strengths_deep_dive`), so the whole section sits
+// behind the community gate, one gate per rn block: peer comparison
+// (including the program-ratio-vs-peers chart and `similarOrganizations`),
+// long-term outlook, and the strengths deep dive. `similarOrganizations`
+// carries no EIN and can't be resolved to a charity page, so it renders as
+// unlinked context even to a signed-in member — visually distinct from the
+// linkable, ungated "Similar charities" block elsewhere on the page (built
+// from the index, not this narrative field), which this section does not
+// touch.
 
 import React from 'react';
 import { Section } from './Section';
@@ -50,134 +53,145 @@ export const HowItCompares: React.FC<{
 
   const hasOutlook = !!outlook.maturityStage || !!outlook.roomForFunding || outlook.strategicPriorities.length > 0;
 
+  const hasPeerComparison =
+    !!peers.peerGroup
+    || c.cited.peerDifferentiator.length > 0
+    || compareRows.length > 0
+    || hasBenchmarks
+    || peers.similarOrganizations.length > 0;
+
   return (
     <Section id="compares" title="How it compares" p={p} padX={padX}>
-      {peers.peerGroup && (
-        <div style={{ marginBottom: 16 }}>
-          <Kicker p={p}>Peer group</Kicker>
-          <div style={{ fontSize: 14, color: p.fg, marginTop: 4 }}>{peers.peerGroup}</div>
-        </div>
-      )}
-
-      {c.cited.peerDifferentiator.length > 0 && (
-        <div style={{ marginBottom: 20, maxWidth: '75ch' }}>
-          <CitedText segments={c.cited.peerDifferentiator} p={p} size={13.5} />
-          <SourceList citations={collectCitations(c.cited.peerDifferentiator)} p={p} />
-        </div>
-      )}
-
-      {compareRows.length > 0 && (
+      {hasPeerComparison && (
         <div style={{ marginBottom: 20 }}>
-          <Kicker p={p}>Program ratio vs. peers</Kicker>
-          <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
-            {compareRows.map((row) => (
-              <div key={row.label}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: p.sub, marginBottom: 4 }}>
-                  <span>{row.label}</span>
-                  <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{row.value}%</span>
+          <GatedBlock label="Peer comparison" p={p}>
+            {peers.peerGroup && (
+              <div style={{ marginBottom: 16 }}>
+                <Kicker p={p}>Peer group</Kicker>
+                <div style={{ fontSize: 14, color: p.fg, marginTop: 4 }}>{peers.peerGroup}</div>
+              </div>
+            )}
+
+            {c.cited.peerDifferentiator.length > 0 && (
+              <div style={{ marginBottom: 20, maxWidth: '75ch' }}>
+                <CitedText segments={c.cited.peerDifferentiator} p={p} size={13.5} />
+                <SourceList citations={collectCitations(c.cited.peerDifferentiator)} p={p} />
+              </div>
+            )}
+
+            {compareRows.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <Kicker p={p}>Program ratio vs. peers</Kicker>
+                <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
+                  {compareRows.map((row) => (
+                    <div key={row.label}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: p.sub, marginBottom: 4 }}>
+                        <span>{row.label}</span>
+                        <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{row.value}%</span>
+                      </div>
+                      <Bar value={row.value} color={row.color} bg={p.bg3} h={8} />
+                    </div>
+                  ))}
                 </div>
-                <Bar value={row.value} color={row.color} bg={p.bg3} h={8} />
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            )}
 
-      {hasBenchmarks && (
-        <div style={{ marginBottom: 20 }}>
-          <GatedBlock label="Peer benchmarks" p={p}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
-              {peers.cnOverallScore != null && (
-                <span>
-                  <span style={{ color: p.sub }}>Charity Navigator score</span>{' '}
-                  <strong style={{ color: p.fg }}>{peers.cnOverallScore}</strong>
-                </span>
-              )}
-              {peers.transparencyScore != null && (
-                <span>
-                  <span style={{ color: p.sub }}>Transparency score</span>{' '}
-                  <strong style={{ color: p.fg }}>{peers.transparencyScore}</strong>
-                </span>
-              )}
-              {peers.peerCount != null && (
-                <span>
-                  <span style={{ color: p.sub }}>Peers compared</span>{' '}
-                  <strong style={{ color: p.fg }}>{peers.peerCount}</strong>
-                </span>
-              )}
-              {outlook.revenueGrowth3yr != null && (
-                <span>
-                  <span style={{ color: p.sub }}>3yr revenue growth</span>{' '}
-                  <strong style={{ color: p.fg }}>{outlook.revenueGrowth3yr}%</strong>
-                </span>
-              )}
-            </div>
+            {hasBenchmarks && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
+                  {peers.cnOverallScore != null && (
+                    <span>
+                      <span style={{ color: p.sub }}>Charity Navigator score</span>{' '}
+                      <strong style={{ color: p.fg }}>{peers.cnOverallScore}</strong>
+                    </span>
+                  )}
+                  {peers.transparencyScore != null && (
+                    <span>
+                      <span style={{ color: p.sub }}>Transparency score</span>{' '}
+                      <strong style={{ color: p.fg }}>{peers.transparencyScore}</strong>
+                    </span>
+                  )}
+                  {peers.peerCount != null && (
+                    <span>
+                      <span style={{ color: p.sub }}>Peers compared</span>{' '}
+                      <strong style={{ color: p.fg }}>{peers.peerCount}</strong>
+                    </span>
+                  )}
+                  {outlook.revenueGrowth3yr != null && (
+                    <span>
+                      <span style={{ color: p.sub }}>3yr revenue growth</span>{' '}
+                      <strong style={{ color: p.fg }}>{outlook.revenueGrowth3yr}%</strong>
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {peers.similarOrganizations.length > 0 && (
+              <div>
+                <Kicker p={p}>Also worth knowing about</Kicker>
+                <p style={{ fontSize: 11.5, color: p.sub2, margin: '4px 0 10px', lineHeight: 1.5 }}>
+                  Named for context, not linked — these carry no verified profile on Good Measure Giving.
+                </p>
+                <div style={{ display: 'grid', gap: isMobile ? 10 : 6 }}>
+                  {peers.similarOrganizations.map((org, i) => (
+                    <div key={`${org.name}-${i}`} style={{ padding: '8px 0', borderTop: i > 0 ? `1px solid ${p.rule}` : 'none' }}>
+                      <div style={{ fontSize: 12.5, color: p.sub, fontStyle: 'italic' }}>{org.name}</div>
+                      {org.differentiator && (
+                        <div style={{ fontSize: 11.5, color: p.sub2, marginTop: 2, lineHeight: 1.5 }}>{org.differentiator}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </GatedBlock>
-        </div>
-      )}
-
-      {peers.similarOrganizations.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <Kicker p={p}>Also worth knowing about</Kicker>
-          <p style={{ fontSize: 11.5, color: p.sub2, margin: '4px 0 10px', lineHeight: 1.5 }}>
-            Named for context, not linked — these carry no verified profile on Good Measure Giving.
-          </p>
-          <div style={{ display: 'grid', gap: isMobile ? 10 : 6 }}>
-            {peers.similarOrganizations.map((org, i) => (
-              <div key={`${org.name}-${i}`} style={{ padding: '8px 0', borderTop: i > 0 ? `1px solid ${p.rule}` : 'none' }}>
-                <div style={{ fontSize: 12.5, color: p.sub, fontStyle: 'italic' }}>{org.name}</div>
-                {org.differentiator && (
-                  <div style={{ fontSize: 11.5, color: p.sub2, marginTop: 2, lineHeight: 1.5 }}>{org.differentiator}</div>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
       )}
 
       {hasOutlook && (
         <div style={{ marginBottom: 20 }}>
-          <Kicker p={p}>Long-term outlook</Kicker>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: 14,
-              marginTop: 8,
-            }}
-          >
-            {outlook.maturityStage && (
-              <div>
-                <Kicker p={p}>Maturity</Kicker>
-                <div style={{ fontSize: 13, color: p.fg, marginTop: 4 }}>{outlook.maturityStage}</div>
-              </div>
-            )}
-            {outlook.roomForFunding && (
-              <div>
-                <Kicker p={p}>Room for funding</Kicker>
-                <div style={{ marginTop: 4 }}>
-                  <Tag tone="accent" p={p}>
-                    {outlook.roomForFunding}
-                  </Tag>
+          <GatedBlock label="Long-term outlook" p={p}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: 14,
+              }}
+            >
+              {outlook.maturityStage && (
+                <div>
+                  <Kicker p={p}>Maturity</Kicker>
+                  <div style={{ fontSize: 13, color: p.fg, marginTop: 4 }}>{outlook.maturityStage}</div>
                 </div>
+              )}
+              {outlook.roomForFunding && (
+                <div>
+                  <Kicker p={p}>Room for funding</Kicker>
+                  <div style={{ marginTop: 4 }}>
+                    <Tag tone="accent" p={p}>
+                      {outlook.roomForFunding}
+                    </Tag>
+                  </div>
+                </div>
+              )}
+            </div>
+            {outlook.roomForFundingExplanation && (
+              <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '10px 0 0', maxWidth: '75ch' }}>
+                {outlook.roomForFundingExplanation}
+              </p>
+            )}
+            {outlook.strategicPriorities.length > 0 && (
+              <div style={{ marginTop: 12, maxWidth: '75ch' }}>
+                <Kicker p={p}>Strategic priorities</Kicker>
+                <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
+                  {outlook.strategicPriorities.map((sp, i) => (
+                    <li key={i}>{sp}</li>
+                  ))}
+                </ul>
               </div>
             )}
-          </div>
-          {outlook.roomForFundingExplanation && (
-            <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '10px 0 0', maxWidth: '75ch' }}>
-              {outlook.roomForFundingExplanation}
-            </p>
-          )}
-          {outlook.strategicPriorities.length > 0 && (
-            <div style={{ marginTop: 12, maxWidth: '75ch' }}>
-              <Kicker p={p}>Strategic priorities</Kicker>
-              <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
-                {outlook.strategicPriorities.map((sp, i) => (
-                  <li key={i}>{sp}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          </GatedBlock>
         </div>
       )}
 

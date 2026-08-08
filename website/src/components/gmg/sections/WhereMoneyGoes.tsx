@@ -20,7 +20,13 @@
 // sparse (71/166 charities have at least one) and each is guarded
 // independently — a charity can have one without the others. Each is shown
 // as a label plus a plain-language gloss, not a bare ratio, since "noncash
-// ratio: 0.43" means nothing to a non-expert donor.
+// ratio: 0.43" means nothing to a non-expert donor. They come from the raw
+// `financials` block, not the rich narrative, so — like the expense split
+// and grant totals above — they stay public.
+//
+// The multi-year trend chart is the one thing here that IS rich-only
+// (`financial_deep_dive.yearly_financials`), so it sits behind the
+// community gate even though everything around it is public.
 
 import React from 'react';
 import { Section } from './Section';
@@ -184,10 +190,12 @@ export const WhereMoneyGoes: React.FC<{
 
       {c.financialSeries.length >= 2 && (
         <div style={{ marginBottom: 20 }}>
-          <Kicker p={p}>Multi-year trend</Kicker>
-          <div style={{ marginTop: 8 }}>
-            <SeriesChart series={c.financialSeries} p={p} />
-          </div>
+          <GatedBlock label="Multi-year trend" p={p}>
+            <Kicker p={p}>Multi-year trend</Kicker>
+            <div style={{ marginTop: 8 }}>
+              <SeriesChart series={c.financialSeries} p={p} />
+            </div>
+          </GatedBlock>
         </div>
       )}
 

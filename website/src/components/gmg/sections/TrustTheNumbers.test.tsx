@@ -1,11 +1,16 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { TrustTheNumbers } from './TrustTheNumbers';
 import { gmgPalette } from '../tokens';
 import { adaptCharity } from '../charityAdapter';
+
+const mockMember = vi.fn(() => false);
+vi.mock('../../../auth/useAuth', () => ({ useCommunityMember: () => mockMember() }));
+vi.mock('../../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));
+vi.mock('../../../../contexts/LandingThemeContext', () => ({ useLandingTheme: () => ({ isDark: false }) }));
 
 const p = gmgPalette(false);
 const dir = path.resolve(__dirname, '../../../../data/charities');
@@ -32,10 +37,18 @@ const bare = () => load('charity-20-8085421.json');
 const noStandardsMet = () => load('charity-81-3072596.json');
 
 describe('TrustTheNumbers', () => {
-  it('is entirely public: no gate wraps any content', () => {
+  it('gates only the BBB assessment; data vintage, concerns, provenance, and badge links stay public', () => {
+    mockMember.mockReturnValue(false);
     const c = richTrust();
     const { container } = render(<TrustTheNumbers c={c} p={p} isMobile={false} padX={16} />);
-    expect(container.textContent).not.toContain('Sign in');
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+    // The BBB assessment prose must not leak while signed out.
+    expect(container.textContent).not.toContain(c.bbb.summary);
+    // But everything else on this page stays public, including the raw
+    // verification-badge links (a different thing from the BBB assessment).
+    expect(container.textContent).toContain(String(c.citations.ordered.length));
+    const hrefs = Array.from(container.querySelectorAll('a')).map((a) => a.getAttribute('href'));
+    expect(hrefs).toContain(c.awards.bbbUrl);
   });
 
   it('shows the dated-data badge only once data age crosses the threshold', () => {
@@ -120,7 +133,8 @@ describe('TrustTheNumbers', () => {
     }
   });
 
-  it('renders BBB statuses, and standardsMet only when present (0 counts as present, null does not)', () => {
+  it('renders BBB statuses to a signed-in member, and standardsMet only when present (0 counts as present, null does not)', () => {
+    mockMember.mockReturnValue(true);
     const zero = richTrust();
     expect(zero.bbb.standardsMet).toBe(0);
     const { container: zeroContainer } = render(<TrustTheNumbers c={zero} p={p} isMobile={false} padX={16} />);
@@ -132,7 +146,8 @@ describe('TrustTheNumbers', () => {
     expect(nullContainer.textContent).not.toContain('standards met');
   });
 
-  it('links the BBB review only when reviewUrl is present', () => {
+  it('links the BBB review only when reviewUrl is present, once signed in', () => {
+    mockMember.mockReturnValue(true);
     const withUrl = richTrust();
     expect(withUrl.bbb.reviewUrl).toBeTruthy();
     const { getByText, unmount } = render(<TrustTheNumbers c={withUrl} p={p} isMobile={false} padX={16} />);
@@ -143,6 +158,13 @@ describe('TrustTheNumbers', () => {
     expect(withoutUrl.bbb.reviewUrl).toBeNull();
     expect(withoutUrl.bbb.summary).toBeTruthy();
     const { queryByText } = render(<TrustTheNumbers c={withoutUrl} p={p} isMobile={false} padX={16} />);
+    expect(queryByText('Read the BBB review ↗')).toBeNull();
+  });
+
+  it('gates the BBB review link behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const withUrl = richTrust();
+    const { queryByText } = render(<TrustTheNumbers c={withUrl} p={p} isMobile={false} padX={16} />);
     expect(queryByText('Read the BBB review ↗')).toBeNull();
   });
 

@@ -49,7 +49,20 @@ describe('RightForYou', () => {
     expect(container.textContent).not.toContain('Pass');
   });
 
-  it('renders the donor-fit matrix including asnaf served when the list is meaningful', () => {
+  it('gates the donor-fit matrix, including asnaf served, behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const c = richZakat();
+    const dfm = c.donorFitMatrix;
+    const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(dfm.causeArea);
+    expect(container.textContent).not.toContain(dfm.givingStyle);
+    expect(container.textContent).not.toContain(dfm.evidenceRigor);
+    expect(container.textContent).not.toContain('Asnaf served');
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+  });
+
+  it('shows the donor-fit matrix including asnaf served to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = richZakat();
     const dfm = c.donorFitMatrix;
     const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
@@ -62,13 +75,24 @@ describe('RightForYou', () => {
   });
 
   it('omits the asnaf-served fact when the export list is empty (non-applicability, not a gap)', () => {
+    mockMember.mockReturnValue(true);
     const c = noAsnafNotZakat();
     expect(c.donorFitMatrix.zakatAsnafServed).toEqual([]);
     const { queryByText } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
     expect(queryByText('Asnaf served')).toBeNull();
   });
 
-  it('renders bestForSummary, idealFor, and considerations', () => {
+  it('gates bestForSummary, idealFor, and considerations behind the community gate', () => {
+    mockMember.mockReturnValue(false);
+    const c = richZakat();
+    const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(c.bestForSummary);
+    for (const t of c.idealFor) expect(container.textContent).not.toContain(t);
+    for (const t of c.considerations) expect(container.textContent).not.toContain(t);
+  });
+
+  it('shows bestForSummary, idealFor, and considerations to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = richZakat();
     const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain(c.bestForSummary);
@@ -76,12 +100,12 @@ describe('RightForYou', () => {
     for (const t of c.considerations) expect(container.textContent).toContain(t);
   });
 
-  it('renders notIdealFor when non-empty, and nothing when empty', () => {
+  it('gates notIdealFor when non-empty, and renders nothing when empty', () => {
+    mockMember.mockReturnValue(false);
     const rich = richZakat();
     expect(rich.notIdealFor.length).toBeGreaterThan(0);
     const { container } = render(<RightForYou c={rich} p={p} isMobile={false} padX={16} />);
-    expect(container.textContent).toContain('Not ideal for');
-    expect(container.textContent).toContain(rich.notIdealFor[0]);
+    expect(container.textContent).not.toContain(rich.notIdealFor[0]);
 
     const plain = noAsnafNotZakat();
     expect(plain.notIdealFor).toHaveLength(0);
@@ -89,9 +113,27 @@ describe('RightForYou', () => {
     expect(queryByText('Not ideal for')).toBeNull();
   });
 
-  it('renders the case-against summary publicly with inline citations and a source list', () => {
+  it('shows notIdealFor to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
+    const rich = richZakat();
+    const { container } = render(<RightForYou c={rich} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).toContain('Not ideal for');
+    expect(container.textContent).toContain(rich.notIdealFor[0]);
+  });
+
+  it('gates the case-against summary, including its inline citations, behind the community gate', () => {
+    mockMember.mockReturnValue(false);
     const c = citedCaseAgainst();
     expect(c.cited.caseAgainstSummary.length).toBeGreaterThan(0);
+    const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain('Sources');
+    expect(container.querySelector('sup')).toBeNull();
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+  });
+
+  it('shows the case-against summary with inline citations and a source list to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
+    const c = citedCaseAgainst();
     const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain('The case against');
     expect(container.textContent).toContain('Sources');
@@ -133,6 +175,7 @@ describe('RightForYou', () => {
   });
 
   it('lays out the donor-fit facts as a single column on mobile and a multi-column grid on desktop', () => {
+    mockMember.mockReturnValue(true);
     const c = richZakat();
     const { container: mobile } = render(<RightForYou c={c} p={p} isMobile={true} padX={16} />);
     expect(mobile.innerHTML).toContain('grid-template-columns: 1fr;');

@@ -41,20 +41,34 @@ describe('GmgCharityDetail SSR (entry-server, real charity data)', () => {
 
     // 1. Real content from each of the six sections — strings that only that
     // section renders, so this fails if a section silently returns nothing.
-    expect(html).toContain('interactive Outcomes and Evidence Framework'); // WhatTheyDo: c.theoryOfChange
-    expect(html).toContain('Sub-Saharan Africa'); // WhereMoneyGoes: grantFlows.byRegion
+    //
+    // Under the two-tier split, "real content" for a fully-gated section is its
+    // heading plus its gate label: RunWell and RightForYou legitimately render
+    // almost nothing else to an anonymous visitor. Asserting the gate LABEL (not
+    // just the shared "Sign in" string) still pins that the right block reached
+    // the gate, rather than the section having silently rendered nothing at all.
+    expect(html).toContain('interactive Outcomes and Evidence Framework'); // WhatTheyDo: root c.theoryOfChange (not rn)
+    expect(html).toContain('Sub-Saharan Africa'); // WhereMoneyGoes: grantFlows.byRegion, from raw grantsData
     expect(html).toContain('sourced claims from'); // TrustTheNumbers: citation count line
-    expect(html).toContain('40+ countries'); // RunWell: capacity.geographicReach
-    expect(html).toContain('large-scale, zakat-eligible international relief'); // RightForYou: bestForSummary
-    expect(html).toContain('International Humanitarian Organizations'); // HowItCompares: peers.peerGroup
+    expect(html).toContain('Organizational capacity'); // RunWell: gate label — the whole block is rich-only
+    expect(html).toContain('Zakat verification'); // RightForYou: zakat STATUS stays public
+    expect(html).toContain('Peer comparison'); // HowItCompares: gate label
 
     // 2. Gated content is structurally absent. There is no FirebaseProvider
     // in the server tree (AppProviders omits it), so useCommunityMember() is
-    // false for every SSR pass regardless of who requests the page — this
-    // charity's named grant recipient and CEO comp figures must never leak.
+    // false for every SSR pass regardless of who requests the page.
     expect(html).not.toContain('Church World Service Inc'); // top named grant recipient
     expect(html).not.toContain('$3.9M'); // CEO compensation (usd-compact)
     expect(html).not.toContain('0.26%'); // CEO compensation, % of revenue
+
+    // 2b. The two-tier boundary itself. Everything below lives ONLY in
+    // rich_narrative, so per CLAUDE.md's Baseline/Rich split it must not reach
+    // an anonymous visitor. These are the assertions that would catch a future
+    // change quietly moving rich analysis back into the public tier — the whole
+    // point of the split, and invisible to any test that only checks presence.
+    expect(html).not.toContain('40+ countries'); // organizational_capacity.geographic_reach
+    expect(html).not.toContain('large-scale, zakat-eligible international relief'); // ideal_donor_profile
+    expect(html).not.toContain('International Humanitarian Organizations'); // peer_comparison.peer_group
     // The gate's fallback rendered instead of silently omitting the block.
     // (React HTML-escapes the apostrophe in "it's" to `&#x27;`, so match
     // around it rather than the literal source string.)

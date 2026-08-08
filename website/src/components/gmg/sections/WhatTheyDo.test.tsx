@@ -1,11 +1,16 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { WhatTheyDo } from './WhatTheyDo';
 import { gmgPalette } from '../tokens';
 import { adaptCharity } from '../charityAdapter';
+
+const mockMember = vi.fn(() => false);
+vi.mock('../../../auth/useAuth', () => ({ useCommunityMember: () => mockMember() }));
+vi.mock('../../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));
+vi.mock('../../../../contexts/LandingThemeContext', () => ({ useLandingTheme: () => ({ isDark: false }) }));
 
 // jsdom doesn't implement matchMedia. WhatTheyDo now calls the real
 // useIsMobile() internally (for the intermediate About/Quick-facts
@@ -104,6 +109,7 @@ describe('WhatTheyDo', () => {
     // running full width with no measure cap. Every block in this prose
     // cluster (cited summary, evidence grade, theory of change, external
     // evaluations) must sit inside a capped-width ancestor.
+    mockMember.mockReturnValue(true);
     const c = richNoGrants();
     const { getByText } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
     let capped: HTMLElement | null = getByText(c.evidence.gradeExplanation);
@@ -118,7 +124,26 @@ describe('WhatTheyDo', () => {
     expect(container.textContent).toContain('Sources');
   });
 
-  it('renders the evaluator theory of change and the charity-reported one as separate blocks, not merged', () => {
+  it('gates the whole impact-evidence block: grade, theory-of-change status/summary, external evaluations', () => {
+    mockMember.mockReturnValue(false);
+    const c = richNoGrants();
+    expect(c.evidence.grade).toBeTruthy();
+    expect(c.evidence.theoryOfChange).toBeTruthy();
+    expect(c.evidence.theoryOfChangeSummary).toBeTruthy();
+    expect(c.evidence.externalEvaluations.length).toBeGreaterThan(0);
+    const { container } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(`Evidence grade ${c.evidence.grade}`);
+    expect(container.textContent).not.toContain(c.evidence.theoryOfChange);
+    expect(container.textContent).not.toContain(c.evidence.theoryOfChangeSummary);
+    for (const e of c.evidence.externalEvaluations) expect(container.textContent).not.toContain(e);
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+    // The root-level, non-narrative theoryOfChange stays public even though
+    // the evaluator's own impact-evidence assessment above is gated.
+    expect(container.textContent).toContain(c.theoryOfChange as string);
+  });
+
+  it('renders the evaluator theory of change and the charity-reported one as separate blocks, not merged, to a signed-in member', () => {
+    mockMember.mockReturnValue(true);
     const c = richNoGrants();
     expect(c.evidence.theoryOfChange).toBeTruthy();
     expect(c.theoryOfChange).toBeTruthy();
@@ -130,7 +155,8 @@ describe('WhatTheyDo', () => {
     expect(c.evidence.theoryOfChange).not.toBe(c.theoryOfChange);
   });
 
-  it('renders the evidence grade and its explanation', () => {
+  it('renders the evidence grade and its explanation to a signed-in member', () => {
+    mockMember.mockReturnValue(true);
     const c = richNoGrants();
     expect(c.evidence.grade).toBeTruthy();
     const { container } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);
@@ -138,7 +164,8 @@ describe('WhatTheyDo', () => {
     if (c.evidence.gradeExplanation) expect(container.textContent).toContain(c.evidence.gradeExplanation);
   });
 
-  it('renders the theory-of-change summary prose, not the bare status enum, as the explanation', () => {
+  it('renders the theory-of-change summary prose, not the bare status enum, as the explanation, to a signed-in member', () => {
+    mockMember.mockReturnValue(true);
     const c = richNoGrants();
     expect(c.evidence.theoryOfChangeSummary).toBeTruthy();
     expect(c.evidence.theoryOfChangeSummary).not.toBe(c.evidence.theoryOfChange);
@@ -154,7 +181,8 @@ describe('WhatTheyDo', () => {
     expect(paragraphs.some((el) => el.textContent === c.evidence.theoryOfChange)).toBe(false);
   });
 
-  it('renders external evaluations as a list', () => {
+  it('renders external evaluations as a list to a signed-in member', () => {
+    mockMember.mockReturnValue(true);
     const c = richNoGrants();
     expect(c.evidence.externalEvaluations.length).toBeGreaterThan(0);
     const { container } = render(<WhatTheyDo c={c} p={p} isMobile={false} padX={16} />);

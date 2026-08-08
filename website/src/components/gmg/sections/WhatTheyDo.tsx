@@ -1,20 +1,24 @@
-// "What they do, and is it real?" — the cited narrative summary, the
-// evaluator's evidence grade, theory of change, external evaluations, and the
-// program/population/geography facts, plus any concerns anchored to what the
-// org actually does.
+// "What they do, and is it real?" — the cited narrative summary (shared
+// narrative field, public) and the program/population/geography facts, plus
+// any concerns anchored to what the org actually does, are public. The
+// evaluator's own `impact_evidence` assessment — grade, theory-of-change
+// status + summary, external evaluations — is rich-only and sits behind the
+// community gate as one block.
 //
 // `evidence.theoryOfChange` is a status enum (DOCUMENTED/IMPLICIT/PUBLISHED/
 // DEVELOPING/ABSENT/STRONG), not prose — it renders as a badge, never as the
 // explanation itself. The actual prose comes from two different sources:
-// `evidence.theoryOfChangeSummary` (the evaluator's one- or two-sentence
-// gloss, present on nearly every charity) and the root-level `theoryOfChange`
-// (the charity's own longer-form words, present on a smaller share of the
-// corpus). Both can render together; they can also disagree, so neither is
-// merged into the other.
+// `evidence.theoryOfChangeSummary` (the evaluator's gloss, gated with the
+// rest of `impact_evidence`) and the root-level `theoryOfChange` (the
+// charity's own longer-form words, sourced independently of the rich/
+// baseline narrative split, so it stays public even when the evaluator's own
+// assessment is gated). The two can disagree, so neither is merged into the
+// other.
 
 import React from 'react';
 import { Section } from './Section';
 import { ConcernList } from './ConcernList';
+import { GatedBlock } from '../GatedBlock';
 import { CitedText, SourceList, collectCitations } from '../CitedText';
 import { Tag, Kicker } from '../primitives';
 import { GmgPalette, FONT_DISPLAY, FONT_MONO } from '../tokens';
@@ -106,48 +110,59 @@ export const WhatTheyDo: React.FC<{
       </div>
     )}
 
-    {c.evidence.grade && (
+    {(c.evidence.grade || c.evidence.theoryOfChange || c.evidence.theoryOfChangeSummary
+      || c.evidence.externalEvaluations.length > 0) && (
       <div style={{ marginBottom: 16 }}>
-        <Tag tone="accent" p={p}>
-          Evidence grade {c.evidence.grade}
-        </Tag>
-        {c.evidence.gradeExplanation && (
-          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.55, margin: '8px 0 0' }}>
-            {c.evidence.gradeExplanation}
-          </p>
-        )}
+        <GatedBlock label="Impact evidence" p={p}>
+          {c.evidence.grade && (
+            <div style={{ marginBottom: 16 }}>
+              <Tag tone="accent" p={p}>
+                Evidence grade {c.evidence.grade}
+              </Tag>
+              {c.evidence.gradeExplanation && (
+                <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.55, margin: '8px 0 0' }}>
+                  {c.evidence.gradeExplanation}
+                </p>
+              )}
+            </div>
+          )}
+
+          {(c.evidence.theoryOfChange || c.evidence.theoryOfChangeSummary) && (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <Kicker p={p}>Theory of change</Kicker>
+                {c.evidence.theoryOfChange && <Tag p={p}>{c.evidence.theoryOfChange}</Tag>}
+              </div>
+              {c.evidence.theoryOfChangeSummary && (
+                <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.6, margin: '8px 0 0' }}>
+                  {c.evidence.theoryOfChangeSummary}
+                </p>
+              )}
+            </div>
+          )}
+
+          {c.evidence.externalEvaluations.length > 0 && (
+            <div>
+              <Kicker p={p}>External evaluations</Kicker>
+              <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
+                {c.evidence.externalEvaluations.map((e, i) => (
+                  <li key={i}>{e}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </GatedBlock>
       </div>
     )}
 
-    {(c.evidence.theoryOfChange || c.evidence.theoryOfChangeSummary) && (
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <Kicker p={p}>Theory of change</Kicker>
-          {c.evidence.theoryOfChange && <Tag p={p}>{c.evidence.theoryOfChange}</Tag>}
-        </div>
-        {c.evidence.theoryOfChangeSummary && (
-          <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.6, margin: '8px 0 0' }}>
-            {c.evidence.theoryOfChangeSummary}
-          </p>
-        )}
-        {c.theoryOfChange && (
-          <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '8px 0 0' }}>
-            <span style={{ color: p.sub2, fontWeight: 500 }}>In the charity&rsquo;s own words: </span>
-            {c.theoryOfChange}
-          </p>
-        )}
-      </div>
-    )}
-
-    {c.evidence.externalEvaluations.length > 0 && (
-      <div style={{ marginBottom: 16 }}>
-        <Kicker p={p}>External evaluations</Kicker>
-        <ul style={{ margin: '6px 0 0', paddingLeft: 18, fontSize: 12.5, color: p.sub, lineHeight: 1.6 }}>
-          {c.evidence.externalEvaluations.map((e, i) => (
-            <li key={i}>{e}</li>
-          ))}
-        </ul>
-      </div>
+    {/* Root-level theoryOfChange — sourced independently of the rich/baseline
+        narrative split (see file header), so it stays public even when the
+        evaluator's own impact-evidence assessment above is gated. */}
+    {c.theoryOfChange && (
+      <p style={{ fontSize: 12.5, color: p.sub, lineHeight: 1.6, margin: '0 0 16px' }}>
+        <span style={{ color: p.sub2, fontWeight: 500 }}>In the charity&rsquo;s own words: </span>
+        {c.theoryOfChange}
+      </p>
     )}
     </div>
 

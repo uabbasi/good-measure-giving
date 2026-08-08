@@ -27,11 +27,24 @@ const fullCapacityNoRisks = () => load('charity-04-2535767.json');
 // meaningful value that must still render (not be treated as absent). Also
 // has risks of every severity and a risks-anchored concern.
 const allZerosAndFalse = () => load('charity-20-0310701.json');
-// ceoCompensation AND ceoCompensationPctRevenue both null — nothing to gate.
+// ceoCompensation AND ceoCompensationPctRevenue both null, but boardSize,
+// ceoName, and geographicReach are present — the capacity gate must still
+// appear for those, just without any compensation figures inside it.
 const noCeoComp = () => load('charity-81-3072596.json');
 
 describe('RunWell', () => {
-  it('renders public capacity facts without a gate', () => {
+  it('gates the entire organizational-capacity block, including CEO name, board, and governance facts', () => {
+    mockMember.mockReturnValue(false);
+    const c = fullCapacityNoRisks();
+    const { container } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain(String(c.capacity.boardSize));
+    expect(container.textContent).not.toContain(String(c.capacity.employeesCount));
+    if (c.capacity.geographicReach) expect(container.textContent).not.toContain(c.capacity.geographicReach);
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+  });
+
+  it('shows capacity facts to a signed-in community member', () => {
+    mockMember.mockReturnValue(true);
     const c = fullCapacityNoRisks();
     const { container } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain(String(c.capacity.boardSize));
@@ -40,7 +53,8 @@ describe('RunWell', () => {
     expect(container.textContent).toContain(c.capacity.geographicReach);
   });
 
-  it('renders false/zero governance facts explicitly instead of treating them as absent', () => {
+  it('renders false/zero governance facts explicitly instead of treating them as absent, once signed in', () => {
+    mockMember.mockReturnValue(true);
     const c = allZerosAndFalse();
     expect(c.capacity.hasConflictPolicy).toBe(false);
     expect(c.capacity.hasFinancialAudit).toBe(false);
@@ -60,7 +74,7 @@ describe('RunWell', () => {
     expect(factValue('Independent board')).toBe('0%');
   });
 
-  it('gates only ceoCompensation and ceoCompensationPctRevenue, keeping everything else public', () => {
+  it('gates CEO compensation together with the rest of organizational capacity, behind one gate', () => {
     mockMember.mockReturnValue(false);
     const c = withGovernanceConcern();
     expect(c.capacity.ceoCompensation).not.toBeNull();
@@ -74,27 +88,43 @@ describe('RunWell', () => {
     expect(strongValues).not.toContain('$539,137');
     expect(strongValues).not.toContain('2.25%');
     expect(container.textContent).toContain("Sign in to see this — it's free.");
-    // But the CEO's name (public) still renders.
-    expect(container.textContent).toContain(c.capacity.ceoName as string);
+    // The CEO's name is part of the same gated capacity block — must not leak either.
+    expect(container.textContent).not.toContain(c.capacity.ceoName as string);
   });
 
-  it('shows the CEO compensation figures to a signed-in community member', () => {
+  it('shows the CEO compensation figures and CEO name to a signed-in community member', () => {
     mockMember.mockReturnValue(true);
     const c = withGovernanceConcern();
     const { container } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain('$539,137');
     expect(container.textContent).toContain('2.25%');
+    expect(container.textContent).toContain(c.capacity.ceoName as string);
   });
 
-  it('renders no gate at all when there is nothing to gate', () => {
+  it('renders no gate at all when a charity has no organizational-capacity data whatsoever', () => {
+    mockMember.mockReturnValue(false);
+    const bare = adaptCharity({ ein: '00-0000000', name: 'Bare Org' });
+    expect(bare.capacity.ceoCompensation).toBeNull();
+    expect(bare.capacity.boardSize).toBeNull();
+    const { queryByText } = render(<RunWell c={bare} p={p} isMobile={false} padX={16} />);
+    // No teaser implying hidden capacity data that doesn't exist.
+    expect(queryByText('Sign in')).toBeNull();
+  });
+
+  it('still gates the capacity block when CEO compensation is absent but other capacity facts exist', () => {
     mockMember.mockReturnValue(false);
     const c = noCeoComp();
     expect(c.capacity.ceoCompensation).toBeNull();
     expect(c.capacity.ceoCompensationPctRevenue).toBeNull();
-    const { queryByText } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
-    // No teaser implying hidden compensation data that doesn't exist.
-    expect(queryByText('Sign in')).toBeNull();
-    expect(queryByText('CEO compensation')).toBeNull();
+    expect(c.capacity.boardSize).not.toBeNull();
+    const { container } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).toContain("Sign in to see this — it's free.");
+    expect(container.textContent).not.toContain(String(c.capacity.boardSize));
+
+    mockMember.mockReturnValue(true);
+    const { container: signedIn } = render(<RunWell c={c} p={p} isMobile={false} padX={16} />);
+    expect(signedIn.textContent).toContain(String(c.capacity.boardSize));
+    expect(signedIn.textContent).not.toContain('Compensation');
   });
 
   it('renders risks with category, description, and severity, and never a mitigation field', () => {
@@ -153,6 +183,7 @@ describe('RunWell', () => {
   });
 
   it('lays out capacity facts as a single column on mobile and a multi-column grid on desktop', () => {
+    mockMember.mockReturnValue(true);
     const c = fullCapacityNoRisks();
     const { container: mobile } = render(<RunWell c={c} p={p} isMobile={true} padX={16} />);
     expect(mobile.innerHTML).toContain('grid-template-columns: 1fr;');
