@@ -34,6 +34,8 @@ import {
 import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
+import { useCommunityMember } from '../../auth/useAuth';
+import { AnonWall } from './AnonWall';
 import { adaptCharity, GmgDimension } from './charityAdapter';
 import { dataVintage } from './sections/dataVintage';
 import { WhatTheyDo } from './sections/WhatTheyDo';
@@ -182,6 +184,12 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   const c = adaptCharity(charity);
   const isMobile = useIsMobile();
   const { summaries } = useCharities();
+  // False during SSR and until Firebase auth resolves post-hydration — see
+  // AnonWall's header comment. Everything evaluative on this page (scores,
+  // financials, the six donor-question sections, methodology) is gated on
+  // this single flag rather than per-block, so a signed-out visitor and a
+  // crawler see the same minimal identity + wall + similar-charities page.
+  const isMember = useCommunityMember();
 
   // Select up to 5 same-category/same-zakatStatus charities, sorted by score.
   // Uses the canonical selector from scripts/lib/charity-seo so logic is shared
@@ -281,12 +289,17 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {[c.address, c.region, c.ein && `EIN ${c.ein}`, c.founded && `Founded ${c.founded}`].filter(Boolean).join(' · ')}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+              {/* Wallet (zakat status), asnaf, and category are public facts,
+                  not evaluative judgments — visible regardless of sign-in.
+                  The conviction/quality tags below them ARE the evaluation's
+                  verdict, so they're gated with everything else. */}
               <Tag tone="accent" p={p}>{c.wallet}</Tag>
-              {c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
-              {c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
-              {c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
-              {c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
+              {c.asnaf && <Tag tone="accent" p={p}>{c.asnaf}</Tag>}
               {c.category && <Tag p={p}>{c.category}</Tag>}
+              {isMember && c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
+              {isMember && c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
+              {isMember && c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
+              {isMember && c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
@@ -308,136 +321,149 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             </div>
           </div>
 
-          {/* Rating cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, flex: isMobile ? '1 1 100%' : '0 1 400px', minWidth: isMobile ? 0 : 320 }}>
-            <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} p={p} sectionBorder={sectionBorder} />
-            <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} p={p} sectionBorder={sectionBorder} />
-            <div
-              style={{
-                gridColumn: '1 / span 2',
-                display: 'flex',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: 8,
-                padding: '8px 12px',
-                border: sectionBorder,
-                borderRadius: 6,
-                background: p.bg2,
-                fontSize: 11,
-              }}
-            >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: p.sub }}>
-                <Kicker p={p}>GMG</Kicker>
-                {c.overall ? (
-                  <>
-                    <HarveyBall rating={c.overall} p={p} size={14} />
-                    <span style={{ color: ratingColor(c.overall, p), fontWeight: 500 }}>{c.overall}</span>
-                  </>
-                ) : (
-                  <span style={{ color: p.sub2 }}>—</span>
-                )}
-              </span>
-              {c.recommendationCue && (
-                <span style={{ color: p.sub }}>
-                  <Kicker p={p}>Fit</Kicker> {c.recommendationCue}
+          {/* Rating cards — the evaluation's verdict, gated with everything
+              else evaluative on the page. */}
+          {isMember && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, flex: isMobile ? '1 1 100%' : '0 1 400px', minWidth: isMobile ? 0 : 320 }}>
+              <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} p={p} sectionBorder={sectionBorder} />
+              <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} p={p} sectionBorder={sectionBorder} />
+              <div
+                style={{
+                  gridColumn: '1 / span 2',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 8,
+                  padding: '8px 12px',
+                  border: sectionBorder,
+                  borderRadius: 6,
+                  background: p.bg2,
+                  fontSize: 11,
+                }}
+              >
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: p.sub }}>
+                  <Kicker p={p}>GMG</Kicker>
+                  {c.overall ? (
+                    <>
+                      <HarveyBall rating={c.overall} p={p} size={14} />
+                      <span style={{ color: ratingColor(c.overall, p), fontWeight: 500 }}>{c.overall}</span>
+                    </>
+                  ) : (
+                    <span style={{ color: p.sub2 }}>—</span>
+                  )}
                 </span>
-              )}
-              <span style={{ color: p.sub }}>
-                <Kicker p={p}>Wallet</Kicker> {c.wallet}
-              </span>
+                {c.recommendationCue && (
+                  <span style={{ color: p.sub }}>
+                    <Kicker p={p}>Fit</Kicker> {c.recommendationCue}
+                  </span>
+                )}
+                <span style={{ color: p.sub }}>
+                  <Kicker p={p}>Wallet</Kicker> {c.wallet}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Stat strip */}
-      <section style={{ borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', background: p.bg2 }}>
-        {statCells.map(([l, v, sub], i) => (
-          <div key={l} style={{ padding: '12px 14px', borderRight: i < statCells.length - 1 ? sectionBorder : 'none', borderTop: i >= 7 ? sectionBorder : 'none' }}>
-            <Kicker p={p}>{l}</Kicker>
-            <div style={{ marginTop: 4 }}>
-              <Figure size={24} color={l === 'Risk' ? (p[riskTone(c.riskLevel)] as string) : p.fg}>{v}</Figure>
-            </div>
-            <div style={{ fontSize: 10.5, color: p.sub2, marginTop: 2 }}>{sub}</div>
-          </div>
-        ))}
-      </section>
-
-      {/* The six donor-question sections, with a scroll-spy rail on desktop
-          and a sticky jump menu on mobile (SectionRail switches on isMobile). */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '160px 1fr', gap: isMobile ? 0 : 24 }}>
-        {!isMobile && (
-          <div style={{ paddingLeft: padX, paddingTop: 24 }}>
-            <SectionRail sections={RAIL_SECTIONS} p={p} isMobile={false} />
-          </div>
-        )}
-        <div style={{ minWidth: 0 }}>
-          {isMobile && <SectionRail sections={RAIL_SECTIONS} p={p} isMobile />}
-          <WhatTheyDo c={c} p={p} isMobile={isMobile} padX={padX} />
-          <WhereMoneyGoes c={c} p={p} isMobile={isMobile} padX={padX} />
-          <TrustTheNumbers c={c} p={p} isMobile={isMobile} padX={padX} />
-          <RunWell c={c} p={p} isMobile={isMobile} padX={padX} />
-          <RightForYou c={c} p={p} isMobile={isMobile} padX={padX} />
-          <HowItCompares c={c} p={p} isMobile={isMobile} padX={padX} />
-        </div>
-      </div>
-
-      {/* Methodology details */}
-      <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-        <Kicker p={p}>Methodology details · edition {EDITION}</Kicker>
-        {c.strengths.length > 0 && (
-          <div style={{ marginTop: 8, marginBottom: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg2 }}>
-            <Kicker p={p}>How we evaluate</Kicker>
-            <p style={{ fontSize: 13, lineHeight: 1.55, color: p.sub, margin: '8px 0 12px' }}>
-              <em style={{ color: p.fg, fontStyle: 'normal', fontWeight: 500 }}>Impact</em> assesses organizational
-              indicators associated with effective programs.{' '}
-              <em style={{ color: p.fg, fontStyle: 'normal', fontWeight: 500 }}>Alignment</em> reflects fit with Muslim
-              donor priorities.
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
-              {c.strengths.map((s) => (
-                <div key={s.point} style={{ padding: 12, border: sectionBorder, borderRadius: 4, background: p.bg }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                    <HarveyBall rating="Strong" p={p} size={12} />
-                    <span style={{ fontSize: 11.5, color: p.fg, fontWeight: 500 }}>{s.point}</span>
-                  </div>
-                  {s.detail && <div style={{ fontSize: 11, color: p.sub, lineHeight: 1.5 }}>{s.detail}</div>}
+      {/* Everything below is the evaluation itself — stat strip, the six
+          donor-question sections, and methodology detail. A signed-out
+          visitor gets the wall instead of a hole in the page; a signed-in
+          member gets exactly what this page has always rendered. */}
+      {isMember ? (
+        <>
+          {/* Stat strip */}
+          <section style={{ borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', background: p.bg2 }}>
+            {statCells.map(([l, v, sub], i) => (
+              <div key={l} style={{ padding: '12px 14px', borderRight: i < statCells.length - 1 ? sectionBorder : 'none', borderTop: i >= 7 ? sectionBorder : 'none' }}>
+                <Kicker p={p}>{l}</Kicker>
+                <div style={{ marginTop: 4 }}>
+                  <Figure size={24} color={l === 'Risk' ? (p[riskTone(c.riskLevel)] as string) : p.fg}>{v}</Figure>
                 </div>
-              ))}
+                <div style={{ fontSize: 10.5, color: p.sub2, marginTop: 2 }}>{sub}</div>
+              </div>
+            ))}
+          </section>
+
+          {/* The six donor-question sections, with a scroll-spy rail on desktop
+              and a sticky jump menu on mobile (SectionRail switches on isMobile). */}
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '160px 1fr', gap: isMobile ? 0 : 24 }}>
+            {!isMobile && (
+              <div style={{ paddingLeft: padX, paddingTop: 24 }}>
+                <SectionRail sections={RAIL_SECTIONS} p={p} isMobile={false} />
+              </div>
+            )}
+            <div style={{ minWidth: 0 }}>
+              {isMobile && <SectionRail sections={RAIL_SECTIONS} p={p} isMobile />}
+              <WhatTheyDo c={c} p={p} isMobile={isMobile} padX={padX} />
+              <WhereMoneyGoes c={c} p={p} isMobile={isMobile} padX={padX} />
+              <TrustTheNumbers c={c} p={p} isMobile={isMobile} padX={padX} />
+              <RunWell c={c} p={p} isMobile={isMobile} padX={padX} />
+              <RightForYou c={c} p={p} isMobile={isMobile} padX={padX} />
+              <HowItCompares c={c} p={p} isMobile={isMobile} padX={padX} />
             </div>
           </div>
-        )}
-        {/* Independent of the strengths block above — a charity can have
-            growth areas without strengths, or vice versa. */}
-        {c.growthAreas.length > 0 && (
-          <div style={{ marginBottom: 14 }}>
-            <Kicker p={p}>Growth areas</Kicker>
-            <div style={{ display: 'grid', gap: 4, marginTop: 6 }}>
-              {c.growthAreas.map((s) => (
-                <div key={s} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '4px 0', fontSize: 12.5, color: p.fg }}>
-                  <span style={{ color: p.caution }}>−</span>
-                  <span>{s}</span>
+
+          {/* Methodology details */}
+          <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
+            <Kicker p={p}>Methodology details · edition {EDITION}</Kicker>
+            {c.strengths.length > 0 && (
+              <div style={{ marginTop: 8, marginBottom: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg2 }}>
+                <Kicker p={p}>How we evaluate</Kicker>
+                <p style={{ fontSize: 13, lineHeight: 1.55, color: p.sub, margin: '8px 0 12px' }}>
+                  <em style={{ color: p.fg, fontStyle: 'normal', fontWeight: 500 }}>Impact</em> assesses organizational
+                  indicators associated with effective programs.{' '}
+                  <em style={{ color: p.fg, fontStyle: 'normal', fontWeight: 500 }}>Alignment</em> reflects fit with Muslim
+                  donor priorities.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
+                  {c.strengths.map((s) => (
+                    <div key={s.point} style={{ padding: 12, border: sectionBorder, borderRadius: 4, background: p.bg }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                        <HarveyBall rating="Strong" p={p} size={12} />
+                        <span style={{ fontSize: 11.5, color: p.fg, fontWeight: 500 }}>{s.point}</span>
+                      </div>
+                      {s.detail && <div style={{ fontSize: 11, color: p.sub, lineHeight: 1.5 }}>{s.detail}</div>}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            )}
+            {/* Independent of the strengths block above — a charity can have
+                growth areas without strengths, or vice versa. */}
+            {c.growthAreas.length > 0 && (
+              <div style={{ marginBottom: 14 }}>
+                <Kicker p={p}>Growth areas</Kicker>
+                <div style={{ display: 'grid', gap: 4, marginTop: 6 }}>
+                  {c.growthAreas.map((s) => (
+                    <div key={s} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', gap: 8, padding: '4px 0', fontSize: 12.5, color: p.fg }}>
+                      <span style={{ color: p.caution }}>−</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
+              <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} />
+              <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} />
             </div>
-          </div>
-        )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
-          <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} />
-          <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} />
-        </div>
-        {/* Credibility has no numeric score in the export (unlike Impact/Alignment),
-            so it gets a plain cited explanation rather than a HarveyBall card. */}
-        {c.cited.dimensionExplanations.credibility.length > 0 && (
-          <div style={{ marginTop: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
-            <Kicker p={p}>Credibility</Kicker>
-            <div style={{ marginTop: 8, maxWidth: '75ch' }}>
-              <CitedText segments={c.cited.dimensionExplanations.credibility} p={p} size={13} />
-            </div>
-            <SourceList citations={collectCitations(c.cited.dimensionExplanations.credibility)} p={p} />
-          </div>
-        )}
-      </section>
+            {/* Credibility has no numeric score in the export (unlike Impact/Alignment),
+                so it gets a plain cited explanation rather than a HarveyBall card. */}
+            {c.cited.dimensionExplanations.credibility.length > 0 && (
+              <div style={{ marginTop: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
+                <Kicker p={p}>Credibility</Kicker>
+                <div style={{ marginTop: 8, maxWidth: '75ch' }}>
+                  <CitedText segments={c.cited.dimensionExplanations.credibility} p={p} size={13} />
+                </div>
+                <SourceList citations={collectCitations(c.cited.dimensionExplanations.credibility)} p={p} />
+              </div>
+            )}
+          </section>
+        </>
+      ) : (
+        <AnonWall c={c} p={p} padX={padX} />
+      )}
 
       {/* Similar charities — ungated, SSR-crawlable: links render for every visitor
           including Googlebot so the prerendered HTML carries real /charity/<ein>/ hrefs. */}

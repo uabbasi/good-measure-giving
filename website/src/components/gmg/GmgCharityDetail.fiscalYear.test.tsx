@@ -8,6 +8,11 @@
  * it. Form-990-exempt orgs (churches/mosques the scorer already exempts
  * from filing-currency penalties) get exempt context alongside the badge,
  * not suppression of it.
+ *
+ * The badge itself lives inside TrustTheNumbers, one of the six
+ * donor-question sections — since the anonymous wall, those sections only
+ * mount for a signed-in community member (see GmgCharityDetail.anonWall.test.tsx
+ * for the signed-out boundary), so this file renders as a member throughout.
  */
 
 import '@testing-library/jest-dom';
@@ -24,6 +29,8 @@ vi.mock('./useIsMobile', () => ({ useIsMobile: () => false }));
 vi.mock('../../hooks/useCharities', () => ({
   useCharities: () => ({ summaries: [], loading: false, charities: [] }),
 }));
+vi.mock('../../auth/useAuth', () => ({ useCommunityMember: () => true }));
+vi.mock('../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));
 
 const base = {
   ein: '12-3456789',
