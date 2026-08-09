@@ -32,6 +32,22 @@ const renderCompare = (eins: string[]): Promise<string> =>
     ...eins.map((ein) => ({ queryKey: ['charity', ein], data: loadRaw(ein) })),
   ]);
 
+// Bare /compare/ with no query string is a real entry point — it is the footer
+// nav link, so it takes zero interaction to reach — and it falls back to the
+// top 4 charities by score rather than rendering nothing. Gating has to hold on
+// that path too, and it resolves its EINs by a different code path.
+const renderBareCompare = (eins: string[]): Promise<string> =>
+  render('/compare/', [
+    {
+      queryKey: ['charities'],
+      data: {
+        summaries: [],
+        charities: eins.map((ein) => loadRaw(ein)),
+      },
+    },
+    ...eins.map((ein) => ({ queryKey: ['charity', ein], data: loadRaw(ein) })),
+  ]);
+
 describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation', () => {
   it('shows which charities are being compared, and a sign-in prompt instead of the analysis', async () => {
     const html = await renderCompare([IRC_EIN, DWB_EIN]);
@@ -77,6 +93,19 @@ describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation
     const bestFor = irc.amalEvaluation?.rich_narrative?.ideal_donor_profile?.best_for_summary;
     if (bestFor && bestFor.length > 40) {
       expect(html).not.toContain(bestFor.slice(0, 40));
+    }
+  }, 20000);
+
+  it('holds on bare /compare/ too, which the footer links to and which auto-picks 4 charities', async () => {
+    const html = await renderBareCompare([IRC_EIN, DWB_EIN]);
+
+    // It did resolve subjects (otherwise the absence assertions below would
+    // pass vacuously on an empty page).
+    expect(html).toContain('International Rescue Committee');
+    expect(html).toContain('Full comparison');
+
+    for (const label of ['GMG rating', 'Cost / beneficiary', 'Best for', 'CRITERION BY CRITERION']) {
+      expect(html).not.toContain(label);
     }
   }, 20000);
 });
