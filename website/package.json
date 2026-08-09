@@ -23,9 +23,17 @@
     "emulators": "firebase emulators:start --only auth,firestore --project=good-measure-giving --config=../firebase.json",
     "dev:emulator": "VITE_USE_FIREBASE_EMULATOR=true vite",
     "dev:local": "firebase emulators:exec --only auth,firestore --project=good-measure-giving --config=../firebase.json 'npm run dev:emulator'",
-    "test:e2e:shared": "firebase emulators:exec --only auth,firestore --project=good-measure-giving --config=../firebase.json 'npx playwright test --config=playwright.shared.config.ts'"
+    "test:e2e:shared": "firebase emulators:exec --only auth,firestore --project=good-measure-giving --config=../firebase.json 'npx playwright test --config=playwright.shared.config.ts'",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:assets": "npx @capacitor/assets generate --android --iconBackgroundColor '#059669' --iconBackgroundColorDark '#020617' --splashBackgroundColor '#059669' --splashBackgroundColorDark '#020617'",
+    "android:open": "npx cap open android",
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:aab": "npm run android:sync && cd android && ./gradlew bundleRelease"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
@@ -44,6 +52,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@playwright/test": "^1.58.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^6.6.3",
