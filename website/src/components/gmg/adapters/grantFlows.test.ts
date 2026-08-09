@@ -229,8 +229,14 @@ describe('aggregateGrants against the real corpus', () => {
       // The breakdown is a subset of the unattributed rows (numeric-code and
       // purpose-less rows are dropped from it), so it can never sum to more
       // than the total it is explaining.
+      // Was `toBeLessThanOrEqual(unattributed.amount)`, which is satisfied by
+      // any subset — including IRC's, where the itemised purposes covered only
+      // 49% of the money and nothing said so. The residual makes it an exact
+      // identity instead: what is shown plus what is not shown equals the total.
       const purposeTotal = r.unattributedByPurpose.reduce((s, u) => s + u.amount, 0);
-      expect(purposeTotal).toBeLessThanOrEqual(r.unattributed.amount);
+      const purposeCount = r.unattributedByPurpose.reduce((s, u) => s + u.count, 0);
+      expect(purposeTotal + r.unattributedPurposeResidual.amount).toBe(r.unattributed.amount);
+      expect(purposeCount + r.unattributedPurposeResidual.count).toBe(r.unattributed.count);
     }
     expect(checked).toBeGreaterThan(0);
   });

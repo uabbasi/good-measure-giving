@@ -41,6 +41,13 @@ export interface GrantFlows {
    * an uncapped list would be unreadable.
    */
   unattributedByPurpose: { purpose: string; amount: number; count: number }[];
+  /**
+   * The part of `unattributed.amount` that `unattributedByPurpose` does not
+   * explain — blank purposes, code-like purposes, and the tail past the cap.
+   * Render it whenever it is non-zero: without it the breakdown silently
+   * accounts for a fraction of the total it sits under.
+   */
+  unattributedPurposeResidual: { amount: number; count: number };
 }
 
 // Some filers report `purpose` as a bare code (e.g. "14", "5,10" — sampled
@@ -140,6 +147,11 @@ export const aggregateGrants = (raw: unknown): GrantFlows | null => {
 
   if (grantCount === 0) return null;
 
+  const byPurpose = Array.from(unattributedPurposes.entries())
+    .map(([purpose, v]) => ({ purpose, amount: v.amount, count: v.count }))
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, TOP_N);
+
   return {
     taxYear,
     grantCount,
@@ -153,9 +165,16 @@ export const aggregateGrants = (raw: unknown): GrantFlows | null => {
       .map(([region, v]) => ({ region, amount: v.amount, count: v.count }))
       .sort((a, b) => b.amount - a.amount),
     unattributed,
-    unattributedByPurpose: Array.from(unattributedPurposes.entries())
-      .map(([purpose, v]) => ({ purpose, amount: v.amount, count: v.count }))
-      .sort((a, b) => b.amount - a.amount)
-      .slice(0, TOP_N),
+    unattributedByPurpose: byPurpose,
+    // What the list above does NOT account for. Three things land here: rows
+    // with no purpose at all, rows whose purpose is a bare code, and anything
+    // past the TOP_N cap. It is not a rounding error — IRC's 2024 filing has 51
+    // blank-purpose rows carrying $168.2M, 51% of its unattributed total, so a
+    // breakdown printed without this reads as though it explains the whole
+    // figure when it explains less than half of it.
+    unattributedPurposeResidual: {
+      amount: Math.max(0, unattributed.amount - byPurpose.reduce((s, x) => s + x.amount, 0)),
+      count: Math.max(0, unattributed.count - byPurpose.reduce((s, x) => s + x.count, 0)),
+    },
   };
 };

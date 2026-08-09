@@ -282,6 +282,19 @@ export const WhereMoneyGoes: React.FC<{
                           </span>
                         </div>
                       ))}
+                      {/* The breakdown sits directly under a much larger total,
+                          so it has to say what it does not cover. For IRC's 2024
+                          filing that is $168.2M across 51 blank-purpose rows —
+                          51% of the money. Printing only the itemised half reads
+                          as a complete account of the whole. */}
+                      {gf.unattributedPurposeResidual.amount > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, borderTop: `1px solid ${p.rule}`, paddingTop: 4, marginTop: 2 }}>
+                          <span style={{ color: p.sub2 }}>No purpose stated</span>
+                          <span style={{ fontFamily: FONT_MONO, color: p.sub2 }}>
+                            {usd(gf.unattributedPurposeResidual.amount)} ({gf.unattributedPurposeResidual.count})
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
