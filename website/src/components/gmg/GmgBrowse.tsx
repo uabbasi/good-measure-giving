@@ -380,9 +380,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           ))}
         </section>
       ) : (
-        /* Desktop: dense, sortable table */
-        <section style={{ padding: `0 ${padX}px 28px` }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
+        /* Desktop: dense, sortable table.
+           The table needs ~960px, but the layout switches to it at 768px, so
+           between those widths (tablet) it was pushing the whole page body
+           sideways and cutting off the last column. Scroll it inside its own
+           container instead — same treatment GmgCompare already uses. */
+        <section style={{ padding: `0 ${padX}px 28px`, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 900 }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
                 style={{
