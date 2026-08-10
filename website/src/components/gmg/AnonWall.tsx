@@ -1,8 +1,8 @@
-// The anonymous wall. A signed-out visitor gets the identity header, this
-// one panel, and the similar-charities block — nothing else. It replaces
-// eleven scattered "Sign in to see this" boxes (one per gated sub-block,
-// see GatedBlock) with a single deliberate panel between the header and
-// the similar-charities block.
+// The signed-out prompt. It does NOT replace the page: a signed-out visitor
+// reads the whole baseline tier above it (identity, quality bands, hard
+// financials, baseline narrative, strengths, growth areas, concerns and
+// citations) and meets this panel afterwards, as the consolidated statement
+// of what the rich tier still holds back.
 //
 // Every count and every named area below is computed from THIS charity's
 // own data, using the same content-presence checks each of the six
@@ -145,11 +145,11 @@ export const AnonWall: React.FC<{ c: GmgCharity; p: GmgPalette; padX: number }> 
             color: p.fg,
           }}
         >
-          The full evaluation of {c.name} is free — sign in to see it.
+          The in-depth analysis of {c.name} is free — sign in to read it.
         </h2>
         <p style={{ fontSize: 13.5, color: p.sub, lineHeight: 1.55, margin: '0 0 16px' }}>
-          Good Measure Giving members see the complete, cited analysis behind every charity. Here&rsquo;s what&rsquo;s
-          behind the sign-in for this one:
+          You&rsquo;ve just read the essentials. Good Measure Giving members get the deeper, cited analysis behind
+          every charity. Here&rsquo;s what&rsquo;s still behind the sign-in for this one:
         </p>
 
         {items.length > 0 && (

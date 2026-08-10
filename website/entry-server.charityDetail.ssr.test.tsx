@@ -9,10 +9,19 @@
 // There is no FirebaseProvider anywhere in the server tree (AppProviders
 // omits it), so useCommunityMember() is false for every SSR pass regardless
 // of who requests the page — every prerendered charity page is, and must
-// stay, the anonymous view: identity + the wall + similar charities. Nothing
-// evaluative (scores, financials, the six donor-question sections,
-// methodology) may reach that HTML. See GmgCharityDetail.anonWall.test.tsx
-// for the signed-in path, which can only be exercised client-side.
+// stay, the anonymous view. That view is the BASELINE tier: identity, the
+// quality bands, the hard financials, the baseline narrative, strengths,
+// growth areas, concerns, citations, the six donor-question sections, the
+// wall prompt and similar charities.
+//
+// Two things must never reach that HTML:
+//   1. Raw score numerals (dimension score/max, peer X/100). /browse
+//      publishes qualitative bands anonymously but no numbers, so numbers
+//      are the consistent member-only line across every surface.
+//   2. Rich-tier prose — anything charityAdapter sources from `rn` rather
+//      than from the shared rich-or-baseline `narrative`.
+// See GmgCharityDetail.anonWall.test.tsx for the signed-in path, which can
+// only be exercised client-side.
 //
 // International Rescue Committee (13-5660870) and Doctors Without Borders
 // (13-3433452) are both used so the wall's counts (concerns, citations,
@@ -68,8 +77,8 @@ const SECTION_HEADINGS = [
   'How it compares',
 ];
 
-describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous wall', () => {
-  it('renders identity, the zakat status, and the wall for International Rescue Committee', async () => {
+describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous baseline tier', () => {
+  it('renders identity, the baseline evaluation, and the prompt for International Rescue Committee', async () => {
     const html = await renderCharity(IRC_EIN);
 
     // 1. Identity — the minimum a signed-out visitor and a crawler both get.
@@ -79,7 +88,24 @@ describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous w
     expect(html).toContain('Accepts Zakat'); // wallet/zakat status
     expect(html).toContain('Fuqara'); // asnaf tag
 
-    // 2. The wall's call to action and sign-in control.
+    // 1b. The baseline tier itself. This is what makes the page worth
+    // indexing, and each item below is sourced from the shared
+    // rich-or-baseline `narrative` or from ui_signals_v1 — never from `rn`.
+    // Summary prose. Asserted from just past the "1933" citation, because
+    // CitedText renders that citation as a superscript mid-sentence and the
+    // sentence is therefore never contiguous in the HTML.
+    expect(html).toContain('the International Rescue Committee provides vital emergency relief');
+    expect(html).toContain('Methodology details');
+    expect(html).toContain('$4,088'); // cost per beneficiary
+    expect(html).toContain('88%'); // program ratio
+    expect(html).toContain('2.4 mo'); // reserves
+    expect(html).toContain('High Conviction'); // assessment_label (ui_signals_v1)
+    expect(html).toContain('Frontline Relief'); // archetype_label (ui_signals_v1)
+    expect(html).toContain('Verified'); // evidence_stage (ui_signals_v1, as on /browse)
+    for (const heading of SECTION_HEADINGS) expect(html).toContain(heading);
+    for (const id of SECTION_IDS) expect(html).toContain(`data-section="${id}"`);
+
+    // 2. The signed-out prompt follows the baseline rather than replacing it.
     expect(html).toContain('is free');
     expect(html).toContain('See Full Evaluations');
 
@@ -103,22 +129,19 @@ describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous w
     expect(html).not.toMatch(/70(<!-- -->)?\/100/); // peer amalScore
     expect(html).not.toMatch(/68(<!-- -->)?\/100/); // peer amalScore
 
-    // 5. Nothing evaluative leaked: no scores, no financial figures, no
-    // conviction/quality tags, no section headings, no data-section
-    // wrapper, and no summary/headline prose.
-    expect(html).not.toContain('37 / 50'); // Impact score/max
-    expect(html).not.toContain('41 / 50'); // Alignment score/max
-    expect(html).not.toContain('$4,088'); // cost per beneficiary
-    expect(html).not.toContain('88%'); // program ratio
-    expect(html).not.toContain('2.4 mo'); // reserves
-    expect(html).not.toContain('Strong Match'); // GMG recommendation cue
-    expect(html).not.toContain('High Conviction'); // assessment_label
-    expect(html).not.toContain('Frontline Relief'); // archetype_label
-    expect(html).not.toContain('Verified'); // evidence_stage
-    expect(html).not.toContain('Founded in 1933, the International Rescue Committee provides'); // summary prose
-    expect(html).not.toContain('Methodology details');
-    for (const heading of SECTION_HEADINGS) expect(html).not.toContain(heading);
-    for (const id of SECTION_IDS) expect(html).not.toContain(`data-section="${id}"`);
+    // 5. The member-only line holds. Raw score numerals stay out (the
+    // qualitative bands beside them are public), and so does every string
+    // the adapter sources from `rn`.
+    // `{dim.score} / {dim.max}` are adjacent text expressions, so React SSR
+    // emits `37<!-- --> / <!-- -->50` and a plain toContain('37 / 50') can
+    // never match — it would pass no matter what this code did. Same trap the
+    // peer-score assertion below documents. Verified by mutation: forcing
+    // showScore/showScores true turns both of these red.
+    expect(html).not.toMatch(/37(<!-- -->)?\s*\/\s*(<!-- -->)?50/); // Impact score/max
+    expect(html).not.toMatch(/41(<!-- -->)?\s*\/\s*(<!-- -->)?50/); // Alignment score/max
+    expect(html).not.toContain('David Miliband'); // rn.organizational_capacity.ceo_name
+    expect(html).not.toContain('Extensive program tracking backed by external impact evaluations'); // rn.impact_evidence
+    expect(html).not.toContain('Expanding global humanitarian crises'); // rn.long_term_outlook
   }, 20000);
 
   it('renders different wall counts for a second charity, proving the counts are not hardcoded', async () => {
@@ -130,8 +153,11 @@ describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous w
     expect(html).toContain('5 cited claims from 5 sources');
     expect(html).toContain('Grant flow analysis across 11 grants');
 
-    // Same evaluative figures must stay absent for this charity too.
-    expect(html).not.toContain('Methodology details');
-    for (const id of SECTION_IDS) expect(html).not.toContain(`data-section="${id}"`);
+    // The baseline tier renders for this charity too...
+    expect(html).toContain('Methodology details');
+    for (const id of SECTION_IDS) expect(html).toContain(`data-section="${id}"`);
+
+    // ...and the raw score numerals still do not.
+    expect(html).not.toMatch(/\d+ \/ 50/);
   }, 20000);
 });

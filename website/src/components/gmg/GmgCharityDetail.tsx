@@ -86,7 +86,8 @@ const DimensionCard: React.FC<{
   dim: GmgDimension;
   p: GmgPalette;
   sectionBorder: string;
-}> = ({ label, blurb, dim, p, sectionBorder }) => (
+  showScore?: boolean;
+}> = ({ label, blurb, dim, p, sectionBorder, showScore = false }) => (
   <div
     style={{
       border: sectionBorder,
@@ -105,9 +106,11 @@ const DimensionCard: React.FC<{
         <Figure size={28} color={p.fg} italic>
           {dim.overall}
         </Figure>
-        <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
-          {dim.score} / {dim.max}
-        </div>
+        {showScore && (
+          <div style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginTop: 2 }}>
+            {dim.score} / {dim.max}
+          </div>
+        )}
       </div>
     </div>
     <div style={{ fontSize: 11, color: p.sub2, lineHeight: 1.4 }}>{blurb}</div>
@@ -120,7 +123,8 @@ const DimensionDetail: React.FC<{
   color: string;
   p: GmgPalette;
   sectionBorder: string;
-}> = ({ title, dim, color, p, sectionBorder }) => (
+  showScores?: boolean;
+}> = ({ title, dim, color, p, sectionBorder, showScores = false }) => (
   <div style={{ border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
       <Figure size={26} color={color} italic>
@@ -145,9 +149,11 @@ const DimensionDetail: React.FC<{
           <div>
             <div style={{ fontSize: 13, color: p.fg, fontWeight: 500 }}>
               {cr.name}
-              <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginLeft: 8 }}>
-                {cr.scored}/{cr.possible}
-              </span>
+              {showScores && (
+                <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: p.sub2, marginLeft: 8 }}>
+                  {cr.scored}/{cr.possible}
+                </span>
+              )}
             </div>
             <div style={{ fontSize: 11, color: p.sub, marginTop: 2, lineHeight: 1.45 }}>{cr.note}</div>
           </div>
@@ -289,17 +295,18 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {[c.address, c.region, c.ein && `EIN ${c.ein}`, c.founded && `Founded ${c.founded}`].filter(Boolean).join(' · ')}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
-              {/* Wallet (zakat status), asnaf, and category are public facts,
-                  not evaluative judgments — visible regardless of sign-in.
-                  The conviction/quality tags below them ARE the evaluation's
-                  verdict, so they're gated with everything else. */}
+              {/* All baseline tier: /browse already publishes each charity's
+                  evidence stage and quality bands to anonymous visitors, so
+                  hiding the same facts on the charity's own page withheld
+                  nothing that wasn't public one click away. Numeric scores
+                  are the member-only line — see showScore/showScores below. */}
               <Tag tone="accent" p={p}>{c.wallet}</Tag>
               {c.asnaf && <Tag tone="accent" p={p}>{c.asnaf}</Tag>}
               {c.category && <Tag p={p}>{c.category}</Tag>}
-              {isMember && c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
-              {isMember && c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
-              {isMember && c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
-              {isMember && c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
+              {c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
+              {c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
+              {c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
+              {c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
@@ -321,12 +328,13 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             </div>
           </div>
 
-          {/* Rating cards — the evaluation's verdict, gated with everything
-              else evaluative on the page. */}
-          {isMember && (
+          {/* Rating cards — the qualitative bands are baseline tier (the same
+              ones /browse publishes anonymously); only the raw score/max
+              numerals underneath them are member-only. */}
+          {(
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, flex: isMobile ? '1 1 100%' : '0 1 400px', minWidth: isMobile ? 0 : 320 }}>
-              <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} p={p} sectionBorder={sectionBorder} />
-              <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} p={p} sectionBorder={sectionBorder} />
+              <DimensionCard label="Impact" blurb="Indicators of effective programs" dim={c.impact} p={p} sectionBorder={sectionBorder} showScore={isMember} />
+              <DimensionCard label="Alignment" blurb="Fit with Muslim donor priorities" dim={c.alignment} p={p} sectionBorder={sectionBorder} showScore={isMember} />
               <div
                 style={{
                   gridColumn: '1 / span 2',
@@ -366,11 +374,13 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         </div>
       </section>
 
-      {/* Everything below is the evaluation itself — stat strip, the six
-          donor-question sections, and methodology detail. A signed-out
-          visitor gets the wall instead of a hole in the page; a signed-in
-          member gets exactly what this page has always rendered. */}
-      {isMember ? (
+      {/* Everything below is the baseline tier — stat strip, the six
+          donor-question sections, and methodology detail — and it renders
+          for every visitor including Googlebot. The rich tier inside these
+          sections stays member-only via each section's own GatedBlock (the
+          mechanical `rn` boundary), and AnonWall follows as the single
+          consolidated prompt once a signed-out reader has the essentials. */}
+      {(
         <>
           {/* Stat strip */}
           <section style={{ borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', background: p.bg2 }}>
@@ -445,8 +455,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               </div>
             )}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
-              <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} />
-              <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} />
+              <DimensionDetail title="Impact" dim={c.impact} color={p.accent} p={p} sectionBorder={sectionBorder} showScores={isMember} />
+              <DimensionDetail title="Alignment" dim={c.alignment} color={p.accent2} p={p} sectionBorder={sectionBorder} showScores={isMember} />
             </div>
             {/* Credibility has no numeric score in the export (unlike Impact/Alignment),
                 so it gets a plain cited explanation rather than a HarveyBall card. */}
@@ -461,9 +471,12 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             )}
           </section>
         </>
-      ) : (
-        <AnonWall c={c} p={p} padX={padX} />
       )}
+
+      {/* Signed-out prompt. It follows the baseline rather than replacing it,
+          and its counts describe only what the GatedBlocks above still hold
+          back — see AnonWall's header comment. */}
+      {!isMember && <AnonWall c={c} p={p} padX={padX} />}
 
       {/* Similar charities — ungated, SSR-crawlable: links render for every visitor
           including Googlebot so the prerendered HTML carries real /charity/<ein>/ hrefs. */}
