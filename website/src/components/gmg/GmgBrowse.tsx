@@ -4,7 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -25,11 +25,19 @@ import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptRow, GmgRow } from './charityAdapter';
 import { charityPath } from '../../lib/paths';
+import { BrowseFacets } from './BrowseFacets';
+import {
+  facetReducer,
+  applyFacets,
+  facetStateToSearch,
+  facetStateFromSearch,
+  isFacetActive,
+} from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'size';
+const EVIDENCE_RANK: Record<string, number> = { Verified: 4, Established: 3, Building: 2, Early: 1 };
+type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'programPct' | 'evidence' | 'size';
 type SortDir = 'asc' | 'desc';
-type WalletFilter = 'all' | 'zakat' | 'sadaqah';
 
 const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
 
@@ -56,88 +64,6 @@ const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = (
   </span>
 );
 
-const FilterPills: React.FC<{
-  p: GmgPalette;
-  padX: number;
-  query: string;
-  setQuery: (v: string) => void;
-  wallet: WalletFilter;
-  setWallet: (v: WalletFilter) => void;
-  total: number;
-  zakatCount: number;
-  resultCount: number;
-  isMobile: boolean;
-}> = ({ p, padX, query, setQuery, wallet, setWallet, total, zakatCount, resultCount, isMobile }) => {
-  const sectionBorder = `1px solid ${p.rule}`;
-  const inputStyle: React.CSSProperties = {
-    flex: '1 1 240px',
-    minWidth: 0,
-    padding: '8px 12px',
-    borderRadius: 99,
-    border: sectionBorder,
-    background: p.bg,
-    color: p.fg,
-    fontFamily: FONT_TEXT,
-    fontSize: 16,
-    outline: 'none',
-  };
-  const pill = (active: boolean): React.CSSProperties => ({
-    padding: '3px 9px',
-    borderRadius: 99,
-    cursor: 'pointer',
-    fontFamily: FONT_MONO,
-    fontSize: 9.5,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    border: `1px solid ${active ? p.chip : p.rule}`,
-    background: active ? p.chip : 'transparent',
-    color: active ? p.chipFg : p.sub,
-  });
-  return (
-    <section
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 10,
-        alignItems: 'center',
-        padding: `10px ${padX}px`,
-        background: p.bg2,
-        borderBottom: sectionBorder,
-        fontSize: 12,
-      }}
-    >
-      <label htmlFor="gmg-browse-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-        Search charities
-      </label>
-      <input
-        id="gmg-browse-search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search charities, EINs, causes…"
-        style={inputStyle}
-      />
-      <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-        <Kicker p={p}>Wallet</Kicker>
-        {(
-          [
-            ['all', `All ${total}`],
-            ['zakat', `Zakat ${zakatCount}`],
-            ['sadaqah', `Sadaqah ${total - zakatCount}`],
-          ] as [WalletFilter, string][]
-        ).map(([key, label]) => (
-          <button key={key} onClick={() => setWallet(key)} style={pill(wallet === key)}>
-            {label}
-          </button>
-        ))}
-      </span>
-      <span style={{ flex: 1 }} />
-      <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', color: p.sub2, textTransform: 'uppercase' }}>
-        {resultCount} of {total}{!isMobile ? ' · Click a column to sort' : ''}
-      </span>
-    </section>
-  );
-};
-
 const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: FontTheme; count: number }> = ({
   p,
   padX,
@@ -159,7 +85,7 @@ interface Col {
   label: string;
   tip?: string;
   width?: number;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 }
 const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },
@@ -167,6 +93,8 @@ const COLS: Col[] = [
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
   { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
+  { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
+  { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },
   { key: 'size', label: 'Size', tip: 'Annual revenue from the latest filing.', width: 76, align: 'right' },
 ];
 
@@ -210,8 +138,53 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     ['--gmg-arabic' as any]: ft.arabic,
   };
 
-  const [query, setQuery] = useState('');
-  const [wallet, setWallet] = useState<WalletFilter>('all');
+  const [state, dispatch] = useReducer(
+    facetReducer,
+    undefined,
+    () => facetStateFromSearch(typeof window === 'undefined' ? '' : window.location.search),
+  );
+
+  // Facet state is shareable but must never create a crawlable URL or a
+  // history entry: replaceState only, and the prerender emits just /browse.
+  // Merge into the existing query string rather than replacing it wholesale —
+  // params this page doesn't own (utm_source, gclid, the ?type= font preview,
+  // …) must survive both mount and every later facet change.
+  //
+  // Debounced: `query` lives in this same state, so every keystroke in the
+  // search box would otherwise fire its own history.replaceState — browsers
+  // rate-limit the history API and Safari has historically thrown
+  // SecurityError past that limit. The cleanup below cancels a pending write
+  // whenever state changes again before it fires, so a burst of keystrokes
+  // (or facet clicks) collapses into one write, 300ms after things go quiet.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      for (const k of ['q', 'wallet', 'scope', 'cause', 'asnaf', 'region', 'size', 'evidence']) params.delete(k);
+      for (const [k, v] of new URLSearchParams(facetStateToSearch(state))) params.set(k, v);
+      const qs = params.toString();
+      const url = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`;
+      window.history.replaceState(window.history.state, '', url);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [state]);
+
+  // The static /browse/index.html is indexable and canonical. A filtered view is
+  // the same page with a query string; ?type= previously leaked crawl budget
+  // here, so tell a JS-rendering crawler explicitly not to index filtered states.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const active = isFacetActive(state);
+    const tag = document.querySelector('meta[name="robots"][data-gmg-facets]');
+    if (active && !tag) {
+      const newTag = document.createElement('meta');
+      newTag.setAttribute('name', 'robots');
+      newTag.setAttribute('content', 'noindex,follow');
+      newTag.setAttribute('data-gmg-facets', '');
+      document.head.appendChild(newTag);
+    }
+    return () => { document.querySelector('meta[name="robots"][data-gmg-facets]')?.remove(); };
+  }, [state]);
   // Default: by overall GMG band (best first). It's a band, not a numeric rank,
   // and unscored charities fall to the bottom rather than getting a fake score.
   const [sortBy, setSortBy] = useState<SortKey>('overall');
@@ -240,16 +213,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     () => (charities || []).map(adaptRow).filter((r) => r.ein),
     [charities],
   );
-  const zakatCount = useMemo(() => allRows.filter((r) => r.walletIsZakat).length, [allRows]);
 
   const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const r = allRows.filter((row) => {
-      if (wallet === 'zakat' && !row.walletIsZakat) return false;
-      if (wallet === 'sadaqah' && row.walletIsZakat) return false;
-      if (q && !(`${row.name} ${row.ein} ${row.cause}`.toLowerCase().includes(q))) return false;
-      return true;
-    });
+    const r = applyFacets(allRows, state);
     const dir = sortDir === 'asc' ? 1 : -1;
     return [...r].sort((a, b) => {
       let v = 0;
@@ -274,6 +240,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
         case 'donorFit':
           v = RANK[a.donorFit] - RANK[b.donorFit];
           break;
+        case 'programPct':
+          v = (a.programPct ?? -1) - (b.programPct ?? -1);
+          break;
+        case 'evidence':
+          v = (EVIDENCE_RANK[a.verification] ?? 0) - (EVIDENCE_RANK[b.verification] ?? 0);
+          break;
         case 'size':
           v = (a.revenue ?? -1) - (b.revenue ?? -1);
           break;
@@ -283,7 +255,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       if (v === 0 && sortBy !== 'name') v = a.name.localeCompare(b.name);
       return v;
     });
-  }, [allRows, query, wallet, sortBy, sortDir]);
+  }, [allRows, state, sortBy, sortDir]);
 
   const sectionBorder = `1px solid ${p.rule}`;
   const hrefFor = charityPath;
@@ -307,17 +279,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   return shell(
     <>
       <SubHeader p={p} padX={padX} isMobile={isMobile} ft={ft} count={allRows.length} />
-      <FilterPills
+      <BrowseFacets
+        state={state}
+        dispatch={dispatch}
+        rows={allRows}
         p={p}
         padX={padX}
-        query={query}
-        setQuery={setQuery}
-        wallet={wallet}
-        setWallet={setWallet}
-        total={allRows.length}
-        zakatCount={zakatCount}
-        resultCount={rows.length}
         isMobile={isMobile}
+        total={allRows.length}
+        resultCount={rows.length}
       />
 
       {rows.length === 0 ? (
@@ -328,13 +298,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             No charities match
           </p>
           <p style={{ fontSize: 15, color: p.sub2, margin: '10px 0 20px' }}>
-            {query.trim()
-              ? <>Nothing in the index matches “{query.trim()}”.</>
+            {state.query.trim()
+              ? <>Nothing in the index matches “{state.query.trim()}”.</>
               : 'No charities match the current filter.'}
           </p>
           <button
             type="button"
-            onClick={() => { setQuery(''); setWallet('all'); }}
+            onClick={() => dispatch({ type: 'clearAll' })}
             style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', padding: '10px 18px', borderRadius: 999, border: `1px solid ${p.rule}`, background: 'transparent', color: p.fg, cursor: 'pointer' }}
           >
             Clear filters
@@ -395,14 +365,28 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <Kicker p={p}>Donor fit</Kicker>
                   <RatingCell rating={row.donorFit} p={p} />
                 </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Kicker p={p}>Program %</Kicker>
+                  <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: p.fg }}>
+                    {row.programPct == null ? '—' : `${row.programPct}%`}
+                  </span>
+                </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Kicker p={p}>Evidence</Kicker>
+                  <Tag tone="muted" p={p}>{row.verification}</Tag>
+                </span>
               </div>
             </div>
           ))}
         </section>
       ) : (
-        /* Desktop: dense, sortable table */
-        <section style={{ padding: `0 ${padX}px 28px` }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }}>
+        /* Desktop: dense, sortable table.
+           The table needs ~960px, but the layout switches to it at 768px, so
+           between those widths (tablet) it was pushing the whole page body
+           sideways and cutting off the last column. Scroll it inside its own
+           container instead — same treatment GmgCompare already uses. */
+        <section style={{ padding: `0 ${padX}px 28px`, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 900 }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
                 style={{
@@ -479,6 +463,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.financialHealth} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.risk} p={p} /></td>
                   <td style={{ padding: '8px 6px' }}><RatingCell rating={row.donorFit} p={p} /></td>
+                  <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
+                    {row.programPct == null ? '—' : `${row.programPct}%`}
+                  </td>
+                  <td style={{ padding: '8px 6px' }}>
+                    <Tag tone="muted" p={p}>{row.verification}</Tag>
+                  </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
                     {fmtMoney(row.revenue)}
                   </td>

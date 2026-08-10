@@ -97,7 +97,10 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
       effectiveness: null,
     },
     financials: {
-      totalRevenue: summary.totalRevenue || 0,
+      // `?? null`, not `|| 0`: a null totalRevenue means "no filed figure",
+      // not "$0 revenue" — coercing it to 0 made 7 charities silently band as
+      // the smallest size tier and display "$0" instead of "—" on browse.
+      totalRevenue: summary.totalRevenue ?? null,
       totalExpenses: 0,
       programExpenses: 0,
       adminExpenses: 0,
@@ -155,6 +158,7 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
     scoreSummary: summary.scoreSummary || null,
     // Asnaf categories for browse page filtering
     asnafServed: summary.asnafServed || null,
+    isMuslimCharity: summary.isMuslimCharity,
     rubricArchetype: summary.rubricArchetype || null,
     slug: summary.slug || null,
     headline: summary.headline || null,

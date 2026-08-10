@@ -72,8 +72,7 @@ const targetCharity: any = {
   category: 'HUMANITARIAN',
   primaryCategory: 'HUMANITARIAN',
   programs: [],
-  populationsServed: [],
-  geographicCoverage: [],
+  targeting: { populationsServed: [], geographicCoverage: [] },
   amalEvaluation: {
     charity_ein: '12-3456789',
     charity_name: 'Target Org',
