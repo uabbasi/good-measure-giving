@@ -119,8 +119,24 @@ export const WhereMoneyGoes: React.FC<{
     });
   }
 
+  // Every block below is independently guarded, so a charity with no filed
+  // financials at all (all figures null, no grants, fewer than two years of
+  // series) rendered the heading over nothing. The section still has to mount
+  // — SectionRail observes [data-section] once and would never see a node
+  // added later — so say plainly that we have no figures rather than leaving
+  // a bare heading. Deliberately does not name a cause: `noFilings` is not
+  // the only way to arrive here, and asserting "does not file" from an absent
+  // figure would be a claim we cannot source.
+  const hasFigures = Boolean(split) || gikFacts.length > 0 || c.financialSeries.length >= 2 || Boolean(gf);
+
   return (
     <Section id="money" title="Where your money goes" p={p} padX={padX}>
+      {!hasFigures && (
+        <p style={{ fontSize: 13, color: p.sub, lineHeight: 1.55, margin: 0, maxWidth: '75ch' }}>
+          No financial figures are available for this organization — we hold no Form 990 income
+          statement, expense breakdown, or grant records for it.
+        </p>
+      )}
       {split && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: p.sub2, marginBottom: 4 }}>

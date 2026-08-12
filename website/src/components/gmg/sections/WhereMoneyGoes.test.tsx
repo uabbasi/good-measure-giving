@@ -29,11 +29,39 @@ const withNamedRecipients = () => load('charity-04-2535767.json');
 const bothNamedAndUnattributed = () => load('charity-06-0726487.json');
 // No grantsData at all -> grantFlows is null.
 const noGrants = () => load('charity-01-0548371.json');
+// Al-Barr Foundation — no filed financials whatsoever: every figure null, no
+// grants, fewer than two years of series. 5 of 135 published charities look
+// like this, and each rendered the section heading over an empty body until
+// the empty state below.
+const noFinancialsAtAll = () => load('charity-85-3964369.json');
 // All three GIK signals present, including domesticBurnRate: 0 (a real
 // value, not an absent one).
 const allGikSignals = () => load('charity-13-1760110.json');
 
 describe('WhereMoneyGoes', () => {
+  it('states that no figures exist rather than heading an empty section', () => {
+    const c = noFinancialsAtAll();
+    // Pin the precondition, so this stops being a real case loudly rather
+    // than passing vacuously if the charity is ever backfilled.
+    expect(c.totalRevenue).toBeNull();
+    expect(c.grantFlows).toBeNull();
+    expect(c.financialSeries.length).toBeLessThan(2);
+
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    const text = container.textContent ?? '';
+    expect(text).toContain('No financial figures are available');
+    // The section must still mount for SectionRail to observe it.
+    expect(container.querySelector('[data-section="money"]')).not.toBeNull();
+    // And the body is no longer just the heading.
+    expect(text.replace(/\s+/g, ' ').trim().length).toBeGreaterThan(80);
+  });
+
+  it('does not show the empty state when figures exist', () => {
+    const c = withNamedRecipients();
+    const { container } = render(<WhereMoneyGoes c={c} p={p} isMobile={false} padX={16} />);
+    expect(container.textContent).not.toContain('No financial figures are available');
+  });
+
   it('renders the expense split derived from real filed figures', () => {
     const c = withNamedRecipients();
     expect(c.programRatioPct).not.toBeNull();
