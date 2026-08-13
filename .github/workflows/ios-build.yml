@@ -1,0 +1,68 @@
+name: iOS Build
+
+# Builds the Capacitor iOS app for the Simulator on a macOS runner, unsigned
+# (CODE_SIGNING_ALLOWED=NO), so it stays green without any signing secrets.
+# iOS can only be compiled on macOS, so this job requires a macos-* runner.
+#
+# A device/TestFlight archive is intentionally not produced here — that needs an
+# Apple Developer account and signing assets. See website/ios/README.md.
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths:
+      - "website/**"
+      - ".github/workflows/ios-build.yml"
+  pull_request:
+    paths:
+      - "website/**"
+      - ".github/workflows/ios-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build web app + sync Capacitor (iOS)
+        run: npm run ios:sync
+
+      - name: Build iOS app (Simulator, unsigned)
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Upload .app (Simulator build)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ios-simulator
+          path: website/ios/build/Build/Products/Debug-iphonesimulator/App.app
+          if-no-files-found: error
