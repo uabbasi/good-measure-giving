@@ -63,6 +63,30 @@ const stripTags = (s: unknown): string =>
         .trim()
     : '';
 
+// Pipeline evidence strings sometimes restate a criterion's own scored/possible
+// fraction in prose — "Cause area: Humanitarian (13/13)", "Revenue: $58.0M
+// (3/5 funding gap)", "Founded 1933 (93 years — 6/6)". That's the exact number
+// the dedicated scored/possible display already renders (member-only), so
+// leaving it in the note text republished it in public prose regardless of
+// who's signed in. Strips only the fraction that matches THIS criterion's own
+// scored/possible — not any other digits the note happens to contain — and
+// drops a parenthetical entirely if the fraction was the only thing in it.
+export const stripScoreFraction = (note: string, scored: number, possible: number): string =>
+  note
+    .replace(/\(([^)]*)\)/g, (full: string, inner: string) => {
+      const fraction = new RegExp(`\\b${scored}\\s*/\\s*${possible}\\b`);
+      if (!fraction.test(inner)) return full;
+      const cleaned = inner
+        .replace(fraction, '')
+        .replace(/^\s*[—-]\s*/, '')
+        .replace(/\s*[—-]\s*$/, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+      return cleaned ? `(${cleaned})` : '';
+    })
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
 // Coerce numbers OR numeric strings (the exported JSON stores some financial
 // figures as strings, e.g. workingCapitalMonths: "18.00").
 const num = (v: unknown, d = 0): number => {
@@ -111,7 +135,7 @@ const buildDimension = (raw: any, overallScore: unknown, max = 50): GmgDimension
     rating: ratingFromCriterion(num(c?.scored), num(c?.possible, 1)),
     scored: num(c?.scored),
     possible: num(c?.possible),
-    note: stripTags(c?.evidence) || '—',
+    note: stripScoreFraction(stripTags(c?.evidence) || '—', num(c?.scored), num(c?.possible)),
     improvement: c?.improvement_suggestion ? stripTags(c.improvement_suggestion) : undefined,
     improvementValue: num(c?.improvement_value),
   }));

@@ -14,6 +14,7 @@ import {
   buildCharityTitle,
   buildCharityDescription,
   buildCharityFaqPairs,
+  scoreToBand,
   type ZakatStatus,
 } from './lib/charity-seo';
 import { filterCharitiesByCategory, isCuratedMuslimCharity, type HubCharity } from './lib/cause-seo';
@@ -351,7 +352,7 @@ function buildStaticMeta(): PageMeta[] {
   ];
 }
 
-function buildCharityMeta(detail: CharityDetail): PageMeta {
+export function buildCharityMeta(detail: CharityDetail): PageMeta {
   const amal = detail.amalEvaluation;
   const name = detail.name;
   const score = amal?.amal_score;
@@ -411,21 +412,12 @@ function buildCharityMeta(detail: CharityDetail): PageMeta {
     };
   }
 
-  if (score != null) {
-    // Single editorial rating from one named evaluator — that's a Review, not
-    // an AggregateRating. AggregateRating with ratingCount:1 gets flagged or
-    // suppressed by Google as a bad-shape markup.
-    jsonLd.review = {
-      '@type': 'Review',
-      author: { '@type': 'Organization', name: 'Good Measure Giving' },
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: score,
-        bestRating: 100,
-        worstRating: 0,
-      },
-    };
-  }
+  // No Review/Rating block: schema.org's Rating.ratingValue is defined as a
+  // number, and Google's rich-results validator expects one it can render as
+  // a star rating — there's no honest way to publish this structured data
+  // without publishing the number underneath it. The GMG score is
+  // member-only everywhere else on the site (the detail page's own score
+  // display, the similar-charities peer list), so it stays out of markup too.
 
   const faqPairs = buildCharityFaqPairs({
     name,
@@ -943,7 +935,7 @@ async function prerenderPages() {
         route: `/charity/${charity.ein}`,
         title: `${charity.name} | Good Measure Giving`,
         description: truncate(
-          `${charity.name}: ${charity.amalScore ?? 'N/A'}/100. ${(charity.walletTag || '').replace(/-/g, ' ').toLowerCase()}`,
+          `${charity.name}: ${scoreToBand(charity.amalScore ?? null) ?? 'Evaluated'}. ${(charity.walletTag || '').replace(/-/g, ' ').toLowerCase()}`,
           160
         ),
         canonical: `${SITE_URL}/charity/${charity.ein}`,

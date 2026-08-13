@@ -5,8 +5,18 @@
  */
 
 import type { FaqPair } from './schema';
+import { ratingFromGmgScore } from '../../src/components/gmg/rating';
 
 export type ZakatStatus = 'ZAKAT_ELIGIBLE' | 'SADAQAH_ONLY' | 'UNCLEAR' | 'NEW_ORG';
+
+// The numeric GMG score is member-only everywhere else on the site (the
+// detail page's dedicated score display, the similar-charities peer list —
+// see GmgCharityDetail.tsx and charity-seo's own selectSimilarCharities).
+// Title tags, meta descriptions, and FAQ text are public and crawlable, so
+// they get the same qualitative band /browse already shows anonymously —
+// never the number underneath it.
+export const scoreToBand = (score: number | null): string | null =>
+  score != null ? ratingFromGmgScore(score) : null;
 
 export interface ZakatStatusInput {
   walletTag: string | null;
@@ -30,11 +40,12 @@ export function buildCharityTitle(input: CharityTitleInput): string {
   if (input.zakatStatus === 'NEW_ORG') {
     return `${input.name} Review: Early-Stage Muslim Charity | GMG`;
   }
-  const scorePart = input.score != null ? `${input.score}/100 Rating` : 'Evaluated';
-  if (input.zakatStatus === 'ZAKAT_ELIGIBLE' && input.score != null) {
-    return `Is ${input.name} Zakat Eligible? ${input.score}/100 Rating & Review | GMG`;
+  const band = scoreToBand(input.score);
+  const scorePart = band != null ? `${band} Rating` : 'Evaluated';
+  if (input.zakatStatus === 'ZAKAT_ELIGIBLE' && band != null) {
+    return `Is ${input.name} Zakat Eligible? ${band} Rating & Review | GMG`;
   }
-  if (input.score != null) {
+  if (band != null) {
     return `${input.name} Review: ${scorePart} & Zakat Status | GMG`;
   }
   return `${input.name} Review: ${scorePart} | GMG`;
@@ -66,7 +77,8 @@ export function buildCharityDescription(input: CharityDescriptionInput): string 
     default:
       lead = `${input.name} evaluated by Good Measure Giving.`;
   }
-  const scorePart = input.score != null ? ` Good Measure Giving score: ${input.score}/100 (Impact + Alignment).` : '';
+  const band = scoreToBand(input.score);
+  const scorePart = band != null ? ` Good Measure Giving rating: ${band} (Impact + Alignment).` : '';
   const raw = `${lead}${scorePart} ${input.missionFragment}`.trim();
   return truncate(raw, 160);
 }
@@ -97,10 +109,11 @@ export function buildCharityFaqPairs(input: CharityFaqInput): FaqPair[] {
       zakatA = `${input.name}'s zakat-acceptance stance is unclear in public sources. Good Measure Giving surfaces the charity's own claim when stated; when it's not clearly stated, we flag it as unclear rather than guess.`;
   }
 
-  const ratingQ = `What is ${input.name}'s Good Measure Giving score?`;
-  const ratingA = input.score != null
-    ? `Good Measure Giving scores ${input.name} ${input.score}/100. The score combines Impact (how effectively the charity is set up to deliver results — cost efficiency, evidence practices, financial health, governance) and Alignment (fit for Muslim donors — cause urgency, donor fit, funding gap, track record), with up to 10 points deducted for red flags.`
-    : `${input.name} is evaluated by Good Measure Giving but does not yet have a numeric score.`;
+  const ratingQ = `What is ${input.name}'s Good Measure Giving rating?`;
+  const band = scoreToBand(input.score);
+  const ratingA = band != null
+    ? `Good Measure Giving rates ${input.name} ${band}. The rating combines Impact (how effectively the charity is set up to deliver results — cost efficiency, evidence practices, financial health, governance) and Alignment (fit for Muslim donors — cause urgency, donor fit, funding gap, track record), and red flags can lower it.`
+    : `${input.name} is evaluated by Good Measure Giving but does not yet have a rating.`;
 
   const locationQ = `Where is ${input.name} based and what do they do?`;
   const locationParts: string[] = [];
