@@ -28,12 +28,16 @@
     "android:assets": "npx @capacitor/assets generate --android --iconBackgroundColor '#059669' --iconBackgroundColorDark '#020617' --splashBackgroundColor '#059669' --splashBackgroundColorDark '#020617'",
     "android:open": "npx cap open android",
     "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug",
-    "android:aab": "npm run android:sync && cd android && ./gradlew bundleRelease"
+    "android:aab": "npm run android:sync && cd android && ./gradlew bundleRelease",
+    "ios:sync": "npm run build && npx cap sync ios",
+    "ios:assets": "npx @capacitor/assets generate --ios --iconBackgroundColor '#059669' --iconBackgroundColorDark '#020617' --splashBackgroundColor '#059669' --splashBackgroundColorDark '#020617'",
+    "ios:xcode": "npx cap open ios"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",

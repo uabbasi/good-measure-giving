@@ -10,8 +10,13 @@ const config: CapacitorConfig = {
     // browsing. Firebase auth and live nisab prices still require network.
     allowMixedContent: false,
   },
+  ios: {
+    // Match Android: bundled charity data works offline; auth/nisab need network.
+    contentInset: 'automatic',
+  },
   server: {
     androidScheme: 'https',
+    iosScheme: 'https',
   },
 };
 
