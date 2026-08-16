@@ -685,6 +685,56 @@ class TestRiskScorer:
         _case_against, deduction = RiskScorer().evaluate(m)
         assert deduction == 0
 
+    def test_material_diversion_of_assets_deducts_8(self):
+        """IRS 990 Part VI Line 5 self-report, rubric v5.4.0."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+            material_diversion_of_assets_reported=True,
+        )
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -8
+        assert any("material diversion" in r.description.lower() for r in case_against.risks)
+
+    def test_related_party_transactions_deducts_3(self):
+        """IRS 990 Part VI Line 2 family/business relationships, rubric v5.4.0."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+            family_business_relationships_among_officers=True,
+        )
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -3
+        assert any("family or business relationships" in r.description.lower() for r in case_against.risks)
+
+    def test_no_governance_red_flags_no_deduction(self):
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+            material_diversion_of_assets_reported=False,
+            family_business_relationships_among_officers=False,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+
     def test_unknown_filing_year_no_deduction(self):
         m = _base_metrics(
             program_expense_ratio=0.85,

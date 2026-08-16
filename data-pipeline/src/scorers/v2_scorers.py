@@ -82,7 +82,7 @@ from src.utils.scoring_audit import (
 # Do NOT mirror this string onto the site again: it used to be copied there by
 # hand, the copy drifted, and the site served "METHODOLOGY v5.2.0" over scores
 # this file had already stamped 5.3.0.
-RUBRIC_VERSION = "5.3.0"
+RUBRIC_VERSION = "5.4.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -518,6 +518,8 @@ RISK_DEDUCTIONS = {
     "high_fundraising_ratio": -2,
     "excessive_reserves_non_zakat": -2,
     "geographic_mismatch": -1,
+    # IRS 990 Part VI self-reported red flags (rubric v5.4.0).
+    "material_diversion_of_assets": -8,
     # Filing currency (rubric v5.3.0): 990 filings normally lag ~2 years;
     # 3+ years without a data-bearing filing is a governance red flag, 5+ is
     # severe (IRS auto-revokes after 3 consecutive missed years).
@@ -2188,6 +2190,8 @@ class RiskScorer:
     - gik_inflation: -5 (Form 990 XML noncash)
     - high_domestic_burn: -5 (Schedule F)
     - zakat_hoarding: -3 (Balance Sheet)
+    - material_diversion_of_assets: -8 (Form 990 Part VI Line 5, self-reported)
+    - related_party_transactions: -3 (Form 990 Part VI Line 2)
 
     Conflict zone operations never penalized.
     """
@@ -2295,6 +2299,29 @@ class RiskScorer:
                     description="Charity Navigator advisory or governance flag",
                     severity=RiskSeverity.MEDIUM,
                     data_source="Charity Navigator",
+                )
+            )
+
+        # IRS 990 Part VI Line 5 — the org's own self-report, not an inference.
+        if metrics.material_diversion_of_assets_reported:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description="Form 990 reports a material diversion or misuse of assets",
+                    severity=RiskSeverity.HIGH,
+                    data_source="IRS Form 990",
+                )
+            )
+
+        # IRS 990 Part VI Line 2. Common and not inherently disqualifying —
+        # surfaced as a MEDIUM disclosure flag, not treated as fraud evidence.
+        if metrics.family_business_relationships_among_officers:
+            risks.append(
+                RiskFactor(
+                    category=RiskCategory.OPERATIONAL,
+                    description="Form 990 reports family or business relationships among officers/directors",
+                    severity=RiskSeverity.MEDIUM,
+                    data_source="IRS Form 990",
                 )
             )
 
@@ -2500,6 +2527,12 @@ class RiskScorer:
 
         if metrics.board_size is not None and metrics.board_size < 3:
             total += RISK_DEDUCTIONS["board_under_3"]
+
+        if metrics.material_diversion_of_assets_reported:
+            total += RISK_DEDUCTIONS["material_diversion_of_assets"]
+
+        if metrics.family_business_relationships_among_officers:
+            total += RISK_DEDUCTIONS["related_party_transactions"]
 
         # Tier-adjusted: Emerging=0, Growing=-1, Established=-2
         if not metrics.reports_outcomes and not metrics.candid_metrics_count:

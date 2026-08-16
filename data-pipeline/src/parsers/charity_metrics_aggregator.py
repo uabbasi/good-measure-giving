@@ -580,6 +580,16 @@ class CharityMetrics(BaseModel):
     has_financial_audit: Optional[bool] = Field(None, description="Whether org undergoes independent financial audit")
     irs_990_available: Optional[bool] = Field(None, description="Whether IRS 990 forms are publicly available")
 
+    # IRS Form 990 Part VI/VII governance data
+    has_whistleblower_policy: Optional[bool] = Field(None, description="IRS 990 Part VI Line 13")
+    has_document_retention_policy: Optional[bool] = Field(None, description="IRS 990 Part VI Line 14")
+    board_reviewed_990_before_filing: Optional[bool] = Field(None, description="IRS 990 Part VI Line 11a")
+    material_diversion_of_assets_reported: Optional[bool] = Field(None, description="IRS 990 Part VI Line 5 — self-reported")
+    family_business_relationships_among_officers: Optional[bool] = Field(None, description="IRS 990 Part VI Line 2")
+    top_officer_reported_compensation: Optional[float] = Field(
+        None, description="Highest Part VII Section A ReportableCompFromOrgAmt"
+    )
+
     # ========================================================================
     # Form 990 Filing Status
     # ========================================================================
@@ -1356,6 +1366,7 @@ class CharityMetricsAggregator:
         propublica_990: Optional[Dict[str, Any]] = None,
         candid_profile: Optional[Dict[str, Any]] = None,
         grants_profile: Optional[Dict[str, Any]] = None,
+        governance_profile: Optional[Dict[str, Any]] = None,
         website_profile: Optional[Dict[str, Any]] = None,
         website_context: Optional[Dict[str, Any]] = None,
         givewell_profile: Optional[Dict[str, Any]] = None,
@@ -1374,6 +1385,8 @@ class CharityMetricsAggregator:
             propublica_990: ProPublica/IRS 990 data
             candid_profile: Candid profile data
             grants_profile: Form 990 grants data (Schedule I domestic + Schedule F foreign)
+            governance_profile: Form 990 Part VI/VII data (board, policies, officers) — same
+                filing as grants_profile, parsed by the same collector
             website_profile: Charity website data
             website_context: Full website source payload (e.g., includes page_extractions)
             discovered_profile: Discovered data from web search (zakat verification, etc.)
@@ -1420,6 +1433,8 @@ class CharityMetricsAggregator:
             metrics_data["data_sources_available"].append("candid")
         if grants_profile:
             metrics_data["data_sources_available"].append("form990_grants")
+        if governance_profile:
+            metrics_data["data_sources_available"].append("irs_990_governance")
         if website_profile:
             metrics_data["data_sources_available"].append("website")
         if givewell_profile:
@@ -2272,36 +2287,74 @@ class CharityMetricsAggregator:
         # ====================================================================
         metrics_data["candid_seal"] = candid_profile.get("candid_seal") if candid_profile else None
 
-        # Board size: take max across sources that actually report one
-        # (parsing bugs can undercount). Charity Navigator belongs here -- it
-        # reviews governance and is often the only source carrying the number.
+        # Board size: the IRS's own Part VI Line 1a is authoritative when the
+        # filing has one -- it is the org's own reported figure, structured,
+        # not scraped. It wins outright rather than joining the max-across
+        # pool below: Charity Navigator's number is regex-scraped off a
+        # rendered page (that collector has known format-drift breakage) and
+        # Candid's list-parser undercounts by splitting names on whitespace.
+        # See src/utils/source_trust.py's "board" ranking.
         #
-        # There is deliberately NO fallback to len(website_profile["leadership"]).
-        # That list is an executive roster, not a board: for EIN 87-2410117 it
-        # held [Chief Executive Officer, Deputy CEO] and produced a published
-        # "two-member board" while CN reported 6 with 100% independence. A
-        # charity no governance source covers gets board_size = None, per the
-        # rule that missing fields stay NULL -- "nobody reports this" is not
-        # evidence of a small board.
-        board_candidates = {
-            "candid": candid_profile.get("board_size") if candid_profile else None,
-            "propublica": propublica_990.get("board_size") if propublica_990 else None,
-            "charity_navigator": cn_profile.get("board_size") if cn_profile else None,
-            "website": website_profile.get("board_size") if website_profile else None,
-        }
-        valid_boards = {s: b for s, b in board_candidates.items() if b and b > 0}
-        if valid_boards:
-            board_src = max(valid_boards, key=lambda s: valid_boards[s])
-            max_board = valid_boards[board_src]
-            metrics_data["board_size"] = max_board
-            _track("board_size", board_src, max_board, "max_across_sources")
+        # Without an IRS figure, fall back to max across whichever remaining
+        # sources report one (parsing bugs can undercount, so max is safer
+        # than picking one source blind). There is deliberately NO fallback
+        # to len(website_profile["leadership"]). That list is an executive
+        # roster, not a board: for EIN 87-2410117 it held [Chief Executive
+        # Officer, Deputy CEO] and produced a published "two-member board"
+        # while CN reported 6 with 100% independence. A charity no governance
+        # source covers gets board_size = None, per the rule that missing
+        # fields stay NULL -- "nobody reports this" is not evidence of a
+        # small board.
+        irs_board = governance_profile.get("voting_board_members") if governance_profile else None
+        if irs_board and irs_board > 0:
+            metrics_data["board_size"] = irs_board
+            _track("board_size", "irs_990", irs_board)
         else:
-            metrics_data["board_size"] = None
+            board_candidates = {
+                "candid": candid_profile.get("board_size") if candid_profile else None,
+                "propublica": propublica_990.get("board_size") if propublica_990 else None,
+                "charity_navigator": cn_profile.get("board_size") if cn_profile else None,
+                "website": website_profile.get("board_size") if website_profile else None,
+            }
+            valid_boards = {s: b for s, b in board_candidates.items() if b and b > 0}
+            if valid_boards:
+                board_src = max(valid_boards, key=lambda s: valid_boards[s])
+                max_board = valid_boards[board_src]
+                metrics_data["board_size"] = max_board
+                _track("board_size", board_src, max_board, "max_across_sources")
+            else:
+                metrics_data["board_size"] = None
 
-        metrics_data["independent_board_members"] = (
-            candid_profile.get("independent_board_members") if candid_profile else None
-        )
-        _track("independent_board_members", "candid", metrics_data.get("independent_board_members"))
+        irs_independent = governance_profile.get("independent_voting_board_members") if governance_profile else None
+        if irs_independent is not None:
+            metrics_data["independent_board_members"] = irs_independent
+            _track("independent_board_members", "irs_990", irs_independent)
+        else:
+            metrics_data["independent_board_members"] = (
+                candid_profile.get("independent_board_members") if candid_profile else None
+            )
+            _track("independent_board_members", "candid", metrics_data.get("independent_board_members"))
+
+        # ====================================================================
+        # IRS Form 990 Part VI/VII governance data (board policies, officers)
+        # ====================================================================
+        if governance_profile:
+            metrics_data["has_conflict_of_interest_policy"] = governance_profile.get("has_conflict_of_interest_policy")
+            _track("has_conflict_of_interest_policy", "irs_990", metrics_data.get("has_conflict_of_interest_policy"))
+            metrics_data["has_whistleblower_policy"] = governance_profile.get("has_whistleblower_policy")
+            metrics_data["has_document_retention_policy"] = governance_profile.get("has_document_retention_policy")
+            metrics_data["board_reviewed_990_before_filing"] = governance_profile.get("form_990_provided_to_governing_body")
+            metrics_data["material_diversion_of_assets_reported"] = governance_profile.get("material_diversion_or_misuse")
+            metrics_data["family_business_relationships_among_officers"] = governance_profile.get(
+                "family_or_business_relationships"
+            )
+
+            top_comp = None
+            for officer in governance_profile.get("officers") or []:
+                comp = officer.get("reportable_comp_from_org") if isinstance(officer, dict) else None
+                if comp is not None and (top_comp is None or comp > top_comp):
+                    top_comp = comp
+            metrics_data["top_officer_reported_compensation"] = top_comp
 
         metrics_data["ceo_name"] = _first_non_none(
             candid_profile.get("ceo_name") if candid_profile else None,

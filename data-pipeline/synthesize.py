@@ -1816,6 +1816,7 @@ def synthesize_charity(
             propublica_990=pp_data.get("propublica_990", pp_data) if pp_data else None,
             candid_profile=candid_data.get("candid_profile", candid_data) if candid_data else None,
             grants_profile=grants_data.get("grants_profile", grants_data) if grants_data else None,
+            governance_profile=grants_data.get("governance_profile") if grants_data else None,
             website_profile=website_data.get("website_profile", website_data) if website_data else None,
             website_context=website_link_context,
             discovered_profile=discovered_data.get("discovered_profile", discovered_data) if discovered_data else None,

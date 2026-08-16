@@ -27,6 +27,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import requests
 
 from ..utils.logger import PipelineLogger
+from ..validators.form990_governance_validator import Form990GovernanceProfile, Form990Officer
 from ..validators.form990_grants_validator import Form990GrantsProfile
 from .base import BaseCollector, FetchResult, ParseResult
 from .irs_990_source import (
@@ -414,6 +415,114 @@ class Form990GrantsCollector(BaseCollector):
 
         return financials
 
+    @staticmethod
+    def _bool_ind(elem: Optional[ET.Element]) -> Optional[bool]:
+        """An IRS 'Ind' element: '1' or 'X' is checked/yes, '0' is no, absent is unanswered.
+
+        Part VI Line 1-16 answers are written as '1'/'0'; Part VI Line 18's
+        disclosure-method checkboxes are written as a bare 'X' when checked
+        and simply omitted otherwise. Both forms mean the same thing here.
+        """
+        if elem is None or not elem.text:
+            return None
+        text = elem.text.strip().upper()
+        if text in ("1", "X"):
+            return True
+        if text == "0":
+            return False
+        return None
+
+    def _parse_officers(self, root: ET.Element) -> List[Form990Officer]:
+        """Part VII Section A — every listed officer, director, trustee, key employee."""
+        ns = self.IRS_NS
+        officers = []
+        for grp in root.findall(".//irs:Form990PartVIISectionAGrp", ns):
+            hours = grp.find("irs:AverageHoursPerWeekRt", ns)
+            comp_org = grp.find("irs:ReportableCompFromOrgAmt", ns)
+            comp_related = grp.find("irs:ReportableCompFromRltdOrgAmt", ns)
+            comp_other = grp.find("irs:OtherCompensationAmt", ns)
+            name_elem = grp.find("irs:PersonNm", ns)
+            title_elem = grp.find("irs:TitleTxt", ns)
+
+            def _f(elem: Optional[ET.Element]) -> Optional[float]:
+                if elem is not None and elem.text:
+                    try:
+                        return float(elem.text)
+                    except ValueError:
+                        pass
+                return None
+
+            officers.append(
+                Form990Officer(
+                    name=name_elem.text.strip() if name_elem is not None and name_elem.text else None,
+                    title=title_elem.text.strip() if title_elem is not None and title_elem.text else None,
+                    average_hours_per_week=_f(hours),
+                    is_trustee_or_director=bool(self._bool_ind(grp.find("irs:IndividualTrusteeOrDirectorInd", ns))),
+                    is_officer=bool(self._bool_ind(grp.find("irs:OfficerInd", ns))),
+                    is_key_employee=bool(self._bool_ind(grp.find("irs:KeyEmployeeInd", ns))),
+                    is_highest_compensated=bool(self._bool_ind(grp.find("irs:HighestCompensatedEmployeeInd", ns))),
+                    is_former=bool(self._bool_ind(grp.find("irs:FormerOfcrDirectorTrusteeInd", ns))),
+                    reportable_comp_from_org=_f(comp_org),
+                    reportable_comp_from_related_orgs=_f(comp_related),
+                    other_compensation=_f(comp_other),
+                )
+            )
+        return officers
+
+    def _parse_governance(self, root: ET.Element) -> Dict[str, Any]:
+        """Part VI (Governance, Management, Disclosure) + Part VII Section A.
+
+        Board-size fields prefer the Part VI Section A tags
+        (GoverningBodyVotingMembersCnt / IndependentVotingMemberCnt) over the
+        near-duplicate Part I summary tags (VotingMembersGoverningBodyCnt /
+        VotingMembersIndependentCnt) that report the same figures on every
+        filing observed so far -- Part VI is the section these numbers
+        actually answer for.
+        """
+        ns = self.IRS_NS
+        b = self._bool_ind
+
+        def _int(*paths: str) -> Optional[int]:
+            for path in paths:
+                elem = root.find(path, ns)
+                if elem is not None and elem.text:
+                    try:
+                        return int(elem.text)
+                    except ValueError:
+                        pass
+            return None
+
+        return {
+            "voting_board_members": _int(
+                ".//irs:GoverningBodyVotingMembersCnt", ".//irs:VotingMembersGoverningBodyCnt"
+            ),
+            "independent_voting_board_members": _int(
+                ".//irs:IndependentVotingMemberCnt", ".//irs:VotingMembersIndependentCnt"
+            ),
+            "family_or_business_relationships": b(root.find(".//irs:FamilyOrBusinessRlnInd", ns)),
+            "delegates_management_duties": b(root.find(".//irs:DelegationOfMgmtDutiesInd", ns)),
+            "changed_governing_documents": b(root.find(".//irs:ChangeToOrgDocumentsInd", ns)),
+            "material_diversion_or_misuse": b(root.find(".//irs:MaterialDiversionOrMisuseInd", ns)),
+            "has_members_or_stockholders": b(root.find(".//irs:MembersOrStockholdersInd", ns)),
+            "members_elect_governing_body": b(root.find(".//irs:ElectionOfBoardMembersInd", ns)),
+            "decisions_subject_to_approval": b(root.find(".//irs:DecisionsSubjectToApprovaInd", ns)),
+            "minutes_of_governing_body_documented": b(root.find(".//irs:MinutesOfGoverningBodyInd", ns)),
+            "minutes_of_committees_documented": b(root.find(".//irs:MinutesOfCommitteesInd", ns)),
+            "has_local_chapters": b(root.find(".//irs:LocalChaptersInd", ns)),
+            "form_990_provided_to_governing_body": b(root.find(".//irs:Form990ProvidedToGvrnBodyInd", ns)),
+            "has_conflict_of_interest_policy": b(root.find(".//irs:ConflictOfInterestPolicyInd", ns)),
+            "conflict_of_interest_annual_disclosure": b(root.find(".//irs:AnnualDisclosureCoveredPrsnInd", ns)),
+            "conflict_of_interest_monitored": b(root.find(".//irs:RegularMonitoringEnfrcInd", ns)),
+            "has_whistleblower_policy": b(root.find(".//irs:WhistleblowerPolicyInd", ns)),
+            "has_document_retention_policy": b(root.find(".//irs:DocumentRetentionPolicyInd", ns)),
+            "ceo_compensation_process_independent": b(root.find(".//irs:CompensationProcessCEOInd", ns)),
+            "other_officer_compensation_process_independent": b(root.find(".//irs:CompensationProcessOtherInd", ns)),
+            "invests_in_joint_venture": b(root.find(".//irs:InvestmentInJointVentureInd", ns)),
+            "discloses_via_own_website": b(root.find(".//irs:OwnWebsiteInd", ns)),
+            "discloses_upon_request": b(root.find(".//irs:UponRequestInd", ns)),
+            "officers": self._parse_officers(root),
+        }
+
     def fetch(self, ein: str, **kwargs) -> FetchResult:
         """
         Fetch Form 990 XML(s) from ProPublica.
@@ -546,6 +655,7 @@ class Form990GrantsCollector(BaseCollector):
         domestic_grants = self._parse_domestic_grants(root)
         foreign_grants = self._parse_foreign_grants(root)
         financials = self._extract_summary_financials(root)
+        governance = self._parse_governance(root)
 
         # Tag each grant with tax_year
         for g in domestic_grants:
@@ -564,6 +674,7 @@ class Form990GrantsCollector(BaseCollector):
             "domestic_grants": domestic_grants,
             "foreign_grants": foreign_grants,
             "financials": financials,
+            "governance": governance,
             "org_name": org_name,
         }
 
@@ -729,9 +840,29 @@ class Form990GrantsCollector(BaseCollector):
                 f"${total_domestic + total_foreign:,.0f} total)"
             )
 
+        parsed = {self.schema_key: profile.model_dump()}
+
+        # Governance is a current-state fact, not a trend: only the most
+        # recent filing's Part VI/VII data is used, unlike grants/financials
+        # which merge across all filings fetched.
+        gov = latest.get("governance") or {}
+        gov_data = {
+            "name": org_name or "Unknown",
+            "ein": ein_formatted,
+            "tax_year": tax_year,
+            "object_id": object_id,
+            **gov,
+        }
+        try:
+            gov_profile = Form990GovernanceProfile(**gov_data)
+            parsed["governance_profile"] = gov_profile.model_dump()
+        except Exception as e:
+            if self.logger:
+                self.logger.warning(f"Governance profile validation failed for {ein}: {e}")
+
         return ParseResult(
             success=True,
-            parsed_data={self.schema_key: profile.model_dump()},
+            parsed_data=parsed,
             error=None,
         )
 

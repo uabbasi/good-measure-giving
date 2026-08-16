@@ -66,8 +66,11 @@ class TestTheTrustHierarchy:
         assert canonical_source_for("total_assets") == "propublica"
         assert canonical_source_for("working_capital_months") == "propublica"
 
-    def test_charity_navigator_leads_board_size(self):
-        assert canonical_source_for("board_size") == "charity_navigator"
+    def test_the_filing_leads_board_size(self):
+        """Rubric v5.4.0: the org's own structured Part VI count over
+        Charity Navigator's regex-scraped page or Candid's misparsing list
+        parser."""
+        assert canonical_source_for("board_size") == "irs_990"
 
     def test_the_two_financial_groups_are_kept_apart(self):
         assert field_group("total_revenue") == "income_statement"

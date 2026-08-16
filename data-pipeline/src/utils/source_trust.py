@@ -50,12 +50,26 @@ The rankings are measured, not assumed. Across the 169 charities in the index:
                       against $102,250. They agree within 1% on 13 of the 15
                       same-year pairs; the two misses are both CN's.
 
-  board size          Charity Navigator leads. Candid's list is parsed by
-                      splitting each entry on whitespace, which lands inside
-                      people's names ({"name": "Ayman", "title": "Khalil"}) and
-                      undercounts: every Candid board under three shows the
-                      misparse, and CN is larger in all four cases where it has
-                      a figure.
+  board size          The filing leads, when it has one. GoverningBodyVotingMembersCnt
+                      is the org's own reported count, filed under penalty of
+                      perjury as a structured field, not extracted at all. The
+                      two runners-up are both extractions with known failure
+                      modes: Charity Navigator's figure is regex-scraped off a
+                      rendered page (that collector already carries format-
+                      drift breakage elsewhere), and Candid's list is parsed
+                      by splitting each entry on whitespace, which lands
+                      inside people's names ({"name": "Ayman", "title":
+                      "Khalil"}) and undercounts -- every Candid board under
+                      three shows the misparse. Between those two, CN is
+                      larger in all four cases where it has a figure and
+                      Candid doesn't win.
+
+                      This entry predates governance ever coming from a
+                      filing (rubric v5.4.0 added it) and is reasoned from
+                      structure, not measured against a corpus-wide count the
+                      way the entries above are -- worth another pass once
+                      enough charities carry both an IRS and a CN figure to
+                      compare them directly.
 
   zakat eligibility   A verified zakat page on the charity's own domain, then a
                       definitive name ("Zakat Foundation"), then an explicit
@@ -79,8 +93,8 @@ DISCOVERY = "discovered"
 TRUST_ORDER: dict[str, tuple[str, ...]] = {
     "income_statement": (IRS_990, CHARITY_NAVIGATOR, PROPUBLICA),
     "balance_sheet": (PROPUBLICA, CHARITY_NAVIGATOR),
-    "board": (CHARITY_NAVIGATOR, CANDID),
-    "governance": (PROPUBLICA, CHARITY_NAVIGATOR, CANDID),
+    "board": (IRS_990, CHARITY_NAVIGATOR, CANDID),
+    "governance": (IRS_990, PROPUBLICA, CHARITY_NAVIGATOR, CANDID),
     "zakat_eligibility": (WEBSITE, DISCOVERY),
 }
 
