@@ -354,13 +354,33 @@ const deriveSignalStates = (charity: SummaryLike): UISignalsV1['signal_states'] 
         ? 'Moderate'
         : 'Limited';
 
+  // score_details.risks.overall_risk_level is the authoritative risk read —
+  // the pipeline's own named, described, severity-rated risk register feeds
+  // it (score_details.risks.risks[]), and the charity detail page displays
+  // it directly. The heuristic below predates that field reaching every
+  // record and is now the fallback for the ~20% of charities that still
+  // lack it, not the primary signal — it was previously used for everyone,
+  // which is what let it disagree with overall_risk_level on 44 of 135
+  // published charities (e.g. Against Malaria Foundation: overall_risk_level
+  // LOW/0 deduction, but an unrelated 0/10 Governance component — literally
+  // "unknown board size", not a red flag — forced this heuristic to Limited
+  // regardless). Conflating "we don't know their governance" with "this
+  // charity is risky" was the bug; missing data belongs in a confidence
+  // signal, not a risk one.
   const riskCfg = uiSignalsConfig.signals.risk;
+  const overallRiskLevel = (scoreDetails?.risks?.overall_risk_level as string | undefined)?.toUpperCase();
   const risk: UISignalState =
-    riskDeduction === 0 && governanceRatio != null && governanceRatio >= riskCfg.governance_strong_min
+    overallRiskLevel === 'LOW'
       ? 'Strong'
-      : riskDeduction <= riskCfg.deduction_limited_max || (governanceRatio != null && governanceRatio < riskCfg.governance_moderate_min)
+      : overallRiskLevel === 'HIGH'
         ? 'Limited'
-        : 'Moderate';
+        : overallRiskLevel === 'MODERATE'
+          ? 'Moderate'
+          : riskDeduction === 0 && governanceRatio != null && governanceRatio >= riskCfg.governance_strong_min
+            ? 'Strong'
+            : riskDeduction <= riskCfg.deduction_limited_max || (governanceRatio != null && governanceRatio < riskCfg.governance_moderate_min)
+              ? 'Limited'
+              : 'Moderate';
 
   return { evidence, financial_health, donor_fit, risk };
 };
