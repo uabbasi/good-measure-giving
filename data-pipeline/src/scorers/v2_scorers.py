@@ -1049,10 +1049,15 @@ class ImpactScorer:
         fh_pts = rubric.scale_score("financial_health", fh_pts)
         wc = metrics.working_capital_ratio
         mismatch_signal = self._find_contradiction_signal(metrics, "revenue_expense_mismatch")
-        if mismatch_signal and wc is not None and wc >= 0.1:
+        # `wc is not None` alone — a second copy of the same conflation
+        # _score_financial_health used to have (see that method's comment):
+        # gating on `wc >= 0.1` here meant a real near-zero ratio still
+        # printed "Working capital: unknown (CRITICAL)", contradicting its
+        # own label in the same sentence.
+        if mismatch_signal and wc is not None:
             detail = mismatch_signal.get("detail", "")
             fh_evidence = f"Working capital: {wc:.1f} months, but {detail} — unsustainable"
-        elif wc is not None and wc >= 0.1:
+        elif wc is not None:
             fh_evidence = f"Working capital: {wc:.1f} months ({fh_label})"
         else:
             fh_evidence = f"Working capital: unknown ({fh_label})"
@@ -1436,8 +1441,16 @@ class ImpactScorer:
         Endowment/scholarship models get neutral treatment for high reserves.
         """
         ratio = metrics.working_capital_ratio
-        if ratio is None or ratio < 0.1:
+        if ratio is None:
             return "UNKNOWN", 0
+        # A real ratio near zero used to short-circuit here too (`ratio < 0.1`),
+        # reporting "Working capital: unknown (UNKNOWN)" — indistinguishable
+        # from a charity we have no data for at all. Found via Against Malaria
+        # Foundation: net assets $48,459 against $119.4M annual expenses
+        # computes to 0.005 months, a real, alarming, fully-sourced number,
+        # not a gap. It now falls through to the same knots/label/mismatch
+        # logic as any other ratio below — CRITICAL at ratio < 1, score still
+        # 0 pts either way since the knots already anchor (0, 0).
 
         # Endowment models: high reserves are expected, score as neutral/healthy.
         if self._is_endowment_model(metrics) and ratio > 12:
@@ -1494,11 +1507,17 @@ class ImpactScorer:
         and distinguishes high reserves from low-liquidity risk.
         """
         ratio = metrics.working_capital_ratio
-        if ratio is None or ratio < 0.1:
+        if ratio is None:
             return (
                 "Publish current reserve levels and a board-approved reserve policy "
                 "(often 3-12 months for most nonprofits)."
             )
+        # ratio < 0.1 falls through to the label branches below rather than
+        # repeating the "publish current levels" line above — we already
+        # have the levels (that's how `label` got set to CRITICAL) and know
+        # they're near zero, so the actionable advice is to raise reserves,
+        # not to disclose a figure we already computed. See
+        # _score_financial_health for the same None-vs-near-zero split.
 
         if label == "CRITICAL":
             return (
@@ -1539,9 +1558,14 @@ class ImpactScorer:
             if metrics.cash_adjusted_program_ratio is not None
             else metrics.program_expense_ratio
         )
-        if ratio is None or ratio < 0.01:
+        if ratio is None:
             return 0, "Program expense ratio: unknown"
 
+        # Same fix as _score_financial_health: a real ratio under 1% (almost
+        # nothing spent on programs) is not the same as no data, and both
+        # used to report identically as "unknown". PROGRAM_RATIO_KNOTS
+        # already anchors (0.0, 0) and (0.50, 0), so the score is unchanged
+        # either way — only the false "unknown" label is fixed.
         score = round(interpolate_score(ratio, PROGRAM_RATIO_KNOTS))
         label = "Cash-adjusted program ratio" if metrics.cash_adjusted_program_ratio else "Program expense ratio"
         return score, f"{label}: {ratio:.0%}"

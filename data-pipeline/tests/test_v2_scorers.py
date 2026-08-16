@@ -353,6 +353,16 @@ class TestImpactScorer:
         cpb_comp = _component(result, "Cost Per Beneficiary")
         assert cpb_comp.scored > 0
 
+    def test_program_ratio_real_near_zero_is_not_labeled_unknown(self):
+        """Same fix as Financial Health: a real sub-1% ratio isn't 'unknown'."""
+        m = _base_metrics(program_expense_ratio=0.005)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Program Ratio")
+        assert comp.scored == 0
+        assert "unknown" not in comp.evidence.lower()
+        assert "0%" in comp.evidence
+
     def test_financial_health_resilient_range(self):
         """Reserves around 6 months should receive top financial-health points."""
         m = _base_metrics(working_capital_ratio=6.0)
@@ -379,6 +389,34 @@ class TestImpactScorer:
         assert comp.improvement_suggestion is not None
         assert "publish" in comp.improvement_suggestion.lower()
         assert "policy" in comp.improvement_suggestion.lower()
+
+    def test_financial_health_real_near_zero_ratio_is_not_labeled_unknown(self):
+        """A genuine near-zero reserve position must read CRITICAL, not UNKNOWN.
+
+        Found via Against Malaria Foundation: net assets $48,459 against
+        $119.4M annual expenses computes to a real 0.005-month ratio. The
+        old `ratio < 0.1` branch treated that identically to `ratio is
+        None` — "Working capital: unknown (UNKNOWN)" — indistinguishable
+        from a charity we simply have no data for. Point value is unchanged
+        (0/7 either way, since FINANCIAL_HEALTH_KNOTS already anchors
+        (0, 0)); only the false "unknown" label is fixed.
+        """
+        m = _base_metrics(working_capital_ratio=0.005)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Financial Health")
+        assert comp.scored == 0
+        assert "unknown" not in comp.evidence.lower()
+        assert "critical" in comp.evidence.lower()
+
+    def test_financial_health_none_ratio_still_reads_unknown(self):
+        """The None case — genuinely no data — must keep reading UNKNOWN."""
+        m = _base_metrics(working_capital_ratio=None)
+        scorer = ImpactScorer()
+        result = scorer.evaluate(m)
+        comp = _component(result, "Financial Health")
+        assert comp.scored == 0
+        assert "unknown" in comp.evidence.lower()
 
     def test_has_evidence_and_toc_components(self):
         """Impact scorer now includes Evidence, TOC, and Governance components."""

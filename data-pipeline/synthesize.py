@@ -2084,6 +2084,19 @@ def synthesize_charity(
     )
     if working_capital is not None:
         synthesized.working_capital_months = working_capital
+        # _score_financial_health (v2_scorers.py) reads metrics.working_capital_ratio,
+        # which until now was set ONLY as a Charity Navigator fallback (see
+        # "FIX #4" in charity_metrics_aggregator.py) — never from this
+        # reconciled, Form-990-derived figure, even though that figure was
+        # already computed a few lines above and already reaches the website
+        # export as working_capital_months. Real-corpus impact: 93 of 166
+        # charities carry "Financial Health: unknown" purely because CN
+        # doesn't publish this metric for them, CARE USA and Islamic Relief
+        # USA included, despite both having a complete, reconciled Form 990
+        # balance sheet sitting right here. Only fills a gap CN left; never
+        # overrides a real CN-sourced number.
+        if metrics.working_capital_ratio is None:
+            metrics.working_capital_ratio = working_capital
         # A figure taken from ProPublica's own filing is cited to ProPublica
         # even when Charity Navigator supplied the income statement.
         attribution_source = (
