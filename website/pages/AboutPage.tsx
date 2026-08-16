@@ -35,7 +35,7 @@ const DIMENSIONS: { title: string; desc: string }[] = [
   },
   {
     title: 'Alignment',
-    desc: 'Is this the right charity for Muslim donors? We assess Muslim donor fit, cause urgency, underserved space, track record, and funding gap.',
+    desc: 'Is this the right charity for Muslim donors? We assess zakat & reach signals, cause urgency, underserved space, track record, and funding gap.',
   },
 ];
 

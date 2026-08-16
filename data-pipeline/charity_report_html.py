@@ -424,7 +424,7 @@ def build_html(d: dict, archetypes: dict, per_source: dict | None = None) -> str
     a("<h3>Alignment — 50 points, fixed for all organizations</h3>")
     a("<table><thead><tr><th>Component</th><th class='num'>Max</th><th>How points are earned</th></tr></thead><tbody>")
     alignment_rubric = [
-        ("Muslim Donor Fit", 19, "Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, Islamic identity +1, serving a named asnaf category +5, Muslim-majority regions +3, humanitarian service +4. Capped at 19."),
+        ("Zakat & Reach Signals", 19, "Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, Islamic identity +1, direct religious institution (mosque/Islamic school/center) +9, serving a named asnaf category +5, Muslim-majority regions +3, humanitarian service +4. Capped at 19."),
         ("Cause Urgency", 13, "Fixed points by detected cause area; humanitarian relief highest."),
         ("Underserved Space", 7, "Serving populations or geographies with limited nonprofit coverage."),
         ("Track Record", 6, "Years of operation, smoothly interpolated."),

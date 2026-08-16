@@ -14,7 +14,7 @@ charities. They provide essential information for quick donor decisions:
 GMG Score (100-Point Framework) — 2 Dimensions + Risk + Data Confidence:
 
 - Impact (50 pts): CPB(20) + Directness(7) + Financial Health(7) + Program Ratio(6) + Evidence & Outcomes(5) + TOC(3) + Governance(2)
-- Alignment (50 pts): Muslim Donor Fit(19) + Cause Urgency(13) + Underserved Space(7) + Track Record(6) + Funding Gap(5)
+- Alignment (50 pts): Zakat & Reach Signals(19) + Cause Urgency(13) + Underserved Space(7) + Track Record(6) + Funding Gap(5)
 - Risk (-10 max): Case Against risk deductions
 - Data Confidence (0.0-1.0): Verification + Transparency + Data Quality (outside score)
 
@@ -345,7 +345,7 @@ class AlignmentAssessment(BaseModel):
     Answers: Is this the right charity for me as a Muslim donor?
 
     Components:
-    - Muslim Donor Fit (19 pts): Layered additive (zakat clarity + asnaf + Muslim-focused + populations + identity)
+    - Zakat & Reach Signals (19 pts): Layered additive (zakat clarity + asnaf + Muslim-focused + populations + identity + direct religious institution)
     - Cause Urgency (13 pts): Cause map from global health(13) → religious(4)
     - Underserved Space (7 pts): Niche cause + underserved populations
     - Track Record (6 pts): Smooth interpolation over years since founding

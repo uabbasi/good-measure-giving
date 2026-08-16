@@ -58,7 +58,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     category: 'methodology',
     q: "What does \u2018Alignment\u2019 measure?",
-    a: "Alignment (50 points) measures whether this charity is the right match for Muslim donors. The largest component is Muslim donor fit (19 points), followed by cause urgency (13 points). We also evaluate underserved space (7 points) \u2014 is this need overlooked by mainstream philanthropy? \u2014 track record and organizational history (6 points), and funding gap (5 points) \u2014 would your donation make more difference here than elsewhere? Muslim-focused charities often score higher because they serve communities overlooked by mainstream funders."
+    a: "Alignment (50 points) measures whether this charity is the right match for Muslim donors. The largest component is zakat & reach signals (19 points) — zakat-policy clarity, service to specific need categories, and direct religious institutions like mosques and Islamic schools — followed by cause urgency (13 points). We also evaluate underserved space (7 points) \u2014 is this need overlooked by mainstream philanthropy? \u2014 track record and organizational history (6 points), and funding gap (5 points) \u2014 would your donation make more difference here than elsewhere? Muslim-focused charities often score higher because they serve communities overlooked by mainstream funders."
   },
   {
     category: 'methodology',

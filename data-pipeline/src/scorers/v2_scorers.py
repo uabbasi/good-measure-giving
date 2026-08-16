@@ -1573,7 +1573,7 @@ class AlignmentScorer:
     "Is this the right charity for me as a Muslim donor?"
 
     Components:
-    - Muslim Donor Fit (19 pts): Layered additive (rescaled from 13)
+    - Zakat & Reach Signals (19 pts): Layered additive (rescaled from 13)
     - Cause Urgency (13 pts): Cause map (rescaled from 9)
     - Underserved Space (7 pts): Niche cause + underserved populations (rescaled from 5)
     - Track Record (6 pts): Smooth interpolation over years since founding (rescaled from 4)
@@ -1631,7 +1631,10 @@ class AlignmentScorer:
         """Evaluate alignment from charity metrics."""
         components: list[ScoreComponent] = []
 
-        # 1. Muslim Donor Fit (19 pts)
+        # 1. Zakat & Reach Signals (19 pts) — formerly "Muslim Donor Fit"; renamed
+        # because the name read as a verdict on whether a charity is a good fit
+        # for Muslim donors, when what it actually measures is zakat-policy
+        # clarity plus reach into underserved/asnaf categories and regions.
         mdf_pts, mdf_level, mdf_evidence = self._score_muslim_donor_fit(metrics)
         mdf_improvement = None
         if mdf_pts < 12:
@@ -1641,7 +1644,7 @@ class AlignmentScorer:
                 mdf_improvement = "Add a dedicated zakat page or clearly state whether donations are zakat-eligible."
         components.append(
             ScoreComponent(
-                name="Muslim Donor Fit",
+                name="Zakat & Reach Signals",
                 scored=mdf_pts,
                 possible=19,
                 evidence=mdf_evidence,
@@ -1722,12 +1725,21 @@ class AlignmentScorer:
         )
 
     def _score_muslim_donor_fit(self, metrics: CharityMetrics) -> tuple[int, str, str]:
-        """Score Muslim Donor Fit using layered additive approach (19 pts max).
+        """Score Zakat & Reach Signals using layered additive approach (19 pts max).
 
         Muslim-exclusive layers (7 pts ceiling):
         - Zakat clarity: +4 (explicit zakat program) or +2 (zakat accepted)
         - Muslim-focused org: +2
         - Islamic identity markers: +1
+
+        Direct religious institution (9 pts): mosque/masjid/Islamic school/Islamic
+        center, detected from program_focus_tags rather than name or category —
+        a charity's legal name (e.g. "Muslim Foundation") or IRS-derived category
+        (e.g. PHILANTHROPY_GRANTMAKING for a masjid that also runs a school) often
+        doesn't say "mosque," but its actual programs do. Scored independently of
+        the layers above: a mosque has no reason to publish a zakat page or do
+        overseas relief work, and previously scored as low as 3/19 for that reason
+        alone even though it's the archetypal case this score exists to recognize.
 
         Universal layers (12 pts ceiling):
         - Asnaf alignment: +5 (serves specific asnaf category)
@@ -1787,6 +1799,12 @@ class AlignmentScorer:
         if any(m in name_lower or m in mission_lower for m in islamic_markers):
             pts += 1
             layers.append("Islamic identity (+1)")
+
+        # Direct religious institution (+9)
+        focus_tags = [t.lower() for t in (getattr(metrics, "program_focus_tags", None) or [])]
+        if "religious-services" in focus_tags:
+            pts += 9
+            layers.append("Direct religious institution: mosque/Islamic school/center (+9)")
 
         # --- Universal layers (12 pts) ---
 
@@ -2650,7 +2668,7 @@ class FitScorer:
     def evaluate(self, metrics: CharityMetrics) -> FitAssessment:
         align = self._alignment.evaluate(metrics)
         legacy_score = min(25, round(align.score * 25 / 50))
-        mdf_pts = next((c.scored for c in align.components if c.name == "Muslim Donor Fit"), 0)
+        mdf_pts = next((c.scored for c in align.components if c.name == "Zakat & Reach Signals"), 0)
         cu_pts = next((c.scored for c in align.components if c.name == "Cause Urgency"), 0)
         return FitAssessment(
             score=legacy_score,

@@ -422,7 +422,7 @@ class TestAlignmentScorer:
         )
         scorer = AlignmentScorer()
         result = scorer.evaluate(m)
-        mdf_pts = _component_pts(result, "Muslim Donor Fit")
+        mdf_pts = _component_pts(result, "Zakat & Reach Signals")
         # zakat(2-4) + muslim-focused(2) + asnaf(5) + humanitarian(4) = 13-15
         assert mdf_pts >= 12
         assert mdf_pts <= 19
@@ -436,7 +436,26 @@ class TestAlignmentScorer:
         )
         scorer = AlignmentScorer()
         result = scorer.evaluate(m)
-        assert _component_pts(result, "Muslim Donor Fit") <= 4
+        assert _component_pts(result, "Zakat & Reach Signals") <= 4
+
+    def test_mosque_with_no_zakat_page_scores_high(self):
+        """A domestic mosque/Islamic school has no reason to publish a zakat
+        page or do overseas relief work — it shouldn't need to look like an
+        international aid org to score well on Muslim donor fit. Regression
+        test for a real bug: ICNAB and Masjid-e-Ali both scored 3/19 (LOW)
+        before program_focus_tags-based religious-institution detection was
+        added, despite being unambiguous mosques."""
+        m = _base_metrics(
+            is_muslim_focused=True,
+            zakat_claim_detected=False,
+            mission="Fund raising for Bosniak based Islamic centers in North America.",
+            program_focus_tags=["religious-services", "community-services"],
+        )
+        scorer = AlignmentScorer()
+        result = scorer.evaluate(m)
+        mdf_pts = _component_pts(result, "Zakat & Reach Signals")
+        # muslim-focused(2) + islamic identity(1) + religious institution(9) = 12
+        assert mdf_pts >= 12
 
     def test_cause_urgency_humanitarian(self):
         """Humanitarian cause → 13 pts (highest urgency)."""

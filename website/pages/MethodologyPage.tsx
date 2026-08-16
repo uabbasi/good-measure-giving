@@ -340,7 +340,7 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       <UL
                         p={p}
                         items={[
-                          <><strong>Muslim donor fit</strong> (19 pts): Zakat clarity, asnaf categories, Muslim-focused mission</>,
+                          <><strong>Zakat &amp; reach signals</strong> (19 pts): Zakat clarity, asnaf categories, Muslim-focused mission, direct religious institutions (mosques, Islamic schools)</>,
                           <><strong>Cause urgency</strong> (13 pts): Humanitarian crises and extreme poverty score highest</>,
                           <><strong>Underserved space</strong> (7 pts): Niche causes and underserved populations</>,
                           <><strong>Track record</strong> (6 pts): Years of operation and demonstrated reliability</>,

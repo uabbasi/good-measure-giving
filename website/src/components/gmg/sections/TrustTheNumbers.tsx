@@ -68,6 +68,18 @@ export const TrustTheNumbers: React.FC<{
         )}
       </div>
 
+      {c.dataQualityLabel && (
+        <div style={{ marginBottom: 20 }}>
+          <Kicker p={p}>Data quality</Kicker>
+          <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <Tag tone={c.dataQualityLabel === 'LOW' ? 'caution' : 'muted'} p={p}>
+              {c.dataQualityLabel}
+              {c.dataQualityValue != null ? ` · ${Math.round(c.dataQualityValue * 100)}%` : ''}
+            </Tag>
+          </div>
+        </div>
+      )}
+
       {c.citations.ordered.length > 0 && (
         <div style={{ marginBottom: 20, fontSize: 12.5, color: p.sub }}>
           <strong style={{ color: p.fg }}>{c.citations.ordered.length}</strong> sourced claims from{' '}

@@ -250,7 +250,7 @@ export interface DimensionExplanations {
   [key: string]: unknown;
   credibility?: string;   // Verification, transparency, and evidence quality
   impact?: string;        // Program effectiveness, cost efficiency, and financial health
-  alignment?: string;     // Muslim donor fit and cause urgency
+  alignment?: string;     // Zakat & reach signals and cause urgency
   // Legacy fields (backward compat with old cached narratives)
   trust?: string;
   evidence?: string;

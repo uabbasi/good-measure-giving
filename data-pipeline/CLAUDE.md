@@ -245,7 +245,7 @@ src/parsers/charity_metrics_aggregator.py  # Data aggregation
 ## Scoring Dimensions (GMG Score, rubric v5.2.0, 100 pts total)
 
 1. **Impact** (50 pts): Weights vary by archetype (DIRECT_SERVICE, SYSTEMIC_CHANGE, EDUCATION, COMMUNITY, MULTIPLIER). See `config/rubric_archetypes.yaml`.
-2. **Alignment** (50 pts): Muslim donor fit(19) + cause urgency(13) + underserved space(7) + track record(6) + funding gap(5)
+2. **Alignment** (50 pts): Zakat & reach signals(19) + cause urgency(13) + underserved space(7) + track record(6) + funding gap(5)
 3. **Risk** (-10 pts max): Deductions for red flags (low program spending, small board, low reserves, etc.)
 4. **Data Confidence** (0.0-1.0, outside score): verification(0.50) + transparency(0.35) + data quality(0.15)
 

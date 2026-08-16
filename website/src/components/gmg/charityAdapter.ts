@@ -186,7 +186,10 @@ export interface GmgCharity {
   category: string;
   region: string;
   wallet: string;
+  /** A dedicated donation page (pipeline's `donationUrl`). Null when the pipeline hasn't found one distinct from the homepage — see `website`. */
   donateUrl: string | null;
+  /** General charity homepage. Used as the CTA's "Visit website" fallback when `donateUrl` is null, instead of silently mislabeling a homepage link as "Donate". */
+  website: string | null;
 
   amalScore: number;
   /** amalEvaluation.evaluation_date — when the rubric last scored this charity. Not shown on the page: it goes stale whenever the pipeline re-exports without re-scoring. See `updatedOn`. */
@@ -209,6 +212,10 @@ export interface GmgCharity {
   // this, not `new Date()`, or every prerendered page recomputes a
   // different age at hydration than the one baked into the SSR.
   dataAgeYears: number | null;
+  // score_details.data_confidence.data_quality_{label,value} — computed by the
+  // pipeline but, until now, never rendered anywhere in the website UI.
+  dataQualityLabel: string | null;
+  dataQualityValue: number | null;
   // Form 990 filing is not required for churches/mosques; the scorer already
   // exempts these orgs from filing-currency penalties (see
   // `_check_filing_currency` in the pipeline). Exported as integer 0/1.
@@ -465,7 +472,8 @@ export const adaptCharity = (c: any): GmgCharity => {
       return regionLabel(fromTargeting);
     })(),
     wallet: walletLabel(ae?.wallet_tag ?? c?.walletTag),
-    donateUrl: c?.donationUrl || c?.website || null,
+    donateUrl: c?.donationUrl || null,
+    website: c?.website || null,
 
     amalScore: num(ae?.amal_score),
     evaluatedOn: (ae?.evaluation_date ?? '').slice(0, 10),
@@ -491,6 +499,8 @@ export const adaptCharity = (c: any): GmgCharity => {
     totalRevenue: numOrNull(fin?.totalRevenue ?? rn?.financial_deep_dive?.annual_revenue),
     fiscalYear: numOrNull(fin?.fiscalYear),
     dataAgeYears: numOrNull(sd?.data_confidence?.data_age_years),
+    dataQualityLabel: sd?.data_confidence?.data_quality_label ?? null,
+    dataQualityValue: numOrNull(sd?.data_confidence?.data_quality_value),
     form990Exempt: !!c?.form990Exempt,
 
     programExpenses: numOrNull(fin?.programExpenses),

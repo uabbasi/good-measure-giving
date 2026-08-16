@@ -72,7 +72,7 @@ COMPONENT_READ_FROM = {
     "Theory of Change": "Program pages on your website",
     "Governance": "Form 990 board roster / Candid profile",
     "Directness": "Program descriptions on your website",
-    "Muslim Donor Fit": "Zakat page and policy on your website",
+    "Zakat & Reach Signals": "Zakat page and policy on your website",
     "Cause Urgency": "Mission and program pages on your website",
     "Underserved Space": "Program + geography descriptions on your website",
     "Track Record": "Founding date in filings / your website",
@@ -459,8 +459,9 @@ def rubric_section(d: dict, archetypes: dict) -> list[str]:
     lines.append("| Component | Max | How points are earned |")
     lines.append("|---|---|---|")
     lines.append(
-        "| Muslim Donor Fit | 19 | Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, "
-        "Islamic identity +1, serving a named asnaf category +5, operating in Muslim-majority regions +3, humanitarian service +4. Capped at 19. |"
+        "| Zakat & Reach Signals | 19 | Layered: explicit zakat program +4 (or accepts zakat +2), Muslim-focused organization +2, "
+        "Islamic identity +1, direct religious institution (mosque/Islamic school/center) +9, serving a named asnaf category +5, "
+        "operating in Muslim-majority regions +3, humanitarian service +4. Capped at 19. |"
     )
     lines.append("| Cause Urgency | 13 | Fixed points by cause area (humanitarian relief highest), from your detected primary category. |")
     lines.append("| Underserved Space | 7 | Serving populations or geographies with limited nonprofit coverage. |")

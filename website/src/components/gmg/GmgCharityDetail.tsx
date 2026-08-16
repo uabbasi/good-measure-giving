@@ -319,6 +319,25 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                   Donate ↗
                 </a>
               )}
+              {c.website && c.website !== c.donateUrl && (
+                <a
+                  href={c.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    padding: '10px 16px',
+                    borderRadius: 99,
+                    background: c.donateUrl ? 'transparent' : p.chip,
+                    border: c.donateUrl ? `1px solid ${p.rule}` : 'none',
+                    color: c.donateUrl ? p.fg : p.chipFg,
+                    fontSize: 12,
+                    fontWeight: c.donateUrl ? 400 : 500,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Visit website ↗
+                </a>
+              )}
               <Link
                 to={`/compare/?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
