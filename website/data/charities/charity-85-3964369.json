@@ -73,12 +73,18 @@
     "reports_methodology": true,
     "reports_outcome_metrics": false
   },
-  "lastUpdated": "2026-08-02 11:51:59",
+  "lastUpdated": "2026-08-15 21:07:37",
   "sourceAttribution": {
+    "claims_zakat_eligible": {
+      "source_name": "Charity Website",
+      "source_url": "https://www.albarr.org/",
+      "timestamp": "2026-07-23T13:06:05",
+      "value": false
+    },
     "founded_year": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369",
-      "timestamp": "2026-08-02T11:50:57",
+      "timestamp": "2026-08-15T21:07:01",
       "value": 2021
     },
     "has_audited_financials": {
@@ -90,7 +96,7 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369",
-      "timestamp": "2026-08-02T11:50:57",
+      "timestamp": "2026-08-15T21:07:01",
       "value": "P20"
     }
   },
@@ -106,9 +112,7 @@
     "emergency-response",
     "faith-based",
     "food",
-    "fuqara",
     "grantmaking",
-    "masakin",
     "medical",
     "muslim-led",
     "usa",
@@ -116,7 +120,7 @@
   ],
   "programFocusTags": [
     "humanitarian-relief",
-    "community-services"
+    "economic-empowerment"
   ],
   "hideFromCurated": null,
   "theoryOfChange": "Providing quality education is the only medium that can improve the living standards of the poor people. Because education is the most powerful tool, which can equip them to make informed and prepare them to take decisions of their lives for future development also it is the only weapon to fight poverty and truly empower the youth and children.",
@@ -137,7 +141,8 @@
     "hasMultiYearMetrics": null,
     "thirdPartyEvaluated": 0,
     "evaluationSources": [
-      "UNCORROBORATED: Candid/GuideStar"
+      "UNCORROBORATED: Charity Navigator",
+      "UNCORROBORATED: 2/4 Star Rating (Charity Navigator)"
     ],
     "receivesFoundationGrants": null
   },
@@ -183,7 +188,7 @@
             "evidence": "Muslim-focused organization (+2); Asnaf: fuqara (+5); Strong humanitarian service (+4)",
             "improvement_suggestion": "Add a dedicated zakat page or clearly state whether donations are zakat-eligible.",
             "improvement_value": 8,
-            "name": "Muslim Donor Fit",
+            "name": "Zakat & Reach Signals",
             "possible": 19,
             "scored": 11,
             "status": "partial"
@@ -316,9 +321,15 @@
       },
       "judge_issues": [
         {
-          "field": "citation_3",
+          "field": "dimension_explanations.alignment",
           "judge": "citation",
-          "message": "URL unreachable: Timeout after 10s",
+          "message": "The fetched content for citation 2 is a placeholder page and does not contain information to confirm the claim.",
+          "severity": "warning"
+        },
+        {
+          "field": "dimension_explanations.alignment",
+          "judge": "citation",
+          "message": "The fetched content for citation 6 is a placeholder page and does not contain information to confirm the claim.",
           "severity": "warning"
         },
         {
@@ -330,13 +341,19 @@
         {
           "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
+          "message": "Low confidence (0.30) for zakat discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
           "field": "discovered.evaluations.confidence",
           "judge": "discover_quality",
           "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
+        },
+        {
+          "field": "discovered.awards.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -364,46 +381,64 @@
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "CORROBORATION FAILED: Discovered via search (confidence=0.50)",
+        "claim_evidence": null,
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The Al-Barr Foundation is a nonprofit organization focused on serving and healing under-served communities.",
+          "claim": "The organization focuses on serving and healing under-served communities through direct service delivery.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/853964369#financials"
         },
         {
-          "claim": "Donors can support these efforts through general charitable giving known as sadaqah.",
+          "claim": "This charity is a medium fit for Muslim donors looking to give sadaqah to religious and cultural causes.",
+          "id": "[2]",
+          "source_name": "Charity Website - Zakat",
+          "source_url": "https://albarr.org/annual-reports"
+        },
+        {
+          "claim": "There is very little data available regarding the cost per person helped or the overall financial health of the organization.",
+          "id": "[3]",
+          "source_name": "Form 990 (2025)",
+          "source_url": "https://projects.propublica.org/nonprofits/organizations/853964369"
+        },
+        {
+          "claim": "Donors can support these efforts through general charitable giving and sadaqah.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.albarr.org/last-10-nights-donate"
         },
         {
-          "claim": "Its primary activities include providing education support, healthcare awareness, and hunger relief to those in need.",
+          "claim": "Donations are accepted through various methods, including corporate matching.",
+          "id": "[5]",
+          "source_name": "Charity Website - Volunteer",
+          "source_url": "https://www.albarr.org/corporate-matching-gift"
+        },
+        {
+          "claim": "Its primary activities include education support, healthcare awareness, and providing food to those in need.",
           "id": "[6]",
           "source_name": "Annual Report",
           "source_url": "https://www.albarr.org/annual-reports"
         }
       ],
-      "amal_score_rationale": "The organization's assessment is limited by a lack of available financial data and outcome evidence. While it provides direct services, there is not enough information to confirm its cost-effectiveness or long-term impact.",
+      "amal_score_rationale": "The assessment is limited by a lack of available financial data and outcome evidence. While the mission is clear, there is not enough information to confirm how efficiently funds are used.",
       "areas_for_improvement": [
         "Limited public data regarding financial health and spending efficiency",
         "Lack of third-party verification for program outcomes"
       ],
       "dimension_explanations": {
-        "alignment": "This charity is a moderate fit for donors looking to support religious and cultural causes through sadaqah [4]. It has a documented track record of running programs, but it operates in a space with many other similar organizations [6]. Information about its specific funding needs is not fully detailed in public reports [1].",
-        "impact": "The foundation works directly with people to provide essential services like food and medical awareness [6]. However, there is no public data on the cost per person served or specific financial health metrics [1]. While the group has a clear plan for how its work helps the community, it lacks independent evidence to prove its results [6]."
+        "alignment": "This charity is a medium fit for Muslim donors looking to give sadaqah to religious and cultural causes [2]. It has a basic track record of service, but it does not currently show a large funding gap or a high level of urgency compared to other groups [6]. Donations are accepted through various methods, including corporate matching [5].",
+        "impact": "The foundation delivers direct services to people in need, which creates a clear link between donations and help [1]. However, there is very little data available regarding the cost per person helped or the overall financial health of the organization [3]. While the group explains its goals well, it lacks independent evidence to prove the long-term success of its programs [6]."
       },
       "headline": "Al-Barr Foundation provides direct humanitarian aid through education, healthcare, and hunger relief programs.",
       "strengths": [
-        "Provides direct services to beneficiaries in need",
-        "Clear mission focused on healing and empowering the under-served"
+        "Provides direct services to beneficiaries rather than just funding other groups",
+        "Maintains a clear theory of change for its social programs"
       ],
-      "summary": "The Al-Barr Foundation is a nonprofit organization focused on serving and healing under-served communities [1]. Its primary activities include providing education support, healthcare awareness, and hunger relief to those in need [6]. Donors can support these efforts through general charitable giving known as sadaqah [4]."
+      "summary": "The organization focuses on serving and healing under-served communities through direct service delivery [1]. Its primary activities include education support, healthcare awareness, and providing food to those in need [6]. Donors can support these efforts through general charitable giving and sadaqah [4]."
     },
     "rich_narrative": {
       "all_citations": [

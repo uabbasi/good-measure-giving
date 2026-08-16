@@ -101,7 +101,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-03 17:54:47",
+  "lastUpdated": "2026-08-15 21:08:44",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
@@ -113,9 +113,9 @@
       "method": "pattern_match",
       "semantics": {
         "category": "reach_or_impressions",
-        "confident": false,
+        "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-04T00:39:39.525877+00:00",
+        "timestamp": "2026-08-16T04:08:13.903432+00:00",
         "verified": false
       },
       "source_name": "Charity Website",
@@ -448,7 +448,7 @@
             "evidence": "Operates in Muslim-majority regions (+3); Humanitarian service (+2)",
             "improvement_suggestion": "Add a dedicated zakat page or clearly state whether donations are zakat-eligible.",
             "improvement_value": 8,
-            "name": "Muslim Donor Fit",
+            "name": "Zakat & Reach Signals",
             "possible": 19,
             "scored": 5,
             "status": "partial"
@@ -527,8 +527,8 @@
             "status": "full"
           },
           {
-            "evidence": "Working capital: unknown (UNKNOWN)",
-            "improvement_suggestion": "Publish current reserve levels and a board-approved reserve policy (often 3-12 months for most nonprofits).",
+            "evidence": "Working capital: -2.7 months (CRITICAL)",
+            "improvement_suggestion": "Increase operating reserves to reduce continuity risk; set a board-approved minimum (typically at least 3 months).",
             "improvement_value": 4,
             "name": "Financial Health",
             "possible": 7,
@@ -581,9 +581,9 @@
       },
       "judge_issues": [
         {
-          "field": "citation_5",
-          "judge": "citation",
-          "message": "Could not confirm the claim 'The organization provides hot meals to families.' from the provided text.",
+          "field": "working_capital",
+          "judge": "factual",
+          "message": "Working capital reported as -2.7 months, but no error in narrative except checking source data consistency.",
           "severity": "warning"
         },
         {
@@ -664,64 +664,58 @@
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization focuses on legal advocacy, education, and providing solar lights and hot meals to families in Gaza and the West Bank.",
+          "claim": "The organization focuses on keeping Palestinian families in their homes by providing legal aid and solar lights to communities facing demolition.",
           "id": "[1]",
           "source_name": "Congressional Leadership Learning Mission",
           "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
         },
         {
-          "claim": "The group provides direct services like solar lanterns and school support.",
-          "id": "[2]",
-          "source_name": "2018 Leadership Learning Mission",
-          "source_url": "https://www.rebuildingalliance.org/s/Detailed-Agenda-of-Activities-Apr-27-May-5-Leadership-Learning-Mission-Revised-6.pdf"
+          "claim": "The group has a proven track record of coordinating with U.S. leaders to highlight the needs of Palestinian communities.",
+          "id": "[3]",
+          "source_name": "first Leadership Learning Mission",
+          "source_url": "https://www.globalgiving.org/pfil/12995/Detailed_Agenda_of_Activities_Apr_27May_5__Leadership_Learning_Mission__Revised_6.pdf"
         },
         {
-          "claim": "It has a long track record of preventing demolitions and providing aid.",
+          "claim": "This organization focuses on advocacy and emergency relief in a high-urgency cause area.",
           "id": "[4]",
           "source_name": "DOWNLOAD OUR PRESS RELEASE",
           "source_url": "http://www.rebuildingalliance.org/s/FOR-IMMEDIATE-RELEASE-Senators-Office-to-Sponsor-Palestinian-Peace-Briefing-2.pdf"
         },
         {
-          "claim": "The organization provides hot meals to families.",
+          "claim": "The charity provides direct services like hot meals.",
           "id": "[5]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://www.rebuildingalliance.org/s/2023-Tax-Return-Documents-THE-REBUILDING-ALLIANCE-FINAL-FEDERAL.pdf"
         },
         {
-          "claim": "This organization is sadaqah-eligible.",
+          "claim": "It is classified as sadaqah-eligible for Muslim donors.",
           "id": "[11]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.rebuildingalliance.org/donate-now"
         },
         {
-          "claim": "The organization lacks a documented theory of change and relies on noncash donations.",
+          "claim": "In FY2024, the charity reported a Total Revenue of $4,309,990.",
           "id": "[14]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/562392452#financials"
-        },
-        {
-          "claim": "In FY2024, it reported a Total Revenue of $4,309,990 and a Program expense ratio of 93.3%.",
-          "id": "[15]",
-          "source_name": "Form 990 (2023)",
-          "source_url": "https://projects.propublica.org/nonprofits/organizations/562392452"
         }
       ],
-      "amal_score_rationale": "This charity is rated below average because it lacks a clear plan for long-term change and relies entirely on noncash gifts. While it spends a high percentage on programs, its negative working capital creates financial risk.",
+      "amal_score_rationale": "This charity shows a strong commitment to spending on programs, but its overall assessment is limited by financial risks and a lack of clear long-term planning. The reliance on noncash gifts and negative working capital are significant factors for donors to consider.",
       "areas_for_improvement": [
-        "Working Capital of -2.7 months suggests the group lacks enough cash to cover short-term needs [14]",
-        "The organization does not have a documented theory of change to explain its long-term impact [14]",
-        "Reported revenue consists entirely of noncash contributions, which can make financial health harder to verify [14]"
+        "The charity reports a negative Working Capital of -2.7 months, which may impact short-term stability.",
+        "All revenue is reported as noncash contributions, and there is no documented theory of change to explain long-term goals.",
+        "The reported cost per beneficiary of $0.16 is unusually low for direct service programs."
       ],
       "dimension_explanations": {
-        "alignment": "This organization is sadaqah-eligible and focuses on high-urgency advocacy for Palestinian communities [11][14]. While it has a long track record of preventing demolitions and providing aid, it has a lower fit for donors specifically seeking zakat-certified projects [4][11].",
-        "impact": "The group provides direct services like solar lanterns and school support [1][2]. However, the reported cost per beneficiary of $0.16 is unusually low, and the organization lacks a formal theory of change to prove its effectiveness [14]."
+        "alignment": "This organization focuses on advocacy and emergency relief in a high-urgency cause area [4]. It is classified as sadaqah-eligible for Muslim donors but has a low overall fit for those seeking traditional zakat-supported projects [11]. The group has a proven track record of coordinating with U.S. leaders to highlight the needs of Palestinian communities [1][3].",
+        "impact": "The charity reports a Program expense ratio of 93.3%, showing that most funds go toward direct services like hot meals and solar lanterns [5]. However, the reported cost per beneficiary is only $0.16, which is difficult to verify as a realistic figure for these services [14]. While the group provides essential aid, it lacks a documented theory of change to prove how these actions lead to lasting results."
       },
-      "headline": "Rebuilding Alliance works to protect Palestinian rights and provide emergency aid, though its financial structure relies heavily on noncash gifts.",
+      "headline": "Rebuilding Alliance works to protect Palestinian rights and provide emergency aid through advocacy and direct community support.",
       "strengths": [
-        "Program expense ratio of 93.3% in FY2024 shows most spending goes to services [15]",
-        "Fundraising Efficiency of $0.10 per $1 raised indicates low costs to bring in donations [14]"
+        "Maintains a high Program expense ratio of 93.3% for its initiatives.",
+        "Operates with high fundraising efficiency, spending only $0.10 per $1 raised."
       ],
-      "summary": "The organization focuses on legal advocacy, education, and providing solar lights and hot meals to families in Gaza and the West Bank [1][5]. In FY2024, it reported a Total Revenue of $4,309,990 [15]. While it maintains a high program spending rate, its lack of a documented theory of change and reliance on noncash donations affect its overall assessment [14]."
+      "summary": "The organization focuses on keeping Palestinian families in their homes by providing legal aid and solar lights to communities facing demolition [1][4]. In FY2024, the charity reported a Total Revenue of $4,309,990 to support these programs [14]."
     },
     "rich_narrative": {
       "all_citations": [

@@ -958,9 +958,13 @@ def calculate_working_capital_months(
     """Calculate working capital in months.
 
     Formula: (total_assets - total_liabilities) / (total_expenses / 12)
-    Returns None if expenses are zero or missing.
+    Returns None if expenses are zero or missing, or if there's no
+    balance-sheet data at all (both assets and liabilities missing) —
+    otherwise a genuinely unknown balance sheet reads as a confident $0.
     """
     if not total_expenses or total_expenses <= 0:
+        return None
+    if total_assets is None and total_liabilities is None:
         return None
     monthly_expenses = total_expenses / 12
     net_assets = (total_assets or 0) - (total_liabilities or 0)

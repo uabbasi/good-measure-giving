@@ -86,3 +86,11 @@ class TestDegenerateInputs:
     def test_zero_expenses_is_not_a_division(self):
         months, _, _ = resolve_working_capital(_metrics(2024, 2024, 100, 0, 0))
         assert months is None
+
+    def test_no_balance_sheet_at_all_is_not_a_zero_balance(self):
+        """Both assets and liabilities missing must not compute as $0 - $0."""
+        assert calculate_working_capital_months(None, None, 1_200_000) is None
+
+    def test_one_side_of_the_balance_sheet_present_still_computes(self):
+        assert calculate_working_capital_months(100, None, 1200) == 1.0
+        assert calculate_working_capital_months(None, 100, 1200) == -1.0
