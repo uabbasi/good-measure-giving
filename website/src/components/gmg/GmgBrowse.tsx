@@ -91,7 +91,15 @@ const COLS: Col[] = [
   { key: 'cause', label: 'Cause', width: 150 },
   { key: 'overall', label: 'GMG', tip: 'Overall GMG rating — Impact + Alignment minus Risk, shown as a band rather than a precise score. Default sort. Blank = not scored yet.', width: 72, align: 'center' },
   { key: 'finances', label: 'Finances', tip: 'Financial health — reserves, program spending and stability. Strong = healthiest.', width: 120 },
-  { key: 'risk', label: 'Risk', tip: 'Risk — governance, transparency and red-flag checks. Strong = lowest risk.', width: 120 },
+  // A governance-completeness/red-flag SIGNAL, not the charity's full risk
+  // assessment (that lives on its own page as a named, described risk
+  // register — score_details.risks). Missing governance data can lower this
+  // signal even when the full assessment finds no red flags — found via
+  // manual QA: Against Malaria Foundation shows Weak here (unknown board
+  // size) and LOW risk on its own page. Said explicitly rather than making
+  // the two numbers agree, since browse's lightweight index doesn't carry
+  // the full risk register to agree WITH — see bd for the real fix.
+  { key: 'risk', label: 'Risk', tip: 'A lighter governance/red-flag signal, not the full risk assessment — missing governance data can lower it even with no red flags found. See the charity\'s own page for the complete, named risk assessment.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
   { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
   { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },

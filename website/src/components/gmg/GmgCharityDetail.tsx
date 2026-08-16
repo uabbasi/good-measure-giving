@@ -77,6 +77,25 @@ const RAIL_SECTIONS: RailSection[] = [
   { id: 'compares', label: 'How it compares' },
 ];
 
+// Plain-English explanations for internal rubric labels that otherwise reach
+// the page as bare, unexplained jargon — found in manual QA ("what does
+// 'Limited Basis' mean?"). Wired in as native title tooltips on the tags
+// below, matching the pattern GmgBrowse already uses for its column headers.
+export const ASSESSMENT_LABEL_EXPLAINERS: Record<string, string> = {
+  'High Conviction': 'Well-evidenced, low risk, and a strong match for Muslim donor priorities.',
+  'Promising': 'Good fit with donor priorities; the evidence is solid but still maturing.',
+  'Well Documented Low Score': "Well-evidenced, but the results don't clear our bar for a strong match.",
+  'Context Dependent': 'Mixed signals — worth weighing cause fit, risk and evidence yourself before deciding.',
+  'Limited Basis': 'Not enough evidence yet for a confident assessment — often a newer or smaller organization.',
+};
+
+export const EVIDENCE_STAGE_EXPLAINERS: Record<string, string> = {
+  Verified: 'Long track record with credible, third-party-backed evidence of outcomes.',
+  Established: 'Solid evidence and a real operating history, short of full third-party verification.',
+  Building: 'Evidence base is still developing.',
+  Early: 'Too new, or too little independent evidence yet, for a confident read.',
+};
+
 // Module-scope cards — kept out of the render body so they keep a stable
 // identity across renders (p + sectionBorder come in as props).
 
@@ -304,9 +323,13 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {c.asnaf && <Tag tone="accent" p={p}>{c.asnaf}</Tag>}
               {c.category && <Tag p={p}>{c.category}</Tag>}
               {c.concerns.highest === 'high' && <Tag tone="neg" p={p}>High-severity concern</Tag>}
-              {c.assessmentLabel && <Tag p={p}>{c.assessmentLabel}</Tag>}
+              {c.assessmentLabel && (
+                <Tag p={p} title={ASSESSMENT_LABEL_EXPLAINERS[c.assessmentLabel]}>{c.assessmentLabel}</Tag>
+              )}
               {c.archetypeLabel && <Tag p={p}>{c.archetypeLabel}</Tag>}
-              {c.evidenceStage && <Tag p={p}>{c.evidenceStage}</Tag>}
+              {c.evidenceStage && (
+                <Tag p={p} title={EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage]}>{c.evidenceStage}</Tag>
+              )}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (

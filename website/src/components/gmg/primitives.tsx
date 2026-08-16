@@ -99,10 +99,14 @@ export const Tag = React.memo(function Tag({
   children,
   tone = 'default',
   p,
+  title,
 }: {
   children: React.ReactNode;
   tone?: TagTone;
   p: GmgPalette;
+  /** Native hover tooltip. For internal-rubric labels like "Limited Basis"
+   * that mean nothing without a legend — found unexplained in manual QA. */
+  title?: string;
 }) {
   const styles: Record<TagTone, { bg: string; fg: string; border: string }> = {
     default: { bg: 'transparent', fg: p.sub, border: p.rule },
@@ -118,6 +122,7 @@ export const Tag = React.memo(function Tag({
   const s = styles[tone];
   return (
     <span
+      title={title}
       style={{
         padding: '3px 8px',
         borderRadius: 99,
@@ -132,6 +137,7 @@ export const Tag = React.memo(function Tag({
         display: 'inline-flex',
         alignItems: 'center',
         gap: 4,
+        cursor: title ? 'help' : undefined,
       }}
     >
       {children}

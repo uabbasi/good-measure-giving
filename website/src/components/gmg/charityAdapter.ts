@@ -87,6 +87,18 @@ export const stripScoreFraction = (note: string, scored: number, possible: numbe
     .replace(/\s{2,}/g, ' ')
     .trim();
 
+// score_details.zakat.claim_evidence is meant to be a quoted source for the
+// charity's zakat claim, rendered verbatim in italics as if it were a real
+// citation (see RightForYou.tsx). For 11 of 135 published charities — found
+// via manual QA on Al-Barr Foundation, also present on Doctors Without
+// Borders — the pipeline's zakat-corroboration step writes its own internal
+// audit-trail failure message into that same field instead of a citation:
+// "CORROBORATION FAILED: Discovered via search (confidence=0.50)". That
+// reads as the charity's own words on a public page. Treat it as absent
+// rather than fixing it up — there's no legitimate quote to salvage once the
+// corroboration step failed.
+const isPipelineInternalText = (s: string): boolean => /CORROBORATION FAILED/i.test(s);
+
 // Coerce numbers OR numeric strings (the exported JSON stores some financial
 // figures as strings, e.g. workingCapitalMonths: "18.00").
 const num = (v: unknown, d = 0): number => {
@@ -555,7 +567,10 @@ export const adaptCharity = (c: any): GmgCharity => {
 
     asnaf: sd?.zakat?.asnaf_category ? titleCase(sd.zakat.asnaf_category) : null,
     claimsZakat: !!sd?.zakat?.charity_claims_zakat,
-    zakatEvidence: stripTags(sd?.zakat?.claim_evidence) || null,
+    zakatEvidence: (() => {
+      const cleaned = stripTags(sd?.zakat?.claim_evidence);
+      return cleaned && !isPipelineInternalText(cleaned) ? cleaned : null;
+    })(),
 
     awards: {
       cn: Array.isArray(awards?.cnBeacons) && awards.cnBeacons.length ? awards.cnBeacons[0] : null,
