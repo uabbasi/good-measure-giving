@@ -52,7 +52,9 @@ def _extract(tmp_path, per_pdf_results):
 def _result(theory_of_change=None, mission=None, programs=None, financials=None):
     return {
         "theory_of_change": theory_of_change,
-        "mission": mission,
+        # AnnualReportParser.to_dict() names this "mission_statement", not
+        # "mission" -- see test_pdf_field_promotion.py for that bug.
+        "mission_statement": mission,
         "programs": programs,
         "financials": financials,
         "organization_name": "Test Org",

@@ -2398,6 +2398,9 @@ class WebsiteCollector(BaseCollector):
             "programs": [],
             "financial_data": None,
             "theory_of_change": None,
+            "beneficiaries_served": None,
+            "impact_metrics": None,
+            "geographic_coverage": [],
             "outcomes_data": [],  # Array of outcomes from ALL PDFs
             "llm_extracted_pdfs": [],  # Data from each PDF
             "pdf_extraction_sources": [],  # Track which PDFs were extracted
@@ -2527,9 +2530,15 @@ class WebsiteCollector(BaseCollector):
                         }
                     )
 
-                # Use first available data for top-level fields
-                if not pdf_data["mission"] and result.get("mission"):
-                    pdf_data["mission"] = result["mission"]
+                # Use first available data for top-level fields.
+                #
+                # AnnualReportParser.to_dict() (src/parsers/annual_report_parser.py)
+                # names this field "mission_statement", not "mission" -- this
+                # check has never matched, so mission has never actually been
+                # backfilled from a PDF despite the field existing since this
+                # method was written.
+                if not pdf_data["mission"] and result.get("mission_statement"):
+                    pdf_data["mission"] = result["mission_statement"]
 
                 if not pdf_data["programs"] and result.get("programs"):
                     pdf_data["programs"] = result["programs"]
@@ -2537,14 +2546,29 @@ class WebsiteCollector(BaseCollector):
                 if not pdf_data["financial_data"] and result.get("financials"):
                     pdf_data["financial_data"] = result["financials"]
 
-                # AnnualReportParser's schema extracts theory_of_change per PDF
-                # (src/parsers/annual_report_parser.py), but it was never
-                # promoted to a top-level field here -- every downloaded PDF's
-                # theory-of-change text sat unused inside llm_extracted_pdfs,
-                # and has_theory_of_change read False for any charity whose
-                # site had no separate, literally-labeled ToC page.
+                # theory_of_change, beneficiaries_served, and impact_metrics
+                # are all extracted per PDF but were never promoted here at
+                # all (not even a wrong-key attempt like mission's) --
+                # CharityMetricsAggregator reads all three from the top-level
+                # website_profile dict this feeds, including as fallback
+                # sources for the beneficiary count that drives Cost Per
+                # Beneficiary scoring.
                 if not pdf_data["theory_of_change"] and result.get("theory_of_change"):
                     pdf_data["theory_of_change"] = result["theory_of_change"]
+
+                if not pdf_data["beneficiaries_served"] and result.get("beneficiaries_served"):
+                    pdf_data["beneficiaries_served"] = result["beneficiaries_served"]
+
+                if not pdf_data["impact_metrics"] and result.get("impact_metrics"):
+                    pdf_data["impact_metrics"] = result["impact_metrics"]
+
+                # geographic_coverage has no direct match in to_dict() -- it's
+                # split into countries_served + regions_served there. Combine
+                # them into the flat list the aggregator expects.
+                if not pdf_data["geographic_coverage"]:
+                    combined_geo = (result.get("countries_served") or []) + (result.get("regions_served") or [])
+                    if combined_geo:
+                        pdf_data["geographic_coverage"] = combined_geo
 
                 pdf_data["pdf_extraction_sources"].append(
                     {
@@ -2992,6 +3016,25 @@ class WebsiteCollector(BaseCollector):
                         aggregated_data["theory_of_change"] = pdf_data_extracted["theory_of_change"]
                         if self.logger:
                             self.logger.info("Using theory of change from PDF")
+
+                    if not aggregated_data.get("beneficiaries_served") and pdf_data_extracted.get("beneficiaries_served"):
+                        aggregated_data["beneficiaries_served"] = pdf_data_extracted["beneficiaries_served"]
+                        if self.logger:
+                            self.logger.info(
+                                f"Using beneficiaries_served from PDF: {pdf_data_extracted['beneficiaries_served']}"
+                            )
+
+                    if not aggregated_data.get("impact_metrics") and pdf_data_extracted.get("impact_metrics"):
+                        aggregated_data["impact_metrics"] = pdf_data_extracted["impact_metrics"]
+                        if self.logger:
+                            self.logger.info("Using impact_metrics from PDF")
+
+                    if not aggregated_data.get("geographic_coverage") and pdf_data_extracted.get("geographic_coverage"):
+                        aggregated_data["geographic_coverage"] = pdf_data_extracted["geographic_coverage"]
+                        if self.logger:
+                            self.logger.info(
+                                f"Using {len(pdf_data_extracted['geographic_coverage'])} geographic areas from PDF"
+                            )
 
                     # Add LLM-extracted PDF data (outcomes, programs, etc.)
                     if pdf_data_extracted.get("llm_extracted_pdfs"):
