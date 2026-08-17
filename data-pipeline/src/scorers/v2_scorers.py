@@ -2174,6 +2174,24 @@ class RiskScorer:
             )
         return risks
 
+    _BOARD_SIZE_SOURCE_LABELS = {
+        "irs_990": "IRS Form 990",
+        "charity_navigator": "Charity Navigator",
+        "candid": "Candid profile",
+        "website": "Charity website",
+    }
+
+    def _board_size_source_label(self, metrics: CharityMetrics) -> str:
+        """Which source actually won board_size, not just which one CAN report it.
+
+        Used to have this hardcoded to "Candid profile" regardless of the
+        real source -- true again only for the minority of charities Candid
+        wins now that IRS Form 990 leads (see source_trust.py's "board" ranking).
+        """
+        attr = (metrics.source_attribution or {}).get("board_size") or {}
+        source = str(attr.get("source_name") or "")
+        return self._BOARD_SIZE_SOURCE_LABELS.get(source, "Candid profile")
+
     def _check_operational_risks(self, metrics: CharityMetrics) -> list[RiskFactor]:
         risks = []
         if metrics.board_size is not None and metrics.board_size < 3:
@@ -2182,7 +2200,7 @@ class RiskScorer:
                     category=RiskCategory.OPERATIONAL,
                     description=f"Board too small: {metrics.board_size} members",
                     severity=RiskSeverity.HIGH,
-                    data_source="Candid profile",
+                    data_source=self._board_size_source_label(metrics),
                 )
             )
         return risks

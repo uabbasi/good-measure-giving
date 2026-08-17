@@ -611,6 +611,23 @@ class TestRiskScorer:
         _case_against, deduction = scorer.evaluate(m)
         assert deduction == 0
 
+    def test_board_too_small_risk_names_the_real_source(self):
+        """data_source used to be hardcoded 'Candid profile' regardless of
+        which source actually won board_size (usually IRS now)."""
+        m = _base_metrics(
+            board_size=2,
+            source_attribution={"board_size": {"source_name": "irs_990"}},
+        )
+        case_against, _deduction = RiskScorer().evaluate(m)
+        risk = next(r for r in case_against.risks if "Board too small" in r.description)
+        assert risk.data_source == "IRS Form 990"
+
+    def test_board_too_small_falls_back_to_candid_label_when_source_unknown(self):
+        m = _base_metrics(board_size=2)
+        case_against, _deduction = RiskScorer().evaluate(m)
+        risk = next(r for r in case_against.risks if "Board too small" in r.description)
+        assert risk.data_source == "Candid profile"
+
     def test_low_program_spending(self):
         """Program spending < 50% → -5."""
         m = _base_metrics(program_expense_ratio=0.40)
