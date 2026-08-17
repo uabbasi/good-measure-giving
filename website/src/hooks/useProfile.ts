@@ -140,6 +140,15 @@ export function useProfile(): UseProfileResult {
     fetchProfile();
   }, [fetchProfile]);
 
+  // Dev/emulator-only: a quick-login persona can seed Firestore data after
+  // auth already changed (see DevQuickLogin.tsx). If this hook's fetch above
+  // already ran by then, it read the doc before the seed write landed and
+  // never refetches on its own. Re-fetch on the same signal the seed fires.
+  useEffect(() => {
+    window.addEventListener('gmg:seeded-data-changed', fetchProfile);
+    return () => window.removeEventListener('gmg:seeded-data-changed', fetchProfile);
+  }, [fetchProfile]);
+
   // Update profile
   const updateProfile = useCallback(async (updates: Partial<ProfileUpdates>) => {
     if (!db || !userId) {

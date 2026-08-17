@@ -3,7 +3,7 @@
  * Uses TanStack Query for caching + useMutation for optimistic updates
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { collection, doc, getDocs, setDoc, deleteDoc, updateDoc, orderBy, query, Timestamp } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
@@ -55,6 +55,16 @@ export function useBookmarks(): UseBookmarksResult {
     },
     enabled: !!db && !!userId,
   });
+
+  // Dev/emulator-only: see the matching comment in useProfile.ts — a seeded
+  // quick-login persona writes bookmarks after auth already changed, which
+  // this query's initial fetch can race and miss.
+  useEffect(() => {
+    const handleSeeded = () => queryClient.invalidateQueries({ queryKey: bookmarksQueryKey });
+    window.addEventListener('gmg:seeded-data-changed', handleSeeded);
+    return () => window.removeEventListener('gmg:seeded-data-changed', handleSeeded);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryClient, userId]);
 
   const error = queryError
     ? (queryError instanceof Error ? queryError.message : 'Failed to load bookmarks')

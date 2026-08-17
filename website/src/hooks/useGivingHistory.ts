@@ -132,6 +132,14 @@ export function useGivingHistory(): UseGivingHistoryResult {
     fetchDonations();
   }, [fetchDonations]);
 
+  // Dev/emulator-only: see the matching comment in useProfile.ts — a seeded
+  // quick-login persona writes donations after auth already changed, which
+  // this one-shot fetch can race and miss.
+  useEffect(() => {
+    window.addEventListener('gmg:seeded-data-changed', fetchDonations);
+    return () => window.removeEventListener('gmg:seeded-data-changed', fetchDonations);
+  }, [fetchDonations]);
+
   // Add a new donation
   const addDonation = useCallback(async (input: DonationInput): Promise<GivingHistoryEntry> => {
     if (!db || !userId) {

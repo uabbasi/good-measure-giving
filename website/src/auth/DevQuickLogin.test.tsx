@@ -80,6 +80,37 @@ describe('DevQuickLogin — login behavior', () => {
     expect(seedTestUser).not.toHaveBeenCalled();
   });
 
+  // Regression: useProfile/useGivingHistory/useBookmarks each fetch once when
+  // auth changes. Seeding happens AFTER that fetch resolves (auth flips first,
+  // then this component awaits seedTestUser), so a hook already mounted on
+  // the page reads the doc before the seed write lands and never refetches on
+  // its own — this event is how they're told to.
+  it('dispatches gmg:seeded-data-changed after a seeded persona finishes seeding', async () => {
+    const handler = vi.fn();
+    window.addEventListener('gmg:seeded-data-changed', handler);
+    try {
+      render(<DevQuickLogin />);
+      fireEvent.click(screen.getByText(/Login: Active Donor/));
+      await waitFor(() => expect(seedTestUser).toHaveBeenCalled());
+      await waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    } finally {
+      window.removeEventListener('gmg:seeded-data-changed', handler);
+    }
+  });
+
+  it('does NOT dispatch gmg:seeded-data-changed for the unseeded Fresh User', async () => {
+    const handler = vi.fn();
+    window.addEventListener('gmg:seeded-data-changed', handler);
+    try {
+      render(<DevQuickLogin />);
+      fireEvent.click(screen.getByText(/Login: Fresh User/));
+      await waitFor(() => expect(signIn).toHaveBeenCalled());
+      expect(handler).not.toHaveBeenCalled();
+    } finally {
+      window.removeEventListener('gmg:seeded-data-changed', handler);
+    }
+  });
+
   it('shows an error when the emulator test-auth seam is missing', async () => {
     delete (window as unknown as { __TEST_AUTH__?: unknown }).__TEST_AUTH__;
     render(<DevQuickLogin />);

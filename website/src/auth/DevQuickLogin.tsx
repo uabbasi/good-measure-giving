@@ -70,7 +70,14 @@ export function DevQuickLogin() {
       if (auth?.currentUser && !auth.currentUser.displayName) {
         await updateProfile(auth.currentUser, { displayName: u.displayName });
       }
-      if (u.seed && auth?.currentUser) await seedTestUser(auth.currentUser.uid, u.id as SeededPersona);
+      if (u.seed && auth?.currentUser) {
+        await seedTestUser(auth.currentUser.uid, u.id as SeededPersona);
+        // Fires after the seed write lands so hooks already mounted on the
+        // page (e.g. this pill used from /profile itself) refetch instead of
+        // showing whatever they read the instant auth flipped, before the
+        // seed write landed.
+        window.dispatchEvent(new CustomEvent('gmg:seeded-data-changed'));
+      }
     } catch (e) {
       setError(String((e as Error)?.message ?? e));
     } finally {

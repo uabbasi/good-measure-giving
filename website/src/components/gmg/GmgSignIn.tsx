@@ -121,8 +121,12 @@ export const GmgSignIn: React.FC<{
     trackSignIn('google');
     const provider = new GoogleAuthProvider();
     try {
-      if (isMobileBrowser()) await signInWithRedirect(auth, provider);
-      else await signInWithPopup(auth, provider);
+      if (isMobileBrowser()) {
+        await signInWithRedirect(auth, provider);
+      } else {
+        await signInWithPopup(auth, provider);
+        close();
+      }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';
       if (code === 'auth/popup-closed-by-user') return;
@@ -146,6 +150,7 @@ export const GmgSignIn: React.FC<{
         if (result.user && !result.user.displayName) {
           window.dispatchEvent(new CustomEvent('gmg:needs-name'));
         }
+        close();
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';

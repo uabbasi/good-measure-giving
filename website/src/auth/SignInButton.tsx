@@ -111,6 +111,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         await signInWithRedirect(auth, provider);
       } else {
         await signInWithPopup(auth, provider);
+        closeModal();
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';
@@ -137,6 +138,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         if (result.user && !result.user.displayName) {
           window.dispatchEvent(new CustomEvent('gmg:needs-name'));
         }
+        closeModal();
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';
