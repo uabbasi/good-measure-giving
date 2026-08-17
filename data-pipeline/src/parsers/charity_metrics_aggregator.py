@@ -457,6 +457,13 @@ class CharityMetrics(BaseModel):
     geographic_coverage: List[str] = Field(
         default_factory=list, description="Geographic areas served (cities, states, countries)"
     )
+    underserved_gap_evidence: Optional[str] = Field(
+        None,
+        description="Quantifiable evidence of an underserved gap (website extractor's "
+        "ummah_gap_data.gap_evidence) -- e.g. 'only 3 Islamic food banks serve 150K "
+        "Muslims in Detroit'. Not on the hallucination-prone denylist like "
+        "populations_served; kept separate rather than merged into it.",
+    )
 
     # Candid-specific fields (used by ZakatAssessor for raw Candid data access)
     candid_populations_served: Optional[List[str]] = Field(None, description="Populations served (raw from Candid)")
@@ -1663,6 +1670,17 @@ class CharityMetricsAggregator:
                 source_path="website_profile.ummah_gap_data.beneficiary_count",
             )
 
+        # ummah_gap_data.gap_evidence ("only 3 Islamic food banks serve 150K
+        # Muslims in Detroit") feeds Underserved Space scoring independently
+        # of whether a beneficiary count was found -- unlike beneficiary_count
+        # above, this isn't a fallback for a value another source may already
+        # have supplied.
+        if website_profile:
+            gap_evidence = (website_profile.get("ummah_gap_data") or {}).get("gap_evidence")
+            if gap_evidence:
+                metrics_data["underserved_gap_evidence"] = gap_evidence
+                _track("underserved_gap_evidence", "website", gap_evidence)
+
         # 4) Extract from impact_metrics.metrics (pattern matching)
         if beneficiaries is None and website_profile:
             # Extractor may emit explicit nulls ("impact_metrics": null or
@@ -2414,31 +2432,51 @@ class CharityMetricsAggregator:
             website_profile.get("has_impact_stories") if website_profile else None,
         )
 
-        # Theory of change: check Candid → website → discovery service
-        # Discovery service claims require a URL or evidence text to be trusted;
-        # without either, the claim is unverifiable (phantom ToC).
+        # Theory of change: check Candid Charting Impact -> website -> discovery service.
+        #
+        # candid_profile.get("has_theory_of_change") was the original tier-1
+        # check here, but the Candid collector (src/collectors/candid_beautifulsoup.py)
+        # never emits a key by that name -- it emits charting_impact_goal /
+        # charting_impact_strategies / has_charting_impact instead, so that
+        # check has never once matched anything. Candid's Charting Impact
+        # framework is exactly a theory of change (org states its goal and
+        # strategy, verified by a third-party assessment, not our own
+        # inference), so it belongs ahead of the website extractor's guess.
         discovered_toc = discovered_profile.get(SECTION_THEORY_OF_CHANGE, {}) if discovered_profile else {}
         discovered_toc_verified = discovered_toc.get("has_theory_of_change") and (
             discovered_toc.get("url") or discovered_toc.get("evidence")
         )
+        candid_charting_impact_toc = (
+            candid_profile.get("charting_impact_goal") or candid_profile.get("charting_impact_strategies")
+            if candid_profile
+            else None
+        )
         metrics_data["has_theory_of_change"] = (
-            candid_profile.get("has_theory_of_change")
-            if candid_profile and candid_profile.get("has_theory_of_change")
+            bool(candid_charting_impact_toc)
+            if candid_charting_impact_toc
             else bool(website_profile.get("theory_of_change"))
             if website_profile and website_profile.get("theory_of_change")
             else bool(discovered_toc_verified)
         )
 
-        # Theory of change text (website or PDF or discovery evidence)
+        # Theory of change text (Candid Charting Impact, then website, then PDF/discovery)
         metrics_data["theory_of_change"] = (
-            website_profile.get("theory_of_change")
+            candid_charting_impact_toc
+            if candid_charting_impact_toc
+            else website_profile.get("theory_of_change")
             if website_profile and website_profile.get("theory_of_change")
             else discovered_toc.get("evidence")
             if discovered_toc_verified
             else None
         )
         if metrics_data.get("theory_of_change"):
-            toc_src = "website" if website_profile and website_profile.get("theory_of_change") else "discovered"
+            toc_src = (
+                "candid_charting_impact"
+                if candid_charting_impact_toc
+                else "website"
+                if website_profile and website_profile.get("theory_of_change")
+                else "discovered"
+            )
             _track("theory_of_change", toc_src, True)
 
         # Website outcomes summary (from impact pages)
@@ -2501,6 +2539,12 @@ class CharityMetricsAggregator:
             candid_profile.get("tracks_progress") if candid_profile else None,
             website_profile.get("tracks_metrics_over_time") if website_profile else None,
         )
+
+        # Candid's Charting Impact framework requires the org to describe its
+        # measurement approach and progress against stated goals -- a
+        # verified methodology signal, not just our own website inference.
+        if candid_profile and candid_profile.get("has_charting_impact"):
+            metrics_data["has_outcome_methodology"] = True
 
         # ====================================================================
         # Extract Evidence of Impact Data (from website extractor)

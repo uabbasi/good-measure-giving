@@ -1950,6 +1950,13 @@ class AlignmentScorer:
 
     def _serves_underserved_populations(self, metrics: CharityMetrics) -> bool:
         """Check if charity serves populations with limited alternative charities."""
+        # Quantified evidence of a specific gap ("only 3 Islamic food banks
+        # serve 150K Muslims in Detroit") is stronger than a keyword hit on
+        # generic mission text -- trust it directly rather than making it
+        # compete with the scan below.
+        if metrics.underserved_gap_evidence:
+            return True
+
         text = " ".join(
             [
                 metrics.mission or "",
