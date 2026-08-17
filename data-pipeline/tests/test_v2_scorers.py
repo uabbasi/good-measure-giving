@@ -1239,6 +1239,78 @@ class TestContradictionSignalPositiveScoring:
         assert gov.scored > 0
         assert "oversight concern" not in gov.evidence
 
+    # ── Governance tiers: board size × IRS Part VI policy hygiene (v6.0.0) ──
+
+    @staticmethod
+    def _gov(**kw):
+        result = ImpactScorer().evaluate(_base_metrics(**kw))
+        return _component(result, "Governance")
+
+    _ALL_FOUR = dict(
+        has_conflict_of_interest_policy=True,
+        has_whistleblower_policy=True,
+        has_document_retention_policy=True,
+        board_reviewed_990_before_filing=True,
+    )
+
+    def test_big_board_with_three_policies_is_strong(self):
+        gov = self._gov(board_size=9, **{**self._ALL_FOUR, "board_reviewed_990_before_filing": False})
+        assert "STRONG" in gov.evidence
+        assert "3/4" in gov.evidence
+
+    def test_big_board_with_two_policies_is_adequate(self):
+        gov = self._gov(
+            board_size=9,
+            has_conflict_of_interest_policy=True,
+            has_whistleblower_policy=True,
+            has_document_retention_policy=False,
+            board_reviewed_990_before_filing=False,
+        )
+        assert "ADEQUATE" in gov.evidence
+
+    def test_big_board_whose_filing_answered_no_to_everything_is_minimal(self):
+        """A real 0/4 -- the filing was read and every answer was "no"."""
+        gov = self._gov(
+            board_size=9,
+            has_conflict_of_interest_policy=False,
+            has_whistleblower_policy=False,
+            has_document_retention_policy=False,
+            board_reviewed_990_before_filing=False,
+        )
+        assert "MINIMAL" in gov.evidence
+        assert "0/4" in gov.evidence
+
+    def test_big_board_with_no_irs_filing_at_all_keeps_the_pre_v6_tier(self):
+        """No 990 governance data is a gap on our side, not four "no" answers.
+
+        990-EZ and 990-PF filers have no Part VI Section B at all. Four real
+        corpus charities land here -- International Institute of Islamic
+        Thought (board 9), Islamic Center of Irvine (5), Project South (7),
+        CAIR California (15) -- and v6.0.0 initially demoted every one of
+        them from ADEQUATE to MINIMAL for a filing we never read, while the
+        evidence line asserted "0/4 IRS policy filings present".
+        """
+        gov = self._gov(board_size=9)
+        assert "ADEQUATE" in gov.evidence
+        assert "0/4" not in gov.evidence
+        assert "no IRS Form 990 governance disclosures available" in gov.evidence
+
+    def test_small_board_needs_three_policies_to_reach_adequate(self):
+        assert "ADEQUATE" in self._gov(board_size=4, **self._ALL_FOUR).evidence
+        assert "MINIMAL" in self._gov(
+            board_size=4,
+            has_conflict_of_interest_policy=True,
+            has_whistleblower_policy=True,
+            has_document_retention_policy=False,
+            board_reviewed_990_before_filing=False,
+        ).evidence
+
+    def test_small_board_with_no_irs_filing_stays_minimal(self):
+        """Size-only fallback for a 3-4 board is MINIMAL, same as pre-v6.0.0."""
+        gov = self._gov(board_size=3)
+        assert "MINIMAL" in gov.evidence
+        assert "no IRS Form 990 governance disclosures available" in gov.evidence
+
     def test_financial_health_capped_by_high_mismatch(self):
         """HIGH revenue_expense_mismatch → financial health capped at CRITICAL (≤1 pt)."""
         m = _base_metrics(
@@ -1790,9 +1862,21 @@ class TestArchetypeScoring:
             )
 
     def test_board_alone_no_longer_reaches_strong(self):
-        """A board of 7 with zero IRS policy fields present now lands at
-        MINIMAL (1/3 raw), not STRONG — rubric v6.0.0's core behavior change."""
-        m = _base_metrics(board_size=7)
+        """A board of 7 whose filing answered "no" to all four policy
+        questions now lands at MINIMAL (1/3 raw), not STRONG — rubric
+        v6.0.0's core behavior change.
+
+        The four fields must be explicitly False, not absent: absent means
+        we never read a filing, which falls back to size-only ADEQUATE
+        rather than being scored as four "no" answers.
+        """
+        m = _base_metrics(
+            board_size=7,
+            has_conflict_of_interest_policy=False,
+            has_whistleblower_policy=False,
+            has_document_retention_policy=False,
+            board_reviewed_990_before_filing=False,
+        )
         rubric = get_rubric_config("DIRECT_SERVICE")
         result = ImpactScorer().evaluate(m, rubric=rubric)
         gov_comp = next(c for c in result.components if c.name == "Governance")

@@ -254,9 +254,11 @@ EVIDENCE_OUTCOMES_POINTS = {
 GOVERNANCE_POINTS = {
     # Board >=5 AND >=3 of 4 IRS policy-hygiene fields present
     "STRONG": 3,
-    # Board >=5 with 1-2 policies present, OR board 3-4 with >=3 policies
+    # Board >=5 with 1-2 policies present, OR board 3-4 with >=3 policies,
+    # OR board >=5 with no IRS governance filing to read policies from
     "ADEQUATE": 2,
-    # Board 3-4 with <3 policies, OR board >=5 with zero policies present
+    # Board 3-4 with <3 policies, OR board >=5 whose filing answered "no"
+    # to all four policy questions
     "MINIMAL": 1,
     "WEAK": 0,  # Board < 3 or unknown
 }
@@ -1080,10 +1082,18 @@ class ImpactScorer:
         gov_possible = rubric.weights["governance"]
         gov_pts = rubric.scale_score("governance", raw_gov_pts)
         gov_policy_count = self._governance_policy_count(metrics)
-        gov_evidence = (
-            f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members, "
-            f"{gov_policy_count}/4 IRS policy filings present)"
-        )
+        if self._has_governance_policy_data(metrics):
+            gov_evidence = (
+                f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members, "
+                f"{gov_policy_count}/4 IRS policy filings present)"
+            )
+        else:
+            # "0/4 present" would assert something about the org we never
+            # read -- say we have no filing instead.
+            gov_evidence = (
+                f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members, "
+                f"no IRS Form 990 governance disclosures available)"
+            )
         ceo_signal = self._find_contradiction_signal(metrics, "ceo_comp_excessive")
         if ceo_signal:
             detail = ceo_signal.get("detail", "")
@@ -1136,6 +1146,17 @@ class ImpactScorer:
     def _governance_policy_count(cls, metrics: CharityMetrics) -> int:
         return sum(1 for f in cls._GOVERNANCE_POLICY_FIELDS if getattr(metrics, f) is True)
 
+    @classmethod
+    def _has_governance_policy_data(cls, metrics: CharityMetrics) -> bool:
+        """Whether any Part VI policy question was actually answered for this org.
+
+        All four fields None means we never got a filing to read them from
+        (990-EZ and 990-PF have no Part VI Section B; some filings predate
+        the tags) -- not that the org answered "no" four times. Distinguishing
+        the two is the difference between a data gap and a finding.
+        """
+        return any(getattr(metrics, f) is not None for f in cls._GOVERNANCE_POLICY_FIELDS)
+
     def _score_governance(self, metrics: CharityMetrics, tier: str) -> tuple[str, int]:
         """Score governance (3 raw pts, rubric v6.0.0).
 
@@ -1144,6 +1165,8 @@ class ImpactScorer:
         before filing) decides whether that ceiling is reached. A board of
         3-4 cannot reach STRONG on paperwork alone; a board of 5+ no longer
         reaches STRONG on size alone either — it needs 3 of the 4 policies too.
+        A charity whose filing we never read at all falls back to size-only
+        tiering rather than being scored as if it answered "no" four times.
 
         CEO comp contradiction signal caps governance score regardless of tier:
         - HIGH severity → WEAK (0 pts)
@@ -1151,11 +1174,18 @@ class ImpactScorer:
         """
         board = metrics.board_size
         policy_count = self._governance_policy_count(metrics)
+        # No filing to read the policy questions from is a gap on our side,
+        # not four "no" answers from the org. Scoring it as zero policies
+        # would demote a board of 5+ from the pre-v6.0.0 ADEQUATE to MINIMAL
+        # purely because we couldn't reach a 990 -- the same missing-vs-real-
+        # zero conflation this rubric version fixed elsewhere. Fall back to
+        # the size-only tiering these charities were scored on before.
+        has_policy_data = self._has_governance_policy_data(metrics)
 
         if board is not None and board >= 5:
             if policy_count >= 3:
                 level, pts = "STRONG", GOVERNANCE_POINTS["STRONG"]
-            elif policy_count >= 1:
+            elif policy_count >= 1 or not has_policy_data:
                 level, pts = "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
             else:
                 level, pts = "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
