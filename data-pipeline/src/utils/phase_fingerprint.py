@@ -51,6 +51,7 @@ PHASE_CODE_FILES: dict[str, list[str]] = {
         "src/validators/charity_navigator_validator.py",
         "src/validators/bbb_validator.py",
         "src/validators/form990_grants_validator.py",
+        "src/validators/form990_governance_validator.py",
     ],
     "discover": [
         # Discovery services
