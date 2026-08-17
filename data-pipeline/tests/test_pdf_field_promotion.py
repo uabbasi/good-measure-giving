@@ -101,9 +101,36 @@ class TestBeneficiariesServedPromotion:
 
 class TestImpactMetricsPromotion:
     def test_impact_metrics_from_a_pdf_reaches_the_top_level(self, tmp_path):
-        metrics = {"metrics": {"people_served_annually": 12000}}
-        pdf_data, _cost = _extract(tmp_path, [_result(impact_metrics=metrics)])
-        assert pdf_data["impact_metrics"] == metrics
+        """The PDF's flat dict must be wrapped into the shape readers expect.
+
+        AnnualReportParser's prompt asks for a flat
+        {"metric_name": "value"} object; the website extractor's prompt asks
+        for {"description": ..., "metrics": {...}}. Everything downstream --
+        CharityMetricsAggregator's beneficiary pattern-match, the
+        "website_profile.impact_metrics.metrics.X" citation paths -- reads
+        the nested form, so promoting the flat dict unchanged would put the
+        metrics somewhere nothing looks.
+        """
+        pdf_data, _cost = _extract(
+            tmp_path,
+            [_result(impact_metrics={"people_served_annually": 12000})],
+        )
+        assert pdf_data["impact_metrics"]["metrics"] == {"people_served_annually": 12000}
+
+    def test_promoted_metrics_are_visible_to_the_beneficiary_pattern_match(self, tmp_path):
+        """End-to-end on the consumer that motivated promoting the field."""
+        from src.parsers.charity_metrics_aggregator import CharityMetricsAggregator
+
+        pdf_data, _cost = _extract(
+            tmp_path,
+            [_result(impact_metrics={"people_served_annually": 12000})],
+        )
+        metrics = CharityMetricsAggregator.aggregate(
+            charity_id=0,
+            ein="12-3456789",
+            website_profile={"impact_metrics": pdf_data["impact_metrics"]},
+        )
+        assert metrics.beneficiaries_served_annually == 12000
 
 
 class TestGeographicCoveragePromotion:
@@ -132,11 +159,11 @@ class TestAllFourPromoteIndependently:
                     mission_statement="Our mission.",
                     theory_of_change="Our theory.",
                     beneficiaries_served=1000,
-                    impact_metrics={"metrics": {"x": 1}},
+                    impact_metrics={"x": 1},
                 )
             ],
         )
         assert pdf_data["mission"] == "Our mission."
         assert pdf_data["theory_of_change"] == "Our theory."
         assert pdf_data["beneficiaries_served"] == 1000
-        assert pdf_data["impact_metrics"] == {"metrics": {"x": 1}}
+        assert pdf_data["impact_metrics"]["metrics"] == {"x": 1}

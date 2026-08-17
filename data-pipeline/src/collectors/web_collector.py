@@ -2560,7 +2560,18 @@ class WebsiteCollector(BaseCollector):
                     pdf_data["beneficiaries_served"] = result["beneficiaries_served"]
 
                 if not pdf_data["impact_metrics"] and result.get("impact_metrics"):
-                    pdf_data["impact_metrics"] = result["impact_metrics"]
+                    # AnnualReportParser emits a FLAT {metric_name: value}
+                    # dict; the website extractor emits (and everything
+                    # downstream reads) {"description": ..., "metrics": {...}}.
+                    # Passing the flat dict straight through leaves the
+                    # promoted metrics invisible to
+                    # CharityMetricsAggregator's `impact.get("metrics")`
+                    # beneficiary pattern-match -- the very consumer that
+                    # motivated promoting them.
+                    pdf_data["impact_metrics"] = {
+                        "description": None,
+                        "metrics": result["impact_metrics"],
+                    }
 
                 # geographic_coverage has no direct match in to_dict() -- it's
                 # split into countries_served + regions_served there. Combine
