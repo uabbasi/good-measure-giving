@@ -30,7 +30,12 @@ export function applyItemLWW(items: PlanItem[], incoming: PlanItem): PlanItem[] 
   const stored = items[idx];
   if (incoming.updatedAt >= stored.updatedAt) {
     const next = items.slice();
-    next[idx] = { ...incoming, notes: stored.notes };
+    // Omit `notes` entirely (not `undefined`) when the stored item never had
+    // any — Firestore's Transaction.set() rejects an explicit `undefined`
+    // field value, and this array is written whole on every weight/assignee
+    // edit, so a brand-new item (no notes yet) would break the very first
+    // edit made to it.
+    next[idx] = { ...incoming, ...(stored.notes !== undefined ? { notes: stored.notes } : {}) };
     return next;
   }
   return items;

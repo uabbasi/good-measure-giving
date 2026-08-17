@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate } from './sharedPlanLogic';
+import { assertFirestoreWritable } from '../test-utils/assertFirestoreWritable';
 import type { PlanItem, ShortlistCandidate } from '../types/sharedPlan';
 
 const item = (over: Partial<PlanItem> = {}): PlanItem => ({
@@ -48,6 +49,21 @@ describe('applyItemLWW', () => {
     const out = applyItemLWW([stored], incoming);
     expect(out[0].weight).toBe(9);
     expect(out[0].notes).toEqual({ u1: { text: 'mine', at: 1 } });
+  });
+
+  // Regression: live-reproduced "Function Transaction.set() called with
+  // invalid data. Unsupported field value: undefined" when assigning a member
+  // to a charity that was just added (via addCharityItem, so it never had a
+  // `notes` key at all — not merely an empty one). The old code did
+  // `{ ...incoming, notes: stored.notes }` unconditionally, which sets an
+  // explicit `notes: undefined` any time the stored item never had notes —
+  // breaking the very first edit made to a brand-new item.
+  it('does not introduce an explicit notes:undefined when the stored item never had any', () => {
+    const stored = addCharityItem([], '95-4453134', 'u1')[0]; // no `notes` key at all
+    const incoming = item({ id: stored.id, assigneeUid: 'u2', updatedAt: stored.updatedAt + 1 });
+    const out = applyItemLWW([stored], incoming);
+    expect('notes' in out[0]).toBe(false);
+    expect(() => assertFirestoreWritable(out)).not.toThrow();
   });
 });
 

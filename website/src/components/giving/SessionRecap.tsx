@@ -59,8 +59,8 @@ export const SessionRecap: React.FC<{ planId: string }> = ({ planId }) => {
   return (
     <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-6 space-y-5">
       <h2 className="text-2xl font-semibold text-slate-900 dark:text-white leading-snug">
-        The {plan.name} is supporting {charityCount} {charityCount === 1 ? 'charity' : 'charities'}{' '}
-        across {causeCount} {causeCount === 1 ? 'cause' : 'causes'} this {year}
+        The {plan.name} is supporting {charityCount} {charityCount === 1 ? 'charity' : 'charities'}
+        {causeCount > 0 && <> across {causeCount} {causeCount === 1 ? 'cause' : 'causes'}</>} in {year}
       </h2>
 
       {items.length === 0 ? (
