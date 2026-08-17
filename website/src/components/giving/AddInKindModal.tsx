@@ -10,6 +10,7 @@ import { AnimatePresence, m } from 'motion/react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { ItemPicker } from './ItemPicker';
 import { CONDITION_DEFINITIONS, getMidpointValue, ALL_VALUE_GUIDE_ITEMS } from '../../data/donationValueGuide';
+import { parseLocalDate } from '../../utils/date';
 import type { InKindDonation, InKindDonationInput, InKindDonationItem } from '../../hooks/useInKindDonations';
 import type { ItemCondition } from '../../data/donationValueGuide';
 
@@ -57,7 +58,7 @@ export function AddInKindModal({
   // Items
   const [items, setItems] = useState<InKindDonationItem[]>([]);
 
-  const taxYear = new Date(date).getFullYear();
+  const taxYear = parseLocalDate(date).getFullYear();
   const totalValue = items.reduce((sum, item) => sum + item.totalValue, 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 

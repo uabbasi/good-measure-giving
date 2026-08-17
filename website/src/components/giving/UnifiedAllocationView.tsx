@@ -30,6 +30,7 @@ import { ALL_TAGS, TAGS, pickBestTag } from '../../constants/givingTags';
 import { getWalletType } from '../../utils/walletUtils';
 import { sanitizeMoneyInput, parseMoneyInput } from '../../utils/moneyInput';
 import { offPlanDonationTotal } from '../../utils/offPlanGiving';
+import { parseLocalDate } from '../../utils/date';
 import { StarterPlan } from './StarterPlan';
 import { ZakatEstimator } from './ZakatEstimator';
 import { CharityRecordRow } from './CharityRecordRow';
@@ -252,7 +253,7 @@ export function UnifiedAllocationView({
       else m.set(d.charityEin, [entry]);
     }
     for (const list of m.values()) {
-      list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      list.sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime());
     }
     return m;
   }, [donations]);

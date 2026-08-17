@@ -8,6 +8,7 @@ import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query,
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { ItemCondition } from '../data/donationValueGuide';
 import { toCSV } from '../utils/csv';
+import { parseLocalDate } from '../utils/date';
 
 // --------------- Types ---------------
 
@@ -164,7 +165,7 @@ export function useInKindDonations(): UseInKindDonationsResult {
 
       setDonations(prev => {
         const updated = [...prev, newDonation];
-        return updated.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return updated.sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime());
       });
       return newDonation;
     } catch (err) {
@@ -207,7 +208,7 @@ export function useInKindDonations(): UseInKindDonationsResult {
     } catch (err) {
       // Rollback
       setDonations(prev => [...prev, existing].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime()
       ));
       console.error('Error deleting in-kind donation:', err);
       const message = err instanceof Error ? err.message : 'Failed to delete donation';

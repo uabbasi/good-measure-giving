@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
+import { parseLocalDate } from '../../utils/date';
 import type { InKindDonation } from '../../hooks/useInKindDonations';
 import type { ItemCondition } from '../../data/donationValueGuide';
 
@@ -51,7 +52,7 @@ export function InKindHistoryTable({
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return parseLocalDate(dateStr).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

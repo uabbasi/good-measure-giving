@@ -8,6 +8,7 @@ import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, orderBy, query,
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { GivingHistoryEntry } from '../../types';
 import { toCSV } from '../utils/csv';
+import { parseLocalDate } from '../utils/date';
 
 export interface DonationInput {
   charityEin?: string | null;
@@ -157,7 +158,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
       // Insert at correct position based on date
       setDonations(prev => {
         const updated = [...prev, newDonation];
-        return updated.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return updated.sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime());
       });
       return newDonation;
     } catch (err) {
@@ -217,7 +218,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
     } catch (err) {
       // Rollback
       setDonations(prev => [...prev, existing].sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime()
       ));
       console.error('Error deleting donation:', err);
       const message = err instanceof Error ? err.message : 'Failed to delete donation';
@@ -233,7 +234,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
       if (d.category === 'zakat') {
         return d.zakatYear === year;
       }
-      return new Date(d.date).getFullYear() === year;
+      return parseLocalDate(d.date).getFullYear() === year;
     });
 
     const totalZakat = yearDonations
@@ -301,7 +302,7 @@ export function useGivingHistory(): UseGivingHistoryResult {
     if (year !== undefined) {
       filtered = donations.filter(d => {
         if (d.category === 'zakat') return d.zakatYear === year;
-        return new Date(d.date).getFullYear() === year;
+        return parseLocalDate(d.date).getFullYear() === year;
       });
     }
 

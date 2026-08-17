@@ -21,6 +21,7 @@ import { useInKindDonations } from '../src/hooks/useInKindDonations';
 import type { InKindDonation } from '../src/hooks/useInKindDonations';
 import { useCharityTargets } from '../src/hooks/useCharityTargets';
 import { adjustAssignmentGiven } from '../src/utils/assignments';
+import { parseLocalDate } from '../src/utils/date';
 import { useGivingDashboard } from '../src/hooks/useGivingDashboard';
 import { SignInButton } from '../src/auth/SignInButton';
 import {
@@ -515,7 +516,7 @@ export function ProfilePage() {
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Donations</p>
                   <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {donations.filter(d => d.zakatYear === zakatYear || new Date(d.date).getFullYear() === zakatYear).length}
+                    {donations.filter(d => d.zakatYear === zakatYear || parseLocalDate(d.date).getFullYear() === zakatYear).length}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>

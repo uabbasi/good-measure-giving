@@ -19,6 +19,7 @@ import { charityPath } from '../../lib/paths';
 import { Check, ChevronRight, X } from 'lucide-react';
 import type { AssignmentStatus } from '../../utils/recordStatus';
 import { sanitizeMoneyInput, parseMoneyInput } from '../../utils/moneyInput';
+import { parseLocalDate } from '../../utils/date';
 
 export interface CharityRecordRowData {
   ein: string;
@@ -211,7 +212,7 @@ export function CharityRecordRow({
     >
       {history!.map(h => {
         const dateStr = (() => {
-          const d = new Date(h.date);
+          const d = parseLocalDate(h.date);
           return isNaN(d.getTime()) ? h.date : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
         })();
         return (

@@ -6,6 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
+import { parseLocalDate } from '../../utils/date';
 import type { GivingHistoryEntry } from '../../../types';
 
 interface GivingHistoryTableProps {
@@ -40,7 +41,7 @@ export function GivingHistoryTable({
   const years = useMemo(() => {
     const yearSet = new Set<number>();
     donations.forEach(d => {
-      yearSet.add(new Date(d.date).getFullYear());
+      yearSet.add(parseLocalDate(d.date).getFullYear());
       if (d.zakatYear) yearSet.add(d.zakatYear);
     });
     return Array.from(yearSet).sort((a, b) => b - a);
@@ -51,7 +52,7 @@ export function GivingHistoryTable({
     return donations.filter(d => {
       // Year filter
       if (yearFilter !== 'all') {
-        const donationYear = new Date(d.date).getFullYear();
+        const donationYear = parseLocalDate(d.date).getFullYear();
         if (donationYear !== yearFilter && d.zakatYear !== yearFilter) {
           return false;
         }
@@ -100,7 +101,7 @@ export function GivingHistoryTable({
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return parseLocalDate(dateStr).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
