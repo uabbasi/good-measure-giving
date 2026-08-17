@@ -417,18 +417,22 @@ class Form990GrantsCollector(BaseCollector):
 
     @staticmethod
     def _bool_ind(elem: Optional[ET.Element]) -> Optional[bool]:
-        """An IRS 'Ind' element: '1' or 'X' is checked/yes, '0' is no, absent is unanswered.
+        """An IRS 'Ind' element: '1'/'X'/'true' is checked/yes, '0'/'false' is no, absent is unanswered.
 
-        Part VI Line 1-16 answers are written as '1'/'0'; Part VI Line 18's
-        disclosure-method checkboxes are written as a bare 'X' when checked
-        and simply omitted otherwise. Both forms mean the same thing here.
+        Part VI Line 1-16 answers are written as '1'/'0' by some e-file
+        providers and the literal string 'true'/'false' by others (confirmed
+        against real filings: CARE USA writes '1'/'0', the International
+        Rescue Committee writes 'true'/'false' for the same fields). Part VI
+        Line 18's disclosure-method checkboxes are written as a bare 'X' when
+        checked and simply omitted otherwise. All forms mean the same thing
+        here.
         """
         if elem is None or not elem.text:
             return None
         text = elem.text.strip().upper()
-        if text in ("1", "X"):
+        if text in ("1", "X", "TRUE"):
             return True
-        if text == "0":
+        if text in ("0", "FALSE"):
             return False
         return None
 

@@ -53,7 +53,6 @@ describe('qualitative ui signal derivation', () => {
             score: 40,
             rationale: '',
             cost_per_beneficiary: null,
-            directness_level: 'DIRECT_SERVICE',
             impact_design_categories: [],
             components: [
               { name: 'Evidence & Outcomes', scored: 8, possible: 9, evidence: '', status: 'full', improvement_value: 0 },
@@ -128,7 +127,6 @@ describe('qualitative ui signal derivation', () => {
             score: 10,
             rationale: '',
             cost_per_beneficiary: null,
-            directness_level: 'INDIRECT',
             impact_design_categories: [],
             components: [
               { name: 'Evidence & Outcomes', scored: 1, possible: 9, evidence: '', status: 'partial', improvement_value: 0 },

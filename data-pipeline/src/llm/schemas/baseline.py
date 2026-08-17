@@ -13,7 +13,7 @@ charities. They provide essential information for quick donor decisions:
 
 GMG Score (100-Point Framework) — 2 Dimensions + Risk + Data Confidence:
 
-- Impact (50 pts): CPB(20) + Directness(7) + Financial Health(7) + Program Ratio(6) + Evidence & Outcomes(5) + TOC(3) + Governance(2)
+- Impact (50 pts): CPB(20) + Financial Health(7) + Program Ratio(6) + Evidence & Outcomes(5) + TOC(3) + Governance(3, board size + IRS policy hygiene)
 - Alignment (50 pts): Zakat & Reach Signals(19) + Cause Urgency(13) + Underserved Space(7) + Track Record(6) + Funding Gap(5)
 - Risk (-10 max): Case Against risk deductions
 - Data Confidence (0.0-1.0): Verification + Transparency + Data Quality (outside score)
@@ -310,14 +310,14 @@ class ImpactAssessment(BaseModel):
 
     Answers: How much good per dollar, and can they prove it?
 
-    Components are re-weighted per archetype (v5.0.0):
+    Components are re-weighted per archetype (v5.0.0; Directness dropped and
+    folded into Governance in v6.0.0):
     - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
-    - Directness: How directly funds reach people
     - Financial Health: Reserve-policy-based liquidity health (smooth interpolation)
     - Program Ratio: Smooth interpolation over ratio
     - Evidence & Outcomes: Absorbed from Credibility
     - Theory of Change: Absorbed from Credibility
-    - Governance: Absorbed from Credibility
+    - Governance: Board size + IRS Form 990 policy hygiene
 
     All archetypes sum to 50.
     """
@@ -328,7 +328,6 @@ class ImpactAssessment(BaseModel):
 
     # Carry-forward fields
     cost_per_beneficiary: Optional[float] = Field(default=None, description="Calculated $/beneficiary")
-    directness_level: str = Field(default="UNKNOWN", description="Direct service → Indirect scale")
     impact_design_categories: list[str] = Field(
         default_factory=list,
         description="Which keyword categories matched: resilience, leverage, durability, sovereignty",

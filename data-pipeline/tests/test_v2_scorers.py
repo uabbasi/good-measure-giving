@@ -190,8 +190,8 @@ class TestCredibilityScorer:
 
 
 class TestImpactScorer:
-    """Impact = CPB(20) + Directness(7) + FinancialHealth(7) + ProgramRatio(6)
-    + Evidence&Outcomes(5) + TOC(3) + Governance(2)."""
+    """Impact = CPB(20) + FinancialHealth(7) + ProgramRatio(6)
+    + Evidence&Outcomes(5) + TOC(3) + Governance(3, board size + IRS policy hygiene)."""
 
     def test_high_program_ratio(self):
         """Program ratio ≥ 85% → max pts for archetype (smooth scoring)."""
@@ -1612,8 +1612,11 @@ class TestRubricArchetypes:
             assert archetype in list_archetypes(), f"Category {cat} maps to unknown archetype {archetype}"
 
     def test_base_weights_sum_to_50(self):
-        """Base weights (v4.0.0 denominator for scaling) must sum to 50."""
-        assert sum(BASE_WEIGHTS.values()) == IMPACT_TOTAL
+        """Base weights are a proportional-scaling denominator, not required to
+        sum to 50 themselves — only each archetype's actual weights must (see
+        test_all_archetypes_sum_to_50). v6.0.0 dropped Directness(7) and grew
+        Governance's raw range 2->3, netting 44 rather than 50."""
+        assert sum(BASE_WEIGHTS.values()) == 44
 
     def test_rubric_config_scale_score(self):
         """Proportional scaling: 4/5 evidence → 8/10 for archetype with evidence=10."""
@@ -1621,18 +1624,17 @@ class TestRubricArchetypes:
             archetype="TEST",
             weights={
                 "cost_per_beneficiary": 10,
-                "directness": 5,
                 "financial_health": 7,
                 "program_ratio": 5,
                 "evidence_outcomes": 10,
                 "theory_of_change": 5,
-                "governance": 8,
+                "governance": 9,
             },
         )
         # Evidence: base=5, new=10, raw=4 → scaled = round(4 * 10/5) = 8
         assert config.scale_score("evidence_outcomes", 4) == 8
-        # Governance: base=2, new=8, raw=2 → scaled = round(2 * 8/2) = 8
-        assert config.scale_score("governance", 2) == 8
+        # Governance: base=3, new=9, raw=2 → scaled = round(2 * 9/3) = 6
+        assert config.scale_score("governance", 2) == 6
 
 
 class TestArchetypeScoring:
@@ -1658,12 +1660,11 @@ class TestArchetypeScoring:
         # Verify component `possible` values match SYSTEMIC_CHANGE weights
         expected_possibles = {
             "Cost Per Beneficiary": 7,
-            "Directness": 3,
             "Financial Health": 7,
             "Program Ratio": 7,
             "Evidence & Outcomes": 9,
             "Theory of Change": 7,
-            "Governance": 10,
+            "Governance": 13,
         }
         for comp in result.components:
             assert comp.possible == expected_possibles[comp.name], (
@@ -1683,12 +1684,11 @@ class TestArchetypeScoring:
         assert result.rubric_archetype == "DIRECT_SERVICE"
         expected_possibles = {
             "Cost Per Beneficiary": 13,
-            "Directness": 5,
             "Financial Health": 7,
             "Program Ratio": 5,
             "Evidence & Outcomes": 5,
             "Theory of Change": 5,
-            "Governance": 10,
+            "Governance": 15,
         }
         for comp in result.components:
             assert comp.possible == expected_possibles[comp.name], (
@@ -1696,8 +1696,15 @@ class TestArchetypeScoring:
             )
 
     def test_governance_scales_up(self):
-        """STRONG governance (2/2 base) scales to 10/10 across all archetypes."""
-        m = _base_metrics(board_size=7)  # STRONG governance
+        """STRONG governance (board>=5 AND >=3/4 IRS policies, 3/3 base) scales
+        to full marks across all archetypes (rubric v6.0.0: board size alone
+        no longer suffices — see test_board_alone_no_longer_reaches_strong)."""
+        m = _base_metrics(
+            board_size=7,
+            has_conflict_of_interest_policy=True,
+            has_whistleblower_policy=True,
+            has_document_retention_policy=True,
+        )
         scorer = ImpactScorer()
 
         for archetype_name in list_archetypes():
@@ -1705,10 +1712,19 @@ class TestArchetypeScoring:
             result = scorer.evaluate(m, rubric=rubric)
             gov_comp = next(c for c in result.components if c.name == "Governance")
             assert gov_comp.possible == rubric.weights["governance"]
-            # STRONG = 2/2 base → should scale to possible/possible (full marks)
             assert gov_comp.scored == gov_comp.possible, (
                 f"{archetype_name}: governance scored={gov_comp.scored}, possible={gov_comp.possible}"
             )
+
+    def test_board_alone_no_longer_reaches_strong(self):
+        """A board of 7 with zero IRS policy fields present now lands at
+        MINIMAL (1/3 raw), not STRONG — rubric v6.0.0's core behavior change."""
+        m = _base_metrics(board_size=7)
+        rubric = get_rubric_config("DIRECT_SERVICE")
+        result = ImpactScorer().evaluate(m, rubric=rubric)
+        gov_comp = next(c for c in result.components if c.name == "Governance")
+        assert "MINIMAL" in gov_comp.evidence
+        assert gov_comp.scored < gov_comp.possible
 
     def test_total_score_still_100(self):
         """Total GMG score is still 0-100 with archetype rubric."""

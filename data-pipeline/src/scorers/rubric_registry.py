@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 # Expected Impact component keys (must match v2_scorers component names)
 IMPACT_COMPONENT_KEYS = [
     "cost_per_beneficiary",
-    "directness",
     "financial_health",
     "program_ratio",
     "evidence_outcomes",
@@ -33,15 +32,22 @@ IMPACT_COMPONENT_KEYS = [
 
 IMPACT_TOTAL = 50
 
-# Base weights from rubric v4.0.0 — used as the denominator for proportional scaling
+# Base weights — used as the denominator for proportional scaling. Directness
+# (rubric v4.0.0's keyword-matched "delivery model" component) was removed in
+# v6.0.0: on the real corpus it mostly just detected whether the mission text
+# contained words like "food distribution", defaulting nearly every
+# non-direct-service org to the same fallback tier rather than meaningfully
+# distinguishing them (7 of 169 charities ever landed in its "Systemic
+# Change" tier). Its points were folded into Governance, which grew a real
+# second signal (IRS Form 990 policy hygiene) to score with. Governance's
+# raw range grew 0-2 -> 0-3 to carry that.
 BASE_WEIGHTS = {
     "cost_per_beneficiary": 20,
-    "directness": 7,
     "financial_health": 7,
     "program_ratio": 6,
     "evidence_outcomes": 5,
     "theory_of_change": 3,
-    "governance": 2,
+    "governance": 3,
 }
 
 

@@ -280,12 +280,11 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                         p={p}
                         items={[
                           <><strong>Cost per beneficiary</strong> (6–13 pts): Cause-adjusted benchmarks with smooth interpolation</>,
-                          <><strong>Directness</strong> (3–5 pts): Direct service vs indirect approaches</>,
                           <><strong>Financial health</strong> (7 pts): Working capital ratio (resilient range is generally ~3–12 months)</>,
                           <><strong>Program ratio</strong> (5–7 pts): Percentage of spending on actual programs</>,
                           <><strong>Evidence & outcomes</strong> (5–10 pts): Verified → Tracked → Measured → Reported → Unverified</>,
                           <><strong>Theory of change</strong> (5–7 pts): Has a documented logic model?</>,
-                          <><strong>Governance</strong> (10 pts): Board size and oversight</>,
+                          <><strong>Governance</strong> (13–15 pts): Board size and IRS Form 990 policy hygiene (conflict-of-interest, whistleblower, and document-retention policies; board review of the 990 before filing)</>,
                         ]}
                       />
                       <P p={p} muted>

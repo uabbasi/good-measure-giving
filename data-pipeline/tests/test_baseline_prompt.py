@@ -19,7 +19,7 @@ def _fake_scores(wallet_tag="ZAKAT-ELIGIBLE"):
     return SimpleNamespace(
         wallet_tag=wallet_tag,
         amal_score=81,
-        impact=SimpleNamespace(score=37, directness_level="HIGH", cost_per_beneficiary=907),
+        impact=SimpleNamespace(score=37, cost_per_beneficiary=907),
         alignment=SimpleNamespace(score=44, muslim_donor_fit_level="STRONG", cause_urgency_label="HIGH"),
         data_confidence=SimpleNamespace(overall=0.8, badge="HIGH"),
     )

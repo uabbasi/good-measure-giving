@@ -125,6 +125,28 @@ class TestPartVIFields:
         assert gov["has_whistleblower_policy"] is None
         assert gov["material_diversion_or_misuse"] is None
 
+    def test_true_false_literal_encoding_is_also_read(self):
+        """Some e-file providers write 'true'/'false' instead of '1'/'0' for
+        the exact same fields -- confirmed on a real filing (the
+        International Rescue Committee's 990 uses this encoding while CARE
+        USA's uses '1'/'0'). A parser that only recognizes '1'/'0'/'X' reads
+        these organizations as having answered none of Part VI Section B,
+        which is false, not merely unknown."""
+        xml = f"""<?xml version="1.0"?>
+<Return xmlns="{NS}">
+  <ReturnHeader><TaxYr>2024</TaxYr></ReturnHeader>
+  <ReturnData>
+    <IRS990>
+      <GoverningBodyVotingMembersCnt>36</GoverningBodyVotingMembersCnt>
+      <ConflictOfInterestPolicyInd>true</ConflictOfInterestPolicyInd>
+      <WhistleblowerPolicyInd>false</WhistleblowerPolicyInd>
+    </IRS990>
+  </ReturnData>
+</Return>"""
+        gov = _governance(xml)
+        assert gov["has_conflict_of_interest_policy"] is True
+        assert gov["has_whistleblower_policy"] is False
+
 
 class TestPartVIISectionA:
     def test_officers_parsed_with_role_flags(self):

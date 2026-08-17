@@ -598,7 +598,6 @@ export interface ImpactDetails {
   components: ScoreComponentDetail[];
   rationale: string;
   cost_per_beneficiary: number | null;
-  directness_level: string;
   impact_design_categories: string[];
   rubric_archetype?: string;
 }

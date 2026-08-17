@@ -794,7 +794,6 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         "zakat_constraint_text": zakat_constraint_text,
         "amal_score": scores.amal_score,
         "impact_score": scores.impact.score,
-        "impact_directness": scores.impact.directness_level,
         "impact_cpb": scores.impact.cost_per_beneficiary or "N/A",
         "alignment_score": scores.alignment.score,
         "alignment_fit": scores.alignment.muslim_donor_fit_level,

@@ -82,7 +82,7 @@ from src.utils.scoring_audit import (
 # Do NOT mirror this string onto the site again: it used to be copied there by
 # hand, the copy drifted, and the site served "METHODOLOGY v5.2.0" over scores
 # this file had already stamped 5.3.0.
-RUBRIC_VERSION = "5.4.0"
+RUBRIC_VERSION = "6.0.0"
 
 # =============================================================================
 # Constants - 2-Dimension GMG Score
@@ -252,9 +252,12 @@ EVIDENCE_OUTCOMES_POINTS = {
 
 # Governance (2 pts in Impact, minimum 5 members is the standard)
 GOVERNANCE_POINTS = {
-    "STRONG": 2,  # Board of 7+ members
-    "ADEQUATE": 2,  # Board of 5-6 members (standard)
-    "MINIMAL": 1,  # Board of 3-4 members
+    # Board >=5 AND >=3 of 4 IRS policy-hygiene fields present
+    "STRONG": 3,
+    # Board >=5 with 1-2 policies present, OR board 3-4 with >=3 policies
+    "ADEQUATE": 2,
+    # Board 3-4 with <3 policies, OR board >=5 with zero policies present
+    "MINIMAL": 1,
     "WEAK": 0,  # Board < 3 or unknown
 }
 
@@ -378,72 +381,6 @@ CONFLICT_ZONES = {
     "somalia",
     "myanmar",
     "ukraine",
-}
-
-# Directness (7 pts, rescaled from 6)
-DIRECTNESS_POINTS = {
-    "DIRECT_SERVICE": 7,
-    "CAPACITY_BUILDING": 5,
-    "INSTITUTIONAL": 4,
-    "SYSTEMIC_CHANGE": 2,
-    "INDIRECT": 1,
-}
-
-# Directness keyword patterns for auto-detection
-DIRECTNESS_KEYWORDS = {
-    "DIRECT_SERVICE": [
-        "surgery",
-        "surgeries",
-        "emergency medical",
-        "food distribution",
-        "cash transfer",
-        "direct cash",
-        "meals served",
-        "feeding program",
-        "medical care",
-        "humanitarian aid",
-        "primary healthcare",
-        "housing",
-        "shelter",
-        "relief",
-        "clean water",
-        "aid distribution",
-        "provision",
-    ],
-    "CAPACITY_BUILDING": [
-        "education",
-        "job training",
-        "vocational",
-        "agricultural program",
-        "scholarship",
-        "workforce development",
-        "literacy",
-    ],
-    "INSTITUTIONAL": [
-        "mosque construction",
-        "school building",
-        "community center",
-        "water infrastructure",
-        "well drilling",
-        "borehole",
-        "hospital construction",
-        "clinic building",
-    ],
-    "SYSTEMIC_CHANGE": [
-        "policy advocacy",
-        "legal aid",
-        "research",
-        "legislative",
-        "lobbying",
-        "systemic reform",
-        "policy change",
-    ],
-    "INDIRECT": [
-        "awareness campaign",
-        "fundraising",
-        "public education campaign",
-        "dawah",
-    ],
 }
 
 # Financial Health (7 pts) - reserve-policy-based smooth interpolation
@@ -978,12 +915,12 @@ class ImpactScorer:
 
     Components (base weights, re-weighted per archetype in v5.0.0):
     - Cost Per Beneficiary: Cause-adjusted benchmarks with smooth interpolation
-    - Directness: How directly funds reach people
     - Financial Health: Smooth reserve-policy interpolation (resilient 3-12 months)
     - Program Ratio: Smooth interpolation over 0.0-1.0
     - Evidence & Outcomes: Grade-based (absorbed from Credibility)
     - Theory of Change: Categorical (absorbed from Credibility)
-    - Governance: Board size (absorbed from Credibility)
+    - Governance: Board size + IRS Form 990 policy hygiene (v6.0.0; absorbed
+      board size from Credibility, dropped Directness's points into this)
 
     All archetypes sum to 50. Proportional scaling preserves relative ordering.
     """
@@ -1031,21 +968,7 @@ class ImpactScorer:
             )
         )
 
-        # 2. Directness — raw on base scale, then scale
-        dir_level, raw_dir_pts = self._score_directness(metrics)
-        dir_possible = rubric.weights["directness"]
-        dir_pts = rubric.scale_score("directness", raw_dir_pts)
-        components.append(
-            ScoreComponent(
-                name="Directness",
-                scored=dir_pts,
-                possible=dir_possible,
-                evidence=f"Delivery model: {dir_level.replace('_', ' ').title()}",
-                status=ComponentStatus.FULL,
-            )
-        )
-
-        # 3. Financial Health — reserve-policy interpolation (always 7 pts across archetypes)
+        # 2. Financial Health — reserve-policy interpolation (always 7 pts across archetypes)
         fh_label, fh_pts = self._score_financial_health(metrics)
         fh_possible = rubric.weights["financial_health"]
         fh_pts = rubric.scale_score("financial_health", fh_pts)
@@ -1078,7 +1001,7 @@ class ImpactScorer:
             )
         )
 
-        # 4. Program Ratio — smooth interpolation, then scale
+        # 3. Program Ratio — smooth interpolation, then scale
         raw_pr_pts, pr_evidence = self._score_program_ratio(metrics)
         pr_possible = rubric.weights["program_ratio"]
         pr_pts = rubric.scale_score("program_ratio", raw_pr_pts)
@@ -1094,7 +1017,7 @@ class ImpactScorer:
             )
         )
 
-        # 5. Evidence & Outcomes — categorical, then scale
+        # 4. Evidence & Outcomes — categorical, then scale
         eq_level = cred.evidence_quality_level
         raw_eq_pts = self._score_evidence_outcomes(eq_level, tier)
         eq_possible = rubric.weights["evidence_outcomes"]
@@ -1120,7 +1043,7 @@ class ImpactScorer:
             )
         )
 
-        # 6. Theory of Change — categorical, then scale
+        # 5. Theory of Change — categorical, then scale
         toc_level = cred.theory_of_change_level
         raw_toc_pts = TOC_POINTS.get(toc_level, 0)
         # Tier-adjusted: emerging orgs get baseline
@@ -1149,11 +1072,15 @@ class ImpactScorer:
             )
         )
 
-        # 7. Governance — categorical, then scale
+        # 6. Governance — categorical, then scale
         gov_level, raw_gov_pts = self._score_governance(metrics, tier)
         gov_possible = rubric.weights["governance"]
         gov_pts = rubric.scale_score("governance", raw_gov_pts)
-        gov_evidence = f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members)"
+        gov_policy_count = self._governance_policy_count(metrics)
+        gov_evidence = (
+            f"Board governance: {gov_level} ({metrics.board_size or 'unknown'} members, "
+            f"{gov_policy_count}/4 IRS policy filings present)"
+        )
         ceo_signal = self._find_contradiction_signal(metrics, "ceo_comp_excessive")
         if ceo_signal:
             detail = ceo_signal.get("detail", "")
@@ -1175,14 +1102,13 @@ class ImpactScorer:
         )
 
         total = min(50, sum(c.scored for c in components))
-        rationale = self._build_rationale(metrics, cpb, dir_level, total)
+        rationale = self._build_rationale(metrics, cpb, total)
 
         return ImpactAssessment(
             score=total,
             components=components,
             rationale=rationale,
             cost_per_beneficiary=cpb,
-            directness_level=dir_level,
             impact_design_categories=[],
             rubric_archetype=rubric.archetype,
         )
@@ -1195,20 +1121,46 @@ class ImpactScorer:
             pts = 2
         return pts
 
-    def _score_governance(self, metrics: CharityMetrics, tier: str) -> tuple[str, int]:
-        """Score governance (2 pts). Standard: 5+ members.
+    # IRS Form 990 Part VI policy-hygiene fields consulted for governance.
+    _GOVERNANCE_POLICY_FIELDS = (
+        "has_conflict_of_interest_policy",
+        "has_whistleblower_policy",
+        "has_document_retention_policy",
+        "board_reviewed_990_before_filing",
+    )
 
-        CEO comp contradiction signal caps governance score:
+    @classmethod
+    def _governance_policy_count(cls, metrics: CharityMetrics) -> int:
+        return sum(1 for f in cls._GOVERNANCE_POLICY_FIELDS if getattr(metrics, f) is True)
+
+    def _score_governance(self, metrics: CharityMetrics, tier: str) -> tuple[str, int]:
+        """Score governance (3 raw pts, rubric v6.0.0).
+
+        Board size sets a ceiling; IRS Form 990 policy hygiene (conflict-of-
+        interest, whistleblower, document-retention, board reviewed the 990
+        before filing) decides whether that ceiling is reached. A board of
+        3-4 cannot reach STRONG on paperwork alone; a board of 5+ no longer
+        reaches STRONG on size alone either — it needs 3 of the 4 policies too.
+
+        CEO comp contradiction signal caps governance score regardless of tier:
         - HIGH severity → WEAK (0 pts)
         - MEDIUM severity → MINIMAL (1 pt)
         """
         board = metrics.board_size
-        if board is not None and board >= 7:
-            level, pts = "STRONG", GOVERNANCE_POINTS["STRONG"]
-        elif board is not None and board >= 5:
-            level, pts = "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
+        policy_count = self._governance_policy_count(metrics)
+
+        if board is not None and board >= 5:
+            if policy_count >= 3:
+                level, pts = "STRONG", GOVERNANCE_POINTS["STRONG"]
+            elif policy_count >= 1:
+                level, pts = "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
+            else:
+                level, pts = "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
         elif board is not None and board >= 3:
-            level, pts = "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
+            if policy_count >= 3:
+                level, pts = "ADEQUATE", GOVERNANCE_POINTS["ADEQUATE"]
+            else:
+                level, pts = "MINIMAL", GOVERNANCE_POINTS["MINIMAL"]
         elif tier == "EMERGING":
             level, pts = "WEAK", 1
         else:
@@ -1397,31 +1349,6 @@ class ImpactScorer:
             return "average"
         return "below average"
 
-    def _score_directness(self, metrics: CharityMetrics) -> tuple[str, int]:
-        """Score how directly funds reach beneficiaries (7 pts)."""
-        text = " ".join(
-            [
-                metrics.mission or "",
-                " ".join(metrics.program_descriptions or []),
-                " ".join(metrics.programs or []),
-            ]
-        ).lower()
-
-        # Check from most direct to least
-        for level in [
-            "DIRECT_SERVICE",
-            "CAPACITY_BUILDING",
-            "INSTITUTIONAL",
-            "SYSTEMIC_CHANGE",
-            "INDIRECT",
-        ]:
-            keywords = DIRECTNESS_KEYWORDS[level]
-            if any(kw in text for kw in keywords):
-                return level, DIRECTNESS_POINTS[level]
-
-        # Default: capacity building (middle ground)
-        return "CAPACITY_BUILDING", DIRECTNESS_POINTS["CAPACITY_BUILDING"]
-
     def _is_endowment_model(self, metrics: CharityMetrics) -> bool:
         """Detect endowment/waqf/scholarship fund models where high reserves are expected."""
         text = " ".join(
@@ -1577,13 +1504,12 @@ class ImpactScorer:
         geo = " ".join(metrics.geographic_coverage).lower()
         return any(zone in geo for zone in CONFLICT_ZONES)
 
-    def _build_rationale(self, metrics: CharityMetrics, cpb: Optional[float], dir_level: str, total: int) -> str:
+    def _build_rationale(self, metrics: CharityMetrics, cpb: Optional[float], total: int) -> str:
         parts = []
         if metrics.is_givewell_top_charity:
             parts.append("GiveWell top charity")
         if cpb is not None:
             parts.append(f"${cpb:.2f}/beneficiary")
-        parts.append(f"Delivery: {dir_level.replace('_', ' ').lower()}")
         parts.append(f"Impact {total}/50")
         return "; ".join(parts)
 

@@ -70,8 +70,7 @@ COMPONENT_READ_FROM = {
     "Program Ratio": "IRS Form 990 expense allocation",
     "Evidence & Outcomes": "Outcome reports / external evaluations on your website",
     "Theory of Change": "Program pages on your website",
-    "Governance": "Form 990 board roster / Candid profile",
-    "Directness": "Program descriptions on your website",
+    "Governance": "IRS Form 990 board roster (Part VI/VII) + policy questions",
     "Zakat & Reach Signals": "Zakat page and policy on your website",
     "Cause Urgency": "Mission and program pages on your website",
     "Underserved Space": "Program + geography descriptions on your website",
@@ -82,7 +81,6 @@ COMPONENT_READ_FROM = {
 # Yaml weight keys → display component names (must match scorer output).
 ARCHETYPE_KEY_LABELS = {
     "cost_per_beneficiary": "Cost Per Beneficiary",
-    "directness": "Directness",
     "financial_health": "Financial Health",
     "program_ratio": "Program Ratio",
     "evidence_outcomes": "Evidence & Outcomes",
