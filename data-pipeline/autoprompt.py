@@ -30,6 +30,11 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
+
 from src.autoprompt.evaluator import AutopromptEvaluator, PairwiseEvaluator
 from src.autoprompt.optimizer import IterationFeedback, PromptOptimizer
 from src.benchmarks.config import BENCHMARK_CHARITIES
