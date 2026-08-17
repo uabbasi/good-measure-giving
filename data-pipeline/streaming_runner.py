@@ -31,7 +31,7 @@ from typing import Any
 from dotenv import load_dotenv
 
 # Load environment
-load_dotenv(Path(__file__).parent.parent / ".env")
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
