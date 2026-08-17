@@ -25,6 +25,7 @@ from src.scorers.v2_scorers import (
     CAUSE_URGENCY_POINTS,
     AlignmentScorer,
     AmalScorerV2,
+    ComponentStatus,
     CredibilityScorer,
     EffectivenessScorer,
     FitScorer,
@@ -408,6 +409,9 @@ class TestImpactScorer:
         assert comp.scored == 0
         assert "unknown" not in comp.evidence.lower()
         assert "critical" in comp.evidence.lower()
+        # ...and the component's own status must agree with its evidence:
+        # a fully-sourced 0.005 is not a MISSING data point.
+        assert comp.status == ComponentStatus.FULL
 
     def test_financial_health_none_ratio_still_reads_unknown(self):
         """The None case — genuinely no data — must keep reading UNKNOWN."""
@@ -609,6 +613,58 @@ class TestRiskScorer:
         )
         scorer = RiskScorer()
         _case_against, deduction = scorer.evaluate(m)
+        assert deduction == 0
+
+    def test_near_zero_working_capital_is_deducted_like_any_sub_one_month(self):
+        """`wc >= 0.1` let the worst reserve positions escape the deduction.
+
+        Against Malaria Foundation's reconciled balance sheet computes to a
+        real 0.0-month ratio; a charity at 0.5 months took -2 while AMF took
+        nothing. Same missing-vs-real-zero conflation the Financial Health
+        component carried, in the deduction path that was missed.
+        """
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=0.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2
+        assert any("working capital" in r.description.lower() for r in case_against.risks)
+
+    def test_negative_working_capital_is_deducted(self):
+        """Liabilities exceeding assets is worse than 0.5 months, not better."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=-2.7,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -2
+
+    def test_unknown_working_capital_is_still_not_deducted(self):
+        """The None case — genuinely no balance sheet — must stay unpenalized."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=None,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        _case_against, deduction = RiskScorer().evaluate(m)
         assert deduction == 0
 
     def test_board_too_small_risk_names_the_real_source(self):

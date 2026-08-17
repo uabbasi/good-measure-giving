@@ -993,7 +993,10 @@ class ImpactScorer:
                 scored=fh_pts,
                 possible=fh_possible,
                 evidence=fh_evidence,
-                status=ComponentStatus.FULL if wc is not None and wc >= 0.1 else ComponentStatus.MISSING,
+                # Third copy of the same conflation, in the same block as the
+                # two fixed above: a real 0.005-month ratio is fully sourced
+                # data, so the component is FULL. Only `None` is MISSING.
+                status=ComponentStatus.FULL if wc is not None else ComponentStatus.MISSING,
                 improvement_suggestion=fh_improvement,
                 improvement_value=min(fh_possible - fh_pts, max(1, fh_possible * 4 // 7))
                 if fh_improvement
@@ -2170,7 +2173,11 @@ class RiskScorer:
                 )
 
         wc = metrics.working_capital_ratio
-        if wc is not None and wc >= 0.1 and wc < 1:
+        # `wc >= 0.1` excluded exactly the charities in the most trouble --
+        # a real 0.0 ratio, or a negative one (liabilities exceed assets),
+        # went unflagged while 0.5 months was flagged. Same missing-vs-real-
+        # zero conflation the Financial Health component carried.
+        if wc is not None and wc < 1:
             risks.append(
                 RiskFactor(
                     category=RiskCategory.FINANCIAL,
@@ -2473,7 +2480,9 @@ class RiskScorer:
             total += RISK_DEDUCTIONS["program_ratio_under_50"]
 
         wc = metrics.working_capital_ratio
-        if wc is not None and wc >= 0.1 and wc < 1:
+        # See _check_financial_risks: `wc >= 0.1` let the worst reserve
+        # positions (0.0 and negative) escape the deduction entirely.
+        if wc is not None and wc < 1:
             total += RISK_DEDUCTIONS["working_capital_under_1mo"]
 
         if metrics.board_size is not None and metrics.board_size < 3:
