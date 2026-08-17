@@ -19,6 +19,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(Path(__file__).parent.parent / ".env", override=True)
+
 # J-004: Consistent sys.path handling with other phases
 sys.path.insert(0, str(Path(__file__).parent))
 
