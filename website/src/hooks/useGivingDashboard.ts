@@ -5,9 +5,9 @@
 
 import { useMemo } from 'react';
 import { useProfileState } from '../contexts/UserFeaturesContext';
-import { useGivingHistory } from './useGivingHistory';
 import { useCharityTargets } from './useCharityTargets';
-import type { GivingBucket, CharityBucketAssignment, CharitySummary } from '../../types';
+import type { YearSummary } from './useGivingHistory';
+import type { GivingBucket, CharityBucketAssignment, CharitySummary, GivingHistoryEntry } from '../../types';
 
 export interface BucketProgress {
   bucket: GivingBucket;
@@ -109,11 +109,25 @@ function charityMatchesBucket(
   return false;
 }
 
+/**
+ * Giving history is passed in rather than fetched here. `useGivingHistory`
+ * holds its state in plain `useState` (no shared cache like the React-Query-
+ * backed `useBookmarks`), so a second internal call would keep its own
+ * `donations` copy that never sees edits/deletes made through the caller's
+ * instance — the dashboard's Given/Progress figures would go stale exactly
+ * like the bug this fixes elsewhere. Callers should pass their single
+ * `useGivingHistory()` instance through.
+ */
 export function useGivingDashboard(
-  charities?: CharitySummary[]
+  charities: CharitySummary[] | undefined,
+  givingHistory: {
+    donations: GivingHistoryEntry[];
+    isLoading: boolean;
+    getYearSummary: (year: number) => YearSummary;
+  },
 ): UseGivingDashboardResult {
   const { profile, isLoading: profileLoading } = useProfileState();
-  const { donations, isLoading: historyLoading, getYearSummary } = useGivingHistory();
+  const { donations, isLoading: historyLoading, getYearSummary } = givingHistory;
   const { targetsList, isLoading: targetsLoading, getTarget } = useCharityTargets();
 
   const isLoading = profileLoading || historyLoading || targetsLoading;

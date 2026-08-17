@@ -20,6 +20,7 @@ import { useGivingHistory } from '../src/hooks/useGivingHistory';
 import { useInKindDonations } from '../src/hooks/useInKindDonations';
 import type { InKindDonation } from '../src/hooks/useInKindDonations';
 import { useCharityTargets } from '../src/hooks/useCharityTargets';
+import { adjustAssignmentGiven } from '../src/utils/assignments';
 import { useGivingDashboard } from '../src/hooks/useGivingDashboard';
 import { SignInButton } from '../src/auth/SignInButton';
 import {
@@ -95,6 +96,7 @@ export function ProfilePage() {
     updateDonation,
     deleteDonation,
     getPaymentSources,
+    getYearSummary,
     exportCSV,
   } = useGivingHistory();
 
@@ -138,7 +140,7 @@ export function ProfilePage() {
     targetZakatAmount,
     zakatYear,
     overallProgress,
-  } = useGivingDashboard(charitySummaries);
+  } = useGivingDashboard(charitySummaries, { donations, isLoading: historyLoading, getYearSummary });
 
   // Giving plan tour
   const givingTour = useTour('giving-plan-tip', givingPlanTourSteps);
@@ -205,12 +207,39 @@ export function ProfilePage() {
       .filter((item): item is NonNullable<typeof item> => item !== null);
   }, [bookmarks, summaries]);
 
-  // Handle donation save
+  // Handle donation save. Editing an amount (or re-pointing a donation at a
+  // different charity) must keep the plan's cached `assignment.given` in
+  // sync with the ledger — the batch-write path in AddDonationModal only
+  // covers brand-new donations, not edits.
   const handleSaveDonation = async (input: Parameters<typeof addDonation>[0]) => {
     if (editingDonation) {
       await updateDonation(editingDonation.id, input);
+
+      let next = profile?.charityBucketAssignments || [];
+      if (editingDonation.charityEin === input.charityEin) {
+        next = adjustAssignmentGiven(next, input.charityEin, input.amount - editingDonation.amount);
+      } else {
+        next = adjustAssignmentGiven(next, editingDonation.charityEin, -editingDonation.amount);
+        next = adjustAssignmentGiven(next, input.charityEin, input.amount);
+      }
+      if (next !== (profile?.charityBucketAssignments || [])) {
+        await updateProfile({ charityBucketAssignments: next });
+      }
     } else {
       await addDonation(input);
+    }
+  };
+
+  // Deleting a donation must also unwind its contribution to the plan's
+  // cached `given` total — see handleSaveDonation above for the edit case.
+  const handleDeleteDonation = async (id: string) => {
+    const target = donations.find(d => d.id === id);
+    await deleteDonation(id);
+    if (target) {
+      const next = adjustAssignmentGiven(profile?.charityBucketAssignments || [], target.charityEin, -target.amount);
+      if (next !== (profile?.charityBucketAssignments || [])) {
+        await updateProfile({ charityBucketAssignments: next });
+      }
     }
   };
 
@@ -524,7 +553,7 @@ export function ProfilePage() {
                     setEditingDonation(donation);
                     setShowDonationModal(true);
                   }}
-                  onDelete={(id) => deleteDonation(id)}
+                  onDelete={handleDeleteDonation}
                   onExport={handleExport}
                 />
               </div>

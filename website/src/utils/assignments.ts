@@ -24,3 +24,22 @@ export function makeIntendedAssignment(
     intendedAt: new Date().toISOString(),
   };
 }
+
+/**
+ * Adjust a matching assignment's `given` by `delta` (positive or negative).
+ * No-op (returns the same array reference) if `ein` is unset or matches no
+ * assignment, so callers can chain calls and check reference equality to
+ * decide whether a write is needed. Clamped at 0 so an out-of-order edit/
+ * delete can't push the cached total negative.
+ */
+export function adjustAssignmentGiven(
+  assignments: CharityBucketAssignment[],
+  ein: string | null | undefined,
+  delta: number,
+): CharityBucketAssignment[] {
+  if (!ein || delta === 0) return assignments;
+  if (!assignments.some(a => a.charityEin === ein)) return assignments;
+  return assignments.map(a =>
+    a.charityEin === ein ? { ...a, given: Math.max(0, a.given + delta) } : a
+  );
+}
