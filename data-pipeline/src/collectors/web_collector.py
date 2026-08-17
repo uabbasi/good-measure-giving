@@ -2397,6 +2397,7 @@ class WebsiteCollector(BaseCollector):
             "mission": None,
             "programs": [],
             "financial_data": None,
+            "theory_of_change": None,
             "outcomes_data": [],  # Array of outcomes from ALL PDFs
             "llm_extracted_pdfs": [],  # Data from each PDF
             "pdf_extraction_sources": [],  # Track which PDFs were extracted
@@ -2535,6 +2536,15 @@ class WebsiteCollector(BaseCollector):
 
                 if not pdf_data["financial_data"] and result.get("financials"):
                     pdf_data["financial_data"] = result["financials"]
+
+                # AnnualReportParser's schema extracts theory_of_change per PDF
+                # (src/parsers/annual_report_parser.py), but it was never
+                # promoted to a top-level field here -- every downloaded PDF's
+                # theory-of-change text sat unused inside llm_extracted_pdfs,
+                # and has_theory_of_change read False for any charity whose
+                # site had no separate, literally-labeled ToC page.
+                if not pdf_data["theory_of_change"] and result.get("theory_of_change"):
+                    pdf_data["theory_of_change"] = result["theory_of_change"]
 
                 pdf_data["pdf_extraction_sources"].append(
                     {
@@ -2977,6 +2987,11 @@ class WebsiteCollector(BaseCollector):
                         aggregated_data["programs"] = pdf_data_extracted["programs"]
                         if self.logger:
                             self.logger.info(f"Using {len(pdf_data_extracted['programs'])} programs from PDF")
+
+                    if not aggregated_data.get("theory_of_change") and pdf_data_extracted.get("theory_of_change"):
+                        aggregated_data["theory_of_change"] = pdf_data_extracted["theory_of_change"]
+                        if self.logger:
+                            self.logger.info("Using theory of change from PDF")
 
                     # Add LLM-extracted PDF data (outcomes, programs, etc.)
                     if pdf_data_extracted.get("llm_extracted_pdfs"):
