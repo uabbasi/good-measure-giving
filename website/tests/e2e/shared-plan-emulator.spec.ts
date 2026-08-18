@@ -26,6 +26,14 @@ const IGNORED = [
   // infrastructure noise, not an app error.
   /Could not reach Cloud Firestore backend/i,
   /Connection failed \d+ times/i,
+  // The RUM beacon (static.cloudflareinsights.com) has no network egress in a
+  // sandboxed dev environment and always fails with this exact message — but
+  // ConsoleMessage.text() for a browser-native resource-load failure never
+  // includes the failing URL, only this generic string, so that's what we
+  // can match on. The page always continues fine without the beacon; real
+  // environments either load it successfully (no error) or don't reach this
+  // branch at all.
+  /Failed to load resource: net::ERR_CONNECTION_REFUSED/i,
 ];
 
 function attachConsoleGuard(page: Page, sink: string[]) {
@@ -87,8 +95,10 @@ test('two family members: create plan → invite → preview → join', async ({
   const createBtn = a.page.getByRole('button', { name: '+ Shared plan' });
   await expect(createBtn).toBeVisible({ timeout: 30_000 });
 
-  a.page.once('dialog', (d) => d.accept('Test Family')); // window.prompt for the name
+  // "+ Shared plan" opens an inline name input (no window.prompt).
   await createBtn.click();
+  await a.page.getByLabel('New shared plan name').fill('Test Family');
+  await a.page.getByRole('button', { name: 'Create' }).click();
 
   // The shared plan view renders with the chosen name (heading, not the switcher pill).
   await expect(a.page.getByRole('heading', { name: 'Test Family' })).toBeVisible({ timeout: 20_000 });
@@ -141,8 +151,9 @@ test('explore-together: shortlist a charity in the session, then promote it into
   await a.page.goto('/profile');
   const createBtn = a.page.getByRole('button', { name: '+ Shared plan' });
   await expect(createBtn).toBeVisible({ timeout: 30_000 });
-  a.page.once('dialog', (d) => d.accept('Night Family'));
   await createBtn.click();
+  await a.page.getByLabel('New shared plan name').fill('Night Family');
+  await a.page.getByRole('button', { name: 'Create' }).click();
   await expect(a.page.getByRole('heading', { name: 'Night Family' })).toBeVisible({ timeout: 20_000 });
 
   // Start the giving session (opens on the Gather step), then advance to Explore.
@@ -164,6 +175,124 @@ test('explore-together: shortlist a charity in the session, then promote it into
   await a.page.getByRole('button', { name: /add to plan/i }).first().click();
   // After promotion the candidate leaves the shortlist (section disappears).
   await expect(a.page.getByText(/still considering/i)).toHaveCount(0, { timeout: 15_000 });
+
+  expect(errors, `Console/page errors:\n${errors.join('\n')}`).toEqual([]);
+  await a.context.close();
+});
+
+test('decide step: removing a plan item recalculates the remaining share and leaves the sibling untouched', async ({
+  browser,
+}) => {
+  const errors: string[] = [];
+  const stamp = Date.now();
+
+  const a = await newUserContext(browser, errors);
+  await signIn(a.page, `remover-${stamp}@test.local`);
+
+  await a.page.goto('/profile');
+  const createBtn = a.page.getByRole('button', { name: '+ Shared plan' });
+  await expect(createBtn).toBeVisible({ timeout: 30_000 });
+  await createBtn.click();
+  await a.page.getByLabel('New shared plan name').fill('Removal Family');
+  await a.page.getByRole('button', { name: 'Create' }).click();
+  await expect(a.page.getByRole('heading', { name: 'Removal Family' })).toBeVisible({ timeout: 20_000 });
+
+  // Add two charities (searching the same term twice: `existingEins` filters
+  // the first pick out of the second search's results, so the second click
+  // lands on a genuinely different charity).
+  const search = a.page.getByPlaceholder('Add a charity — search by name');
+  await expect(search).toBeVisible();
+
+  const pickNext = async (): Promise<string> => {
+    await search.fill('Islamic');
+    const result = a.page.locator('button', { hasText: /Islamic/i }).first();
+    await expect(result).toBeVisible({ timeout: 15_000 });
+    const name = (await result.innerText()).split('\n')[0];
+    await result.click();
+    // upsertItem is not optimistic (onSettled-only invalidation) — wait for
+    // the write to land and `existingEins` to pick it up before the caller
+    // searches again, or the second search can still return this same charity.
+    await expect(a.page.getByRole('button', { name: `Remove ${name}`, exact: true })).toBeVisible({ timeout: 15_000 });
+    return name;
+  };
+  const firstName = await pickNext();
+  const secondName = await pickNext();
+  expect(firstName).not.toBe(secondName);
+
+  // Both items present at an even 50/50 split.
+  await expect(a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(a.page.getByRole('button', { name: `Remove ${secondName}`, exact: true })).toBeVisible();
+  await expect(a.page.getByText('50%')).toHaveCount(2, { timeout: 15_000 });
+
+  // Remove the first item.
+  await a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true }).click();
+
+  // It's gone; the sibling survives untouched and recalculates to 100%.
+  await expect(a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true })).toHaveCount(0, { timeout: 15_000 });
+  await expect(a.page.getByRole('button', { name: `Remove ${secondName}`, exact: true })).toBeVisible();
+  await expect(a.page.getByText('100%')).toBeVisible({ timeout: 15_000 });
+
+  // Removing the last item returns the plan to its empty state.
+  await a.page.getByRole('button', { name: `Remove ${secondName}`, exact: true }).click();
+  await expect(a.page.getByText(/no charities yet/i)).toBeVisible({ timeout: 15_000 });
+
+  expect(errors, `Console/page errors:\n${errors.join('\n')}`).toEqual([]);
+  await a.context.close();
+});
+
+test('explore step: removing a shortlisted candidate leaves the other candidate intact', async ({ browser }) => {
+  const errors: string[] = [];
+  const stamp = Date.now();
+
+  const a = await newUserContext(browser, errors);
+  await signIn(a.page, `shortlist-remover-${stamp}@test.local`);
+
+  await a.page.goto('/profile');
+  const createBtn = a.page.getByRole('button', { name: '+ Shared plan' });
+  await expect(createBtn).toBeVisible({ timeout: 30_000 });
+  await createBtn.click();
+  await a.page.getByLabel('New shared plan name').fill('Shortlist Family');
+  await a.page.getByRole('button', { name: 'Create' }).click();
+  await expect(a.page.getByRole('heading', { name: 'Shortlist Family' })).toBeVisible({ timeout: 20_000 });
+
+  await a.page.getByRole('button', { name: /start giving session/i }).click();
+  await a.page.getByRole('button', { name: /^next$/i }).click(); // gather → explore
+  await expect(a.page.getByRole('heading', { name: /explore together/i })).toBeVisible({ timeout: 15_000 });
+
+  const suggest = a.page.getByPlaceholder(/suggest a charity to consider/i);
+  await expect(suggest).toBeVisible({ timeout: 15_000 });
+
+  const suggestNext = async (): Promise<string> => {
+    await suggest.fill('Islamic');
+    const result = a.page.locator('button', { hasText: /Islamic/i }).first();
+    await expect(result).toBeVisible({ timeout: 15_000 });
+    const name = (await result.innerText()).split('\n')[0];
+    await result.click();
+    // addToShortlist is not optimistic — wait for it to land (and for
+    // `existingEins` to pick it up) before searching again.
+    await expect(a.page.getByRole('button', { name: `Remove ${name}`, exact: true })).toBeVisible({ timeout: 15_000 });
+    return name;
+  };
+  const firstName = await suggestNext();
+  const secondName = await suggestNext();
+  expect(firstName).not.toBe(secondName);
+
+  await expect(a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(a.page.getByRole('button', { name: `Remove ${secondName}`, exact: true })).toBeVisible();
+
+  // Remove the first shortlisted candidate.
+  await a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true }).click();
+  await expect(a.page.getByRole('button', { name: `Remove ${firstName}`, exact: true })).toHaveCount(0, { timeout: 15_000 });
+
+  // The other candidate is still there, untouched.
+  await expect(a.page.getByText(secondName)).toBeVisible();
+  await expect(a.page.getByRole('button', { name: `Remove ${secondName}`, exact: true })).toBeVisible();
+
+  // Advancing to Decide shows the survivor still "still considering", not
+  // silently promoted or dropped by the removal.
+  await a.page.getByRole('button', { name: /^next$/i }).click(); // explore → decide
+  await expect(a.page.getByText(/still considering/i)).toBeVisible({ timeout: 15_000 });
+  await expect(a.page.getByText(secondName)).toBeVisible();
 
   expect(errors, `Console/page errors:\n${errors.join('\n')}`).toEqual([]);
   await a.context.close();
