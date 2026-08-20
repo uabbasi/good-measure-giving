@@ -9,7 +9,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests/e2e',
-  testMatch: 'shared-plan-emulator.spec.ts',
+  testMatch: 'shared-plan-*.spec.ts',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: 0,

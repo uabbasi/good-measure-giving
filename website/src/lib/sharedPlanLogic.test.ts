@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, historyIdToPrune, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate } from './sharedPlanLogic';
+import { weightsToPercents, computeYourShare, newInviteToken, addCharityItem, applyItemLWW, removeItemById, HISTORY_MAX, revisionToPrune, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate } from './sharedPlanLogic';
 import { assertFirestoreWritable } from '../test-utils/assertFirestoreWritable';
 import type { PlanItem, ShortlistCandidate } from '../types/sharedPlan';
 
@@ -28,10 +28,19 @@ describe('addCharityItem', () => {
 });
 
 describe('applyItemLWW', () => {
-  it('appends when the id is absent', () => {
+  // Regression: a concurrent edit (weight/assignee change) racing a removal
+  // must not resurrect the item. Editing and adding are different operations —
+  // adds go through addCharityItem, which dedupes by charity ref and is the
+  // only path allowed to insert.
+  it('no-ops when the id is absent (item was concurrently removed, not re-added)', () => {
     const out = applyItemLWW([], item({ id: 'x', updatedAt: 5 }));
-    expect(out).toHaveLength(1);
-    expect(out[0].id).toBe('x');
+    expect(out).toEqual([]);
+  });
+  it('does not resurrect an item removed by another member mid-edit', () => {
+    const items = [item({ id: 'a', weight: 1 })];
+    const afterRemoval = items.filter(i => i.id !== 'a'); // removeItemById
+    const out = applyItemLWW(afterRemoval, item({ id: 'a', weight: 9, updatedAt: 999 }));
+    expect(out).toEqual([]);
   });
   it('newer updatedAt overwrites the stored item', () => {
     const items = [item({ id: 'a', weight: 1, updatedAt: 100 })];
@@ -101,14 +110,14 @@ describe('computeYourShare', () => {
   });
 });
 
-describe('historyIdToPrune', () => {
+describe('revisionToPrune', () => {
   it('returns null while the buffer is not yet full', () => {
-    expect(historyIdToPrune(1, 20)).toBeNull();
-    expect(historyIdToPrune(20, 20)).toBeNull();
+    expect(revisionToPrune(1, 20)).toBeNull();
+    expect(revisionToPrune(20, 20)).toBeNull();
   });
-  it('returns the revision id to delete once full', () => {
-    expect(historyIdToPrune(21, 20)).toBe('1');
-    expect(historyIdToPrune(25, 20)).toBe('5');
+  it('returns the revision number to delete once full', () => {
+    expect(revisionToPrune(21, 20)).toBe(1);
+    expect(revisionToPrune(25, 20)).toBe(5);
   });
   it('HISTORY_MAX is 20', () => {
     expect(HISTORY_MAX).toBe(20);

@@ -19,14 +19,22 @@ export function addCharityItem(items: PlanItem[], ein: string, actorUid: string)
 }
 
 /**
- * Per-row last-write-wins upsert of one item into an items array. The incoming
- * value wins only if its updatedAt >= the stored item's (a stale write loses).
- * The stored item's `notes` map is always preserved — weight/assignee edits must
- * never clobber another member's niyyah note (notes are owned by setMemberNote).
+ * Per-row last-write-wins EDIT of one item already in the array (weight/assignee
+ * changes). The incoming value wins only if its updatedAt >= the stored item's
+ * (a stale write loses). The stored item's `notes` map is always preserved —
+ * weight/assignee edits must never clobber another member's niyyah note (notes
+ * are owned by setMemberNote).
+ *
+ * If the id is absent, the item was concurrently removed by another member —
+ * this is a no-op, not an insert. Editing and adding are different operations
+ * (adding goes through addCharityItem, which dedupes by charity ref); treating
+ * a missing id as "insert it" here would resurrect a deleted item with a stale
+ * weight/assignee and no history entry the moment its last edit lands after
+ * someone else's removal.
  */
 export function applyItemLWW(items: PlanItem[], incoming: PlanItem): PlanItem[] {
   const idx = items.findIndex(i => i.id === incoming.id);
-  if (idx === -1) return [...items, incoming];
+  if (idx === -1) return items;
   const stored = items[idx];
   if (incoming.updatedAt >= stored.updatedAt) {
     const next = items.slice();
@@ -74,14 +82,17 @@ export function newInviteToken(): string {
 export const HISTORY_MAX = 20;
 
 /**
- * History docs are keyed by the monotonic `revision`. After writing revision R,
- * the entry to delete to keep the last `max` is `R - max` — but only once it
- * exists (revisions start at 1). Returns the doc id string, or null if nothing
- * to prune yet.
+ * History docs carry the monotonic `revision` as a FIELD (their doc id is
+ * auto-generated — see useSharedPlan's commit(), which explains why a
+ * revision-keyed id is unsafe under real concurrent writes). After writing
+ * revision R, the revision due for pruning to keep the last `max` is `R - max`
+ * — but only once it exists (revisions start at 1). Returns that revision
+ * number (to be looked up by a query, not a direct doc-id read), or null if
+ * nothing to prune yet.
  */
-export function historyIdToPrune(revision: number, max: number): string | null {
+export function revisionToPrune(revision: number, max: number): number | null {
   const target = revision - max;
-  return target >= 1 ? String(target) : null;
+  return target >= 1 ? target : null;
 }
 
 /**

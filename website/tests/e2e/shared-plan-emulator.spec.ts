@@ -1,4 +1,5 @@
-import { test, expect, type Page, type BrowserContext, type ConsoleMessage } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { newUserContext, signIn } from './helpers/sharedPlanTestUtils';
 
 /**
  * Full shared-plan flow against the Firebase Emulator Suite.
@@ -10,78 +11,10 @@ import { test, expect, type Page, type BrowserContext, type ConsoleMessage } fro
  *   User A signs up → creates a shared plan → adds a charity → gets the invite link.
  *   User B signs up → opens the invite link → sees the money-free preview → joins.
  * Asserts zero console errors / page errors throughout.
+ *
+ * See shared-plan-concurrency.spec.ts for genuinely-concurrent multi-member
+ * writes (two members editing the same plan at the same instant).
  */
-
-// Benign console noise to ignore (optional assets, dev-only warnings).
-const IGNORED = [
-  /favicon/i,
-  /\.woff2?/i,
-  /sourcemap/i,
-  /Download the React DevTools/i,
-  /\[vite\]/i,
-  // Transient Firestore emulator cold-start warning: a transaction can race the
-  // emulator connection on the very first write and log a "Could not reach
-  // backend / Connection failed N times" that the client immediately recovers
-  // from (the writes succeed — asserted by the functional steps below). Benign
-  // infrastructure noise, not an app error.
-  /Could not reach Cloud Firestore backend/i,
-  /Connection failed \d+ times/i,
-  // The RUM beacon (static.cloudflareinsights.com) has no network egress in a
-  // sandboxed dev environment and always fails with this exact message — but
-  // ConsoleMessage.text() for a browser-native resource-load failure never
-  // includes the failing URL, only this generic string, so that's what we
-  // can match on. The page always continues fine without the beacon; real
-  // environments either load it successfully (no error) or don't reach this
-  // branch at all.
-  /Failed to load resource: net::ERR_CONNECTION_REFUSED/i,
-];
-
-function attachConsoleGuard(page: Page, sink: string[]) {
-  page.on('console', (msg: ConsoleMessage) => {
-    if (msg.type() !== 'error') return;
-    const text = msg.text();
-    if (IGNORED.some((re) => re.test(text))) return;
-    sink.push(`console.error: ${text}`);
-  });
-  page.on('pageerror', (err) => sink.push(`pageerror: ${err.message}`));
-}
-
-async function newUserContext(browser: import('@playwright/test').Browser, errors: string[]) {
-  const context: BrowserContext = await browser.newContext();
-  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-  await context.addInitScript(() => {
-    // Force the clipboard share path (no native share sheet in automation).
-    // @ts-expect-error remove navigator.share so the panel copies the link instead
-    delete navigator.share;
-    // Suppress all first-visit onboarding so overlays don't intercept clicks.
-    try {
-      localStorage.setItem('gmg_intro_seen_v1', '1');
-      localStorage.setItem('gmg_welcome_tour_shown', 'true');
-      localStorage.setItem('gmg-nux-browse-tip', '1');
-      localStorage.setItem('gmg-nux-details-tip', '1');
-      localStorage.setItem('gmg-nux-giving-plan-tip', '1');
-      localStorage.setItem('beta-banner-dismissed', '1');
-    } catch {
-      /* storage unavailable */
-    }
-  });
-  const page = await context.newPage();
-  attachConsoleGuard(page, errors);
-  return { context, page };
-}
-
-async function signIn(page: Page, email: string) {
-  await page.goto('/');
-  await page.waitForFunction(() => !!(window as unknown as { __TEST_AUTH__?: unknown }).__TEST_AUTH__, null, {
-    timeout: 30_000,
-  });
-  await page.evaluate(async (e) => {
-    await (window as unknown as { __TEST_AUTH__: { signUp(a: string, b: string): Promise<void> } }).__TEST_AUTH__.signUp(
-      e,
-      'test-password-123',
-    );
-  }, email);
-}
 
 test('two family members: create plan → invite → preview → join', async ({ browser }) => {
   const errors: string[] = [];

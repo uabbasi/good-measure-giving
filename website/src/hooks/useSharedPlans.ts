@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { doc, getDoc, setDoc, collection, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, runTransaction, Timestamp } from 'firebase/firestore';
 import { useFirebaseData, useFirebaseAuth } from '../auth/FirebaseProvider';
 import { newInviteToken, addCharityItem } from '../lib/sharedPlanLogic';
 import type { SharedPlan, PlanItem } from '../types/sharedPlan';
@@ -49,22 +49,28 @@ export function useSharedPlans() {
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 
-  // Thin-sync read-modify-write of one shared plan's whole items array.
+  // Transactional read-modify-write of one shared plan's whole items array.
   // `mutate(items)` returns the next array, or the same reference to skip the write.
+  // Transactional (not plain getDoc+setDoc) because this same document is also
+  // written directly from the shared-plan editing view (useSharedPlan's commit) —
+  // a plain read-then-write here could race and clobber a concurrent edit/removal
+  // made by another family member while this mirror write was in flight.
   const writePlanItems = async (planId: string, mutate: (items: PlanItem[]) => PlanItem[]) => {
     if (!db || !userId) throw new Error('Not authenticated');
     const ref = doc(db, 'shared_plans', planId);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) throw new Error('Plan not found');
-    const items: PlanItem[] = (snap.data().items as PlanItem[]) || [];
-    const next = mutate(items);
-    if (next === items) return false; // no change — skip the write
-    await setDoc(
-      ref,
-      { items: next, revision: ((snap.data().revision as number) || 0) + 1, updatedAt: Date.now() },
-      { merge: true },
-    );
-    return true;
+    return runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) throw new Error('Plan not found');
+      const items: PlanItem[] = (snap.data().items as PlanItem[]) || [];
+      const next = mutate(items);
+      if (next === items) return false; // no change — skip the write
+      tx.set(
+        ref,
+        { items: next, revision: ((snap.data().revision as number) || 0) + 1, updatedAt: Date.now() },
+        { merge: true },
+      );
+      return true;
+    });
   };
 
   // Add-side sync: when a charity is added to the personal plan, mirror it into

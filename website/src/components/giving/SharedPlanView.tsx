@@ -21,7 +21,7 @@ import { CharitySearchAdd } from './CharitySearchAdd';
 const ITEM_CAP = 100;
 
 export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
-  const { plan, members, isLoading, isOwner, upsertItem, removeItem, setMyNote, promoteToPlan } = useSharedPlan(planId);
+  const { plan, members, isLoading, isOwner, upsertItem, addCharity: addCharityMutation, removeItem, setMyNote, promoteToPlan } = useSharedPlan(planId);
   const { profile } = useProfile();
   const { charities } = useCharities();
   const { userId } = useFirebaseData();
@@ -58,15 +58,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
 
   const addCharity = (ein: string) => {
     if (atCap) return;
-    void upsertItem({
-      id: crypto.randomUUID(),
-      kind: 'charity',
-      ref: ein,
-      weight: 1,
-      assigneeUid: null,
-      updatedAt: Date.now(),
-      updatedBy: '',
-    });
+    void addCharityMutation(ein); // ref-deduped inside the transaction — safe if two members add the same charity at once
   };
 
   const rowLabel = (item: PlanItem) =>

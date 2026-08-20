@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  doc, collection, getDoc, getDocs, setDoc, deleteDoc, runTransaction, Timestamp,
+  doc, collection, getDoc, getDocs, setDoc, deleteDoc, runTransaction, query, where, Timestamp,
 } from 'firebase/firestore';
 import { useFirebaseData } from '../auth/FirebaseProvider';
 import type { SharedPlan, PlanItem, PlanMember, PlanHistoryEntry, ShortlistCandidate } from '../types/sharedPlan';
-import { applyItemLWW, removeItemById, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate, HISTORY_MAX, historyIdToPrune } from '../lib/sharedPlanLogic';
+import { applyItemLWW, addCharityItem, removeItemById, setMemberNote, addShortlistCandidate, removeShortlistCandidate, promoteCandidate, HISTORY_MAX, revisionToPrune } from '../lib/sharedPlanLogic';
 
 export function useSharedPlan(planId: string | null) {
   const { db, userId } = useFirebaseData();
@@ -15,6 +15,13 @@ export function useSharedPlan(planId: string | null) {
   const { data, isLoading, error } = useQuery({
     queryKey: key,
     enabled: !!db && !!planId,
+    // Other members' edits land via their own writes, not ours — the app-wide
+    // default (staleTime: Infinity, no window-focus refetch) would otherwise
+    // leave this plan looking stale forever to anyone not doing the writing.
+    // Poll gently while a plan is actually open so co-editors converge within
+    // a few seconds instead of needing a hard reload.
+    staleTime: 2_000,
+    refetchInterval: 4_000,
     queryFn: async (): Promise<{ plan: SharedPlan | null; members: PlanMember[] }> => {
       if (!db || !planId) return { plan: null, members: [] };
       const snap = await getDoc(doc(db, 'shared_plans', planId));
@@ -49,13 +56,25 @@ export function useSharedPlan(planId: string | null) {
           revision: rev, itemId: history.itemId, before: history.before,
           after: history.after, updatedBy: userId, at: Date.now(),
         };
-        tx.set(doc(db, 'shared_plans', planId, 'history', String(rev)), entry);
+        // Auto-generated id — NOT the revision number. Two members' commits can
+        // both read the plan at the same revision before Firestore's
+        // optimistic-concurrency check on the plan doc forces the loser to
+        // retry; a revision-keyed history id would then collide with the
+        // winner's already-created (rules-immutable) entry, and the whole
+        // transaction would be denied by the "history is immutable" rule
+        // instead of cleanly retried — silently dropping the loser's write.
+        tx.set(doc(collection(db, 'shared_plans', planId, 'history')), entry);
       }
       return rev;
     });
-    const pruneId = historyIdToPrune(revision, HISTORY_MAX);
-    if (pruneId) {
-      try { await deleteDoc(doc(db, 'shared_plans', planId, 'history', pruneId)); } catch { /* best-effort */ }
+    const pruneRevision = revisionToPrune(revision, HISTORY_MAX);
+    if (pruneRevision != null) {
+      try {
+        const stale = await getDocs(
+          query(collection(db, 'shared_plans', planId, 'history'), where('revision', '==', pruneRevision)),
+        );
+        await Promise.all(stale.docs.map(d => deleteDoc(d.ref)));
+      } catch { /* best-effort */ }
     }
   };
 
@@ -71,6 +90,21 @@ export function useSharedPlan(planId: string | null) {
         // the losing member; only log when something actually changed.
         const history = before !== after ? { itemId: incoming.id, before, after } : undefined;
         return { fields: { items }, history };
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
+  // Add a charity by EIN, deduped by ref (not id) inside the transaction — two
+  // members adding the same charity at once must land as one item, not two.
+  // Unlike upsertItem/applyItemLWW (edit-only, never inserts), this is the only
+  // mutation allowed to insert a new item.
+  const addCharity = useMutation({
+    mutationFn: (ein: string) =>
+      commit((current) => {
+        const items = addCharityItem(current.items, ein, userId!);
+        if (items === current.items) return { fields: {} }; // already present — no-op
+        const after = items[items.length - 1];
+        return { fields: { items }, history: { itemId: after.id, before: null, after } };
       }),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
@@ -181,6 +215,7 @@ export function useSharedPlan(planId: string | null) {
     error: error ? (error instanceof Error ? error.message : 'Failed to load plan') : null,
     isOwner,
     upsertItem: (i: PlanItem) => upsertItem.mutateAsync(i),
+    addCharity: (ein: string) => addCharity.mutateAsync(ein),
     removeItem: (id: string) => removeItem.mutateAsync(id),
     setMyNote: (itemId: string, text: string) => setMyNote.mutateAsync({ itemId, text }),
     addToShortlist: (ref: string) => addToShortlist.mutateAsync(ref),
