@@ -79,3 +79,19 @@ cause_areas:
 beneficiaries_suppress:
   - "13-1837442"
   - "26-1441032"
+
+# Charities intentionally removed from the published index.
+#
+# A published charity may only leave charities.json by appearing here. Export
+# aborts before overwriting the index if a previously-published EIN produced no
+# summary and is not listed below -- see find_undeclared_drops() in export.py.
+# Both `reason` and `date` are required; an entry missing either is a load-time
+# error, because an undocumented delisting is precisely the silent drop the
+# guard exists to prevent.
+#
+# This is for editorial decisions ONLY. A charity blocked by the judge gate is
+# a failed run, not a delisting: fix it and re-export. The 2026-08-16 v6.0.0
+# regen lost four that way (index 166 -> 162) and deliberately does NOT appear
+# here -- two were judge false positives, one was a real misclassification, and
+# one had a hallucinated narrative. See bd good-measure-giving-jy7.
+delisted: {}

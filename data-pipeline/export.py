@@ -101,6 +101,64 @@ def load_curation_overrides() -> dict[str, Any]:
     }
 
 
+def load_delisted(path: Path = CURATION_OVERRIDES_FILE) -> dict[str, dict[str, str]]:
+    """Load intentional removals from the curation overlay.
+
+    A delisting is the only sanctioned way for a published charity to leave the
+    index, so each entry must say who decided and when. An entry missing either
+    is a config error, not an empty default -- a placeholder reason would let
+    the exact silent drop this guards against back in through the front door.
+    """
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        raw = yaml.safe_load(f) or {}
+    entries = raw.get("delisted") or {}
+
+    delisted: dict[str, dict[str, str]] = {}
+    for ein, entry in entries.items():
+        if not isinstance(entry, dict):
+            raise ValueError(
+                f"delisted[{ein}] must be a mapping with 'reason' and 'date', got {entry!r}"
+            )
+        for field in ("reason", "date"):
+            value = entry.get(field)
+            if not (isinstance(value, str) and value.strip()):
+                raise ValueError(f"delisted[{ein}] is missing a non-empty '{field}'")
+        delisted[str(ein)] = {"reason": entry["reason"], "date": str(entry["date"])}
+    return delisted
+
+
+def load_published_roster(output_dir: Path) -> set[str]:
+    """The set of EINs the previous export published into this directory.
+
+    The committed charities.json is already the record of what is live, so it
+    doubles as the baseline -- no second roster file to drift out of sync. A
+    missing or unreadable index yields an empty roster: a first export has
+    nothing to protect, and a corrupt one gives us no roster to trust.
+    """
+    index_file = output_dir / "charities.json"
+    if not index_file.exists():
+        return set()
+    try:
+        with open(index_file) as f:
+            index = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return set()
+    charities = index if isinstance(index, list) else index.get("charities") or []
+    return {c["ein"] for c in charities if isinstance(c, dict) and c.get("ein")}
+
+
+def find_undeclared_drops(
+    previous: set[str], exported: set[str], delisted: dict[str, dict[str, str]]
+) -> list[str]:
+    """Published EINs this run failed to produce and nobody declared removed.
+
+    Additions are free; only disappearances need an explanation.
+    """
+    return sorted(previous - exported - set(delisted))
+
+
 _CURATION_OVERRIDES = load_curation_overrides()
 
 
@@ -2403,6 +2461,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Escape hatch: publish regardless of judge errors / content-hash freshness",
     )
+    parser.add_argument(
+        "--allow-drops",
+        action="store_true",
+        help=(
+            "Escape hatch: overwrite the index even though published charities "
+            "fell out of it without being declared in curation_overrides.yaml"
+        ),
+    )
     return parser
 
 
@@ -2609,6 +2675,42 @@ def main():
             error = result.get("error", "Unknown")
             failed_charities.append((ein, error))
             print(f"[{i}/{len(eins)}] ✗ {ein}: {error}")
+
+    # Drop guard: refuse to publish an index that quietly loses a charity.
+    #
+    # A judge-gate block lands the EIN in failed_charities and simply omits it
+    # from `summaries`; before this guard the index was overwritten anyway and
+    # the run still exited 0. That is how the v6.0.0 regen published 162 under
+    # a commit message reading 166/166. Failing BEFORE the write matters: the
+    # old index stays on disk, so a re-run still compares against the full
+    # roster instead of ratcheting down to the reduced one.
+    #
+    # Scoped to full-corpus exports. A --ein run legitimately produces one
+    # summary and must not read the other 165 as drops.
+    if not args.ein:
+        previously_published = load_published_roster(output_dir)
+        exported_eins = {s["ein"] for s in summaries if s.get("ein")}
+        drops = find_undeclared_drops(previously_published, exported_eins, load_delisted())
+        if drops:
+            failure_reason = dict(failed_charities)
+            print(f"\n{'=' * 60}")
+            print(f"ABORTED: {len(drops)} PUBLISHED CHARITY(S) WOULD BE DROPPED")
+            print(f"{'=' * 60}")
+            for ein in drops:
+                print(f"  {ein}: {failure_reason.get(ein, 'produced no summary this run')}")
+            print(
+                "\nThe index was NOT written; the previous one is intact.\n"
+                "Fix the underlying failure and re-run, or -- if the removal is\n"
+                "intentional -- declare it in config/curation_overrides.yaml:\n\n"
+                "  delisted:\n"
+                f'    "{drops[0]}":\n'
+                '      reason: "why this charity should no longer be published"\n'
+                '      date: "YYYY-MM-DD"\n\n'
+                "Use --allow-drops only to override this deliberately."
+            )
+            if not args.allow_drops:
+                return
+            print("--allow-drops set; overwriting the index anyway.\n")
 
     # Provenance: stamp HEAD only if the working set is clean; a dirty
     # working set matches no single Dolt commit, so stamp NULL instead.

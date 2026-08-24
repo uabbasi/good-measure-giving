@@ -15,6 +15,21 @@ const index = JSON.parse(readFileSync(join(__dirname, '../../../data/charities.j
 const rows = buildCharitiesIndex(index).charities.map(adaptRow);
 const p = gmgPalette(false);
 
+// Facet pills render as `${label} ${count}`. Deriving the counts keeps this
+// file about the pill UI -- which values show, which are pressed, which are
+// hidden at zero -- instead of about how many charities carry a tag this
+// month. Corpus composition is snapshotted in corpusComposition.test.ts.
+const TOTAL = rows.length;
+const zakatCount = rows.filter((r) => r.walletIsZakat).length;
+const usaCount = rows.filter((r) => r.regionTags.includes('usa')).length;
+const fuqaraCount = rows.filter((r) => r.asnafTags.includes('fuqara')).length;
+const zakatPill = `Zakat ${zakatCount}`;
+const usaPill = `United States ${usaCount}`;
+const fuqaraPill = `Fuqara (the poor) ${fuqaraCount}`;
+const sadaqahPill = `Sadaqah ${TOTAL - zakatCount}`;
+const muslimLedPill = `Muslim-led ${rows.filter((r) => r.isMuslimLed).length}`;
+const humanitarianPill = `Humanitarian Relief ${rows.filter((r) => r.causeKey === 'HUMANITARIAN').length}`;
+
 // A thin harness that owns real reducer state, the same wiring GmgBrowse
 // uses, so a click really goes click -> dispatch -> re-render.
 const Harness: React.FC<{ initial?: FacetState; isMobile?: boolean }> = ({
@@ -53,28 +68,28 @@ describe('BrowseFacets', () => {
 
   it('shows counts beside each value', () => {
     render(<Harness />);
-    expect(within(groupFor('Wallet')).getByRole('button', { name: 'Zakat 90' })).toBeInTheDocument();
-    expect(within(groupFor('Wallet')).getByRole('button', { name: 'Sadaqah 76' })).toBeInTheDocument();
-    expect(within(groupFor('Scope')).getByRole('button', { name: 'Muslim-led 123' })).toBeInTheDocument();
+    expect(within(groupFor('Wallet')).getByRole('button', { name: zakatPill })).toBeInTheDocument();
+    expect(within(groupFor('Wallet')).getByRole('button', { name: sadaqahPill })).toBeInTheDocument();
+    expect(within(groupFor('Scope')).getByRole('button', { name: muslimLedPill })).toBeInTheDocument();
   });
 
   it('hides the Cause and Region rows until More filters is clicked', async () => {
     const user = userEvent.setup();
     render(<Harness />);
-    expect(screen.queryByRole('button', { name: 'Humanitarian Relief 35' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'United States 52' })).toBeNull();
+    expect(screen.queryByRole('button', { name: humanitarianPill })).toBeNull();
+    expect(screen.queryByRole('button', { name: usaPill })).toBeNull();
 
     await user.click(screen.getByRole('button', { name: /More filters/ }));
 
-    expect(screen.getByRole('button', { name: 'Humanitarian Relief 35' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'United States 52' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: humanitarianPill })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: usaPill })).toBeInTheDocument();
   });
 
   it('opens the expander already-open when a facet inside it is selected', () => {
     const initial: FacetState = { ...INITIAL_FACET_STATE, cause: ['HUMANITARIAN'] };
     render(<Harness initial={initial} />);
     // No click on "More filters" — it must already be open.
-    expect(screen.getByRole('button', { name: 'Humanitarian Relief 35' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: humanitarianPill })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /More filters \(1\)/ })).toBeInTheDocument();
   });
 
@@ -83,7 +98,7 @@ describe('BrowseFacets', () => {
     render(<Harness />);
     await user.click(screen.getByRole('button', { name: /More filters/ }));
     // Only 4 of the 8 Qur'anic asnaf appear anywhere in the corpus.
-    expect(within(groupFor('Zakat asnaf')).getByRole('button', { name: 'Fuqara (the poor) 89' })).toBeInTheDocument();
+    expect(within(groupFor('Zakat asnaf')).getByRole('button', { name: fuqaraPill })).toBeInTheDocument();
     expect(within(groupFor('Zakat asnaf')).queryByRole('button', { name: /Amilin/ })).toBeNull();
     expect(within(groupFor('Zakat asnaf')).queryByRole('button', { name: /Riqab/ })).toBeNull();
   });
@@ -103,7 +118,7 @@ describe('BrowseFacets', () => {
     render(<Harness />);
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
 
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: 'Zakat 90' }));
+    await user.click(within(groupFor('Wallet')).getByRole('button', { name: zakatPill }));
 
     expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
 
@@ -141,7 +156,7 @@ describe('BrowseFacets', () => {
       />,
     );
     await user.click(screen.getByRole('button', { name: /More filters/ }));
-    await user.click(screen.getByRole('button', { name: 'Humanitarian Relief 35' }));
+    await user.click(screen.getByRole('button', { name: humanitarianPill }));
     expect(dispatch).toHaveBeenCalledWith({ type: 'toggle', facet: 'cause', value: 'HUMANITARIAN' });
   });
 
@@ -149,8 +164,8 @@ describe('BrowseFacets', () => {
     const initial: FacetState = { ...INITIAL_FACET_STATE, wallet: 'zakat' };
     render(<Harness initial={initial} />);
     const wallet = groupFor('Wallet');
-    expect(within(wallet).getByRole('button', { name: 'Zakat 90' })).toHaveAttribute('aria-pressed', 'true');
-    expect(within(wallet).getByRole('button', { name: 'Wallet: All 166' })).toHaveAttribute('aria-pressed', 'false');
+    expect(within(wallet).getByRole('button', { name: zakatPill })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(wallet).getByRole('button', { name: `Wallet: All ${TOTAL}` })).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('keeps the expander closed by default on mobile even when an inner facet is already active, but still shows the count', () => {
@@ -174,7 +189,7 @@ describe('BrowseFacets', () => {
     expect(within(groupFor('Cause')).queryByRole('button', { name: /Environment & Climate/ })).toBeNull();
   });
 
-  // Wallet's and Scope's "All" pill both read "All 166" by default, and a
+  // Wallet's and Scope's "All" pill both read the same "All {total}" by default, and a
   // screen-reader user tabbing the strip has no way to tell them apart. Every
   // button in the (fully expanded) strip must have a distinct accessible
   // name. None of these buttons use aria-labelledby, a title attribute, or

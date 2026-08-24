@@ -11,25 +11,42 @@ import {
 const index = JSON.parse(readFileSync(join(__dirname, '../../../data/charities.json'), 'utf-8'));
 const rows = buildCharitiesIndex(index).charities.map(adaptRow);
 
+/**
+ * Counts derived from the corpus, never hardcoded. These tests are about the
+ * reducer -- whether toggling a facet filters correctly -- not about how many
+ * charities happen to be humanitarian this month. Pinning literals here meant
+ * every pipeline regeneration turned the reducer red for unrelated reasons.
+ * Corpus composition is asserted once, as a snapshot, in
+ * corpusComposition.test.ts.
+ */
+const TOTAL = rows.length;
+const byCause = (k: string) => rows.filter((r) => r.causeKey === k).length;
+const bySize = (b: string) => rows.filter((r) => r.sizeBand === b).length;
+const byRegion = (k: string) => rows.filter((r) => r.regionTags.includes(k)).length;
+const regionUnion = (...keys: string[]) =>
+  rows.filter((r) => keys.some((k) => r.regionTags.includes(k))).length;
+const asnafUnion = (...keys: string[]) =>
+  rows.filter((r) => keys.some((k) => r.asnafTags.includes(k))).length;
+
 describe('facetReducer', () => {
   it('starts with nothing selected and everything showing', () => {
-    expect(applyFacets(rows, INITIAL_FACET_STATE)).toHaveLength(166);
+    expect(applyFacets(rows, INITIAL_FACET_STATE)).toHaveLength(TOTAL);
     expect(isFacetActive(INITIAL_FACET_STATE)).toBe(false);
   });
 
   it('toggles a value on and back off', () => {
     const on = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'cause', value: 'HUMANITARIAN' });
     expect(on.cause).toEqual(['HUMANITARIAN']);
-    expect(applyFacets(rows, on)).toHaveLength(35);
+    expect(applyFacets(rows, on)).toHaveLength(byCause('HUMANITARIAN'));
     const off = facetReducer(on, { type: 'toggle', facet: 'cause', value: 'HUMANITARIAN' });
     expect(off.cause).toEqual([]);
-    expect(applyFacets(rows, off)).toHaveLength(166);
+    expect(applyFacets(rows, off)).toHaveLength(TOTAL);
   });
 
   it('ORs within a facet', () => {
     let s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'cause', value: 'HUMANITARIAN' });
     s = facetReducer(s, { type: 'toggle', facet: 'cause', value: 'MEDICAL_HEALTH' });
-    expect(applyFacets(rows, s)).toHaveLength(35 + 14);
+    expect(applyFacets(rows, s)).toHaveLength(byCause('HUMANITARIAN') + byCause('MEDICAL_HEALTH'));
   });
 
   it('ANDs across facets', () => {
@@ -37,20 +54,20 @@ describe('facetReducer', () => {
     s = facetReducer(s, { type: 'scope', value: 'muslim' });
     const out = applyFacets(rows, s);
     expect(out.every((r) => r.causeKey === 'HUMANITARIAN' && r.isMuslimLed)).toBe(true);
-    expect(out.length).toBeLessThan(35);
+    expect(out.length).toBeLessThan(byCause('HUMANITARIAN'));
     expect(out.length).toBeGreaterThan(0);
   });
 
-  it('excludes the 7 revenue-less charities only when size is active', () => {
-    expect(applyFacets(rows, INITIAL_FACET_STATE)).toHaveLength(166);
+  it('excludes revenue-less charities only when size is active', () => {
+    expect(applyFacets(rows, INITIAL_FACET_STATE)).toHaveLength(TOTAL);
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'size', value: 'gte100m' });
-    expect(applyFacets(rows, s)).toHaveLength(24);
+    expect(applyFacets(rows, s)).toHaveLength(bySize('gte100m'));
     expect(applyFacets(rows, s).every((r) => r.sizeBand === 'gte100m')).toBe(true);
   });
 
-  it('matches no region for the 69 charities with no region tag', () => {
+  it('matches only the charities carrying the selected region tag', () => {
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'region', value: 'usa' });
-    expect(applyFacets(rows, s)).toHaveLength(52);
+    expect(applyFacets(rows, s)).toHaveLength(byRegion('usa'));
   });
 
   // region and asnaf are multi-valued row fields (a charity can carry several
@@ -58,22 +75,30 @@ describe('facetReducer', () => {
   // `matchesOneOf` helper the 'ORs within a facet' test above exercises for
   // cause. Nothing previously pinned that a multi-value selection on either
   // one is still an OR, not an AND.
-  it('ORs within the region facet (usa alone is 52, usa+palestine is 69 — not 16)', () => {
+  it('ORs within the region facet rather than intersecting', () => {
     let s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'region', value: 'usa' });
     s = facetReducer(s, { type: 'toggle', facet: 'region', value: 'palestine' });
-    expect(applyFacets(rows, s)).toHaveLength(69);
+    // The OR is the point: the union must exceed either tag alone, which an
+    // AND could never do.
+    expect(applyFacets(rows, s)).toHaveLength(regionUnion('usa', 'palestine'));
+    expect(regionUnion('usa', 'palestine')).toBeGreaterThan(
+      Math.max(byRegion('usa'), byRegion('palestine')),
+    );
   });
 
-  it('ORs within the asnaf facet (fuqara+muallaf is 91 — not 18)', () => {
+  it('ORs within the asnaf facet rather than intersecting', () => {
     let s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'asnaf', value: 'fuqara' });
     s = facetReducer(s, { type: 'toggle', facet: 'asnaf', value: 'muallaf' });
-    expect(applyFacets(rows, s)).toHaveLength(91);
+    expect(applyFacets(rows, s)).toHaveLength(asnafUnion('fuqara', 'muallaf'));
+    expect(asnafUnion('fuqara', 'muallaf')).toBeGreaterThan(
+      rows.filter((r) => r.asnafTags.includes('fuqara')).length,
+    );
   });
 
   it('treats a search query as not-a-facet', () => {
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'query', value: 'islamic' });
     expect(isFacetActive(s)).toBe(false);
-    expect(applyFacets(rows, s).length).toBeLessThan(166);
+    expect(applyFacets(rows, s).length).toBeLessThan(TOTAL);
   });
 
   it('clearAll returns to the initial state but keeps nothing stale', () => {
@@ -101,28 +126,28 @@ describe('facetReducer', () => {
       (sum, v) => sum + rows.filter((r) => r.verification === v).length,
       0,
     );
-    expect(total).toBe(166);
+    expect(total).toBe(TOTAL);
   });
 });
 
 describe('facetCounts', () => {
   it('counts each value over the unfiltered set when nothing is selected', () => {
     const c = facetCounts(rows, INITIAL_FACET_STATE, 'cause');
-    expect(c.HUMANITARIAN).toBe(35);
-    expect(c.MEDIA_JOURNALISM).toBe(2);
+    expect(c.HUMANITARIAN).toBe(byCause('HUMANITARIAN'));
+    expect(c.MEDIA_JOURNALISM).toBe(byCause('MEDIA_JOURNALISM'));
   });
 
   it('ignores the facet\'s own selection so counts stay stable while narrowing', () => {
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'toggle', facet: 'cause', value: 'HUMANITARIAN' });
     const c = facetCounts(rows, s, 'cause');
-    expect(c.MEDICAL_HEALTH).toBe(14);   // not 0 — the user can still add it
-    expect(c.HUMANITARIAN).toBe(35);
+    expect(c.MEDICAL_HEALTH).toBe(byCause('MEDICAL_HEALTH'));   // not 0 — the user can still add it
+    expect(c.HUMANITARIAN).toBe(byCause('HUMANITARIAN'));
   });
 
   it('does narrow a facet by the OTHER facets\' selections', () => {
     const s = facetReducer(INITIAL_FACET_STATE, { type: 'scope', value: 'muslim' });
     const c = facetCounts(rows, s, 'cause');
-    expect(c.HUMANITARIAN).toBeLessThan(35);
+    expect(c.HUMANITARIAN).toBeLessThan(byCause('HUMANITARIAN'));
   });
 });
 

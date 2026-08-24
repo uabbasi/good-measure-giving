@@ -46,12 +46,13 @@ describe('GmgBrowse SSR (entry-server, real charity data)', () => {
     expect(found.length).toBeGreaterThanOrEqual(100);
   }, 20000);
 
-  // Two prior facts (applyFacets(allRows, INITIAL_FACET_STATE) returns 166,
+  // Two prior facts (applyFacets(allRows, INITIAL_FACET_STATE) returns the
+  // full corpus,
   // and the sort switch is byte-identical to pre-Phase-3) don't prove the
   // wiring BETWEEN them survived Task 3's reducer swap. Read the markup the
   // component actually produced — row count and row order — rather than a
   // count computed alongside it.
-  it('renders the default view as all 166 charities, sorted by overall GMG score descending', async () => {
+  it('renders the default view as every indexed charity, sorted by overall GMG score descending', async () => {
     const html = await renderBrowse();
 
     // Each desktop row's name cell is the only <a href="/charity/<ein>/"> on
@@ -59,7 +60,9 @@ describe('GmgBrowse SSR (entry-server, real charity data)', () => {
     // rendered HTML in document order gives the actual on-page row sequence
     // — not a count or order computed separately from the markup.
     const rowEins = [...html.matchAll(/href="\/charity\/([\d-]+)\/"/g)].map((m) => m[1]);
-    expect(rowEins.length).toBe(166);
+    // Every charity in the index must reach the page; deriving the expected
+    // count keeps this about the SSR wiring rather than the corpus size.
+    expect(rowEins.length).toBe(rawIndex.charities.length);
 
     const nameByEin = new Map<string, string>(
       rawIndex.charities.map((c: { ein: string; name: string }) => [c.ein, c.name]),
