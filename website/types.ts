@@ -844,7 +844,7 @@ export interface CharityRawData {
   programs?: string[] | ProgramDetail[]; // Supports both flat list and detailed format
   populationsServed?: string[]; // T051 - Target populations/beneficiaries
   geographicCoverage?: string[]; // T052 - Countries/regions served
-  program_expense_ratio: number; // 0-1 (ratio) or 0-100 (percentage)
+  program_expense_ratio: number | null; // 0-1 (ratio) or 0-100 (percentage); null = not reported
   admin_fundraising_ratio: number; // 0-100
   beneficiaries_annual: number;
   geographic_reach: string[]; // e.g., ["Turkey", "Syria"] (deprecated, use geographicCoverage)

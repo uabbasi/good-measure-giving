@@ -78,7 +78,7 @@ export interface CharitiesIndex {
 
 // Convert summary to minimal CharityProfile for listing
 // Note: This creates a lightweight profile for browse/search - full details are loaded separately
-function summaryToProfile(summary: CharitySummary): CharityProfile {
+export function summaryToProfile(summary: CharitySummary): CharityProfile {
   return {
     id: summary.id,
     ein: summary.ein,
@@ -105,14 +105,18 @@ function summaryToProfile(summary: CharitySummary): CharityProfile {
       programExpenses: 0,
       adminExpenses: 0,
       fundraisingExpenses: 0,
-      programExpenseRatio: summary.programExpenseRatio || 0,
+      // `?? null`, not `|| 0`: same reason as totalRevenue above. 9 charities
+      // in the index report no ratio, and none reports a genuine 0% — so every
+      // 0 here was a manufactured one, rendering "0%" on /browse under a column
+      // that promises "Blank = not reported".
+      programExpenseRatio: summary.programExpenseRatio ?? null,
       fiscalYear: summary.fiscalYear ?? null,
     },
     rawData: {
       name: summary.name,
       description: summary.headline || '',
       mission: summary.mission || summary.headline || '',
-      program_expense_ratio: summary.programExpenseRatio || 0,
+      program_expense_ratio: summary.programExpenseRatio ?? null,
       admin_fundraising_ratio: 0,
       beneficiaries_annual: 0,
       geographic_reach: [],
