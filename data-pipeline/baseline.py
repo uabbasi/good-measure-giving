@@ -772,6 +772,19 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         metrics.fundraising_expenses, metrics.total_contributions
     )
 
+    # Cost per beneficiary travels as a formatted mandatory value, not a raw
+    # float in a block the model is told not to quote. It was the latter, while
+    # a worked example ("$907 cost per beneficiary") invited the claim and the
+    # N/A silence rule did not cover it -- so a charity with no figure got
+    # encouragement, no usable number, and no instruction to stay quiet.
+    # 99-3373484 filled the gap with an invented $353.70 and lost its page.
+    # Absent for 94 of 166 charities, so most of the corpus was exposed.
+    #
+    # 0 is not a cost: it means we could not compute one, and publishing "$0
+    # per beneficiary" would be worse than saying nothing.
+    _cpb = getattr(scores.impact, "cost_per_beneficiary", None)
+    cost_per_beneficiary_str = f"${_cpb:,.2f}" if _cpb else "N/A"
+
     zakat_constraint_text = (
         _ZAKAT_CONSTRAINT_SADAQAH if scores.wallet_tag == "SADAQAH-ELIGIBLE" else _ZAKAT_CONSTRAINT_ZAKAT
     )
@@ -811,7 +824,7 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
         "zakat_constraint_text": zakat_constraint_text,
         "amal_score": scores.amal_score,
         "impact_score": scores.impact.score,
-        "impact_cpb": scores.impact.cost_per_beneficiary or "N/A",
+        "impact_cpb": cost_per_beneficiary_str,
         "alignment_score": scores.alignment.score,
         "alignment_fit": scores.alignment.muslim_donor_fit_level,
         "alignment_urgency": scores.alignment.cause_urgency_label,

@@ -1,7 +1,7 @@
 # PROMPT: baseline_narrative
-# VERSION: 2.6.0
-# LAST_UPDATED: 2026-08-01
-# DESCRIPTION: Baseline narrative with inline citations; 2.5.0 forbids citing the overall Charity Navigator score as a transparency/accountability/efficiency measure - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule; 2.4.0 makes the program-ratio label a placeholder so a gifts-in-kind-adjusted figure is named as such instead of passing for the filed ratio; 2.6.0 moves the per-value instructions out of the value lines - EIN 47-5165837 published the parenthetical itself, '(use this exact percentage everywhere, and describe it using this exact label...)', inside its impact explanation
+# VERSION: 2.7.0
+# LAST_UPDATED: 2026-08-25
+# DESCRIPTION: Baseline narrative with inline citations; 2.5.0 forbids citing the overall Charity Navigator score as a transparency/accountability/efficiency measure - v1.1.0 style rules merged with live data placeholders (rendered via .format in baseline.py); 2.1.0 adds the band tone contract; 2.2.0 adds the data-vintage disclosure rule; 2.4.0 makes the program-ratio label a placeholder so a gifts-in-kind-adjusted figure is named as such instead of passing for the filed ratio; 2.6.0 moves the per-value instructions out of the value lines - EIN 47-5165837 published the parenthetical itself, '(use this exact percentage everywhere, and describe it using this exact label...)', inside its impact explanation; 2.7.0 makes cost per beneficiary a MANDATORY VALUE governed by the N/A silence rule and removes it from the 'do NOT quote these numbers' block -- it was invited by a worked example, supplied only inside a do-not-quote block, and absent for 94 of 166 charities, so EIN 99-3373484 invented '$353.70 for each person it helps' and was withheld over it; 2.7.0 also stops the GOOD examples demonstrating the plain 'program expense ratio' label that the MANDATORY VALUES rule forbids for a cash-adjusted figure
 # ---PROMPT_START---
 Generate a baseline narrative for this charity with Wikipedia-style inline citations.
 
@@ -40,8 +40,14 @@ and none of it may appear in the narrative except the value itself.
 - Total Revenue: {revenue}
 - Working Capital: {working_capital}
 - Fundraising Efficiency: {fundraising_efficiency}
+- Cost per Beneficiary: {impact_cpb}
 
 If a value is "N/A", do NOT mention that metric in the narrative at all.
+This applies to cost per beneficiary exactly as it does to the others: when it
+is "N/A" we could not compute one, so say nothing about cost per person, cost
+per beneficiary, or any other per-unit cost. Do not estimate it from revenue
+and beneficiary counts, and do not describe the charity as cheap or expensive
+per person.
 
 ## DATA VINTAGE (CRITICAL)
 {data_vintage_note}
@@ -66,7 +72,10 @@ NOT include these internal rating numbers in the narrative.
 - GOOD: "Donors can trust this group's spending, though it lacks outcome data"
 
 Real financial data IS encouraged — use specific numbers from the data:
-- GOOD: "$907 cost per beneficiary", "80% program expense ratio", "$147M revenue"
+- GOOD: "$907 cost per beneficiary", "$147M revenue" — but ONLY when that exact
+  value appears under MANDATORY VALUES above. Never derive one yourself.
+- For the program expense ratio, use the label exactly as MANDATORY VALUES gives
+  it: if it says cash-adjusted, "80% program expense ratio" is the WRONG form.
 - GOOD: "100/100 Charity Navigator rating" (this is external, public data)
 
 Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and why.
@@ -74,7 +83,7 @@ Explain the SUBSTANCE behind the assessments — what's strong, what's weak, and
 ## Pre-computed Scores (context only - do NOT quote these numbers)
 - GMG Score: {amal_score}/100
 - Wallet Tag: {wallet_tag}
-- Impact: {impact_score}/50 (Cost per beneficiary: {impact_cpb})
+- Impact: {impact_score}/50
 - Alignment: {alignment_score}/50 (Donor fit: {alignment_fit}, Cause urgency: {alignment_urgency})
 - Data Confidence: {data_confidence} ({data_confidence_badge})
 
