@@ -2072,11 +2072,22 @@ class CharityMetricsAggregator:
                     ("fundraising_expense_ratio", "fundraising_expenses"),
                 ):
                     value = irs_income[component]
+                    # A zero PROGRAM component against a real denominator is a
+                    # filing whose program figure we could not read, not a
+                    # charity that spent nothing on programs -- the same rule
+                    # the raw-quotient path applies further down. Admin and
+                    # fundraising are left alone: plenty of small charities
+                    # genuinely report $0 of fundraising, and that zero means
+                    # what it says.
+                    unreadable_program = (
+                        ratio_field == "program_expense_ratio" and value == 0
+                    )
                     metrics_data[ratio_field] = (
                         round(min(1.0, value / irs_total), 4)
                         if isinstance(value, (int, float))
                         and isinstance(irs_total, (int, float))
                         and irs_total > 0
+                        and not unreadable_program
                         else None
                     )
                 if superseded_source and elected_year is not None:
@@ -2167,7 +2178,12 @@ class CharityMetricsAggregator:
 
         # FIX #4: CN ratios are fallback, not overwrite — only set if not already present
         if cn_profile and not cn_statement_refused:
-            if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio") is not None:
+            # A truthy check, not `is not None`: a Charity Navigator ratio of exactly
+            # 0 says nothing was spent on programs, which no operating charity
+            # files. 90-0327815 held no program_expenses of its own and took
+            # CN's 0.0000, publishing "0%" beside $69,600 of total expenses.
+            # A zero here is an absent statement, not a statement of zero.
+            if metrics_data.get("program_expense_ratio") is None and cn_profile.get("program_expense_ratio"):
                 metrics_data["program_expense_ratio"] = cn_profile.get("program_expense_ratio")
             if metrics_data.get("admin_expense_ratio") is None and cn_profile.get("admin_expense_ratio") is not None:
                 metrics_data["admin_expense_ratio"] = cn_profile.get("admin_expense_ratio")
@@ -2221,7 +2237,18 @@ class CharityMetricsAggregator:
         # alone; it may not contradict.
         prog = metrics_data.get("program_expenses")
         total = metrics_data.get("total_expenses")
-        if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog >= 0:
+        # `prog > 0`, not `prog >= 0`: on THIS path -- the raw quotient of two
+        # filed components -- a zero numerator against a real denominator is
+        # the 990 parse having found no program figure, not a charity that
+        # spent nothing on programs. 47-1666091, 84-5191730 and 87-1035868 each
+        # published "0%" over total expenses of $147,133, $13,034 and $708,384.
+        # Leaving the ratio None renders "—" instead.
+        #
+        # This does not contradict _compute_cash_adjusted_ratio keeping a
+        # genuine 0.0: there the zero is a measured result (program spend
+        # exactly equals stripped-out in-kind against a healthy denominator).
+        # Here it is an absent input wearing a measurement's clothes.
+        if isinstance(prog, (int, float)) and isinstance(total, (int, float)) and total > 0 and prog > 0:
             metrics_data["program_expense_ratio"] = round(min(1.0, prog / total), 4)
 
         # ====================================================================
