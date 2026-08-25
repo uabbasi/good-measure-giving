@@ -19,6 +19,7 @@ import shutil
 import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -143,6 +144,22 @@ def prune_charity_detail_files(output_dir: Path, keep_eins: set[str]) -> int:
             detail_file.unlink()
             removed += 1
     return removed
+
+
+def _json_default(obj: Any) -> Any:
+    """Serialize what json cannot: Decimal as a NUMBER, everything else as str.
+
+    DoltDB DECIMAL columns come back as `Decimal`, and a bare `default=str`
+    rendered them as JSON strings. program_expense_ratio is decimal(5,4), so
+    every populated ratio shipped as "0.8696" against a types.ts declaration of
+    `number | null` -- 153 of 162 index rows. Nothing failed because the
+    frontend's numOrNull coerces strings, and TypeScript could not see it
+    because the JSON is parsed as `any`. It is the only DECIMAL among the
+    index's numeric fields, which is why it was the only one affected.
+    """
+    if isinstance(obj, Decimal):
+        return float(obj)
+    return str(obj)
 
 
 def _safe_upper(value: Any) -> str | None:
@@ -2078,7 +2095,7 @@ def export_charity(
 
     charity_file = charities_dir / f"charity-{ein}.json"
     with open(charity_file, "w") as f:
-        json.dump(detail, f, indent=2, default=str)
+        json.dump(detail, f, indent=2, default=_json_default)
 
     result["summary"] = summary
     result["quality_issues"] = quality_issues
@@ -2621,7 +2638,7 @@ def main():
             {"source_commit": source_commit, "charities": summaries},
             f,
             indent=2,
-            default=str,
+            default=_json_default,
         )
 
     if args.prune:
@@ -2639,7 +2656,7 @@ def main():
     )
     calibration_file = output_dir / "calibration-report.json"
     with open(calibration_file, "w") as f:
-        json.dump(calibration_report, f, indent=2, default=str)
+        json.dump(calibration_report, f, indent=2, default=_json_default)
 
     # Editorial queue: warnings never gate publication — they surface here for
     # human review (internal artifact under data-pipeline/reports/, gitignored).
