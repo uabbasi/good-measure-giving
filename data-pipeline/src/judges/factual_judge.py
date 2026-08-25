@@ -18,6 +18,7 @@ from src.utils.source_trust import field_group, published_column_for
 from .base_judge import BaseJudge, JudgeType
 from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
+from .zakat_claim_findings import is_zakat_eligibility_finding
 
 logger = logging.getLogger(__name__)
 
@@ -26,18 +27,6 @@ logger = logging.getLogger(__name__)
 # others describe the state of our evidence, which is not the charity's fault
 # and must not block its publication.
 BLOCKING_DISCREPANCY_KINDS = {"contradiction", "fabrication"}
-
-# Whether the wallet tag agrees with the zakat claim is settled in code:
-# _quick_checks compares evaluation.wallet_tag against a tag derived
-# independently from claims_zakat_eligible (judge_phase._wallet_tag_from_zakat_claim).
-# The model is handed both values anyway and sometimes rules on them a second
-# time -- on 99-3032347 it read SADAQAH-ELIGIBLE (the tag meaning "does NOT
-# claim zakat") as "zakat-eligible" and reported the agreeing pair as a
-# contradiction, costing the charity its page. factual_judge.txt already names
-# that exact pair as CORRECT, so the answer is not more prompt text. Where a
-# deterministic check owns the question, the model's copy does not get to block.
-_WALLET_TAG_AGREEMENT_RE = re.compile(r"wallet.{0,3}tag", re.IGNORECASE)
-
 
 # Financial figures whose value legitimately differs year to year. Founding year
 # and similar identity fields are excluded: for those, two years IS the finding.
@@ -70,10 +59,29 @@ def _is_cross_fiscal_year_comparison(field: str, message: str) -> bool:
     return len(set(_FISCAL_YEAR_RE.findall(message or ""))) >= 2
 
 
-def _is_wallet_tag_agreement(field: str, message: str) -> bool:
-    """Is this finding the wallet-tag/zakat-claim comparison _quick_checks owns?"""
-    text = f"{field} {message}"
-    return bool(_WALLET_TAG_AGREEMENT_RE.search(text)) and "zakat" in text.lower()
+def _is_zakat_eligibility_question(
+    field: str, message: str, claim_value: str | None = None, source_value: str | None = None
+) -> bool:
+    """Is this finding about zakat/sadaqah eligibility, which never blocks?
+
+    Broader than the `wallet.{0,3}tag` phrase this replaced, because the fiqh
+    makes the whole question non-blocking rather than just the cases where the
+    model happened to name the tag. Sadaqah is the default tier and needs no
+    substantiation, so a sadaqah claim cannot be contradicted by the absence of
+    a zakat claim -- yet that is exactly what withheld SPLC (63-0598743), whose
+    message never said "wallet tag", and CARE USA (13-1685039) before it. The
+    reverse, an unsupported zakat claim, is corrected down to sadaqah at export
+    rather than withheld. See zakat_claim_findings.
+
+    The narrower predecessor existed because _quick_checks already settles the
+    tag deterministically (against judge_phase._wallet_tag_from_zakat_claim)
+    while the model is handed both values and sometimes rules on them a second
+    time: on 99-3032347 it read SADAQAH-ELIGIBLE -- the tag meaning "does NOT
+    claim zakat" -- as zakat-eligible and called the agreeing pair a
+    contradiction. More prompt text was never the answer; factual_judge.txt
+    already names that exact pair as correct.
+    """
+    return is_zakat_eligibility_finding(field, message, claim_value, source_value)
 
 
 # A response that will not parse fell through to "Could not complete LLM
@@ -852,7 +860,7 @@ class FactualJudge(BaseJudge):
                 # not a fault either -- see _METHODOLOGY_DIVERGENT_FIELD_RE.
                 # Fourth: the wallet-tag/zakat-claim comparison is already
                 # settled deterministically above, so the model's second
-                # opinion on it never blocks -- see _is_wallet_tag_agreement.
+                # opinion on it never blocks -- see _is_zakat_eligibility_question.
                 if severity == Severity.ERROR:
                     # Governing rule, ahead of everything below: a narrative
                     # reporting the figure we published is correct, whatever a
@@ -878,7 +886,9 @@ class FactualJudge(BaseJudge):
                         f"{issue.field} {issue.message}"
                     ) and _same_story(issue.claim_value, issue.source_value):
                         severity = Severity.WARNING
-                    elif _is_wallet_tag_agreement(issue.field, issue.message):
+                    elif _is_zakat_eligibility_question(
+                        issue.field, issue.message, issue.claim_value, issue.source_value
+                    ):
                         severity = Severity.WARNING
                     # Fifth: two different fiscal years being compared is not a
                     # narrative fault -- our sources cover different years and the

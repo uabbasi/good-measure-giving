@@ -17,30 +17,22 @@ from .base_judge import BaseJudge, JudgeType
 from .schemas.config import JudgeConfig
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
 from .url_verifier import URLVerifier
+from .zakat_claim_findings import is_zakat_eligibility_finding
 
 logger = logging.getLogger(__name__)
 
-# Whether the charity accepts zakat is settled in code: factual_judge's
-# _quick_checks compares evaluation.wallet_tag against a tag derived
-# independently from claims_zakat_eligible, and that judge already refuses to let
-# the model's second opinion block (_is_wallet_tag_agreement). This judge had no
-# equivalent, so the same settled question could still withhold a page from a
-# different direction: on EIN 20-1799252 it blocked over "the citation states the
-# organization is Zakat eligible, but the claim states it is recognized as
-# zakat-eligible" — the same assertion, twice. A miscited zakat claim is a craft
-# issue for the editorial queue, not a publication blocker.
-_ZAKAT_ELIGIBILITY_RE = re.compile(r"zakat[- ]?eligib|eligible\s+for\s+zakat|wallet.{0,3}tag", re.IGNORECASE)
-# A dollar/quantity assertion ABOUT zakat is a different claim than eligibility,
-# and must keep blocking (a fabricated "$4.2M distributed as zakat").
-_ZAKAT_QUANTITY_RE = re.compile(r"\$\s?[\d,.]+|\b\d[\d,.]*\s*(?:million|m\b|billion)", re.IGNORECASE)
-
 
 def is_zakat_eligibility_claim(field: str, message: str) -> bool:
-    """Is this finding the zakat-eligibility question already settled in code?"""
-    text = f"{field} {message}"
-    if _ZAKAT_QUANTITY_RE.search(text):
-        return False
-    return bool(_ZAKAT_ELIGIBILITY_RE.search(text))
+    """Is this finding the zakat-eligibility question, which never blocks?
+
+    Sadaqah is the default tier and needs no substantiation, so neither
+    direction of a zakat disagreement justifies withholding a page — see
+    zakat_claim_findings. This judge's own phrase list used to own the
+    question and kept missing paraphrases: on 46-2431099 it blocked over
+    "Zakat is accepted and eligible contributions", where the two words are
+    not adjacent, and the charity lost its page over it.
+    """
+    return is_zakat_eligibility_finding(field, message)
 
 
 class CitationIssue(BaseModel):

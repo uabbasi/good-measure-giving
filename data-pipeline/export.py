@@ -1323,6 +1323,52 @@ def _sanitize_stale_asnaf(amal_evaluation: dict[str, Any]) -> None:
             amal_evaluation["rich_narrative"] = {**rich, "zakat_guidance": {**guidance, "classification": None}}
 
 
+def substantiate_wallet_tag(
+    evaluation: dict | None, charity_data: dict | None
+) -> dict | None:
+    """Never publish a zakat claim we cannot substantiate; publish sadaqah instead.
+
+    Zakat is the higher bar and needs support. Sadaqah is the default tier that
+    any charity qualifies for, so falling back to it is always true and costs
+    the donor nothing -- which is why an unsupported zakat tag is corrected
+    down rather than used to withhold the page. The judges stopped blocking on
+    the eligibility question for the same reason (see zakat_claim_findings);
+    this is the half that keeps an overstatement from reaching the site.
+
+    The correction is deterministic and needs no judge: charity_data
+    .claims_zakat_eligible IS the substantiation, so anything other than a true
+    value means the claim is unsupported.
+
+    The tag alone is not enough. The page renders eligibility twice -- the
+    badge from wallet_tag, the prose from donor_fit_matrix.zakat_status -- so
+    the prose is cleared with it. Zakat claim evidence needs no handling here:
+    _extract_zakat_claim_evidence already returns None for any tag that is not
+    ZAKAT-ELIGIBLE, so correcting the tag suppresses it.
+
+    Never upgrades. A charity that claims zakat while tagged sadaqah is
+    understated, which is safe; correcting that upward is an editorial decision
+    about a religious classification, not one export makes on its own.
+    """
+    if not isinstance(evaluation, dict):
+        return evaluation
+    if evaluation.get("wallet_tag") != "ZAKAT-ELIGIBLE":
+        return evaluation
+    if isinstance(charity_data, dict) and charity_data.get("claims_zakat_eligible"):
+        return evaluation
+
+    # copy-on-write: the summary builder reads this same dict
+    corrected = {**evaluation, "wallet_tag": "SADAQAH-ELIGIBLE"}
+    rich = corrected.get("rich_narrative")
+    if isinstance(rich, dict):
+        matrix = rich.get("donor_fit_matrix")
+        if isinstance(matrix, dict) and matrix.get("zakat_status"):
+            corrected["rich_narrative"] = {
+                **rich,
+                "donor_fit_matrix": {**matrix, "zakat_status": None},
+            }
+    return corrected
+
+
 def _is_truncated_text(value: str | None) -> bool:
     """Detect text that is likely UI-truncated."""
     return isinstance(value, str) and value.rstrip().endswith("...")
@@ -2090,6 +2136,12 @@ def export_charity(
 
     # Get evaluation
     evaluation = eval_repo.get(ein)
+
+    # Correct an unsupported zakat claim down to sadaqah before anything reads
+    # the tag, so the badge, the facets, the prose and the zakat evidence all
+    # agree. Done here rather than at each emission point because wallet_tag is
+    # read in several places downstream, including _extract_zakat_claim_evidence.
+    evaluation = substantiate_wallet_tag(evaluation, charity_data)
 
     # Build deterministic qualitative UI signals from scored fields
     ui_signals_v1 = _derive_ui_signals_v1(charity, charity_data, evaluation, ui_signals_config, config_hash)

@@ -46,6 +46,24 @@ physical gate modules is deferred to v5.3.0.) Pruning previously-exported
 charities never happens implicitly: it requires an explicit `--prune`, and never
 runs with `--ein`.
 
+Zakat eligibility never gates publication, in either direction, because the
+fiqh makes sadaqah the default tier that needs no substantiation and zakat the
+higher bar that does. Understating (tagged sadaqah while the charity claims
+zakat) is safe for the donor; overstating is corrected down to sadaqah at
+export by `substantiate_wallet_tag()` — which also clears
+`donor_fit_matrix.zakat_status`, since the page renders eligibility from both
+the tag and that prose. Findings are recognised by
+`src/judges/zakat_claim_findings.py` and demoted to warnings in the factual,
+citation and score judges. A quantity claim ABOUT zakat ("$4.2M distributed as
+zakat") and an asnaf-category contradiction are different assertions and keep
+blocking. This replaced two phrase-matching predicates that kept missing
+paraphrases and cost real pages: SPLC, CARE USA and Bayan among them.
+
+A drop guard runs before `charities.json` is overwritten: any previously
+published EIN that produced no summary aborts the export unless it is declared
+under `delisted:` in `config/curation_overrides.yaml` (`--allow-drops` to
+override). A judge-gate block is a failed run, not a delisting.
+
 BBB Wise Giving Alliance reviews only a subset of US charities. A charity it
 does not review is a **verified negative**, not a fetch failure: the collector
 returns success with `bbb_profile.not_reviewed = True`, and every verdict field

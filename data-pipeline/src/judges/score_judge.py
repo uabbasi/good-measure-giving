@@ -14,6 +14,7 @@ from .base_judge import BaseJudge, JudgeType
 from .factual_judge import demote_published_figure_errors
 from .materiality import is_methodology_divergent
 from .schemas.verdict import JudgeVerdict, Severity, ValidationIssue
+from .zakat_claim_findings import is_zakat_eligibility_finding
 
 logger = logging.getLogger(__name__)
 
@@ -323,6 +324,17 @@ class ScoreJudge(BaseJudge):
                 # untouched.
                 if severity == Severity.ERROR and is_methodology_divergent(
                     f"{issue.field} {issue.message} {issue.evidence or ''}"
+                ):
+                    severity = Severity.WARNING
+                # Zakat eligibility never withholds a page, in either
+                # direction: sadaqah is the default tier and needs no
+                # substantiation, and an unsupported zakat claim is corrected
+                # down to sadaqah at export instead. This judge kept blocking
+                # on it in prose the other two judges' checks never saw --
+                # "The strength 'Verified Zakat Eligibility' is incorrect. The
+                # organization is only sadaqah-eligible" (56-2500794).
+                elif severity == Severity.ERROR and is_zakat_eligibility_finding(
+                    issue.field, issue.message, None, issue.evidence
                 ):
                     severity = Severity.WARNING
                 details = {}
