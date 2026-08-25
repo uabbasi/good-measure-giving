@@ -570,13 +570,30 @@ def build_charity_metrics(
     return _apply_curated_name(_apply_synth_overrides(metrics, charity_data))
 
 
+# Sadaqah is the default tier every charity qualifies for, so stating it tells
+# the donor nothing and reads as a determination we made. Zakat is the higher
+# bar, and all we ever know is what the charity's own site says. So: silence on
+# sadaqah, attribution on zakat.
+#
+# The previous SADAQAH text ended "Only mention sadaqah or general charitable
+# giving" — an instruction to assert sadaqah. The assertions it produced were
+# then read as unsupported claims and cost real pages (63-0598743, 13-1685039).
 _ZAKAT_CONSTRAINT_SADAQAH = (
-    "⚠️ This charity is SADAQAH-ELIGIBLE (NOT zakat-eligible). DO NOT mention zakat eligibility, "
-    "zakat policies, zakat pathways, fuqara, masakin, or any implication that donations qualify as "
-    "zakat. Only mention sadaqah or general charitable giving."
+    "⚠️ Zakat eligibility is NOT substantiated for this charity. Say nothing about which "
+    "category of giving it accepts. DO NOT mention zakat eligibility, zakat policies, zakat "
+    "pathways, fuqara, masakin, asnaf, or any implication that donations qualify as zakat. "
+    "Equally, DO NOT describe the charity or its donations as sadaqah, sadaqah-eligible, or "
+    "sadaqah-only: sadaqah is the default that every charity qualifies for, so saying it adds "
+    "nothing and reads as a finding we did not make. Describe the charity's work and leave the "
+    "question of giving category unmentioned."
 )
 _ZAKAT_CONSTRAINT_ZAKAT = (
-    "✓ This charity is ZAKAT-ELIGIBLE. You MAY mention zakat eligibility if supported by source data."
+    "✓ This charity's own website indicates zakat eligibility. If you mention it at all, "
+    "attribute it: \"the charity's website indicates it is zakat-eligible\" or \"states that it "
+    "accepts zakat\" is the STRONGEST form permitted. NEVER write that eligibility is verified, "
+    "confirmed, certified, or guaranteed, and never write \"zakat-compliant\" or that donations "
+    "qualify as zakat — we are reporting what the site claims, not certifying it. Say nothing "
+    "about sadaqah."
 )
 
 
@@ -3178,6 +3195,25 @@ def sanitize_narrative_metrics(narrative: dict, metrics: "CharityMetrics", score
                 None,
             )
         )
+
+    # Sadaqah language — strip ALWAYS, whatever the wallet tag. Sadaqah is the
+    # default tier every charity qualifies for, so asserting it tells the donor
+    # nothing while reading as a determination we made, and it was that
+    # assertion (not any zakat claim) that judges kept flagging as unsupported.
+    # The prompt now asks for silence; this enforces it on the way out.
+    _sadaqah_keywords = (
+        r"(?:sadaqah[\s-]*(?:eligible|eligibility|only|compliant)"
+        r"|(?:considered|qualifies?\s+as|counts?\s+as|treated\s+as)\s+sadaqah"
+        r"|(?:for|through)\s+sadaqah\s+giving)"
+    )
+    rules.append(
+        (
+            rf"{_clause_lead}{_sadaqah_keywords}{_clause_trail}",
+            None,
+            True,
+            None,
+        )
+    )
 
     # Zakat language — strip if charity is SADAQAH-ELIGIBLE (not zakat)
     wallet_tag = getattr(scores, "wallet_tag", None) if scores else None

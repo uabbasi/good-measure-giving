@@ -219,7 +219,7 @@ Generate a JSON object with ONLY these fields:
       "citation_ids": ["[4]", "[5]", "[8]"]
     },
     "alignment": {
-      "explanation": "Strong fit for Muslim donors with <cite id=\"6\">verified zakat eligibility</cite> and high cause urgency.",
+      "explanation": "Strong fit for Muslim donors: <cite id=\"6\">the charity's website indicates it is zakat-eligible</cite>, and cause urgency is high.",
       "improvement": "",
       "citation_ids": ["[6]"]
     }
@@ -240,7 +240,7 @@ Generate a JSON object with ONLY these fields:
   },
 
   "donor_fit_matrix": {
-    "zakat_status": "ZAKAT-ELIGIBLE or SADAQAH-ONLY",
+    "zakat_status": "Website indicates zakat eligibility -- or \"\" (empty) when charity_claims_zakat is not true. NEVER \"SADAQAH\" anything.",
     "zakat_asnaf_served": ["fuqara (poor)", "masakin (needy)"],
     "cause_area": "HUMANITARIAN",
     "geographic_focus": ["Palestine", "Yemen", "Syria"],
@@ -251,9 +251,9 @@ Generate a JSON object with ONLY these fields:
   },
 
   "ideal_donor_profile": {
-    "best_for_summary": "Best for donors who want to provide emergency humanitarian relief to Muslim communities in crisis zones with zakat-eligible giving.",
+    "best_for_summary": "Best for donors who want to provide emergency humanitarian relief to Muslim communities in crisis zones.",
     "donor_motivations": [
-      "Want to fulfill zakat obligations with confidence",
+      "Want established operations behind their giving",
       "Care deeply about humanitarian crises affecting Muslims globally",
       "Value established organizations with proven delivery capacity",
       "Prefer direct aid over advocacy or capacity building"
@@ -389,7 +389,7 @@ Generate a JSON object with ONLY these fields:
     },
     {
       "id": "[3]",
-      "claim": "zakat eligibility verified",
+      "claim": "website states zakat eligibility",
       "source_name": "Islamic Relief USA - Zakat",
       "source_url": "https://irusa.org/zakat/#eligibility",
       "source_type": "website",
@@ -522,10 +522,19 @@ Every citation must have a CLAIM that is DIRECTLY SUPPORTED by the QUOTE:
 - BAD: "dedicates 90% to program expenses" when program_expense_ratio is null
 - GOOD: "Financial data for expense breakdown is limited" when program ratio is null
 
-**Rule 6: Zakat Eligibility Must Match Source Data**
-- Only claim a charity is "zakat-eligible" if `charity_claims_zakat: true` in the baseline
-- If wallet_tag is "SADAQAH-ELIGIBLE", do NOT describe programs as "zakat-eligible"
-- Do NOT include "Zakat-compliant" in donor motivations unless source data confirms it
+**Rule 6: Zakat Is Attributed, Sadaqah Is Never Mentioned**
+Sadaqah is the default tier that EVERY charity qualifies for, so stating it tells the donor
+nothing and reads as a determination we made. Zakat is the higher bar, and all we ever know is
+what the charity's own site says.
+- NEVER describe a charity, its programs, or its donations as "sadaqah", "sadaqah-eligible",
+  or "sadaqah-only" — in any field, for any charity. Say nothing about sadaqah at all.
+- Only mention zakat if `charity_claims_zakat: true` in the baseline. If it is not true, say
+  nothing about the giving category: no zakat, no sadaqah, no fuqara/masakin/asnaf.
+- When you do mention zakat, ATTRIBUTE it to the source. The strongest form permitted is
+  "the charity's website indicates it is zakat-eligible" or "states that it accepts zakat".
+- NEVER write that eligibility is verified, confirmed, certified, or guaranteed, and never
+  write "zakat-compliant" or that donations "qualify as" zakat. We report what the site
+  claims; we do not certify it.
 
 ## Investment Memo Sections (NEW in V3)
 
@@ -577,7 +586,8 @@ The Investment Memo Data now includes additional sources. Use them as follows:
 
 ### Donor Fit Matrix
 - Help donors quickly assess if this charity matches their priorities
-- Use the provided wallet_tag for zakat_status
+- zakat_status: only when charity_claims_zakat is true, and phrased as what the website
+  indicates. Leave it empty otherwise. Never put a sadaqah value in it.
 - List actual geographic coverage from website data
 - Explain evidence_rigor based on the evidence grade
 
@@ -599,8 +609,8 @@ Consider:
 **GOOD best_for_summary examples** (describes DONOR):
 - "Best for donors who prioritize rigorous evidence of impact and want to save the most lives per dollar"
 - "Best for donors who value Islamic institutional development and want to invest in long-term community infrastructure"
-- "Best for donors who care about Palestinian humanitarian needs and want zakat-eligible direct aid"
-- "Best for donors who want to fulfill zakat through established, large-scale humanitarian operations"
+- "Best for donors who care about Palestinian humanitarian needs and want direct aid to reach families fast"
+- "Best for donors who want established, large-scale humanitarian operations behind their giving"
 
 **BAD best_for_summary examples** (describes CHARITY - DO NOT USE):
 - "Best for international humanitarian relief" ❌ (describes work, not donor)
@@ -646,7 +656,7 @@ Consider:
 - DO NOT contradict baseline scores or facts
 - DO NOT recalculate AMAL scores
 - If agent discoveries reveal conflicting information, present as nuance, not contradiction
-- Reference baseline wallet tag correctly (ZAKAT-ELIGIBLE or SADAQAH-ELIGIBLE)
+- Never assert sadaqah; attribute any zakat mention to the charity's website (Rule 6)
 
 ## Data Provided
 

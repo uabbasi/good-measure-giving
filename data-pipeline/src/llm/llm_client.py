@@ -310,7 +310,7 @@ TASK_MODELS: Dict[LLMTask, Tuple[str, List[str]]] = {
 
 # Prompt versions - increment when prompt templates change
 PROMPT_VERSIONS: Dict[str, str] = {
-    "narrative_generation": "v2.0.0",
+    "narrative_generation": "v2.1.0",  # zakat attributed to source, sadaqah never asserted
     "website_extraction": "v1.2.0",
     "pdf_extraction": "v1.1.0",
     "charity_navigator_financial": "v1.0.0",
