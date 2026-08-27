@@ -806,7 +806,7 @@ class RichNarrativeGenerator:
             template = f.read()
 
         # Format charity data
-        charity_data = self._format_charity_data(baseline, charity_bundle, investment_memo_data)
+        charity_data = self._format_charity_data(baseline, charity_bundle, investment_memo_data, metrics)
 
         # Format citation sources
         citation_sources = citation_registry.get_sources_for_prompt()
@@ -829,7 +829,11 @@ class RichNarrativeGenerator:
         return prompt
 
     def _format_charity_data(
-        self, baseline: dict, charity_bundle: Any, investment_memo_data: Optional[dict] = None
+        self,
+        baseline: dict,
+        charity_bundle: Any,
+        investment_memo_data: Optional[dict] = None,
+        metrics: Optional[CharityMetrics] = None,
     ) -> str:
         """Format charity data for the prompt including investment memo sections."""
         lines = ["## Charity Information\n"]
@@ -895,10 +899,15 @@ class RichNarrativeGenerator:
                 lines.append("**Financials:**")
                 if fin.total_revenue:
                     lines.append(f"- Revenue: ${fin.total_revenue:,.0f}")
-                if fin.program_expense_ratio is not None:
-                    lines.append(f"- Program Expense Ratio: {fin.program_expense_ratio * 100:.1f}%")
-                    # Flag if ratio is suspiciously low
-                    if fin.program_expense_ratio < 0.1:
+                from baseline import program_ratio_and_label
+
+                _ratio, _ratio_label = program_ratio_and_label(metrics or fin)
+                if _ratio is not None:
+                    lines.append(f"- {_ratio_label}: {_ratio * 100:.1f}%")
+                    # Flag if ratio is suspiciously low. Tests the figure we are
+                    # actually publishing, not the filed one -- which may be
+                    # None here now that the ratio can come from `metrics`.
+                    if _ratio < 0.1:
                         lines.append(
                             "  ⚠️ WARNING: Program expense ratio is very low - expense breakdown may be incomplete"
                         )
@@ -913,9 +922,13 @@ class RichNarrativeGenerator:
                 )
                 if fin.total_revenue:
                     lines.append(f"- Total Revenue: ${fin.total_revenue:,.0f} (use this exact amount)")
-                if fin.program_expense_ratio is not None:
+                # The label travels with the number here too. This line says
+                # "use this exact percentage everywhere", so naming a
+                # GIK-adjusted figure as the plain ratio propagates the
+                # misstatement into every field the model writes.
+                if _ratio is not None:
                     lines.append(
-                        f"- Program Expense Ratio: {fin.program_expense_ratio * 100:.1f}% (use this exact percentage everywhere)"
+                        f"- {_ratio_label}: {_ratio * 100:.1f}% (use this exact percentage everywhere)"
                     )
                 if hasattr(fin, "working_capital_ratio") and fin.working_capital_ratio is not None:
                     lines.append(f"- Working Capital: {fin.working_capital_ratio:.1f} months (use this exact value)")

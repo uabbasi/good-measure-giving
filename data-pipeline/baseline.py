@@ -745,6 +745,31 @@ def _effective_program_ratio(metrics: "CharityMetrics") -> float | None:
     return filed
 
 
+_PLAIN_RATIO_LABEL = "Program Expense Ratio"
+_ADJUSTED_RATIO_LABEL = "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)"
+
+
+def program_ratio_and_label(metrics: Any) -> tuple[float | None, str]:
+    """The program ratio we stand behind, together with what to call it.
+
+    The label travels with the number. Handing over a GIK-adjusted figure still
+    labelled "Program Expense Ratio" just relocates the misstatement, which the
+    score judge caught: "presenting the cash-adjusted ratio as the general
+    'program expense ratio' without qualification is misleading."
+
+    Shared rather than inline because being inline is what let the two prompt
+    paths drift. baseline.py computed the pair correctly; the rich generator
+    hardcoded the plain label next to "use this exact percentage everywhere"
+    and was handed the FILED ratio, so United Muslim Relief's 97.45% and 47.5%
+    both reached the model under near-identical names and 20 of 169 published
+    pages ended up carrying both labels.
+    """
+    effective = _effective_program_ratio(metrics)
+    filed = getattr(metrics, "program_expense_ratio", None)
+    substituted = effective is not None and filed is not None and effective != filed
+    return effective, (_ADJUSTED_RATIO_LABEL if substituted else _PLAIN_RATIO_LABEL)
+
+
 def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: int, sources_list: str) -> dict:
     """Build the .format() kwargs for the baseline_narrative prompt template.
 
@@ -752,18 +777,11 @@ def _baseline_prompt_kwargs(metrics: CharityMetrics, scores: Any, num_sources: i
     (drift-guarded by tests/test_baseline_prompt.py).
     """
     revenue_str = f"${metrics.total_revenue:,.0f}" if metrics.total_revenue else "N/A"
-    _eff_ratio = _effective_program_ratio(metrics)
+    # One label per number, shared with the rich generator — see
+    # program_ratio_and_label. Computing it inline here is what let that second
+    # path drift onto the plain label with the wrong figure.
+    _eff_ratio, ratio_label = program_ratio_and_label(metrics)
     ratio_str = f"{_eff_ratio:.1%}" if _eff_ratio else "N/A"
-    # The label travels with the number. Handing over a GIK-adjusted figure still
-    # labelled "Program Expense Ratio" just relocates the misstatement, which the
-    # score judge caught: "presenting the cash-adjusted ratio as the general
-    # 'program expense ratio' without qualification is misleading."
-    _filed_ratio = getattr(metrics, "program_expense_ratio", None)
-    ratio_label = (
-        "Cash-Adjusted Program Expense Ratio (gifts-in-kind excluded)"
-        if _eff_ratio is not None and _filed_ratio is not None and _eff_ratio != _filed_ratio
-        else "Program Expense Ratio"
-    )
     cn_score_str = f"{round(metrics.cn_overall_score, 1)}/100" if metrics.cn_overall_score else "N/A"
     programs_str = ", ".join(metrics.programs[:3]) if metrics.programs else "Not available"
     working_capital_str = f"{metrics.working_capital_ratio:.1f} months" if metrics.working_capital_ratio else "N/A"
