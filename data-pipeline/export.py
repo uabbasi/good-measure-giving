@@ -1320,6 +1320,39 @@ def _normalize_score_details_zakat_sources(
 _STALE_ASNAF_VALUES = {"amil", "muallaf"}
 
 
+_ASNAF_TAG_VALUES = {"fuqara", "masakin", "fisabilillah", "muallaf", "riqab", "gharimin"}
+
+
+def _asnaf_from_cause_tags(charity_data: dict | None) -> list[str] | None:
+    """The asnaf a charity serves, taken from the tags /browse filters on.
+
+    Same source as the browse facet (asnafKeysFromCauseTags), so the detail page
+    and the filter always agree. None rather than [] when there are none, since
+    the frontend types this `string[] | null` and treats absence as "unknown"
+    rather than "serves no category".
+    """
+    tags = (charity_data or {}).get("cause_tags") or []
+    found = sorted({str(t).lower() for t in tags} & _ASNAF_TAG_VALUES)
+    return found or None
+
+
+def _publishable_asnaf(classification: Any) -> str | None:
+    """An asnaf label, unless it is one the old substring matcher corrupted.
+
+    Narrow on purpose. Only 'amil' and 'muallaf' were materially wrong -- 'amil'
+    matched inside 'Family' and the loose 'muallaf' patterns over-fired. Every
+    other stored value (fuqara, fi_sabilillah, masakin, ibn_sabil, riqab) is
+    publishable and was only ever withheld because the suppression was written
+    as a blanket null rather than a filter.
+
+    Delete this once the 21 affected charities are re-baselined; the fixed
+    matcher already produces the right answer, the stored rows just predate it.
+    """
+    if not isinstance(classification, str):
+        return None
+    return None if classification.lower() in _STALE_ASNAF_VALUES else classification
+
+
 def _sanitize_stale_asnaf(amal_evaluation: dict[str, Any]) -> None:
     """Null stale pre-fix asnaf labels at the export boundary (DB untouched).
 
@@ -1816,9 +1849,22 @@ def build_charity_summary(
         # Derived from the public GMG score — baseline hardcodes impact_tier='AVERAGE'. [#8]
         "impactTier": _derive_impact_tier(_public_amal_score(evaluation, charity_data)),
         "confidenceTier": _normalize_confidence_tier(evaluation.get("confidence_tier")) if evaluation else None,
-        # Suppressed to match committed data: the asnaf matcher has a substring bug
-        # ('amil' ⊂ 'family'). Ship null until that's fixed + re-baselined. [#8]
-        "zakatClassification": None,
+        # Publish the classification unless it is one of the two values the old
+        # substring matcher corrupted. That matcher is fixed (ZakatScorer word-
+        # boundary matches and takes the highest-hit category), but the corpus
+        # has not been re-baselined, so 17 rows still read 'amil' from 'amil' ⊂
+        # 'Family' -- The Family & Youth Institute, Palestine Children's Relief
+        # Fund and World Central Kitchen among them. Re-running the fixed
+        # matcher over the stored text turns 17 of 17 'amil' rows to None.
+        #
+        # The blanket null this replaces suppressed all 96 stored
+        # classifications to hide those 21, so 75 good values (fuqara 38,
+        # fi_sabilillah 25, masakin 5, ibn_sabil 5, riqab 2) never reached a
+        # donor. Suppress the stale set, publish the rest; drop the guard
+        # entirely once those 21 are re-baselined.
+        "zakatClassification": _publishable_asnaf(
+            evaluation.get("zakat_classification") if evaluation else None
+        ),
         "amalScore": _public_amal_score(evaluation, charity_data),
         "walletTag": evaluation.get("wallet_tag") if evaluation else None,
         # Pillar scores for methodology visualization (impact/50, alignment/50, dataConfidence 0-1)
@@ -1842,11 +1888,15 @@ def build_charity_summary(
         "scoreSummary": _public_score_summary(evaluation, charity_data),
         # Rubric archetype used for Impact weighting (v5.0.0+)
         "rubricArchetype": _extract_rubric_archetype(evaluation),
-        # Asnaf categories for future filtering
-        # Suppressed with zakatClassification to match committed (asnaf substring bug). [#8]
-        "asnafServed": None
-        if charity_data
-        else None,
+        # Asnaf categories, sourced from the same cause_tags the /browse asnaf
+        # facet filters on, so the detail page and the filter cannot disagree.
+        #
+        # This replaces a blanket null that read `None if charity_data else
+        # None` -- a no-op ternary suppressing a field that was empty anyway:
+        # it drew from metrics_json.zakat_categories_served, which synthesize
+        # never persists (0 of 169 populated). cause_tags carries the asnaf for
+        # 95 of 169, which is the data a donor is actually filtered by.
+        "asnafServed": _asnaf_from_cause_tags(charity_data),
         "ui_signals_v1": ui_signals_v1,
     }
 
