@@ -42,13 +42,13 @@
     "programExpenses": 0,
     "adminExpenses": 0,
     "fundraisingExpenses": 147133,
-    "programExpenseRatio": "0.0000",
+    "programExpenseRatio": null,
     "fiscalYear": 2024,
     "dataSource": "charity_navigator",
     "totalAssets": 15291521,
     "totalLiabilities": 32742,
     "netAssets": 15258779,
-    "workingCapitalMonths": "392.90",
+    "workingCapitalMonths": 392.9,
     "noncashRatio": null,
     "cashAdjustedProgramRatio": null,
     "domesticBurnRate": null
@@ -96,7 +96,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-17T05:57:33.331871+00:00",
+        "timestamp": "2026-08-27T03:12:05.483055+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -134,12 +134,6 @@
       "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091",
       "timestamp": "2026-08-16T22:57:14",
       "value": "Q33"
-    },
-    "program_expense_ratio": {
-      "source_name": "Charity Navigator",
-      "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
-      "value": 0
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
@@ -252,40 +246,6 @@
         "other_fiscal_year": 2024,
         "other_source": "charity_navigator",
         "reason": "derived_from_a_different_filing_year"
-      }
-    },
-    {
-      "type": "high_fundraising_ratio",
-      "severity": "high",
-      "headline": "Fundraising costs are 100% of total expenses",
-      "detail": "High fundraising spend reduces funds available for programs.",
-      "data_points": {
-        "fundraising_expense_ratio": 1,
-        "fundraising_expenses": 147133,
-        "total_expenses": 147133
-      }
-    },
-    {
-      "type": "ceo_comp_excessive",
-      "severity": "medium",
-      "headline": "CEO compensation is 6.1% of revenue ($146,530 on $2,405,280)",
-      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
-      "data_points": {
-        "ceo_compensation": 146530,
-        "comp_ratio": 0.0609,
-        "threshold": 0.05,
-        "total_revenue": 2405280
-      }
-    },
-    {
-      "type": "implausible_cpb",
-      "severity": "medium",
-      "headline": "Cost per beneficiary is $0.59 \u2014 implausibly low",
-      "detail": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted.",
-      "data_points": {
-        "beneficiaries_served_annually": 248657,
-        "cost_per_beneficiary": 0.59,
-        "total_expenses": 147133
       }
     }
   ],

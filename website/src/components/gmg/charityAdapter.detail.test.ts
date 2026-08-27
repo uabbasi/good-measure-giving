@@ -11,10 +11,15 @@ const dir = path.resolve(__dirname, '../../../data/charities');
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
 const load = (f: string) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
 const all = () => files.map((f) => adaptCharity(load(f)));
+// The corpus size, never a literal. These assertions mean "every charity",
+// and the count moves whenever a charity is published or withheld -- it went
+// 166 -> 168 detail files when four blocked charities were re-judged and
+// published. Composition itself is snapshotted in corpusComposition.test.ts.
+const EVERY = files.length;
 
 describe('adaptCharity detail structures', () => {
   it('exposes an evidence grade for every charity', () => {
-    expect(all().filter((c) => c.evidence.grade !== null).length).toBe(166);
+    expect(all().filter((c) => c.evidence.grade !== null).length).toBe(EVERY);
   });
 
   it('exposes organizational capacity with independent per-field guards', () => {
@@ -31,21 +36,21 @@ describe('adaptCharity detail structures', () => {
 
   it('exposes peer comparison for every charity and peer medians where present', () => {
     const a = all();
-    expect(a.filter((c) => c.peers.differentiator !== '').length).toBe(166);
+    expect(a.filter((c) => c.peers.differentiator !== '').length).toBe(EVERY);
     expect(a.filter((c) => c.peers.programRatioMedian !== null).length).toBeGreaterThanOrEqual(130);
   });
 
   it('exposes BBB statuses always and a review link only when one exists', () => {
     const a = all();
-    expect(a.filter((c) => c.bbb.summary !== '').length).toBe(166);
+    expect(a.filter((c) => c.bbb.summary !== '').length).toBe(EVERY);
     const linked = a.filter((c) => c.bbb.reviewUrl !== null);
     expect(linked.length).toBeGreaterThanOrEqual(40);
-    expect(linked.length).toBeLessThan(166);
+    expect(linked.length).toBeLessThan(EVERY);
   });
 
   it('splits case-against into a public summary and gated reasoning', () => {
     const a = all();
-    expect(a.filter((c) => c.caseAgainst !== '').length).toBe(166);
+    expect(a.filter((c) => c.caseAgainst !== '').length).toBe(EVERY);
     expect(a.filter((c) => c.caseAgainstFactors.length > 0).length).toBeGreaterThanOrEqual(150);
   });
 
@@ -76,11 +81,11 @@ describe('adaptCharity detail structures', () => {
     const a = all();
     const withRoot = a.filter((c) => c.theoryOfChange !== null);
     expect(withRoot.length).toBeGreaterThanOrEqual(110);
-    // evidence.theoryOfChange is 166/166 — if root were ever aliased to it,
-    // this count would also jump to 166. A gap here is what proves the two
+    // evidence.theoryOfChange is populated for every charity — if root were
+    // ever aliased to it, this count would jump to match. A gap here is what proves the two
     // fields have genuinely different population, not just different names.
-    expect(withRoot.length).toBeLessThan(166);
-    expect(a.filter((c) => c.evidence.theoryOfChange !== '').length).toBe(166);
+    expect(withRoot.length).toBeLessThan(EVERY);
+    expect(a.filter((c) => c.evidence.theoryOfChange !== '').length).toBe(EVERY);
     // Population differing isn't enough on its own — assert the two fields
     // actually carry different text for at least one charity where both exist.
     const bothPresent = withRoot.filter((c) => c.evidence.theoryOfChange !== '');
@@ -88,7 +93,7 @@ describe('adaptCharity detail structures', () => {
   });
 
   // `ideal_donor_profile.not_ideal_for` is exported as a single prose string
-  // (confirmed 166/166 in the corpus, never an array). A naive strList()
+  // (confirmed corpus-wide, never an array). A naive strList()
   // mapping silently discards it every time, which the "tolerates a charity
   // with no evaluation" test below would NOT catch, since it only checks the
   // empty case. This asserts the populated case actually populates.
