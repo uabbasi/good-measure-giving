@@ -1115,6 +1115,43 @@ def detect_cause_tags(
     return sorted(tags)
 
 
+def carry_forward_asnaf_tags(
+    new_tags: list[str] | None, prior_tags: list[str] | None
+) -> tuple[list[str], list[str]]:
+    """Keep asnaf tags a run failed to rediscover. Returns (tags, restored).
+
+    Asnaf tags come from the DISCOVER phase --
+    discovered_profile["zakat"]["zakat_categories_served"] -- which is an agent
+    search and answers differently run to run. detect_cause_tags is a
+    deterministic filter over whatever that hands it, so an empty discovery
+    silently produced an empty asnaf set and the previous answer was overwritten
+    with nothing.
+
+    The v6.0.0 regen did exactly that to 15 charities. Palestine Children's
+    Relief Fund, IRUSA Waqf, Maristan and others lost every asnaf tag and
+    dropped out of every Zakat asnaf facet on /browse, with no error and no
+    empty state -- just shorter lists. Regenerating IRUSA Waqf afterwards
+    restored all four of its tags, which is what proves the tags were still
+    findable and the loss was a bad run rather than a decision.
+
+    Losing a known tag is a downgrade, and this pipeline already refuses
+    downgrades: apply_regression_guard restores financial fields that recompute
+    non-null -> null, and the raw layer carries content forward rather than let
+    a thin re-observation overwrite a good one. This is the same rule for the
+    one field where a silent loss is directly donor-visible -- a zakat donor
+    filtering on "fuqara" simply stops being shown the charity.
+
+    Deliberately narrow. Only asnaf tags are carried; region, intervention and
+    identity tags derive from geographic_coverage and mission text rather than
+    from agent discovery, so their movement is usually a real re-derivation and
+    pinning them would freeze genuine corrections.
+    """
+    kept = {str(t).lower() for t in (new_tags or [])}
+    prior = {str(t).lower() for t in (prior_tags or [])}
+    restored = sorted((prior & ZAKAT_ASNAF_TAGS) - kept)
+    return sorted(kept | set(restored)), restored
+
+
 def detect_evaluation_track(
     founded_year: int | None,
     primary_category: str | None,
@@ -2348,6 +2385,23 @@ def synthesize_charity(
             f"refused {len(refused)}: {refused}"
         )
     result["regressions"] = regression_flags
+
+    # Same non-downgrade rule, applied to asnaf tags. They come from the DISCOVER
+    # phase, which answers differently run to run, so an empty discovery used to
+    # overwrite a good answer with nothing -- silently, since a shorter facet list
+    # raises no error. That cost 15 charities every asnaf tag in the v6.0.0 run.
+    # Runs here rather than at the detect_cause_tags call site because that is
+    # where prior_row is in scope, and this must land before metrics_json is
+    # dumped below.
+    carried, restored_asnaf = carry_forward_asnaf_tags(
+        synthesized.cause_tags, (prior_row or {}).get("cause_tags")
+    )
+    if restored_asnaf:
+        synthesized.cause_tags = carried
+        logging.getLogger(__name__).warning(
+            f"{ein}: discovery lost {len(restored_asnaf)} asnaf tag(s), carried forward: {restored_asnaf}"
+        )
+    result["asnaf_carried_forward"] = restored_asnaf
 
     # =========================================================================
     # Persist full CharityMetrics blob (single source of truth for baseline)
