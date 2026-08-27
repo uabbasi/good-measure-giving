@@ -1,0 +1,10 @@
+# Cloudflare Pages / Workers static-asset headers.
+# Rules here override the platform default of "max-age=0, must-revalidate".
+
+# Vite writes every JS/CSS/asset bundle under /assets/ with a content hash in
+# the filename, so a given URL can never change contents. Cache it forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Everything else — HTML, /data/*.json, robots.txt, sitemap.xml, icons — keeps
+# the revalidate-on-request default so a deploy is visible immediately.
