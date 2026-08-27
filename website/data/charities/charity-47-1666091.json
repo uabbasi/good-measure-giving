@@ -82,22 +82,22 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-16 22:58:39",
+  "lastUpdated": "2026-08-26 20:45:27",
   "sourceAttribution": {
     "admin_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 0
     },
     "beneficiaries_served_annually": {
       "method": "direct",
       "semantics": {
-        "category": "annual_people_served",
-        "confident": true,
+        "category": "other",
+        "confident": false,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-27T03:12:05.483055+00:00",
-        "verified": true
+        "timestamp": "2026-08-27T03:44:13.905821+00:00",
+        "verified": false
       },
       "source_name": "Charity Website",
       "source_path": "website_profile.beneficiaries_served",
@@ -107,7 +107,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://irusa.org/faqs/",
+      "source_url": "https://irusa.org/zakat-policy/",
       "timestamp": "2026-08-16T22:08:12",
       "value": false
     },
@@ -120,7 +120,7 @@
     "fundraising_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 147133
     },
     "has_audited_financials": {
@@ -132,25 +132,25 @@
     "ntee_code": {
       "source_name": "ProPublica Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": "Q33"
     },
     "program_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 0
     },
     "total_expenses": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 147133
     },
     "total_revenue": {
       "source_name": "Charity Navigator",
       "source_url": "https://www.charitynavigator.org/ein/471666091#financials",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 2405280
     },
     "working_capital_months": {
@@ -162,7 +162,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091",
-      "timestamp": "2026-08-16T22:57:14",
+      "timestamp": "2026-08-26T20:43:58",
       "value": 392.9
     }
   },
@@ -174,8 +174,12 @@
   "causeTags": [
     "afghanistan",
     "faith-based",
+    "fisabilillah",
+    "fuqara",
     "lebanon",
     "long-term-development",
+    "masakin",
+    "muallaf",
     "muslim-led",
     "pakistan",
     "palestine",
@@ -192,7 +196,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 1993,
-  "scoreSummary": "IRUSA Waqf shows good alignment and moderate impact (significant risk deductions applied).",
+  "scoreSummary": "IRUSA Waqf shows good alignment and limited impact (minor risk deductions applied).",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -204,9 +208,8 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": 1,
+    "thirdPartyEvaluated": null,
     "evaluationSources": [
-      "Charity Navigator",
       "3-Star Rating (Charity Navigator)"
     ],
     "receivesFoundationGrants": null
@@ -220,9 +223,9 @@
     "assessment_label": "Context Dependent",
     "archetype_code": "ASSET_CREATION",
     "archetype_label": "Asset Creator",
-    "evidence_stage": "Established",
+    "evidence_stage": "Building",
     "signal_states": {
-      "evidence": "Strong",
+      "evidence": "Limited",
       "financial_health": "Limited",
       "donor_fit": "Moderate",
       "risk": "Limited"
@@ -247,19 +250,53 @@
         "other_source": "charity_navigator",
         "reason": "derived_from_a_different_filing_year"
       }
+    },
+    {
+      "type": "high_fundraising_ratio",
+      "severity": "high",
+      "headline": "Fundraising costs are 100% of total expenses",
+      "detail": "High fundraising spend reduces funds available for programs.",
+      "data_points": {
+        "fundraising_expense_ratio": 1,
+        "fundraising_expenses": 147133,
+        "total_expenses": 147133
+      }
+    },
+    {
+      "type": "ceo_comp_excessive",
+      "severity": "medium",
+      "headline": "CEO compensation is 6.1% of revenue ($146,530 on $2,405,280)",
+      "detail": "For orgs with revenue <$5M, CEO pay above 5% of revenue warrants scrutiny.",
+      "data_points": {
+        "ceo_compensation": 146530,
+        "comp_ratio": 0.0609,
+        "threshold": 0.05,
+        "total_revenue": 2405280
+      }
+    },
+    {
+      "type": "implausible_cpb",
+      "severity": "medium",
+      "headline": "Cost per beneficiary is $0.59 \u2014 implausibly low",
+      "detail": "A cost below $1/beneficiary usually means beneficiary counts are inflated or double-counted.",
+      "data_points": {
+        "beneficiaries_served_annually": 248657,
+        "cost_per_beneficiary": 0.59,
+        "total_expenses": 147133
+      }
     }
   ],
   "amalEvaluation": {
     "charity_ein": "47-1666091",
     "charity_name": "IRUSA Waqf",
-    "amal_score": 49,
+    "amal_score": 46,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-01-25 20:31:25",
     "rubric_version": "6.0.0",
     "confidence_scores": {
       "alignment": 30,
       "data_confidence": 0.6,
-      "impact": 26
+      "impact": 18
     },
     "score_details": {
       "alignment": {
@@ -348,7 +385,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 0%",
+            "evidence": "Program expense ratio: unknown",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -357,16 +394,16 @@
             "status": "missing"
           },
           {
-            "evidence": "Evidence & outcomes: VERIFIED",
-            "improvement_suggestion": null,
-            "improvement_value": 0,
+            "evidence": "Evidence & outcomes: REPORTED",
+            "improvement_suggestion": "Seek external evaluation or track outcomes over at least 3 years.",
+            "improvement_value": 6,
             "name": "Evidence & Outcomes",
             "possible": 10,
-            "scored": 10,
-            "status": "full"
+            "scored": 2,
+            "status": "missing"
           },
           {
-            "evidence": "Theory of change: STRONG",
+            "evidence": "Theory of change: CLEAR",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Theory of Change",
@@ -386,33 +423,27 @@
         ],
         "cost_per_beneficiary": 0.5917106697177236,
         "impact_design_categories": [],
-        "rationale": "$0.59/beneficiary; Impact 26/50",
+        "rationale": "$0.59/beneficiary; Impact 18/50",
         "rubric_archetype": "MULTIPLIER",
-        "score": 26
+        "score": 18
       },
       "judge_issues": [
         {
-          "field": "citation_5",
+          "field": "all_citations",
           "judge": "citation",
-          "message": "URL unreachable: HTTP 403",
+          "message": "Could not confirm total revenue of $2,405,280 and 100% fundraising expenses from the provided text.",
           "severity": "warning"
         },
         {
-          "field": "citation_3",
+          "field": "all_citations",
           "judge": "citation",
-          "message": "Could not fully verify specific claims about emergency response and long-term sustainability from the donation page content.",
+          "message": "Could not fully confirm the exact wording about emergency response programs from the provided donation page text.",
           "severity": "warning"
         },
         {
-          "field": "citation_4",
-          "judge": "citation",
-          "message": "Could not confirm detailed contribution methods beyond standard credit card and direct debit forms.",
-          "severity": "warning"
-        },
-        {
-          "field": "baseline_narrative.dimension_explanations.impact",
-          "judge": "score",
-          "message": "Discrepancy in fundraising efficiency metrics: the baseline narrative claims the organization spent $0.20 to raise $1, whereas the rich narrative states it spent $0.84 to raise every dollar.",
+          "field": "financial.program_expense_ratio",
+          "judge": "data_completeness",
+          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
           "severity": "warning"
         },
         {
@@ -422,9 +453,9 @@
           "severity": "info"
         },
         {
-          "field": "discovered.evaluations.confidence",
+          "field": "discovered.zakat.confidence",
           "judge": "discover_quality",
-          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "message": "Low confidence (0.50) for zakat discovery (threshold: 0.75)",
           "severity": "info"
         },
         {
@@ -470,9 +501,9 @@
           "severity": "info"
         }
       ],
-      "risk_deduction": -7,
+      "risk_deduction": -2,
       "risks": {
-        "overall_risk_level": "ELEVATED",
+        "overall_risk_level": "MODERATE",
         "risk_summary": "Key concern: Fundraising costs are 100% of total expenses",
         "risks": [
           {
@@ -497,240 +528,278 @@
             "severity": "medium"
           }
         ],
-        "total_deduction": -7
+        "total_deduction": -2
       },
-      "score_summary": "IRUSA Waqf shows good alignment and moderate impact (significant risk deductions applied).",
+      "score_summary": "IRUSA Waqf shows good alignment and limited impact (minor risk deductions applied).",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://irusa.org/faqs/)",
+        "claim_evidence": "Organization is in zakat denylist (partners but doesn't collect directly) (Source: https://irusa.org/zakat-policy/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization reported total revenue of $2,405,280 and a fundraising efficiency of $0.20 per $1 raised.",
+          "claim": "The organization reported a cost per beneficiary of $0.59.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/471666091#financials"
         },
         {
-          "claim": "Financial data from FY2024 shows fundraising costs were 100% of expenses and the CEO was paid $146,530.",
-          "id": "[2]",
+          "claim": "In FY2024, the organization reported total revenue of $2,405,280 and 100% of expenses were for fundraising.",
+          "id": "[3]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
         },
         {
-          "claim": "The charity focuses on emergency response and long-term sustainability through Islamic giving programs.",
-          "id": "[3]",
-          "source_name": "Charity Website - Donate",
-          "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
-        },
-        {
-          "claim": "Donors can contribute through various methods to support these ongoing charitable efforts.",
+          "claim": "The charity focuses on building a pool of capital to fund emergency response and Islamic giving programs.",
           "id": "[4]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
         },
         {
-          "claim": "The organization has a track record of supporting underserved communities.",
+          "claim": "The charity aligns with donors interested in long-term endowment models.",
           "id": "[5]",
-          "source_name": "Charity Website - Volunteer",
-          "source_url": "https://irusa.org/"
+          "source_name": "Charity Website - Donate",
+          "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by the fact that all reported spending currently goes toward fundraising rather than direct programs. While it has a massive reserve of working capital, the high executive pay relative to revenue and unusual impact data suggest a need for better financial balance.",
+      "amal_score_rationale": "The charity's assessment is limited by high overhead costs and the fact that all reported spending went toward fundraising rather than direct programs in the most recent fiscal year. While it has significant cash reserves, the current lack of program spending and high executive pay relative to revenue are notable concerns.",
       "areas_for_improvement": [
         "Fundraising costs accounted for 100% of total expenses in FY2024",
         "CEO compensation represents 6.1% of total revenue",
-        "Reported cost per beneficiary of $0.59 is unusually low for the sector"
+        "Reported cost per beneficiary of $0.59 is unusually low and lacks detailed verification"
       ],
       "dimension_explanations": {
-        "alignment": "This charity offers a high fit for Muslim donors looking to give sadaqah for religious and cultural causes [3]. It has a solid track record of supporting underserved communities through its relationship with Islamic Relief USA [5].",
-        "impact": "The organization shows strong evidence of its program goals and governance, but its financial health is impacted by spending choices [2]. In FY2024, it spent $0.20 to raise every $1, and its reported cost per beneficiary was $0.59 [1][2]."
+        "alignment": "The charity aligns with donors interested in long-term endowment models to support humanitarian causes [4]. It focuses on emergency response and Islamic giving, though its current track record is primarily focused on building capital for future use [5].",
+        "impact": "In FY2024, the organization reported a cost per beneficiary of $0.59, though this figure lacks external verification [1]. Financial records show that fundraising efficiency was $0.20 per $1 raised, but 100% of the year's expenses were classified as fundraising costs rather than program services [3]."
       },
-      "headline": "IRUSA Waqf manages an endowment to support long-term humanitarian aid through sadaqah donations.",
+      "headline": "IRUSA Waqf serves as an endowment fund to support the long-term work of Islamic Relief USA.",
       "strengths": [
         "Maintains a very high level of working capital at 392.9 months",
-        "Clear theory of change and evidence of program outcomes"
+        "Established a clear theory of change for long-term sustainability"
       ],
-      "summary": "In FY2024, the organization reported total revenue of $2,405,280 to build a permanent pool of capital for Islamic Relief USA [1][2]. The charity focuses on emergency response and long-term sustainability through Islamic giving programs [3]. Donors can contribute through various methods to support these ongoing charitable efforts [4]."
+      "summary": "In FY2024, the organization reported total revenue of $2,405,280 [3]. The charity focuses on building a pool of capital to fund emergency response and Islamic giving programs over time [4]."
     },
     "rich_narrative": {
       "all_citations": [
         {
           "access_date": "2026-01-09",
-          "claim": "program expense ratio is 0%",
-          "confidence": 0.95,
+          "claim": "392.9 months of working capital",
+          "confidence": 0.9,
           "id": "[1]",
-          "quote": "Program Expense Ratio: 0.0%",
-          "source_name": "Charity Navigator - Profile",
+          "quote": "Working capital: 392.9 months",
+          "source_name": "Charity Navigator Metadata",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/471666091#financials"
         },
         {
           "access_date": "2026-01-09",
+          "claim": "",
+          "confidence": 0.9,
+          "id": "[2]",
+          "quote": "Program information",
+          "source_name": "Charity Website - Zakat",
+          "source_type": "website",
+          "source_url": "https://irusa.org/zakat-policy/"
+        },
+        {
+          "access_date": "2026-01-09",
           "claim": "total revenue of $2,405,280",
           "confidence": 1,
-          "id": "[2]",
-          "quote": "Total Revenue: $2,405,280",
+          "id": "[3]",
+          "quote": "Total revenue: $2,405,280",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/471666091"
         },
         {
           "access_date": "2026-01-09",
-          "claim": "sadaqah donation pathways",
-          "confidence": 0.9,
-          "id": "[3]",
-          "quote": "Donate sadaqah to the waqf endowment",
+          "claim": "building a pool of capital",
+          "confidence": 0.95,
+          "id": "[4]",
+          "quote": "ESTABLISH A POOL OF CAPITAL THAT ENSURES THE LONG-TERM SUSTAINABILITY OF IRUSA",
           "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://secure.irusa.org/donate/islamic-relief-waqf"
         }
       ],
-      "amal_score_rationale": "The charity's assessment is limited by the fact that all reported spending currently goes toward fundraising rather than direct programs. While it has a massive reserve of working capital, the high executive pay relative to revenue and unusual impact data suggest a need for better financial balance.",
+      "amal_score_rationale": "The charity's assessment is limited by high overhead costs and the fact that all reported spending went toward fundraising rather than direct programs in the most recent fiscal year. While it has significant cash reserves, the current lack of program spending and high executive pay relative to revenue are notable concerns.",
       "amal_scores": {
-        "amal_score": 49,
+        "amal_score": 46,
         "confidence_scores": {
           "alignment": 30,
           "data_confidence": 0.6,
-          "impact": 26
+          "impact": 18
         },
         "confidence_tier": "MEDIUM",
         "impact_tier": "BELOW_AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
+        "wallet_tag": ""
       },
       "areas_for_improvement": [
         {
-          "area": "Zero direct program expense ratio",
+          "area": "High fundraising expense concentration",
           "citation_ids": [
-            "[1]"
+            "[3]"
           ],
-          "context": "The filed <cite id=\"1\">program expense ratio is 0%</cite>, meaning direct charitable program distributions were not recorded in fiscal filings."
+          "context": "In FY2024, <cite id=\"3\">fundraising expenses represented 100% of reported operational costs</cite>, leaving the program expense ratio unknown."
         },
         {
-          "area": "High fundraising overhead",
+          "area": "Executive compensation ratio",
+          "citation_ids": [
+            "[3]"
+          ],
+          "context": "<cite id=\"3\">Officer compensation of $146,530</cite> represented <cite id=\"3\">6.1% of total revenue</cite>, which exceeds standard benchmarks for smaller organizations."
+        },
+        {
+          "area": "Unverified beneficiary metrics",
           "citation_ids": [
             "[1]"
           ],
-          "context": "The organization spent <cite id=\"1\">$0.84 to raise every dollar</cite> in FY2024, representing inefficient capital generation."
+          "context": "The claimed <cite id=\"1\">248,657 beneficiaries</cite> yields a $0.59 cost per beneficiary, suggesting potential double-counting or limited tracking rigor."
         }
       ],
       "bbb_assessment": {
         "audit_type": "none",
-        "citation_ids": [],
-        "effectiveness_status": "UNREVIEWED",
-        "finances_status": "UNREVIEWED",
-        "governance_status": "UNREVIEWED",
-        "meets_all_standards": false,
-        "standards_met": 0,
-        "standards_not_met": [],
-        "summary": "Does not hold BBB Wise Giving Alliance accreditation metrics."
-      },
-      "case_against": {
         "citation_ids": [
           "[1]"
         ],
-        "mitigation_notes": "As an endowment model (waqf), capital is retained to generate long-term earnings rather than distributed immediately as annual program expenses.",
-        "risk_factors": [
-          "<cite id=\"1\">Program expense ratio is 0%</cite>",
-          "<cite id=\"1\">Fundraising efficiency is $0.20 per $1 raised</cite>"
+        "effectiveness_status": "NEEDS_IMPROVEMENT",
+        "finances_status": "NEEDS_IMPROVEMENT",
+        "governance_status": "NEEDS_IMPROVEMENT",
+        "meets_all_standards": false,
+        "standards_met": 0,
+        "standards_not_met": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
         ],
-        "summary": "Primary concerns center on spending allocation. In FY2024, the entity reported <cite id=\"1\">a 0.0% program expense ratio</cite> and <cite id=\"1\">fundraising costs equal to 0.0% of expenses</cite>."
+        "summary": "Does not meet BBB Wise Giving Alliance standards for charity accountability based on available data."
+      },
+      "case_against": {
+        "citation_ids": [
+          "[1]",
+          "[3]"
+        ],
+        "mitigation_notes": "The organization maintains significant assets to support future disbursements.",
+        "risk_factors": [
+          "<cite id=\"3\">Fundraising costs consumed 100% of FY2024 reported expenses</cite>",
+          "<cite id=\"3\">Officer compensation represented 6.1% of total revenue</cite>",
+          "<cite id=\"1\">BBB Wise Giving Alliance standards met: 0 of 20</cite>"
+        ],
+        "summary": "Limiting factors include an unknown program expense ratio and heavy fundraising expenses."
       },
       "citation_stats": {
         "by_source_type": {
           "form990": 1,
           "rating": 1,
-          "website": 1
+          "website": 2
         },
-        "high_confidence_count": 3,
-        "total_count": 3,
+        "high_confidence_count": 4,
+        "total_count": 4,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "FY2023/FY2024 filings",
+        "data_freshness": "Figures derived from FY2024 filings",
         "data_gaps": [
-          "Incomplete expense breakdown in filings"
+          "Program expense breakdown unavailable",
+          "No third-party audit published"
         ],
-        "level": "MODERATE",
-        "notes": "Data constrained by non-standard expense reporting in public filings.",
+        "level": "MEDIUM",
+        "notes": "Data includes clear asset figures but lacks breakdown of direct program expenses.",
         "score": 60,
         "sources_used": [
           "Form 990",
-          "Charity Navigator",
-          "Website"
+          "Charity Navigator profile metadata",
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 60,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "0% reported program expense ratio",
-          "Unrated on Charity Navigator"
+          "Unknown program expense ratio",
+          "Unverified beneficiary metrics",
+          "Missing audited financials"
         ],
         "ratings_last_updated": "2024-12",
-        "total_citations": 3,
+        "total_citations": 4,
         "unique_sources": 3,
         "website_last_crawled": "2025-01"
       },
       "dimension_explanations": {
         "alignment": {
           "citation_ids": [
-            "[3]"
+            "[4]"
           ],
-          "explanation": "The entity supports faith-based initiatives through <cite id=\"3\">sadaqah donation pathways</cite> linked to Islamic relief efforts.",
-          "improvement": "Expanding clear disclosures on how endowment revenues reach end beneficiaries in underserved regions would strengthen donor alignment."
+          "explanation": "The organization aligns with Muslim donor preferences by building perpetual endowment resources for humanitarian causes, operating since <cite id=\"4\">1993</cite>.",
+          "improvement": "The organization can improve alignment transparency by publishing detailed allocation reports regarding how waqf dividends fund specific programs."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[3]"
           ],
-          "explanation": "Financial disclosures reveal high overhead, where <cite id=\"1\">fundraising costs consume total expenses</cite> and officers received <cite id=\"2\">$146,530 in compensation</cite>.",
-          "improvement": "To improve credibility, the charity should publish audited expense allocations that distinguish program grants from administrative overhead."
+          "explanation": "IRUSA Waqf operates with an independent board, but lacks full evaluation metrics. <cite id=\"3\">Officer compensation reached $146,530 in FY2024</cite>, which represents <cite id=\"3\">6.1% of total revenue</cite>.",
+          "improvement": "The charity could improve credibility by publishing independent audited financial statements and establishing external outcome evaluations."
         },
         "impact": {
           "citation_ids": [
-            "[1]"
+            "[1]",
+            "[3]"
           ],
-          "explanation": "The organization recorded a <cite id=\"1\">0.0% program expense ratio in FY2024</cite>, which trails the 75% industry benchmark significantly.",
-          "improvement": "Directing funds into active program grants rather than maintaining a 0% program ratio would improve overall effectiveness."
+          "explanation": "Financial filings for FY2024 show an unknown program expense ratio, as <cite id=\"3\">100% of reported expenses were directed toward fundraising</cite>. While <cite id=\"1\">248,657 beneficiaries were reported</cite>, the resulting $0.59 per person cost lacks outcome verification.",
+          "improvement": "To raise its impact rating, the charity needs to allocate direct program expenditures from the waqf and publish multi-year outcome data."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "HUMANITARIAN",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
-        "evidence_rigor": "Grade C - Basic tracking",
+        "evidence_rigor": "Grade C - Self-reported beneficiary counts",
         "geographic_focus": [
           "United States",
           "International"
         ],
-        "giving_style": "Endowment Giving",
+        "giving_style": "Endowment / Waqf Capital Building",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": ""
       },
       "financial_deep_dive": {
         "admin_ratio": 0,
         "annual_revenue": 2405280,
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
         "cn_financial_score": null,
         "fundraising_ratio": 1,
         "industry_program_ratio": 0.75,
-        "peer_count": 37,
+        "peer_count": 35,
         "peer_program_ratio_median": 0.895,
         "program_expense_ratio": 0,
-        "reserves_months": 511.6,
+        "reserves_months": 392.9,
         "revenue_cagr_3yr": 25.7,
         "working_capital_months": 392.9,
         "yearly_financials": [
@@ -756,62 +825,66 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[2]"
+          "[3]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Funds accumulated within endowment pool",
+        "grant_strategy": "Accumulates capital to fund long-term affiliate operations.",
         "is_significant_grantmaker": false,
         "regions_served": [
+          "United States",
           "International"
         ],
         "top_recipients": [],
         "total_grants": 0
       },
-      "headline": "IRUSA Waqf manages an endowment to support long-term humanitarian aid through sadaqah donations.",
+      "headline": "IRUSA Waqf serves as an endowment fund to support the long-term work of Islamic Relief USA.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to contribute to long-term sadaqah waqf endowment principal rather than immediate field relief.",
+        "best_for_summary": "Best for donors who want to contribute long-term capital to build a permanent Islamic endowment fund.",
         "citation_ids": [
-          "[1]",
-          "[2]"
+          "[3]",
+          "[4]"
         ],
         "donor_motivations": [
-          "Value long-term Islamic endowment (waqf) capital structures",
-          "Focus on permanent principal building over immediate funding needs"
+          "Want to build legacy endowment assets for long-term institutions",
+          "Focus on institutional growth rather than immediate emergency relief spending",
+          "Prefer funding long-term sustainability frameworks"
         ],
         "giving_considerations": [
-          "In FY2024, the program expense ratio was 0% as funds were allocated toward capital accumulation and fundraising",
-          "Fundraising costs are high, requiring $0.20 per $1 raised"
+          "Current operational spending is focused on fundraising rather than direct program delivery",
+          "Program expense ratio is currently unknown in filed reports",
+          "Capital is accumulated in reserves rather than deployed immediately"
         ],
-        "not_ideal_for": "Donors seeking immediate emergency distribution, high current program expense ratios, or zakat fulfillment."
+        "not_ideal_for": "Donors seeking immediate deployment of funds for direct emergency relief."
       },
       "impact_evidence": {
         "citation_ids": [
-          "[2]"
+          "[1]",
+          "[4]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Outcome metrics are linked to general partner reporting rather than direct intervention tracking.",
+        "evidence_grade_explanation": "Grade C reflects self-reported output metrics without third-party evaluation.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "DOCUMENTED",
-        "theory_of_change_summary": "The charity builds permanent principal to generate returns that support humanitarian operations over time.",
-        "why_evidence_matters": "Clear outcome reporting ensures that capital growth translates directly into humanitarian delivery."
+        "theory_of_change_summary": "Establishes a pool of capital to ensure long-term sustainability and funding for relief programs.",
+        "why_evidence_matters": "Clear outcome evidence ensures endowment payouts create measurable real-world change."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[3]",
+          "[4]"
         ],
         "founded_year": 1993,
-        "maturity_stage": "Institution",
+        "maturity_stage": "Established",
         "revenue_growth_3yr": 25.7,
-        "room_for_funding": "MEDIUM",
-        "room_for_funding_explanation": "The organization possesses substantial assets but requires operational spending shifts to translate capital into active relief.",
+        "room_for_funding": "HIGH",
+        "room_for_funding_explanation": "As an endowment fund, additional capital increases long-term payout capacity.",
         "strategic_priorities": [
-          "Capital preservation",
-          "Endowment growth"
+          "Expand waqf principal pool",
+          "Ensure perpetual funding for core programs"
         ],
         "years_operating": 33
       },
@@ -819,14 +892,14 @@
         "board_size": 4,
         "ceo_compensation": 146530,
         "ceo_compensation_pct_revenue": 6.09,
-        "ceo_name": "Not Disclosed",
+        "ceo_name": "Executive Leadership",
         "citation_ids": [
           "[1]",
-          "[2]"
+          "[3]"
         ],
         "employees_count": 0,
         "geographic_reach": "United States and International",
-        "has_conflict_policy": true,
+        "has_conflict_policy": false,
         "has_financial_audit": false,
         "independent_board_pct": 1,
         "payroll_to_revenue_pct": 6.1,
@@ -836,23 +909,28 @@
       },
       "peer_comparison": {
         "citation_ids": [
-          "[1]"
+          "[4]"
         ],
-        "differentiator": "Maintains an exceptionally high reserve ratio, though its <cite id=\"1\">0.0% program expense ratio</cite> trails the <cite id=\"1\">89.5% peer median</cite>.",
-        "peer_group": "Humanitarian Endowment Funds",
+        "differentiator": "Functions primarily as an asset-building waqf endowment rather than a direct relief implementer.",
+        "peer_group": "Faith-based endowment and humanitarian organizations",
         "similar_orgs": [
           "Ehsaas Foundation",
-          "Abdul Sattar Edhi International Foundation"
+          "Abdul Sattar Edhi International Foundation",
+          "Muslim Foundation"
         ]
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar size and humanitarian focus",
+          "differentiator": "Focuses on direct humanitarian delivery rather than endowment growth.",
           "name": "Ehsaas Foundation"
         },
         {
-          "differentiator": "Focuses on direct emergency response delivery",
+          "differentiator": "Operates direct emergency care services.",
           "name": "Abdul Sattar Edhi International Foundation"
+        },
+        {
+          "differentiator": "Focuses on immediate community program funding.",
+          "name": "Muslim Foundation"
         }
       ],
       "strengths": [
@@ -860,24 +938,31 @@
           "citation_ids": [
             "[1]"
           ],
-          "detail": "The organization holds <cite id=\"1\">392.9 months of working capital</cite> in working capital, ensuring long-term institutional stability.",
-          "point": "Substantial reserve backing"
+          "detail": "IRUSA Waqf maintains <cite id=\"1\">392.9 months of working capital</cite>, providing significant balance sheet stability.",
+          "point": "Substantial working capital reserves"
+        },
+        {
+          "citation_ids": [
+            "[4]"
+          ],
+          "detail": "The organization maintains a <cite id=\"4\">clearly defined theory of change</cite> focused on creating sustainable endowment capital.",
+          "point": "Clear long-term theory of change"
         },
         {
           "citation_ids": [
             "[3]"
           ],
-          "detail": "Operating since <cite id=\"3\">1993</cite>, the entity maintains a long-standing structural presence to manage endowment funds.",
-          "point": "Established operational history"
+          "detail": "Filing data shows a <cite id=\"3\">three-year revenue growth rate of 25.7%</cite>, expanding total revenue to <cite id=\"3\">$2,405,280 in FY2024</cite>.",
+          "point": "Multi-year revenue expansion"
         }
       ],
       "strengths_deep_dive": [
-        "A primary operational feature is financial stability through reserve accumulation. The organization maintains <cite id=\"1\">392.9 months of working capital</cite> and reported <cite id=\"2\">$15,291,521 in total assets</cite> in FY2023. These assets are structured to build permanent capital for humanitarian programs."
+        "IRUSA Waqf demonstrates strong long-term solvency through its balance sheet. In FY2024, the entity held <cite id=\"3\">$15,291,521 in total assets</cite> with minimal liabilities of <cite id=\"3\">$32,742</cite>. This reserve profile leaves the organization with <cite id=\"1\">392.9 months of operating capital</cite>. Additionally, the organization's funding model achieved a <cite id=\"3\">25.7% three-year revenue CAGR</cite>, reaching <cite id=\"3\">$2,405,280 in total revenue</cite> in FY2024."
       ],
-      "summary": "IRUSA Waqf functions as an endowment fund designed to support <cite id=\"2\">Islamic Relief USA through long-term capital accumulation</cite>. In FY2024, the organization recorded <cite id=\"2\">total revenue of $2,405,280</cite>. The primary limiting factor for this organization is its spending allocation. According to filed records, the <cite id=\"1\">program expense ratio is 0%</cite>, while <cite id=\"1\">fundraising costs accounted for 100% of reported expenses</cite> in FY2024. The charity spends <cite id=\"1\">$0.20 per $1 raised</cite>, indicating significant fundraising overhead. On the asset side, the organization held <cite id=\"2\">$15,291,521 in total assets in FY2023</cite>, maintaining <cite id=\"1\">392.9 months of working capital</cite>. Operations trace back to its <cite id=\"3\">founding year in 1993</cite>, supporting general sadaqah endowment initiatives.",
+      "summary": "IRUSA Waqf functions as an endowment pool designed to secure long-term capital for Islamic Relief USA programs [4]. In FY2024, the organization reported <cite id=\"3\">total revenue of $2,405,280</cite>, marking a <cite id=\"3\">three-year revenue growth rate of 25.7%</cite> from prior filings. However, severe financial structure concerns limit its overall performance. For FY2024, the organization's program expense ratio is unknown, while <cite id=\"3\">fundraising costs accounted for 100% of reported expenses</cite>. This operational model resulted in a risk deduction for donor efficiency. On the balance sheet, IRUSA Waqf maintains <cite id=\"3\">$15,291,521 in total assets</cite> against <cite id=\"3\">$32,742 in total liabilities</cite>, giving it <cite id=\"1\">392.9 months of working capital</cite>. The organization states it served <cite id=\"1\">248,657 beneficiaries</cite>, yielding an unusually low reported cost per beneficiary of $0.59 that lacks third-party verification.",
       "zakat_guidance": {
         "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
+        "eligibility": ""
       }
     }
   }

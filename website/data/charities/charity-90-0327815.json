@@ -66,7 +66,7 @@
     "reports_methodology": false,
     "reports_outcome_metrics": true
   },
-  "lastUpdated": "2026-08-16 22:49:00",
+  "lastUpdated": "2026-08-26 20:49:30",
   "sourceAttribution": {
     "beneficiaries_served_annually": {
       "method": "direct",
@@ -74,7 +74,7 @@
         "category": "annual_people_served",
         "confident": true,
         "model": "gemini-3.5-flash-lite",
-        "timestamp": "2026-08-27T03:12:30.482441+00:00",
+        "timestamp": "2026-08-27T03:48:28.932516+00:00",
         "verified": true
       },
       "source_name": "Charity Website",
@@ -85,7 +85,7 @@
     },
     "claims_zakat_eligible": {
       "source_name": "Charity Website",
-      "source_url": "https://www.morocco-foundation.org/",
+      "source_url": "https://www.morocco-foundation.org/donate/",
       "timestamp": "2026-08-16T21:48:43",
       "value": false
     },
@@ -120,7 +120,7 @@
       "fiscal_year": 2023,
       "source_name": "Calculated from Form 990",
       "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815",
-      "timestamp": "2026-08-16T22:47:43",
+      "timestamp": "2026-08-26T20:48:09",
       "value": 8.5
     }
   },
@@ -147,7 +147,7 @@
   "grantsData": null,
   "evaluationTrack": "STANDARD",
   "foundedYear": 2004,
-  "scoreSummary": "The Morocco Foundation shows good alignment and good impact (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+  "scoreSummary": "The Morocco Foundation shows good alignment and good impact. Evidence score may reflect limited reporting capacity, not program weakness.",
   "form990Exempt": 0,
   "form990ExemptReason": "",
   "noFilings": false,
@@ -159,7 +159,7 @@
       "category": "annual_people_served",
       "confident": true,
       "model": "gemini-3.5-flash-lite",
-      "timestamp": "2026-08-27T03:12:30.482441+00:00",
+      "timestamp": "2026-08-27T03:48:28.932516+00:00",
       "verified": true
     },
     "source_name": "Charity Website",
@@ -173,9 +173,9 @@
   "evidenceQuality": {
     "hasOutcomeMethodology": null,
     "hasMultiYearMetrics": null,
-    "thirdPartyEvaluated": null,
+    "thirdPartyEvaluated": 0,
     "evaluationSources": [
-      "Best Prize in Education (Moroccan Social Innovation Awards / WeXchange Forum)"
+      "UNCORROBORATED: Candid/GuideStar"
     ],
     "receivesFoundationGrants": null
   },
@@ -201,6 +201,36 @@
     "fallback_reasons": null
   },
   "keyConcerns": [
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Sources disagree on total revenue for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $134,320 from the IRS filing while Charity Navigator reports $145,320 for the same year. We publish the filing.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 134320,
+        "field": "total_revenue",
+        "fiscal_year": 2023,
+        "other_source": "charity_navigator",
+        "other_value": 145320,
+        "reason": "same_fiscal_year_disagreement"
+      }
+    },
+    {
+      "type": "data_quality",
+      "severity": "low",
+      "headline": "Sources disagree on total expenses for FY2023; the Form 990 filing is shown",
+      "detail": "ProPublica reports $102,044 from the IRS filing while Charity Navigator reports $138,900 for the same year. We publish the filing.",
+      "data_points": {
+        "canonical_source": "propublica",
+        "canonical_value": 102044,
+        "field": "total_expenses",
+        "fiscal_year": 2023,
+        "other_source": "charity_navigator",
+        "other_value": 138900,
+        "reason": "same_fiscal_year_disagreement"
+      }
+    },
     {
       "type": "data_quality",
       "severity": "low",
@@ -236,7 +266,7 @@
   "amalEvaluation": {
     "charity_ein": "90-0327815",
     "charity_name": "The Morocco Foundation",
-    "amal_score": 52,
+    "amal_score": 57,
     "wallet_tag": "SADAQAH-ELIGIBLE",
     "evaluation_date": "2026-02-04 20:46:47",
     "rubric_version": "6.0.0",
@@ -332,7 +362,7 @@
             "status": "full"
           },
           {
-            "evidence": "Program expense ratio: 0%",
+            "evidence": "Program expense ratio: unknown",
             "improvement_suggestion": null,
             "improvement_value": 0,
             "name": "Program Ratio",
@@ -376,16 +406,16 @@
       },
       "judge_issues": [
         {
-          "field": "citation_3",
-          "judge": "citation",
-          "message": "The source confirms donation methods such as Wire Transfer and PayPal, but does not explicitly use the term 'sadaqah-eligible', though it is consistent with the organization's context.",
-          "severity": "info"
+          "field": "financial.program_expense_ratio",
+          "judge": "data_completeness",
+          "message": "Missing program_expense_ratio - effectiveness score may be artificially low",
+          "severity": "warning"
         },
         {
-          "field": "sadaqah_giving",
-          "judge": "factual",
-          "message": "The narrative mentions sadaqah-eligible giving, but the source data does not explicitly verify the charity's sadaqah status.",
-          "severity": "warning"
+          "field": "discovered.evaluations.confidence",
+          "judge": "discover_quality",
+          "message": "Low confidence (0.00) for evaluations discovery (threshold: 0.75)",
+          "severity": "info"
         },
         {
           "field": "discovered.outcomes.confidence",
@@ -394,107 +424,107 @@
           "severity": "info"
         },
         {
-          "field": "discovered.awards.confidence",
-          "judge": "discover_quality",
-          "message": "Low confidence (0.00) for awards discovery (threshold: 0.75)",
-          "severity": "info"
-        },
-        {
           "field": "hallucination_denylist.populations_served",
           "judge": "synthesize_quality",
           "message": "Hallucination-prone field 'populations_served' lacks cross-source corroboration",
           "severity": "info"
+        },
+        {
+          "field": "hallucination_denylist.third_party_evaluated",
+          "judge": "synthesize_quality",
+          "message": "Hallucination-prone field 'third_party_evaluated' lacks cross-source corroboration",
+          "severity": "warning"
         }
       ],
-      "risk_deduction": -5,
+      "risk_deduction": 0,
       "risks": {
-        "overall_risk_level": "ELEVATED",
+        "overall_risk_level": "LOW",
         "risk_summary": "No significant risks identified.",
         "risks": [],
-        "total_deduction": -5
+        "total_deduction": 0
       },
-      "score_summary": "The Morocco Foundation shows good alignment and good impact (minor risk deductions applied). Evidence score may reflect limited reporting capacity, not program weakness.",
+      "score_summary": "The Morocco Foundation shows good alignment and good impact. Evidence score may reflect limited reporting capacity, not program weakness.",
       "zakat": {
         "asnaf_category": null,
         "bonus_points": 0,
         "charity_claims_zakat": false,
-        "claim_evidence": "The Morocco Foundation's official website and donation pages do not explicitly mention accepting zakat donations. There are no dedicated zakat funds or campaigns mentioned.",
+        "claim_evidence": "No explicit mention of \"zakat\" on The Morocco Foundation's website or donation pages. The organization's donation page and mission statements do not refer to zakat. Mentions of \"zakat\" in search results refer to other organizations like \"Zakat Foundation of America\" or \"Zakat Foundation Morocco\", which are distinct entities. (Source: https://www.morocco-foundation.org/donate/)",
         "notes": null
       }
     },
     "baseline_narrative": {
       "all_citations": [
         {
-          "claim": "The organization operates school caravans and educational workshops to support children in remote areas.",
+          "claim": "The organization focuses on education and social aid through its ABT-MF Academy and school caravan programs.",
           "id": "[1]",
           "source_name": "Charity Navigator",
           "source_url": "https://www.charitynavigator.org/ein/900327815#financials"
         },
         {
-          "claim": "In fiscal year 2025, the foundation reported total revenue of $76,622.",
+          "claim": "In fiscal year 2025, the foundation reported total revenue of $76,622 to support its mission.",
           "id": "[2]",
           "source_name": "Form 990 (2023)",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815"
         },
         {
-          "claim": "Donors can contribute through various methods, including sadaqah-eligible giving.",
+          "claim": "Donors can contribute through various digital methods to fund these rural development projects.",
           "id": "[3]",
           "source_name": "Charity Website - Donate",
           "source_url": "https://www.morocco-foundation.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation shows a balanced profile with a clear focus on rural education, though it lacks the detailed outcome data and governance records seen in larger organizations.",
+      "amal_score_rationale": "The foundation shows a balanced profile with a very low cost to serve each person, though its overall impact is limited by its small size and lack of detailed outcome reporting.",
       "areas_for_improvement": [
-        "Limited public data regarding long-term program outcomes",
-        "Small organizational scale compared to the regional need for literacy"
+        "Limited public data regarding specific program outcomes and evidence",
+        "Small organizational scale with total revenue under $80,000"
       ],
       "dimension_explanations": {
-        "alignment": "This group is a moderate fit for Muslim donors looking to provide sadaqah to cultural and educational causes in North Africa [3]. It has a consistent track record of serving rural Morocco, though the urgency of the cause is viewed as secondary to immediate life-saving aid [1].",
-        "impact": "The charity spends about $8.15 per beneficiary, which suggests a low-cost model for its school caravans and workshops [1]. While its financial health is stable with 8.5 months of working capital, there is limited third-party evidence to verify the long-term success of its literacy programs [2]."
+        "alignment": "This group serves a specific cultural and regional need by focusing on rural Morocco [1]. While it has a clear track record of running school caravans, it lacks the broader reach or specialized religious certifications often sought by some donors [3].",
+        "impact": "The charity operates with a low cost per beneficiary of $8.15, which suggests it can reach many people with limited funds [2]. It maintains 8.5 months of working capital, showing steady financial health [1]. However, there is little third-party evidence available to prove the long-term success of its literacy workshops [2]."
       },
       "headline": "The Morocco Foundation works to reduce poverty and improve literacy in rural Moroccan communities.",
       "strengths": [
-        "Maintains 8.5 months of working capital to ensure short-term stability",
-        "Focuses on underserved rural areas through specialized school caravans"
+        "Maintains 8.5 months of working capital to ensure stable operations",
+        "Low cost per beneficiary of $8.15 for its programs"
       ],
-      "summary": "The organization operates school caravans and educational workshops to support children in remote areas [1]. In fiscal year 2025, the foundation reported total revenue of $76,622 [2]. Donors can contribute through various methods, including sadaqah-eligible giving [3]."
+      "summary": "The organization focuses on education and social aid through its ABT-MF Academy and school caravan programs [1]. In fiscal year 2025, the foundation reported total revenue of $76,622 to support its mission [2]. Donors can contribute through various digital methods to fund these rural development projects [3]."
     },
     "rich_narrative": {
       "all_citations": [
         {
-          "access_date": "2026-07-18",
-          "claim": "is not fully rated by Charity Navigator",
-          "confidence": 0.9,
+          "access_date": "2026-01-09",
+          "claim": "through its ABT-MF Academy and school caravans",
+          "confidence": 0.7,
           "id": "[1]",
-          "quote": "This organization is unrated.",
-          "source_name": "Charity Navigator",
+          "quote": "The Morocco Foundation works to reduce poverty and improve literacy",
+          "source_name": "Charity Navigator - Profile",
           "source_type": "rating",
           "source_url": "https://www.charitynavigator.org/ein/900327815#financials"
         },
         {
-          "access_date": "2026-07-18",
-          "claim": "$76,622 in total revenue in FY2025",
+          "access_date": "2026-01-09",
+          "claim": "$76,622 in total revenue reported in FY2025 filings",
           "confidence": 1,
           "id": "[2]",
-          "quote": "Total revenue: $76,622",
+          "quote": "Total Revenue: $76,622",
           "source_name": "Form 990 (2023)",
           "source_type": "form990",
           "source_url": "https://projects.propublica.org/nonprofits/organizations/900327815"
         },
         {
-          "access_date": "2026-07-18",
-          "claim": "including school caravans and educational workshops",
-          "confidence": 0.95,
+          "access_date": "2026-01-09",
+          "claim": "online donation channels",
+          "confidence": 0.8,
           "id": "[3]",
-          "quote": "School Caravans, ABT-MF Academy workshops, and rural initiatives.",
-          "source_name": "Morocco Foundation Website",
+          "quote": "Donors can contribute through various digital methods",
+          "source_name": "Charity Website - Donate",
           "source_type": "website",
           "source_url": "https://www.morocco-foundation.org/donate/"
         }
       ],
-      "amal_score_rationale": "The foundation shows a balanced profile with a clear focus on rural education, though it lacks the detailed outcome data and governance records seen in larger organizations.",
+      "amal_score_rationale": "The foundation shows a balanced profile with a very low cost to serve each person, though its overall impact is limited by its small size and lack of detailed outcome reporting.",
       "amal_scores": {
-        "amal_score": 52,
+        "amal_score": 57,
         "confidence_scores": {
           "alignment": 29,
           "data_confidence": 0.3,
@@ -502,22 +532,22 @@
         },
         "confidence_tier": "LOW",
         "impact_tier": "AVERAGE",
-        "wallet_tag": "SADAQAH-ELIGIBLE"
+        "wallet_tag": ""
       },
       "areas_for_improvement": [
         {
-          "area": "Incomplete expense reporting",
+          "area": "Limited public reporting on program expenses",
           "citation_ids": [
             "[2]"
           ],
-          "context": "The organization reported a <cite id=\"2\">program expense data unavailable in FY2025 filings</cite>, indicating severe reporting gaps regarding functional allocations."
+          "context": "Primary tax filings lack a complete financial expense ratio breakdown, hindering full public evaluation."
         },
         {
-          "area": "Limited outcome tracking",
+          "area": "Lack of third-party impact evaluations",
           "citation_ids": [
             "[1]"
           ],
-          "context": "Public filings and materials <cite id=\"1\">lack independent multi-year outcome evaluations</cite> or formalized impact tracking."
+          "context": "The organization does not publish independent evaluations or multi-year outcome tracking studies."
         }
       ],
       "bbb_assessment": {
@@ -529,19 +559,19 @@
         "meets_all_standards": false,
         "standards_met": 0,
         "standards_not_met": [],
-        "summary": "Not currently evaluated by BBB Wise Giving Alliance."
+        "summary": "The BBB Wise Giving Alliance has not formally evaluated the charity."
       },
       "case_against": {
         "citation_ids": [
           "[1]",
           "[2]"
         ],
-        "mitigation_notes": "The foundation operates on a very small scale, where formal auditing administrative costs often exceed capacity.",
+        "mitigation_notes": "The foundation maintains a 20-year operational history and significant financial reserves relative to its small budget.",
         "risk_factors": [
-          "<cite id=\"2\">Filed a program expense data unavailable in FY2025 tax forms</cite>",
-          "<cite id=\"1\">Lacks independent third-party ratings or evaluations</cite>"
+          "Missing public program ratio breakdown in standard tax filings",
+          "Lack of external impact evaluations or third-party ratings"
         ],
-        "summary": "Primary concerns stem from missing financial accounting details and low institutional transparency."
+        "summary": "Primary concerns stem from limited financial reporting and low data confidence."
       },
       "citation_stats": {
         "by_source_type": {
@@ -549,32 +579,32 @@
           "rating": 1,
           "website": 1
         },
-        "high_confidence_count": 3,
+        "high_confidence_count": 2,
         "total_count": 3,
         "unique_sources": 3
       },
       "confidence": {
-        "data_freshness": "Form 990 data from FY2023/FY2025 filings",
+        "data_freshness": "Data based on FY2025 tax filings",
         "data_gaps": [
-          "Incomplete expense breakdowns in tax filings",
-          "Unrated by major watchdog agencies"
+          "Unrated status on rating agencies",
+          "Limited outcome reporting"
         ],
         "level": "LOW",
-        "notes": "Low overall data confidence due to limited third-party verification and detailed reporting.",
+        "notes": "Data confidence is low due to limited third-party validation.",
         "score": 30,
         "sources_used": [
           "Form 990",
-          "Charity Navigator profile metadata",
-          "Charity website"
+          "Charity Navigator",
+          "Charity Website"
         ]
       },
       "data_confidence": {
         "confidence_score": 30,
         "form_990_tax_year": 2023,
         "known_gaps": [
-          "Missing functional expense breakdown",
-          "No Charity Navigator rating",
-          "Unaudited financials"
+          "Unrated by Charity Navigator",
+          "Incomplete program expense ratio in primary filings",
+          "No third-party impact evaluation"
         ],
         "ratings_last_updated": "2024-12",
         "total_citations": 3,
@@ -586,53 +616,51 @@
           "citation_ids": [
             "[3]"
           ],
-          "explanation": "Provides valuable cultural and humanitarian relief to <cite id=\"3\">underserved rural Moroccan populations</cite> via voluntary sadaqah contributions.",
-          "improvement": "Clarify donation categorizations and publish formal governance metrics."
+          "explanation": "The organization targets extreme poverty in rural Muslim communities in Morocco, though overall organizational scale remains modest.",
+          "improvement": "Clarify program reach metrics and specific regional deployment strategies on public channels."
         },
         "credibility": {
           "citation_ids": [
-            "[1]",
-            "[2]"
+            "[1]"
           ],
-          "explanation": "Credibility is constrained by low overall data confidence. The charity reported a <cite id=\"2\">program expense data unavailable in FY2025</cite> and <cite id=\"1\">is not fully rated by Charity Navigator</cite>.",
-          "improvement": "Publish complete audited financial statements and clarify functional expense allocations on public filings."
+          "explanation": "Public data availability is limited, as the organization <cite id=\"1\">is not fully rated by Charity Navigator</cite> and lacks third-party transparency seals.",
+          "improvement": "Publish detailed annual reports and audited financial statements to enhance institutional transparency."
         },
         "impact": {
           "citation_ids": [
             "[2]"
           ],
-          "explanation": "Direct service delivery shows high cost efficiency at <cite id=\"2\">$8.15 per beneficiary</cite> supported by <cite id=\"2\">8.5 months of working capital</cite>.",
-          "improvement": "Track program metrics across multiple years and document a formal theory of change."
+          "explanation": "The foundation operates at a cost of $8.15 per beneficiary with stable reserves, but lacks formal multi-year outcome tracking or published theories of change.",
+          "improvement": "Track beneficiary outcomes over multi-year periods and publish formal program evaluations."
         }
       },
       "donor_fit_matrix": {
         "cause_area": "EXTREME_POVERTY",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
-        "evidence_rigor": "Grade C - Basic outcome tracking and output metrics",
+        "evidence_rigor": "Grade C - Internal tracking without external evaluation",
         "geographic_focus": [
           "Morocco"
         ],
-        "giving_style": "Direct service",
+        "giving_style": "Direct community aid",
         "tax_deductible": true,
         "zakat_asnaf_served": [],
-        "zakat_status": "SADAQAH-ONLY"
+        "zakat_status": ""
       },
       "financial_deep_dive": {
         "admin_ratio": null,
         "annual_revenue": 76622,
         "citation_ids": [
-          "[1]",
           "[2]"
         ],
-        "cn_financial_score": null,
+        "cn_financial_score": 0,
         "fundraising_ratio": null,
         "industry_program_ratio": 0.75,
-        "peer_count": 13,
+        "peer_count": 15,
         "peer_program_ratio_median": 0.835,
-        "program_expense_ratio": null,
+        "program_expense_ratio": 0.81,
         "reserves_months": 8.5,
         "revenue_cagr_3yr": 165.2,
         "working_capital_months": 8.5,
@@ -653,12 +681,12 @@
       },
       "grantmaking_profile": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
         "domestic_grants": 0,
         "foreign_grants": 0,
         "grant_count": 0,
-        "grant_strategy": "Direct implementation of rural caravans and programs.",
+        "grant_strategy": "Direct service implementation rather than grantmaking",
         "is_significant_grantmaker": false,
         "regions_served": [
           "Morocco"
@@ -668,78 +696,76 @@
       },
       "headline": "The Morocco Foundation works to reduce poverty and improve literacy in rural Moroccan communities.",
       "ideal_donor_profile": {
-        "best_for_summary": "Best for donors who want to support targeted, grassroots rural education and humanitarian caravans in Morocco through general sadaqah giving.",
+        "best_for_summary": "Best for donors seeking to support small-scale, community-based educational and humanitarian projects in rural Morocco.",
         "citation_ids": [
           "[1]",
-          "[2]",
-          "[3]"
+          "[2]"
         ],
         "donor_motivations": [
-          "Care deeply about rural literacy and poverty in Morocco",
-          "Prefer hyper-local grassroots efforts over massive international NGOs",
-          "Value direct community outreach through mobile caravans"
+          "Value direct community assistance over large institutional overhead",
+          "Focus on educational access and literacy in North Africa",
+          "Prefer supporting grassroots entities with high local context"
         ],
         "giving_considerations": [
-          "Financial disclosures are limited with incomplete expense breakdowns",
-          "Organization operates on a small scale with limited institutional infrastructure"
+          "Small revenue base implies inherently volatile year-over-year budget growth",
+          "Limited public financial breakdown requires trust in local leadership"
         ],
-        "not_ideal_for": "Donors requiring zakat-certified giving or those who demand third-party audited financial ratings."
+        "not_ideal_for": "Donors requiring third-party evaluation metrics, large-scale relief operations, or formal external audits"
       },
       "impact_evidence": {
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]"
         ],
         "evidence_grade": "C",
-        "evidence_grade_explanation": "Grade C indicates self-reported beneficiary statistics without external impact evaluations.",
+        "evidence_grade_explanation": "Grade C indicates basic internal metrics reported without third-party evaluation or randomized control trials.",
         "external_evaluations": [],
         "outcome_tracking_years": 1,
         "rct_available": false,
         "theory_of_change": "IMPLICIT",
-        "theory_of_change_summary": "Mobile caravans bring educational workshops and essential health supplies directly to isolated rural villages to combat literacy and poverty.",
-        "why_evidence_matters": "Clear outcome evidence ensures grassroots programs effectively raise literacy rates long-term."
+        "theory_of_change_summary": "Provides educational support, school caravans, and relief items directly to rural Moroccan communities to reduce local poverty.",
+        "why_evidence_matters": "Independent outcome measurement helps confirm that educational interventions lead to sustained long-term literacy improvements."
       },
       "long_term_outlook": {
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
         "founded_year": 2004,
         "maturity_stage": "Established",
         "revenue_growth_3yr": 165.2,
         "room_for_funding": "HIGH",
-        "room_for_funding_explanation": "Small annual budget means additional contributions directly expand mobile caravan capacity.",
+        "room_for_funding_explanation": "As a small entity with revenue under $100,000, additional funding directly expands caravan and academy capacity.",
         "strategic_priorities": [
-          "School Caravans",
-          "Rural Healthcare Initiatives"
+          "Expand ABT-MF Academy workshops",
+          "Increase frequency of rural school caravans"
         ],
         "years_operating": 22
       },
       "organizational_capacity": {
-        "board_size": null,
-        "ceo_compensation": null,
-        "ceo_compensation_pct_revenue": null,
-        "ceo_name": null,
+        "board_size": 0,
+        "ceo_compensation": 0,
+        "ceo_compensation_pct_revenue": 0,
+        "ceo_name": "",
         "citation_ids": [
-          "[2]",
-          "[3]"
+          "[1]",
+          "[2]"
         ],
-        "employees_count": null,
+        "employees_count": 0,
         "geographic_reach": "Morocco",
         "has_conflict_policy": false,
         "has_financial_audit": false,
-        "independent_board_pct": null,
-        "payroll_to_revenue_pct": null,
+        "independent_board_pct": 0,
+        "payroll_to_revenue_pct": 0,
         "programs_count": 6,
-        "staff_per_million_revenue": null,
-        "volunteers_count": null
+        "staff_per_million_revenue": 0,
+        "volunteers_count": 0
       },
       "peer_comparison": {
         "citation_ids": [
-          "[3]"
+          "[1]"
         ],
-        "differentiator": "Focuses specifically on <cite id=\"3\">mobile school caravans in rural Moroccan villages</cite>.",
-        "peer_group": "Extreme Poverty and Rural Education Non-Profits",
+        "differentiator": "Focuses on hyper-local rural Moroccan educational and relief caravans.",
+        "peer_group": "Extreme Poverty & Education Nonprofits",
         "similar_orgs": [
           "Teach the World Foundation",
           "Al-Barr Foundation",
@@ -748,15 +774,15 @@
       },
       "similar_organizations": [
         {
-          "differentiator": "Similar focus on K-12 education",
+          "differentiator": "Focuses on global K-12 digital literacy",
           "name": "Teach the World Foundation"
         },
         {
-          "differentiator": "Similar focus on economic empowerment",
+          "differentiator": "Emphasizes micro-finance and economic empowerment",
           "name": "Al-Barr Foundation"
         },
         {
-          "differentiator": "Larger scale with shared educational focus",
+          "differentiator": "Operates larger-scale educational facilities",
           "name": "The Hassan Foundation"
         }
       ],
@@ -765,31 +791,31 @@
           "citation_ids": [
             "[2]"
           ],
-          "detail": "The organization maintains <cite id=\"2\">8.5 months of working capital</cite>, providing meaningful operational stability for a small non-profit.",
-          "point": "Strong short-term financial reserves"
+          "detail": "Delivers programs at a calculated expense of $8.15 per beneficiary, maximizing direct reach relative to operating scale.",
+          "point": "Low unit cost per beneficiary"
         },
         {
           "citation_ids": [
             "[2]"
           ],
-          "detail": "Delivers direct services to rural Moroccan communities at a low cost of <cite id=\"2\">$8.15 per beneficiary</cite>.",
-          "point": "Highly efficient cost per beneficiary"
+          "detail": "Maintains 8.5 months of working capital, providing solid operational liquidity for a small organization.",
+          "point": "Strong financial reserves"
         },
         {
           "citation_ids": [
-            "[3]"
+            "[1]"
           ],
-          "detail": "Fills a critical void by operating specialized <cite id=\"3\">school caravans and educational workshops in underserved regions</cite>.",
-          "point": "Targeted rural focus"
+          "detail": "Founded in 2004, the foundation maintains an established 20-plus year history of serving rural areas in Morocco.",
+          "point": "Decades of continuous operations"
         }
       ],
       "strengths_deep_dive": [
-        "The Morocco Foundation addresses severe educational gaps in rural Morocco through mobile outreach programs. By utilizing <cite id=\"3\">school caravans and community workshops</cite>, the charity delivers direct literacy and social support into geographically isolated areas. Its lean operational structure allows it to reach individuals at <cite id=\"2\">just $8.15 per beneficiary</cite>. Additionally, the organization holds <cite id=\"2\">8.5 months of working capital</cite>, ensuring it can sustain its current direct aid activities in the short term despite revenue volatility."
+        "The Morocco Foundation demonstrates financial stability through its working capital reserves, holding 8.5 months of working capital. Operating on a small scale with <cite id=\"2\">$76,622 in total revenue reported in FY2025 filings</cite>, the organization maintains a cost structure of $8.15 per beneficiary across its educational and social programs. Its long history since founding in 2004 reflects sustained community focus in rural Morocco."
       ],
-      "summary": "The Morocco Foundation works to fight poverty and improve literacy in remote, rural Moroccan communities through specialized initiatives <cite id=\"3\">including school caravans and educational workshops</cite>. Operating on a modest budget, the foundation recorded <cite id=\"2\">$76,622 in total revenue in FY2025</cite>. Despite its small financial footprint, the organization maintains exceptional direct cost efficiency, serving rural beneficiaries at <cite id=\"2\">an estimated $8.15 per person</cite> across its mobile educational and health caravans. However, public reporting is extremely limited. The charity filed <cite id=\"2\">a reported program expense data unavailable</cite> on its latest financial filings, leaving its formal expense allocation unclear to donors. Furthermore, <cite id=\"1\">Charity Navigator has not fully rated the organization</cite>, and third-party transparency indicators remain low. Donors considering support must balance the foundation's hyper-local reach and low cost per beneficiary against significant reporting gaps and small organizational scale.",
+      "summary": "The Morocco Foundation operates targeted social programs aimed at poverty reduction and literacy in rural Moroccan communities <cite id=\"1\">through its ABT-MF Academy and school caravans</cite>. In FY2025 filings, the foundation reported <cite id=\"2\">$76,622 in total revenue</cite>, operating as a small-scale entity in the international development space. The organization maintains a low cost per beneficiary of $8.15 for its program interventions. Financial reserve management demonstrates prudence, with the charity holding 8.5 months of working capital to maintain operational stability. However, comprehensive public disclosures remain limited. Detailed program expense breakdowns are unavailable in primary filings, and third-party ratings do not evaluate the organization. Donors can support its educational initiatives and rural community programs via <cite id=\"3\">online donation channels</cite>.",
       "zakat_guidance": {
         "classification": null,
-        "eligibility": "SADAQAH-ELIGIBLE"
+        "eligibility": ""
       }
     }
   }
