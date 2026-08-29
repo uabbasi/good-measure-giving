@@ -16,13 +16,40 @@ const p = gmgPalette(false);
 const dir = path.resolve(__dirname, '../../../../data/charities');
 const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')));
 
+/**
+ * Pick a charity out of the real corpus by the shape the test needs, instead
+ * of pinning an EIN annotated with the shape it had when the test was written.
+ * Regeneration moves a charity out of that shape and the test then fails on
+ * its own precondition without testing anything.
+ */
+const corpus = fs
+  .readdirSync(dir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))));
+
+type Charity = (typeof corpus)[number];
+
+const pick = (shape: string, predicate: (c: Charity) => boolean): Charity => {
+  const found = corpus.find(predicate);
+  if (!found) throw new Error(`No charity in the corpus is ${shape} — the case is gone.`);
+  return found;
+};
+
+// Nothing in notIdealFor: the block must not render at all.
+const emptyNotIdealFor = () =>
+  pick('listing nothing under "not ideal for"', (c) => c.notIdealFor.length === 0);
+
 // claimsZakat, asnaf category present, meaningful zakatAsnafServed (fuqara +
 // masakin + ...), notIdealFor present, caseAgainstFactors + mitigation
 // present, idealFor/considerations/bestForSummary present.
 const richZakat = () => load('charity-04-3810161.json');
 // case_against.summary carries a <cite> marker in this fixture (charity-04-3810161's
 // does not) — used only for the citation-rendering assertion.
-const citedCaseAgainst = () => load('charity-01-0548371.json');
+const citedCaseAgainst = () =>
+  pick(
+    'making a cited case against itself',
+    (c) => c.cited.caseAgainstSummary.some((s) => s.kind === 'cited'),
+  );
 // claimsZakat FALSE (Sadaqah), zakatAsnafServed is an empty list (legitimate
 // non-applicability, not a gap), notIdealFor empty, but idealFor/considerations/
 // caseAgainstFactors present.
@@ -107,7 +134,7 @@ describe('RightForYou', () => {
     const { container } = render(<RightForYou c={rich} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).not.toContain(rich.notIdealFor[0]);
 
-    const plain = noAsnafNotZakat();
+    const plain = emptyNotIdealFor();
     expect(plain.notIdealFor).toHaveLength(0);
     const { queryByText } = render(<RightForYou c={plain} p={p} isMobile={false} padX={16} />);
     expect(queryByText('Not ideal for')).toBeNull();

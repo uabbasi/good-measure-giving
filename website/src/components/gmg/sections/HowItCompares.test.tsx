@@ -21,10 +21,64 @@ const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join
 // peerCount, cnOverallScore, transparencyScore, revenueGrowth3yr, non-empty
 // similarOrganizations, and a populated strengthsDeepDive.
 const withMedian = () => load('charity-04-3810161.json');
-// peers.programRatioMedian is null (30/166 fleet-wide) but industryProgramRatio
-// is present — a two-bar comparison. peerCount is 0 (a legitimate value, not
-// absence). Reused from RunWell's governance fixture.
-const noMedian = () => load('charity-13-1837442.json');
+/**
+ * Pick a charity out of the real corpus by the shape the test needs.
+ *
+ * These fixtures used to be pinned EINs annotated with the shape they had at
+ * the time ("peerCount is 0", "programRatioMedian is null"). Regeneration moves
+ * a charity out of that shape and the test then fails on its own precondition,
+ * having tested nothing. Searching for the shape keeps the case real, and
+ * throwing when it has vanished says so plainly instead of passing vacuously.
+ */
+const corpus = fs
+  .readdirSync(dir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))));
+
+type Charity = (typeof corpus)[number];
+
+const pick = (shape: string, predicate: (c: Charity) => boolean): Charity => {
+  const found = corpus.find(predicate);
+  if (!found) throw new Error(`No charity in the corpus is ${shape} — the case is gone.`);
+  return found;
+};
+
+// A two-bar comparison: no peer median to draw, but an industry ratio to
+// compare against.
+const noMedian = () =>
+  pick(
+    'missing a peer median while having an industry ratio',
+    (c) => c.peers.programRatioMedian == null && c.peers.industryProgramRatio != null,
+  );
+
+// A legitimate zero, which must render rather than be treated as absent.
+const zeroPeerCount = () =>
+  pick(
+    'reporting a peer count of exactly 0 alongside a CN score',
+    (c) => c.peers.peerCount === 0 && c.peers.cnOverallScore != null,
+  );
+
+/**
+ * A distinctive multi-word run from a cited block's own prose.
+ *
+ * 'fundraising costs capped' was pinned here as a phrase that appeared in the
+ * deep-dive at the time. It is LLM-written and every regeneration rewrites it,
+ * so the literal broke while proving nothing about gating. A run taken from
+ * the middle of the actual text is just as distinctive -- long enough not to
+ * collide with the page's public copy -- and always current.
+ */
+const distinctivePhrase = (segments: { text: string }[]): string => {
+  // Sampled from within ONE segment. CitedText renders each citation as a
+  // superscript mid-sentence, so a run spanning a citation boundary is never
+  // contiguous in the DOM and could never be found by toContain.
+  const longest = segments
+    .map((s) => s.text.replace(/\s+/g, ' ').trim())
+    .sort((a, b) => b.length - a.length)[0];
+  const words = (longest ?? '').split(' ').filter(Boolean);
+  if (words.length < 6) throw new Error('deep-dive prose too short to sample a phrase from');
+  const mid = Math.floor(words.length / 2);
+  return words.slice(mid - 3, mid + 3).join(' ');
+};
 
 describe('HowItCompares', () => {
   it('gates the entire peer-comparison block, including the peer group and cited differentiator', () => {
@@ -84,7 +138,7 @@ describe('HowItCompares', () => {
 
   it('gates cnOverallScore, transparencyScore, peerCount (including a legitimate 0), and revenueGrowth3yr', () => {
     mockMember.mockReturnValue(false);
-    const c = noMedian();
+    const c = zeroPeerCount();
     expect(c.peers.peerCount).toBe(0);
     expect(c.peers.cnOverallScore).not.toBeNull();
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
@@ -98,7 +152,7 @@ describe('HowItCompares', () => {
 
   it('shows the gated benchmark figures to a signed-in community member, including a legitimate zero', () => {
     mockMember.mockReturnValue(true);
-    const c = noMedian();
+    const c = zeroPeerCount();
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain(String(c.peers.cnOverallScore));
     expect(container.textContent).toContain(String(c.peers.transparencyScore));
@@ -162,10 +216,9 @@ describe('HowItCompares', () => {
     // A distinctive multi-word phrase from the deep-dive prose, not a lone
     // connector word — those coincidentally appear in unrelated public copy
     // elsewhere on the page and would make this assertion pass vacuously.
-    expect(c.cited.strengthsDeepDive[0].map((s) => s.text).join('')).toContain('fundraising costs capped');
+    const phrase = distinctivePhrase(c.cited.strengthsDeepDive[0]);
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
-    expect(container.textContent).not.toContain('fundraising costs capped');
-    expect(container.textContent).not.toContain('1.1 million individuals');
+    expect(container.textContent).not.toContain(phrase);
     expect(container.textContent).toContain('Strengths in depth');
   });
 
@@ -173,8 +226,12 @@ describe('HowItCompares', () => {
     mockMember.mockReturnValue(true);
     const c = withMedian();
     const { container } = render(<HowItCompares c={c} p={p} isMobile={false} padX={16} />);
-    expect(container.textContent).toContain('fundraising costs capped');
-    expect(container.textContent).toContain('1.1 million individuals');
+    // Every deep-dive block must render, not just the first — the second
+    // assertion here used to be the literal '1.1 million individuals', which
+    // was simply a phrase that happened to be in the prose at the time.
+    for (const block of c.cited.strengthsDeepDive) {
+      expect(container.textContent).toContain(distinctivePhrase(block));
+    }
   });
 
   it('lays out the outlook facts as a single column on mobile and a multi-column grid on desktop', () => {

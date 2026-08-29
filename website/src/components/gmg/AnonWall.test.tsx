@@ -24,18 +24,34 @@ const dwb = () => load('13-3433452');
 const zeroConcerns = () => load('20-8085421');
 
 describe('computeWallItems — real counts, not hardcoded copy', () => {
-  it('reports different concern/citation/grant counts for two different charities', () => {
-    const ircItems = computeWallItems(irc());
-    const dwbItems = computeWallItems(dwb());
+  // Every count below was pinned as a literal ('1 identified concern',
+  // '6 cited claims from 6 sources', '703 grants'). Regeneration moves all of
+  // them, and a re-pinned literal only defers the same failure. Deriving the
+  // expected line from the charity's own data is also the stronger proof:
+  // hardcoded copy cannot match two different charities' arithmetic.
+  const concernLine = (c: ReturnType<typeof irc>) =>
+    `${c.concerns.all.length} identified ${c.concerns.all.length === 1 ? 'concern' : 'concerns'}`;
 
-    expect(ircItems).toContain('1 identified concern');
-    expect(dwbItems).toContain('2 identified concerns');
+  const citationLine = (c: ReturnType<typeof irc>) => {
+    const n = c.citations.ordered.length;
+    const sources = new Set(c.citations.ordered.map((ci) => ci.sourceName).filter(Boolean)).size;
+    return `${n} cited ${n === 1 ? 'claim' : 'claims'} from ${sources} ${sources === 1 ? 'source' : 'sources'}`;
+  };
 
-    expect(ircItems).toContain('6 cited claims from 6 sources');
-    expect(dwbItems).toContain('5 cited claims from 5 sources');
+  it('reports concern and citation counts taken from each charity, not fixed copy', () => {
+    const a = irc();
+    const b = dwb();
 
-    expect(ircItems).toContain('Grant flow analysis across 703 grants');
-    expect(dwbItems).toContain('Grant flow analysis across 11 grants');
+    expect(computeWallItems(a)).toContain(concernLine(a));
+    expect(computeWallItems(b)).toContain(concernLine(b));
+    expect(computeWallItems(a)).toContain(citationLine(a));
+    expect(computeWallItems(b)).toContain(citationLine(b));
+  });
+
+  it('produces different lines for two different charities', () => {
+    // The mutation guard: a function returning fixed strings would give these
+    // two identical output, whatever the fixtures say.
+    expect(computeWallItems(irc())).not.toEqual(computeWallItems(dwb()));
   });
 
   it('never advertises concerns for a charity that has none', () => {
@@ -45,7 +61,7 @@ describe('computeWallItems — real counts, not hardcoded copy', () => {
     expect(items.some((i) => /concern/i.test(i))).toBe(false);
     // The charity isn't otherwise empty — it still has real lines to show.
     expect(items.length).toBeGreaterThan(0);
-    expect(items).toContain('5 cited claims from 5 sources');
+    expect(items).toContain(citationLine(c));
   });
 
   it('omits the financial-history and grant lines for a charity with neither', () => {

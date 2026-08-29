@@ -16,15 +16,44 @@ const p = gmgPalette(false);
 const dir = path.resolve(__dirname, '../../../../data/charities');
 const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')));
 
+/**
+ * Pick a charity out of the real corpus by the shape the test needs.
+ *
+ * Pinned EINs annotated with the shape they had when written ("3 concerns,
+ * 1 trust-anchored", "standardsMet is 0") fail on their own precondition once
+ * regeneration moves the charity, having tested nothing. Searching for the
+ * shape keeps the case real; throwing when it is gone says so rather than
+ * passing vacuously.
+ */
+const corpus = fs
+  .readdirSync(dir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))));
+
+type Charity = (typeof corpus)[number];
+
+const pick = (shape: string, predicate: (c: Charity) => boolean): Charity => {
+  const found = corpus.find(predicate);
+  if (!found) throw new Error(`No charity in the corpus is ${shape} — the case is gone.`);
+  return found;
+};
+
 // Has a BBB reviewUrl, standardsMet === 0 (present, must still render since
 // the guard is presence-based not truthy-based), and all three award URLs.
 // concerns.all has 2 entries but byAnchor.trust is empty (both anchor
 // elsewhere) — the common case: nothing in the trust-concerns block, but the
 // pointer line still points at the 2 caveats shown elsewhere on the page.
 const richTrust = () => load('charity-01-0548371.json');
+// A BBB standards-met count of exactly 0 — a real value, not an absence.
+const zeroStandardsMet = () =>
+  pick('reporting exactly 0 BBB standards met', (c) => c.bbb.standardsMet === 0);
 // One of only 7 charities fleet-wide with a byAnchor.trust concern
 // ("Organization has negative net assets") — 1 of its 3 total concerns.
-const withTrustConcern = () => load('charity-23-2202414.json');
+const withTrustConcern = () =>
+  pick(
+    'carrying exactly one trust-anchored concern plus concerns anchored elsewhere',
+    (c) => c.concerns.byAnchor.trust.length === 1 && c.concerns.all.length > 1,
+  );
 // bbb.summary present but reviewUrl is null.
 const noBbbReviewUrl = () => load('charity-11-3013369.json');
 // Two provenance entries with a null sourceUrl, out of 14 total.
@@ -34,7 +63,14 @@ const datedData = () => load('charity-20-0310701.json');
 // dataAgeYears = null, zero concerns, no awards, no BBB reviewUrl.
 const bare = () => load('charity-20-8085421.json');
 // bbb.standardsMet is null (not present at all, distinct from 0).
-const noStandardsMet = () => load('charity-81-3072596.json');
+// No charity in the corpus reports a null standards-met count any more, so
+// this one is constructed from a real charity with just that field cleared.
+// The behaviour under test — null must not render "standards met", while 0
+// must — is worth keeping whether or not the corpus currently exhibits it.
+const noStandardsMet = () => {
+  const base = zeroStandardsMet();
+  return { ...base, bbb: { ...base.bbb, standardsMet: null } };
+};
 
 describe('TrustTheNumbers', () => {
   it('gates only the BBB assessment; data vintage, concerns, provenance, and badge links stay public', () => {
@@ -67,7 +103,9 @@ describe('TrustTheNumbers', () => {
   it('renders only byAnchor.trust concerns here, not the full concerns.all list, and points to the rest', () => {
     const c = withTrustConcern();
     expect(c.concerns.byAnchor.trust).toHaveLength(1);
-    expect(c.concerns.all.length).toBe(3);
+    // More than the trust one, so the "don't duplicate the others" check below
+    // has something to prove. The literal 3 moved with regeneration.
+    expect(c.concerns.all.length).toBeGreaterThan(1);
     const { container } = render(<TrustTheNumbers c={c} p={p} isMobile={false} padX={16} />);
     // The trust-anchored concern renders.
     expect(container.textContent).toContain(c.concerns.byAnchor.trust[0].headline);
@@ -78,7 +116,9 @@ describe('TrustTheNumbers', () => {
       expect(container.textContent).not.toContain(concern.headline);
     }
     // A pointer line names the count of caveats shown elsewhere.
-    expect(container.textContent).toContain('2 further caveats appear beside');
+    expect(container.textContent).toContain(
+      `${c.concerns.all.length - c.concerns.byAnchor.trust.length} further caveats appear beside`,
+    );
   });
 
   it('shows no trust concerns for the common case (7 of 343 concerns fleet-wide are trust-anchored), but still points to the caveats shown elsewhere', () => {
@@ -91,7 +131,9 @@ describe('TrustTheNumbers', () => {
     for (const concern of c.concerns.all) {
       expect(container.textContent).not.toContain(concern.headline);
     }
-    expect(container.textContent).toContain('2 further caveats appear beside');
+    expect(container.textContent).toContain(
+      `${c.concerns.all.length - c.concerns.byAnchor.trust.length} further caveats appear beside`,
+    );
   });
 
   it('collapses the trust-concerns block to nothing — no heading, no pointer line — when there are no concerns at all', () => {
@@ -135,7 +177,7 @@ describe('TrustTheNumbers', () => {
 
   it('renders BBB statuses to a signed-in member, and standardsMet only when present (0 counts as present, null does not)', () => {
     mockMember.mockReturnValue(true);
-    const zero = richTrust();
+    const zero = zeroStandardsMet();
     expect(zero.bbb.standardsMet).toBe(0);
     const { container: zeroContainer } = render(<TrustTheNumbers c={zero} p={p} isMobile={false} padX={16} />);
     expect(zeroContainer.textContent).toContain('0 standards met');

@@ -77,15 +77,24 @@ describe('adaptCharity.cited', () => {
     // cited.growthAreas.point must be the same label plain growthAreas shows —
     // otherwise a consumer could reasonably assume the two arrays describe the
     // same items in the same order and be wrong.
+    // An EMPTY cited list is allowed and means "no citations for these".
+    // growthAreas falls back to the baseline narrative while cited.growthAreas
+    // reads only the rich one, so a charity with baseline-only growth areas
+    // (Muslim Association of Puget Sound today) legitimately has one and not
+    // the other. Nothing can mis-pair in that case; the drift this guards
+    // against is a NON-empty cited list disagreeing with the plain one.
+    let paired = 0;
     for (const f of files) {
       const c = adaptCharity(load(f));
-      if (c.growthAreas.length === 0) continue;
-      expect(c.cited.growthAreas.length).toBeGreaterThan(0);
+      if (c.cited.growthAreas.length === 0) continue;
+      paired += 1;
       c.cited.growthAreas.forEach((g, i) => {
         expect(g.point).not.toBe('');
         expect(g.point).toBe(c.growthAreas[i]);
       });
     }
+    // ...and the check must not pass by finding nothing to check.
+    expect(paired).toBeGreaterThan(files.length / 2);
   });
 
   it('covers the corpus — most charities carry cited segments in the summary', () => {

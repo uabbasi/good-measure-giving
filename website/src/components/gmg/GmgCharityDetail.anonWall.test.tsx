@@ -59,6 +59,29 @@ const renderDetail = () =>
     </MemoryRouter>,
   );
 
+/**
+ * Cost per beneficiary as the fixture actually holds it, or null.
+ *
+ * This used to be pinned to '$4,088'. That figure came from a beneficiary
+ * count the pipeline had already rejected as covering one program rather than
+ * the organization, and export now withholds the number in that case — so the
+ * literal both broke and, while it passed, asserted something untrue. Read it
+ * off the fixture so the test follows the data instead of a snapshot of it.
+ */
+const fixtureCostPerBeneficiary = (): number | null =>
+  ircRaw?.amalEvaluation?.score_details?.impact?.cost_per_beneficiary ?? null;
+
+const expectCostPerBeneficiaryIsHonest = (text: string) => {
+  const cpb = fixtureCostPerBeneficiary();
+  if (cpb == null) {
+    // Withheld: the label may still appear, but no dollar figure may be
+    // attached to it.
+    expect(text).not.toMatch(/\$[\d,]+(\.\d+)?\s*(per beneficiary|\/ ?beneficiary)/i);
+  } else {
+    expect(text).toContain(`$${Math.round(cpb).toLocaleString('en-US')}`);
+  }
+};
+
 const SECTION_IDS = ['what-they-do', 'money', 'trust', 'run-well', 'right-for-you', 'compares'];
 
 describe('GmgCharityDetail — signed out', () => {
@@ -98,7 +121,7 @@ describe('GmgCharityDetail — signed out', () => {
   it('shows the financial figures and the ui_signals tags', () => {
     mockMember.mockReturnValue(false);
     const { container } = renderDetail();
-    expect(container.textContent).toContain('$4,088');
+    expectCostPerBeneficiaryIsHonest(container.textContent ?? '');
     expect(container.textContent).toContain('88%');
     expect(container.textContent).toContain('2.4 mo');
     expect(container.textContent).toContain('High Conviction');
@@ -146,7 +169,7 @@ describe('GmgCharityDetail — signed in', () => {
     // The counterpart of the signed-out assertion above — proves that check
     // is load-bearing rather than matching a pattern that never renders.
     expect(container.textContent).toMatch(/Cost Per Beneficiary\s*\d+\/\d+/);
-    expect(container.textContent).toContain('$4,088');
+    expectCostPerBeneficiaryIsHonest(container.textContent ?? '');
     expect(container.textContent).toContain('88%');
     expect(container.textContent).toContain('2.4 mo');
     expect(container.textContent).toContain('High Conviction');

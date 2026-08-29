@@ -16,6 +16,28 @@ const p = gmgPalette(false);
 const dir = path.resolve(__dirname, '../../../../data/charities');
 const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')));
 
+/**
+ * Pick a charity out of the real corpus by the shape the test needs.
+ *
+ * These fixtures were pinned EINs annotated with the shape they had when the
+ * test was written ("boardSize 0", "ceoCompensation null"). Regeneration moves
+ * a charity out of that shape and the test then fails on its own precondition
+ * without having tested anything. Searching for the shape keeps the case real;
+ * throwing when it has vanished says so rather than passing vacuously.
+ */
+const corpus = fs
+  .readdirSync(dir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => adaptCharity(JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))));
+
+type Charity = (typeof corpus)[number];
+
+const pick = (shape: string, predicate: (c: Charity) => boolean): Charity => {
+  const found = corpus.find(predicate);
+  if (!found) throw new Error(`No charity in the corpus is ${shape} — the case is gone.`);
+  return found;
+};
+
 // ceoCompensation present ($539,137), boardSize null, 2 risks (both medium),
 // a governance-anchored concern.
 const withGovernanceConcern = () => load('charity-13-1837442.json');
@@ -26,11 +48,31 @@ const fullCapacityNoRisks = () => load('charity-04-2535767.json');
 // /employeesCount/volunteersCount all 0 — every one of these is a legitimate,
 // meaningful value that must still render (not be treated as absent). Also
 // has risks of every severity and a risks-anchored concern.
-const allZerosAndFalse = () => load('charity-20-0310701.json');
+const allZerosAndFalse = () =>
+  pick(
+    'reporting false conflict/audit policies and a zero board, staff and volunteer count',
+    (c) =>
+      c.capacity.hasConflictPolicy === false &&
+      c.capacity.hasFinancialAudit === false &&
+      c.capacity.boardSize === 0 &&
+      c.capacity.independentBoardPct === 0 &&
+      c.capacity.employeesCount === 0 &&
+      c.capacity.volunteersCount === 0 &&
+      // The concerns test below shares this fixture and needs something to
+      // render, so require it here rather than let that test go vacuous.
+      c.concerns.byAnchor.governance.length + c.concerns.byAnchor.risks.length > 0,
+  );
 // ceoCompensation AND ceoCompensationPctRevenue both null, but boardSize,
 // ceoName, and geographicReach are present — the capacity gate must still
 // appear for those, just without any compensation figures inside it.
-const noCeoComp = () => load('charity-81-3072596.json');
+const noCeoComp = () =>
+  pick(
+    'missing both CEO compensation figures while still reporting a board size',
+    (c) =>
+      c.capacity.ceoCompensation == null &&
+      c.capacity.ceoCompensationPctRevenue == null &&
+      c.capacity.boardSize != null,
+  );
 
 describe('RunWell', () => {
   it('gates the entire organizational-capacity block, including CEO name, board, and governance facts', () => {
