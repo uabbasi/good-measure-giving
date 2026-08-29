@@ -508,7 +508,15 @@ export const adaptCharity = (c: any): GmgCharity => {
       const r = numOrNull(fin?.workingCapitalMonths ?? rn?.financial_deep_dive?.reserves_months);
       return r == null ? null : Math.round(r * 10) / 10;
     })(),
-    totalRevenue: numOrNull(fin?.totalRevenue ?? rn?.financial_deep_dive?.annual_revenue),
+    // Filed financials only. financial_deep_dive is LLM-written, and for the
+    // charities with no Form 990 on file it says annual_revenue: 0 -- meaning
+    // "none recorded", not "this organization raised nothing". The ?? fallback
+    // promoted that to the charity's revenue, so MCC East Bay, The Islamic
+    // Society of Southern California and Al-Barr Foundation each rendered a
+    // flat "Revenue $0" in the detail header and a "Total revenue $0" row,
+    // which is a claim about them we cannot source. Across the corpus the
+    // fallback never once supplied a non-zero figure, so it bought nothing.
+    totalRevenue: numOrNull(fin?.totalRevenue),
     fiscalYear: numOrNull(fin?.fiscalYear),
     dataAgeYears: numOrNull(sd?.data_confidence?.data_age_years),
     dataQualityLabel: sd?.data_confidence?.data_quality_label ?? null,

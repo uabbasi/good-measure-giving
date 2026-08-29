@@ -1320,6 +1320,13 @@ def _normalize_score_details_zakat_sources(
 _STALE_ASNAF_VALUES = {"amil", "muallaf"}
 
 
+# "$218739.75/beneficiary", "$86,746.42 per beneficiary" -- the scorer's own
+# phrasing, matched with its optional thousands separators and decimals.
+_COST_PER_BENEFICIARY_CLAIM = re.compile(
+    r"\$\s*[\d,]+(?:\.\d+)?\s*(?:/|\s+per\s+)beneficiary", re.IGNORECASE
+)
+
+
 # The eight asnaf, spelled exactly as ASNAF_TAGS in
 # website/src/components/gmg/adapters/regions.ts. That file is the display
 # authority -- it owns the labels and the /browse facet keys -- so a tag spelled
@@ -1366,6 +1373,60 @@ def _publishable_asnaf(classification: Any) -> str | None:
     if not isinstance(classification, str):
         return None
     return None if classification.lower() in _STALE_ASNAF_VALUES else classification
+
+
+def _suppress_untrusted_cost_per_beneficiary(
+    amal_evaluation: dict[str, Any], excluded_from_scoring: Any
+) -> bool:
+    """Drop cost-per-beneficiary when we do not trust the beneficiary count.
+
+    The pipeline already decides this. When the count it found describes one
+    program or one country rather than the whole organization, it marks the
+    charity beneficiaries_excluded_from_scoring, sets confidence to
+    needs_review, and publishes no beneficiary number at all -- but
+    score_details.impact.cost_per_beneficiary, computed from that same rejected
+    count, went out anyway and rendered on the page.
+
+    28 of the 74 charities carrying the figure were in exactly that state.
+    International Rescue Committee showed $218,740 per beneficiary, which is
+    $1.54B of expense divided by about seven thousand people, for an
+    organization that reaches millions. Southern Poverty Law Center showed
+    $187,785. Dividing real expenses by a subset headcount cannot produce
+    anything but a wrong number, and a donor has no way to see that the
+    denominator was rejected -- the page shows no beneficiary count next to it.
+
+    Returns True when a value was removed.
+    """
+    if not excluded_from_scoring:
+        return False
+    impact = amal_evaluation.get("score_details", {}).get("impact")
+    if not isinstance(impact, dict):
+        return False
+
+    changed = impact.get("cost_per_beneficiary") is not None
+    impact["cost_per_beneficiary"] = None
+
+    # The scorer also writes the figure into two display strings, and nulling
+    # the numeric field alone left IRC's page reading "$218739.75/beneficiary"
+    # in the Cost Per Beneficiary criterion. These are deterministic scorer
+    # output, not narrative prose, so the money token can be replaced exactly;
+    # the benchmark note around it ("(average for EXTREME_POVERTY)") still
+    # describes what the criterion was measured against and stays.
+    def _scrub(text: Any) -> Any:
+        if not isinstance(text, str):
+            return text
+        return _COST_PER_BENEFICIARY_CLAIM.sub("cost per beneficiary unavailable", text)
+
+    for holder, key in [(impact, "rationale")] + [
+        (c, "evidence") for c in impact.get("components") or [] if isinstance(c, dict)
+    ]:
+        if key not in holder:
+            continue  # don't invent a null key on an evaluation that lacks one
+        was = holder[key]
+        holder[key] = _scrub(was)
+        changed = changed or holder[key] != was
+
+    return changed
 
 
 def _sanitize_stale_asnaf(amal_evaluation: dict[str, Any]) -> None:
@@ -2180,6 +2241,12 @@ def build_charity_detail(
 
         # Null stale amil/muallaf asnaf labels at the export boundary (DB untouched). [Cycle D]
         _sanitize_stale_asnaf(detail["amalEvaluation"])
+
+        # Same boundary, same idea: do not publish a per-beneficiary cost built
+        # on a beneficiary count this pipeline already rejected.
+        _suppress_untrusted_cost_per_beneficiary(
+            detail["amalEvaluation"], beneficiaries_excluded_from_scoring
+        )
 
         # Strategic/Zakat lens evaluations removed from export (pipeline still calculates them)
         # Frontend shows AMAL-only scoring framework
