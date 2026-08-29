@@ -1320,7 +1320,22 @@ def _normalize_score_details_zakat_sources(
 _STALE_ASNAF_VALUES = {"amil", "muallaf"}
 
 
-_ASNAF_TAG_VALUES = {"fuqara", "masakin", "fisabilillah", "muallaf", "riqab", "gharimin"}
+# The eight asnaf, spelled exactly as ASNAF_TAGS in
+# website/src/components/gmg/adapters/regions.ts. That file is the display
+# authority -- it owns the labels and the /browse facet keys -- so a tag spelled
+# any other way here would publish a value the filter cannot match. The first
+# version of this set was written from memory and omitted ibn-sabil and amilin,
+# which would have silently dropped both categories at the export boundary.
+_ASNAF_TAG_VALUES = {
+    "fuqara",
+    "masakin",
+    "amilin",
+    "muallaf",
+    "riqab",
+    "gharimin",
+    "fisabilillah",
+    "ibn-sabil",
+}
 
 
 def _asnaf_from_cause_tags(charity_data: dict | None) -> list[str] | None:
