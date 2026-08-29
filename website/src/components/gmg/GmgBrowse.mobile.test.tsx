@@ -53,11 +53,12 @@ const renderBrowse = () => render(<MemoryRouter><GmgBrowse isDark={false} /></Me
 
 describe('GmgBrowse mobile Program % card', () => {
   it('renders the em dash for a charity with no reported program ratio, never "0%"', () => {
-    renderBrowse();
-    const nameCell = screen.getByText('Unreported Program Charity');
-    // nameCell -> the <Link>'s inner div -> the <Link> itself -> the card's
-    // outer container div, which also holds the Program % Kicker + value.
-    const card = nameCell.parentElement!.parentElement as HTMLElement;
+    const { container } = renderBrowse();
+    // Selected by attribute rather than by walking up from the name, which
+    // silently pointed at the wrong node the moment the card's structure
+    // changed.
+    const card = container.querySelector('[data-charity-card="99-9999999"]') as HTMLElement;
+    expect(card).not.toBeNull();
     const programPctGroup = screen.getByText('Program %', { selector: 'span' });
     expect(card.contains(programPctGroup)).toBe(true);
     expect(programPctGroup.parentElement).toHaveTextContent('—');
