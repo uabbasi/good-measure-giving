@@ -79,3 +79,30 @@ def sample_raw_sources():
             }
         },
     }
+
+
+@pytest.fixture(autouse=True)
+def forbid_live_database(request, monkeypatch):
+    """Unit tests must not open a connection to the real DoltDB.
+
+    Two tests in test_judge_phase.py used to reach an unmocked
+    PhaseCacheRepository and WRITE phase_cache rows for International Rescue
+    Committee, a real published charity. They also could not pass at all
+    unless a `dolt sql-server` happened to be running, which made a green
+    suite depend on the developer's machine rather than on the code.
+
+    get_cursor() calls get_connection() on every query, so patching that one
+    function closes every path to the server. A test that genuinely wants a
+    live database opts in with @pytest.mark.live_db.
+    """
+    if request.node.get_closest_marker("live_db"):
+        return
+
+    def _refuse(*args, **kwargs):
+        raise RuntimeError(
+            "This test tried to open a real DoltDB connection. Unit tests must "
+            "mock the repository or execute_query. If it genuinely needs a live "
+            "server, mark it @pytest.mark.live_db."
+        )
+
+    monkeypatch.setattr("src.db.client.get_connection", _refuse)

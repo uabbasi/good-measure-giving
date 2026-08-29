@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import judge_phase
+import pytest
 import rich_phase
 from src.judges.factual_judge import FactualJudge
 from src.judges.schemas.config import JudgeConfig
@@ -13,7 +14,10 @@ from src.judges.schemas.verdict import (
     ValidationIssue,
 )
 
-EIN = "13-5660870"
+# Synthetic. Every repository here is a Mock, so nothing about this EIN needs
+# to be real -- and naming a published charity (this was International Rescue
+# Committee) means any future unmocked write lands on that charity's row.
+EIN = "99-9999999"
 
 
 def _w(field: str, msg: str) -> ValidationIssue:
@@ -323,6 +327,18 @@ class TestRichNarrativeAutoRetry:
     program-ratio comparisons) matches the data — a nondeterministic prose
     check. When it's the ONLY judge with errors, judge_charity regenerates
     the rich narrative once and re-judges before giving up."""
+
+    @pytest.fixture(autouse=True)
+    def _mock_phase_cache(self, monkeypatch):
+        """The retry path syncs phase_cache after regenerating the narrative.
+
+        That is a WRITE, and it was unmocked: these two tests could not pass
+        without a live dolt sql-server, and when one was running they wrote
+        phase_cache rows for a real published charity. A test run could change
+        what the next export publishes.
+        """
+        monkeypatch.setattr(judge_phase, "PhaseCacheRepository", Mock)
+        monkeypatch.setattr(judge_phase, "update_phase_cache", lambda *a, **kw: [])
 
     def test_retries_and_succeeds_when_only_score_judge_errors(self, monkeypatch):
         responses = [

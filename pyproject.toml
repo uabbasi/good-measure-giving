@@ -93,6 +93,9 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
+markers = [
+    "live_db: test genuinely requires a running dolt sql-server (see tests/conftest.py::forbid_live_database)",
+]
 
 [tool.setuptools]
 package-dir = {"" = "data-pipeline"}
