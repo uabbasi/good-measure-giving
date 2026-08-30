@@ -64,6 +64,52 @@ const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = (
   </span>
 );
 
+/**
+ * The mobile list's column track, shared by the sticky header and every card.
+ *
+ * Four fixed ball columns, then program %, then evidence, then the compare
+ * box. Both rows are laid out on this same string, which is what keeps each
+ * ball under its heading at any phone width. Change it in one place or the
+ * headings stop meaning anything.
+ */
+const SIGNAL_COLS = 'repeat(4, 18px) 44px 1fr 52px';
+
+const SR_ONLY: React.CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: 0,
+};
+
+/**
+ * One Harvey ball in the mobile list, named for assistive tech.
+ *
+ * The rating word ("Strong") is deliberately not drawn -- it repeated four
+ * times per card across 169 cards and the ball already encodes the level.
+ * Dropping it from the page must not drop it from the accessibility tree, so
+ * the label and value stay in a visually-hidden span.
+ */
+const SignalBall: React.FC<{ label: string; rating: Rating | null; p: GmgPalette }> = ({ label, rating, p }) => (
+  <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    {rating ? (
+      <>
+        <HarveyBall rating={rating} p={p} size={15} />
+        <span data-sr-only style={SR_ONLY}>{`${label}: ${rating}`}</span>
+      </>
+    ) : (
+      <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.sub2 }}>
+        <span data-sr-only style={SR_ONLY}>{`${label}: not rated`}</span>
+        <span aria-hidden="true">—</span>
+      </span>
+    )}
+  </span>
+);
+
 const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: FontTheme; count: number }> = ({
   p,
   padX,
@@ -319,21 +365,58 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           </button>
         </section>
       ) : isMobile ? (
-        /* Mobile: stacked cards.
+        /* Mobile: a dense scan list.
 
-           Rebuilt because the phone layout had grown a hierarchy nobody chose.
-           "Compare" — a secondary action — was the first thing in every card,
-           above the charity's own name. The six signals sat in a flex-wrap row
-           that broke 4 + 2 at 393px, so every card ended with a short orphan
-           line and a ragged gap, and all six read at the same weight even
-           though GMG is the headline verdict. EIN took a third of the meta
-           line for a number nobody scans a list by.
+           The card this replaces was already name-first with an aligned grid,
+           but it still spent five label words and four rating words on every
+           one of 169 cards -- "Strong / Strong / Moderate / Strong" read four
+           times per card -- and fit about four charities on a screen. On a
+           list this long the scan is the whole job.
 
-           Now: name first, a fixed grid that cannot wrap raggedly at any phone
-           width, GMG on its own row, and Compare demoted to the footer.
+           So the labels move to one sticky header row and the rating words
+           come off the balls, which already encode the level. Each ball keeps
+           a visually-hidden label so a screen reader still hears "Finances:
+           Strong" rather than a bare graphic. The header and every card share
+           SIGNAL_COLS, so the four balls sit under their headings no matter
+           the phone width, and the header sticks so the headings stay
+           available while scrolling.
+
            Container tap navigates; the name is a real Link so keyboard and
-           crawlers both work; the compare control is a real checkbox. */
-        <section style={{ padding: `12px ${padX}px 28px`, display: 'grid', gap: 10 }}>
+           crawlers both work; compare is a real checkbox. */
+        <section style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8 }}>
+          <div
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 2,
+              background: p.bg,
+              display: 'grid',
+              gridTemplateColumns: SIGNAL_COLS,
+              gap: 10,
+              alignItems: 'center',
+              padding: '7px 14px 8px',
+              borderBottom: `1px solid ${p.rule}`,
+            }}
+          >
+            {(['GMG', 'Fin', 'Risk', 'Fit'] as const).map((label) => (
+              <span key={label} style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, textAlign: 'center' }}>
+                {label}
+              </span>
+            ))}
+            <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2 }}>
+              Prog
+            </span>
+            <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, justifySelf: 'end' }}>
+              Evidence
+            </span>
+            {/* The checkbox below carries no visible word of its own, so this
+                heading is the only thing naming it. Without it the row ends in
+                an unexplained empty square. */}
+            <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, justifySelf: 'end' }}>
+              Compare
+            </span>
+          </div>
+
           {rows.map((row) => {
             const isSelected = selected.includes(row.ein);
             return (
@@ -341,82 +424,54 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 key={row.ein}
                 data-charity-card={row.ein}
                 onClick={() => navigate(hrefFor(row.ein))}
-                style={{ border: sectionBorder, borderRadius: 8, padding: '13px 14px', background: p.bg2, cursor: 'pointer' }}
+                style={{ border: sectionBorder, borderRadius: 8, padding: '10px 13px 11px', background: p.bg2, cursor: 'pointer' }}
               >
                 {/* Identity leads. */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
                   <Link
                     to={hrefFor(row.ein)}
                     onClick={(e) => e.stopPropagation()}
                     style={{ display: 'block', textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
                   >
-                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 21, lineHeight: 1.12, letterSpacing: ft.displayTracking }}>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, lineHeight: 1.15, letterSpacing: ft.displayTracking }}>
                       {row.name}
                     </div>
                   </Link>
-                  <span style={{ flexShrink: 0, marginTop: 1 }}>
+                  <span style={{ flexShrink: 0 }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
                   </span>
                 </div>
 
                 {/* EIN lives on the detail page; a donor scans by cause and size. */}
-                <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 3 }}>
+                <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 2 }}>
                   {titleCaseCause(row.cause)} · {fmtMoney(row.revenue)}
                 </div>
 
-                <div style={{ height: 1, background: p.rule, opacity: 0.6, margin: '11px 0 9px' }} />
-
-                {/* The headline verdict, on its own line, paired with the one
-                    number donors ask for first. */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 7, minWidth: 0 }}>
-                    <Kicker p={p}>GMG</Kicker>
-                    {row.overall
-                      ? <RatingCell rating={row.overall} p={p} size={20} />
-                      : <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: p.sub2 }}>—</span>}
+                {/* One signal line, on the same columns as the header above. */}
+                <div style={{ display: 'grid', gridTemplateColumns: SIGNAL_COLS, gap: 10, alignItems: 'center', marginTop: 9 }}>
+                  <SignalBall label="GMG" rating={row.overall} p={p} />
+                  <SignalBall label="Finances" rating={row.financialHealth} p={p} />
+                  <SignalBall label="Risk" rating={row.risk} p={p} />
+                  <SignalBall label="Donor fit" rating={row.donorFit} p={p} />
+                  <span
+                    data-program-pct
+                    style={{ fontFamily: FONT_MONO, fontSize: 12, color: p.fg, fontVariantNumeric: 'tabular-nums' }}
+                  >
+                    <span data-sr-only style={SR_ONLY}>Program spending: </span>
+                    {row.programPct == null ? '—' : `${row.programPct}%`}
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
-                    <Kicker p={p}>Program %</Kicker>
-                    <span style={{ fontFamily: FONT_MONO, fontSize: 12.5, color: p.fg }}>
-                      {row.programPct == null ? '—' : `${row.programPct}%`}
-                    </span>
+                  <span style={{ justifySelf: 'end', minWidth: 0 }}>
+                    <Tag tone="muted" p={p}>{row.verification}</Tag>
                   </span>
-                </div>
-
-                {/* Three equal supporting signals. A fixed 3-column grid rather
-                    than flex-wrap, so the row is identical on every card and at
-                    every phone width instead of breaking wherever it happens to
-                    run out of room. */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginTop: 10 }}>
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
-                    <Kicker p={p}>Finances</Kicker>
-                    <RatingCell rating={row.financialHealth} p={p} />
-                  </span>
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
-                    <Kicker p={p}>Risk</Kicker>
-                    <RatingCell rating={row.risk} p={p} />
-                  </span>
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
-                    <Kicker p={p}>Donor fit</Kicker>
-                    <RatingCell rating={row.donorFit} p={p} />
-                  </span>
-                </div>
-
-                {/* Footer: evidence stage, and Compare demoted to where a
-                    secondary action belongs. Padding keeps the tap target at
-                    44px without the control looking that large. */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginTop: 11 }}>
-                  <Tag tone="muted" p={p}>{row.verification}</Tag>
                   <button
                     type="button"
                     role="checkbox"
                     aria-checked={isSelected}
                     aria-label={`Select ${row.name} to compare`}
                     onClick={(e) => { e.stopPropagation(); toggleSelect(row.ein); }}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: FONT_MONO, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: isSelected ? p.accent : p.sub2, cursor: 'pointer', background: 'none', border: 'none', padding: '12px 2px 12px 12px', margin: '-12px -2px -12px -12px' }}
+                    style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 13, margin: -13 }}
                   >
                     <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${isSelected ? p.accent : p.rule2}`, background: isSelected ? p.accent : 'transparent', display: 'inline-block' }} />
-                    Compare
                   </button>
                 </div>
               </div>

@@ -7,7 +7,7 @@
 // same `row.programPct` with its own separate JSX and was left unguarded.
 
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -59,9 +59,11 @@ describe('GmgBrowse mobile Program % card', () => {
     // changed.
     const card = container.querySelector('[data-charity-card="99-9999999"]') as HTMLElement;
     expect(card).not.toBeNull();
-    const programPctGroup = screen.getByText('Program %', { selector: 'span' });
-    expect(card.contains(programPctGroup)).toBe(true);
-    expect(programPctGroup.parentElement).toHaveTextContent('—');
-    expect(programPctGroup.parentElement).not.toHaveTextContent('0%');
+    // The per-card "Program %" label moved to the list's single header row, so
+    // the cell is found by its own attribute rather than by its label.
+    const cell = card.querySelector('[data-program-pct]') as HTMLElement;
+    expect(cell).not.toBeNull();
+    expect(cell).toHaveTextContent('—');
+    expect(cell).not.toHaveTextContent('0%');
   });
 });

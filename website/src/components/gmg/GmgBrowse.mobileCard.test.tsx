@@ -1,13 +1,13 @@
-// GmgBrowse — mobile card hierarchy and layout.
+// GmgBrowse — the mobile scan list.
 //
-// The phone card had grown a shape nobody chose: "Compare", a secondary
-// action, was the first thing in every card, above the charity's own name;
-// and the six signals sat in a flex-wrap row that broke 4 + 2 at a 393px
-// Pixel width, so every card ended in a short orphan line and a ragged gap.
+// The phone list is dense on purpose: 169 charities, so the scan is the whole
+// job. Getting there meant taking the labels off every card and putting them
+// in one header row, and taking the rating words ("Strong", "Moderate") off
+// the Harvey balls, which already encode the level.
 //
-// Both are layout properties, so both can regress silently — nothing throws
-// when a card reads in the wrong order or wraps badly. These pin the two
-// decisions that fixed it.
+// Both moves are the kind that regress silently — nothing throws when a
+// heading stops sitting above its column, or when a rating that used to be
+// announced becomes a bare graphic. These pin what makes the density safe.
 
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
@@ -53,47 +53,82 @@ const renderBrowse = () => render(<MemoryRouter><GmgBrowse isDark={false} /></Me
 const card = (container: HTMLElement) =>
   container.querySelector('[data-charity-card="12-3456789"]') as HTMLElement;
 
-describe('GmgBrowse mobile card', () => {
-  it('leads with the charity name, not the Compare control', () => {
-    const { container } = renderBrowse();
-    const text = card(container).textContent ?? '';
+/** The card's signal row — the grid holding the four balls. */
+const signalRow = (container: HTMLElement) =>
+  card(container).querySelector('[data-program-pct]')!.parentElement as HTMLElement;
 
-    expect(text.indexOf('Test Relief Fund')).toBeGreaterThanOrEqual(0);
-    expect(text.indexOf('Test Relief Fund')).toBeLessThan(text.indexOf('Compare'));
+/**
+ * Text a sighted reader actually sees.
+ *
+ * textContent includes the visually-hidden spans that carry each ball's
+ * rating for assistive tech, so asserting on it directly would claim the
+ * words are on the page when the whole point is that they are not.
+ */
+const visibleText = (el: HTMLElement): string => {
+  const clone = el.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll('[data-sr-only]').forEach((s) => s.remove());
+  return clone.textContent ?? '';
+};
+
+describe('GmgBrowse mobile scan list', () => {
+  it('leads with the charity name, not the compare control', () => {
+    renderBrowse();
+    const name = screen.getByText('Test Relief Fund');
+    const box = screen.getByRole('checkbox', { name: 'Select Test Relief Fund to compare' });
+
+    // eslint-disable-next-line no-bitwise
+    const boxComesAfterName = name.compareDocumentPosition(box) & Node.DOCUMENT_POSITION_FOLLOWING;
+    expect(boxComesAfterName).toBeTruthy();
   });
 
-  it('lays the three supporting signals out in a fixed three-column grid', () => {
-    // A flex-wrap row is what produced the ragged 4 + 2 break. An explicit
-    // three-column grid renders identically on every card at every width.
+  it('lays every card on the same column track as the header', () => {
+    // This is the whole basis for labelling the columns once. If the two
+    // tracks drift, the headings sit above the wrong balls and say something
+    // untrue — silently, because both still render.
     const { container } = renderBrowse();
-    const financesLabel = screen.getByText('Finances', { selector: 'span' });
-    const grid = financesLabel.parentElement!.parentElement as HTMLElement;
+    const header = screen.getByText('GMG', { selector: 'span' }).parentElement as HTMLElement;
 
-    expect(grid.style.display).toBe('grid');
-    expect(grid.style.gridTemplateColumns).toBe('repeat(3, 1fr)');
-    expect(grid.children).toHaveLength(3);
+    expect(header.style.display).toBe('grid');
+    expect(header.style.gridTemplateColumns).not.toBe('');
+    expect(signalRow(container).style.gridTemplateColumns).toBe(header.style.gridTemplateColumns);
   });
 
-  it('keeps GMG out of that grid, on its own line as the headline verdict', () => {
+  it('names each column exactly once, in the header rather than per card', () => {
     const { container } = renderBrowse();
-    const financesLabel = screen.getByText('Finances', { selector: 'span' });
-    const grid = financesLabel.parentElement!.parentElement as HTMLElement;
-    const gmgLabel = screen.getByText('GMG', { selector: 'span' });
+    // Scoped to the list header: "Evidence" also labels a filter in the facet
+    // bar, and "Risk" appears in the facets too.
+    const header = screen.getByText('GMG', { selector: 'span' }).parentElement as HTMLElement;
+    const headings = Array.from(header.children).map((c) => c.textContent);
 
-    expect(card(container).contains(gmgLabel)).toBe(true);
-    expect(grid.contains(gmgLabel)).toBe(false);
+    expect(headings).toEqual(['GMG', 'Fin', 'Risk', 'Fit', 'Prog', 'Evidence', 'Compare']);
+    // ...and no card repeats them.
+    const seen = visibleText(card(container));
+    for (const heading of ['Fin', 'Risk', 'Fit', 'Prog', 'Compare']) {
+      expect(seen).not.toContain(heading);
+    }
+  });
+
+  it('drops the rating words from the page but keeps them for screen readers', () => {
+    // "Strong / Strong / Moderate / Strong" read four times on every card.
+    // The ball encodes the level; assistive tech still needs the words.
+    const { container } = renderBrowse();
+
+    expect(visibleText(signalRow(container))).not.toContain('Strong');
+    expect(visibleText(signalRow(container))).not.toContain('Moderate');
+    // Still announced, from the hidden spans the helper above strips.
+    expect(card(container).textContent).toContain('Finances: Strong');
+    expect(card(container).textContent).toContain('Risk: Moderate');
+    expect(card(container).textContent).toContain('Donor fit: Strong');
   });
 
   it('drops the EIN from the card, keeping cause and size', () => {
-    // A donor scanning 169 charities does not pick one by tax id, and it cost
-    // a third of the meta line.
     const text = card(renderBrowse().container).textContent ?? '';
 
     expect(text).toContain('Humanitarian Relief');
     expect(text).not.toContain('12-3456789');
   });
 
-  it('still exposes Compare as a real checkbox', () => {
+  it('still exposes compare as a real checkbox', () => {
     renderBrowse();
     const box = screen.getByRole('checkbox', { name: 'Select Test Relief Fund to compare' });
 
