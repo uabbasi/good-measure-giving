@@ -270,6 +270,13 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
     ['Risk', c.riskLevel, 'overall'],
   ];
 
+  // A phone fits three of these cells across, so a cell reading "— / not
+  // reported" spends a third of the strip saying nothing — and it led, since
+  // cost-per-beneficiary is both first and the figure most often missing.
+  // Desktop has room for the full set and keeps it: there, the gap is
+  // information.
+  const shownStats = isMobile ? statCells.filter(([, v]) => v !== '—') : statCells;
+
   return (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
       {/* Motif nav — self-contained (app chrome is suppressed for this view) */}
@@ -426,8 +433,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
         <>
           {/* Stat strip */}
           <section style={{ borderBottom: sectionBorder, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', background: p.bg2 }}>
-            {statCells.map(([l, v, sub], i) => (
-              <div key={l} style={{ padding: '12px 14px', borderRight: i < statCells.length - 1 ? sectionBorder : 'none', borderTop: i >= 7 ? sectionBorder : 'none' }}>
+            {shownStats.map(([l, v, sub], i) => (
+              <div key={l} style={{ padding: '12px 14px', borderRight: i < shownStats.length - 1 ? sectionBorder : 'none', borderTop: i >= 7 ? sectionBorder : 'none' }}>
                 <Kicker p={p}>{l}</Kicker>
                 <div style={{ marginTop: 4 }}>
                   <Figure size={24} color={l === 'Risk' ? (p[riskTone(c.riskLevel)] as string) : p.fg}>{v}</Figure>

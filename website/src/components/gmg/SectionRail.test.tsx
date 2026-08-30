@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { act } from 'react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { SectionRail } from './SectionRail';
+import { SectionRail, MOBILE_RAIL_OFFSET } from './SectionRail';
 import { gmgPalette } from './tokens';
 
 const p = gmgPalette(false);
@@ -100,5 +100,29 @@ describe('SectionRail', () => {
   it('is labelled as navigation for assistive tech', () => {
     const { container } = render(<SectionRail sections={sections} p={p} isMobile={false} />);
     expect(container.querySelector('nav')?.getAttribute('aria-label')).toMatch(/section/i);
+  });
+});
+
+describe('SectionRail jump-target offset', () => {
+  // The mobile bar is sticky at top:0, so without an offset every jump from it
+  // parks the target section's heading behind the bar — you land inside a
+  // section that appears to have no title, which reads as a dead link.
+  it('offsets jump targets past the sticky bar on mobile', () => {
+    const { container } = render(<SectionRail sections={sections} p={p} isMobile />);
+    const css = container.querySelector('style')?.textContent ?? '';
+
+    expect(css).toContain('[data-section]');
+    expect(css).toContain(`scroll-margin-top:${MOBILE_RAIL_OFFSET}px`);
+  });
+
+  it('leaves desktop jumps unoffset — nothing overlays the content there', () => {
+    const { container } = render(<SectionRail sections={sections} p={p} isMobile={false} />);
+    expect(container.querySelector('style')).toBeNull();
+  });
+
+  it('keeps the offset clear of the bar it compensates for', () => {
+    // Pins the relationship rather than the number: an offset shorter than
+    // the bar puts the heading straight back underneath it.
+    expect(MOBILE_RAIL_OFFSET).toBeGreaterThan(40);
   });
 });

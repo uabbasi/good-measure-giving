@@ -33,6 +33,47 @@ const load = (file: string) => adaptCharity(JSON.parse(fs.readFileSync(path.join
 // fixture for this section specifically.
 const richNoGrants = () => load('charity-01-0548371.json');
 
+describe('WhatTheyDo Quick facts on a phone', () => {
+  // Label left / value right is fine while the value fits its line. Programs
+  // and Populations are comma-joined lists that run three or four lines at
+  // 393px, and right-aligned wrapped text goes ragged down its left edge —
+  // the side you read from. Long values drop under their label instead.
+  const factRow = (container: HTMLElement, label: string): HTMLElement => {
+    const cell = Array.from(container.querySelectorAll('span')).find(
+      (s) => s.textContent === label,
+    );
+    if (!cell) throw new Error(`no Quick facts row labelled "${label}"`);
+    return cell.parentElement as HTMLElement;
+  };
+
+  // The IRC has a programs list well past one line, and a two-word wallet.
+  const longAndShort = () => load('charity-13-5660870.json');
+
+  it('stacks a value too long for its line', () => {
+    const { container } = render(<WhatTheyDo c={longAndShort()} p={p} isMobile padX={16} />);
+    const row = factRow(container, 'Programs');
+
+    expect(row.style.flexDirection).toBe('column');
+    expect((row.lastElementChild as HTMLElement).style.textAlign).toBe('left');
+  });
+
+  it('leaves a short value in the compact two-column row', () => {
+    const { container } = render(<WhatTheyDo c={longAndShort()} p={p} isMobile padX={16} />);
+    const row = factRow(container, 'Wallet');
+
+    expect(row.style.flexDirection).toBe('row');
+    expect((row.lastElementChild as HTMLElement).style.textAlign).toBe('right');
+  });
+
+  it('leaves desktop alone — the card is wide enough there', () => {
+    const { container } = render(<WhatTheyDo c={longAndShort()} p={p} isMobile={false} padX={24} />);
+    const row = factRow(container, 'Programs');
+
+    expect(row.style.flexDirection).toBe('row');
+    expect((row.lastElementChild as HTMLElement).style.textAlign).toBe('right');
+  });
+});
+
 describe('WhatTheyDo', () => {
   it('renders the About lede and Quick facts card ahead of the cited summary', () => {
     const c = richNoGrants();

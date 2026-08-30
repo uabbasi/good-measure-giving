@@ -13,6 +13,10 @@ export interface RailSection {
   label: string;
 }
 
+// The mobile bar renders 40px tall; 8px more keeps the section heading clear
+// of it rather than flush against it after a jump.
+export const MOBILE_RAIL_OFFSET = 48;
+
 export const SectionRail: React.FC<{
   sections: RailSection[];
   p: GmgPalette;
@@ -60,26 +64,36 @@ export const SectionRail: React.FC<{
 
   if (isMobile) {
     return (
-      <nav
-        aria-label="Page sections"
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 20,
-          display: 'flex',
-          gap: 4,
-          overflowX: 'auto',
-          background: p.bg2,
-          borderBottom: `1px solid ${p.rule}`,
-          padding: '6px 8px',
-        }}
-      >
-        {sections.map((s) => (
-          <a key={s.id} href={`#${s.id}`} style={link(s)}>
-            {s.label}
-          </a>
-        ))}
-      </nav>
+      <>
+        {/* This bar is sticky at top:0, so a jump from it lands the target
+            section underneath the bar itself — you arrive inside a section
+            with its heading hidden, which reads as "the link went nowhere".
+            scroll-margin-top pushes the landing down past the bar. It is
+            declared here rather than on Section because the overlap only
+            exists while this bar does: on desktop the rail sits in its own
+            column and an offset would just leave dead headroom. */}
+        <style>{`[data-section]{scroll-margin-top:${MOBILE_RAIL_OFFSET}px}`}</style>
+        <nav
+          aria-label="Page sections"
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 20,
+            display: 'flex',
+            gap: 4,
+            overflowX: 'auto',
+            background: p.bg2,
+            borderBottom: `1px solid ${p.rule}`,
+            padding: '6px 8px',
+          }}
+        >
+          {sections.map((s) => (
+            <a key={s.id} href={`#${s.id}`} style={link(s)}>
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      </>
     );
   }
 

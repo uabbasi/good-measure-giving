@@ -88,12 +88,21 @@ export const WhatTheyDo: React.FC<{
             ['Risk level', c.riskLevel],
           ] as [string, string][])
             .filter(([, v]) => v)
-            .map(([k, v], i, arr) => (
-              <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 0', borderBottom: i < arr.length - 1 ? sectionBorder : 'none' }}>
+            .map(([k, v], i, arr) => {
+              // Label left / value right works while the value fits its line.
+              // Programs and Populations are comma-joined lists that run to
+              // three or four lines on a phone, and right-aligned wrapped text
+              // is ragged down its left edge — the side you read from. Past
+              // roughly one line's worth, drop the value under its label and
+              // align it left. Short values keep the compact two-column row.
+              const stacked = isMobile && v.length > 28;
+              return (
+              <div key={k} style={{ display: 'flex', flexDirection: stacked ? 'column' : 'row', justifyContent: 'space-between', gap: stacked ? 3 : 12, padding: '8px 0', borderBottom: i < arr.length - 1 ? sectionBorder : 'none' }}>
                 <span style={{ color: p.sub, flexShrink: 0 }}>{k}</span>
-                <span style={{ color: k === 'Risk level' ? (p[riskTone(c.riskLevel)] as string) : p.fg, fontWeight: k === 'Risk level' ? 600 : 400, fontFamily: FONT_MONO, fontSize: 11, textAlign: 'right' }}>{v}</span>
+                <span style={{ color: k === 'Risk level' ? (p[riskTone(c.riskLevel)] as string) : p.fg, fontWeight: k === 'Risk level' ? 600 : 400, fontFamily: FONT_MONO, fontSize: 11, textAlign: stacked ? 'left' : 'right' }}>{v}</span>
               </div>
-            ))}
+              );
+            })}
         </div>
       </div>
     </div>
