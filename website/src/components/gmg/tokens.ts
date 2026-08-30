@@ -27,6 +27,15 @@ export interface GmgPalette {
   cautionBg: string;
   neg: string;
   negBg: string;
+  /**
+   * A surface while it is being pressed. Distinct from bg3, which is a
+   * resting elevation step: bg3 moves the light surface 16/255 but the dark
+   * one only 6/255, so reusing it for touch feedback gave dark-mode users
+   * roughly a third of the signal — in practice, none. These two are sized
+   * to the same 30/255 step from their own card colour, so a tap looks like
+   * a tap in either theme, and body text stays above 9.9:1 on both.
+   */
+  press: string;
 }
 
 const light: GmgPalette = {
@@ -52,6 +61,7 @@ const light: GmgPalette = {
   cautionBg: '#f0e3b0',
   neg: '#a23824',
   negBg: '#f0d9d0',
+  press: '#cfc8b1',
 };
 
 const dark: GmgPalette = {
@@ -77,6 +87,7 @@ const dark: GmgPalette = {
   cautionBg: '#38311e',
   neg: '#e58a70',
   negBg: '#3a231d',
+  press: '#363831',
 };
 
 export const gmgPalette = (isDark: boolean): GmgPalette => (isDark ? dark : light);

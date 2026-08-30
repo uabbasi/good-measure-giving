@@ -10,11 +10,12 @@
 // announced becomes a bare graphic. These pin what makes the density safe.
 
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { GmgBrowse } from './GmgBrowse';
+import { gmgPalette } from './tokens';
 
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
@@ -48,7 +49,9 @@ vi.mock('../../hooks/useCharities', () => ({
   }),
 }));
 
-const renderBrowse = () => render(<MemoryRouter><GmgBrowse isDark={false} /></MemoryRouter>);
+let dark = false;
+
+const renderBrowse = () => render(<MemoryRouter><GmgBrowse isDark={dark} /></MemoryRouter>);
 
 const card = (container: HTMLElement) =>
   container.querySelector('[data-charity-card="12-3456789"]') as HTMLElement;
@@ -174,5 +177,20 @@ describe('GmgBrowse mobile card — what looks tappable', () => {
     expect(css).toContain('var(--gmg-card-press)');
     const list = card(container).parentElement as HTMLElement;
     expect(list.style.getPropertyValue('--gmg-card-press')).not.toBe('');
+  });
+
+  it('takes the pressed colour from the press token, not a resting elevation', () => {
+    // The first version reused bg3, which is a resting step and moves the two
+    // themes by wildly different amounts. See the contrast test below for why
+    // that mattered; this pins where the colour comes from.
+    for (const isDark of [false, true]) {
+      dark = isDark;
+      const { container } = renderBrowse();
+      const list = card(container).parentElement as HTMLElement;
+
+      expect(list.style.getPropertyValue('--gmg-card-press')).toBe(gmgPalette(isDark).press);
+      cleanup();
+    }
+    dark = false;
   });
 });

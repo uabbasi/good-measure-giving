@@ -384,7 +384,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
            Container tap navigates; the name is a real Link so keyboard and
            crawlers both work; compare is a real checkbox. */
         <section
-          style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8, ['--gmg-card-press' as any]: p.bg3 }}
+          style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8, ['--gmg-card-press' as any]: p.press }}
         >
           {/* A card that navigates has to say so. The desktop table ends every
               row with a "›" and gets a hover state; the mobile card had
@@ -408,7 +408,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               gap: 10,
               alignItems: 'center',
               padding: '7px 14px 8px',
-              borderBottom: `1px solid ${p.rule}`,
+              // Matches the cards below it. Left at `rule` it read as the
+              // faintest line on the list once the card edges were lifted.
+              borderBottom: `1px solid ${p.rule2}`,
             }}
           >
             {(['GMG', 'Fin', 'Risk', 'Fit'] as const).map((label) => (
@@ -437,7 +439,12 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 key={row.ein}
                 data-charity-card={row.ein}
                 onClick={() => navigate(hrefFor(row.ein))}
-                style={{ border: sectionBorder, borderRadius: 8, padding: '10px 13px 11px', background: p.bg2, cursor: 'pointer' }}
+                /* rule2, not the rule the rest of the page divides with: the
+                   card fill sits 1.06:1 from the page behind it in dark mode,
+                   so the border is doing nearly all the work of saying where
+                   one card ends. At `rule` that edge was 1.19:1 and the list
+                   read as flat. */
+                style={{ border: `1px solid ${p.rule2}`, borderRadius: 8, padding: '10px 13px 11px', background: p.bg2, cursor: 'pointer' }}
               >
                 {/* Identity leads. */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
@@ -455,11 +462,17 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   </span>
                   {/* Disclosure indicator — the same "›" the desktop table
                       already ends each row with. Decorative: the name beside
-                      it is the real link and carries the destination. */}
+                      it is the real link and carries the destination.
+
+                      Set in `sub`, not the `sub2` the desktop chevron uses.
+                      sub2 lands at 2.7:1 on the light card, under the 3:1
+                      floor for a graphic that carries meaning — and on a
+                      phone this mark is the whole affordance, where the
+                      desktop row also has a cursor and a hover state. */}
                   <span
                     data-card-chevron
                     aria-hidden="true"
-                    style={{ flexShrink: 0, color: p.sub2, fontSize: 16, lineHeight: 1 }}
+                    style={{ flexShrink: 0, color: p.sub, fontSize: 16, lineHeight: 1 }}
                   >
                     ›
                   </span>
