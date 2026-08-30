@@ -37,6 +37,7 @@ import { useIsMobile } from './useIsMobile';
 import { useCommunityMember } from '../../auth/useAuth';
 import { AnonWall } from './AnonWall';
 import { adaptCharity, GmgDimension } from './charityAdapter';
+import { EVIDENCE_STAGE_EXPLAINERS } from './facetState';
 import { dataVintage } from './sections/dataVintage';
 import { WhatTheyDo } from './sections/WhatTheyDo';
 import { WhereMoneyGoes } from './sections/WhereMoneyGoes';
@@ -89,12 +90,10 @@ export const ASSESSMENT_LABEL_EXPLAINERS: Record<string, string> = {
   'Limited Basis': 'Not enough evidence yet for a confident assessment — often a newer or smaller organization.',
 };
 
-export const EVIDENCE_STAGE_EXPLAINERS: Record<string, string> = {
-  Verified: 'Long track record with credible, third-party-backed evidence of outcomes.',
-  Established: 'Solid evidence and a real operating history, short of full third-party verification.',
-  Building: 'Evidence base is still developing.',
-  Early: 'Too new, or too little independent evidence yet, for a confident read.',
-};
+// Defined in facetState, beside the rank and display order that go with it —
+// /browse renders the same four words in its legend. Re-exported here because
+// this page was their first home and the tag test imports them from it.
+export { EVIDENCE_STAGE_EXPLAINERS };
 
 // Module-scope cards — kept out of the render body so they keep a stable
 // identity across renders (p + sectionBorder come in as props).

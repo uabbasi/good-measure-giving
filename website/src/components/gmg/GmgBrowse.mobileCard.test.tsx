@@ -98,17 +98,41 @@ describe('GmgBrowse mobile scan list', () => {
 
   it('names each column exactly once, in the header rather than per card', () => {
     const { container } = renderBrowse();
-    // Scoped to the list header: "Evidence" also labels a filter in the facet
-    // bar, and "Risk" appears in the facets too.
+    // Scoped to the list header: "Risk" also labels a filter in the facet bar.
     const header = screen.getByText('GMG', { selector: 'span' }).parentElement as HTMLElement;
     const headings = Array.from(header.children).map((c) => c.textContent);
 
-    expect(headings).toEqual(['GMG', 'Fin', 'Risk', 'Fit', 'Prog', 'Evidence', 'Compare']);
+    expect(headings).toEqual(['GMG', 'Fin', 'Risk', 'Fit', 'Prog', 'Compare']);
     // ...and no card repeats them.
     const seen = visibleText(card(container));
     for (const heading of ['Fin', 'Risk', 'Fit', 'Prog', 'Compare']) {
       expect(seen).not.toContain(heading);
     }
+  });
+
+  it('leaves evidence off the phone card entirely', () => {
+    // It was the row's only ranked signal rendered as a word, in the same Tag
+    // the wallet category uses — so the design called it a category, and
+    // "Verified" read as a stamp on the charity rather than a step on a scale
+    // about its evidence. It keeps its column on desktop, where the rank is
+    // drawn and a legend sits under the table.
+    const { container } = renderBrowse();
+    const seen = visibleText(card(container));
+
+    for (const stage of ['Verified', 'Established', 'Building', 'Early']) {
+      expect(seen).not.toContain(stage);
+    }
+    expect(card(container).querySelector('[data-evidence]')).toBeNull();
+  });
+
+  it('keeps the header and the card on one column track after the removal', () => {
+    // The track is shared, so dropping a column from one side and not the
+    // other slides every ball out from under its heading — silently.
+    const { container } = renderBrowse();
+    const header = screen.getByText('GMG', { selector: 'span' }).parentElement as HTMLElement;
+
+    expect(signalRow(container).style.gridTemplateColumns).toBe(header.style.gridTemplateColumns);
+    expect(header.style.gridTemplateColumns).not.toContain('44px');
   });
 
   it('drops the rating words from the page but keeps them for screen readers', () => {

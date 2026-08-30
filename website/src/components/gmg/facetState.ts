@@ -56,7 +56,41 @@ const SIZE_BANDS: readonly SizeBand[] = ['lt1m', '1to10m', '10to100m', 'gte100m'
 // The four ui_signals_v1.evidence_stage (row.verification) values found
 // across the corpus. Exported so the test suite can assert this list can't
 // silently drift from the data, the same way CAUSE_KEYS is guarded above.
-export const EVIDENCE_VALUES = ['Verified', 'Established', 'Early', 'Building'] as const;
+//
+// These are a scale, so the rank is the definition and the display order is
+// derived from it. They used to be two separate literals — this list read
+// Verified, Established, Early, Building while the sort ranked Building above
+// Early — so the filter bar offered a four-step scale with its bottom two
+// steps swapped, and nothing failed.
+export const EVIDENCE_RANK: Record<string, number> = {
+  Verified: 4,
+  Established: 3,
+  Building: 2,
+  Early: 1,
+};
+
+export const EVIDENCE_VALUES = (Object.keys(EVIDENCE_RANK) as string[])
+  .sort((a, b) => EVIDENCE_RANK[b] - EVIDENCE_RANK[a]) as readonly string[];
+
+/**
+ * What each step of the scale actually claims.
+ *
+ * These live here, beside the rank and the order, rather than on the charity
+ * page that first needed them: /browse renders the same four words and now
+ * needs the same sentences for its legend, and four sentences kept in two
+ * places drift. Importing them from GmgCharityDetail instead would pull the
+ * whole detail page into the browse chunk.
+ *
+ * Worth remembering when editing these: "Verified" is a claim about the
+ * evidence behind a charity's outcomes, not about the charity, and nothing
+ * here is a certification GMG issues.
+ */
+export const EVIDENCE_STAGE_EXPLAINERS: Record<string, string> = {
+  Verified: 'Long track record with credible, third-party-backed evidence of outcomes.',
+  Established: 'Solid evidence and a real operating history, short of full third-party verification.',
+  Building: 'Evidence base is still developing.',
+  Early: 'Too new, or too little independent evidence yet, for a confident read.',
+};
 
 export const INITIAL_FACET_STATE: FacetState = {
   query: '',

@@ -32,10 +32,12 @@ import {
   facetStateToSearch,
   facetStateFromSearch,
   isFacetActive,
+  EVIDENCE_RANK,
+  EVIDENCE_VALUES,
+  EVIDENCE_STAGE_EXPLAINERS,
 } from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-const EVIDENCE_RANK: Record<string, number> = { Verified: 4, Established: 3, Building: 2, Early: 1 };
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'programPct' | 'evidence' | 'size';
 type SortDir = 'asc' | 'desc';
 
@@ -64,15 +66,61 @@ const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = (
   </span>
 );
 
+const EVIDENCE_STEPS = 4;
+
+/**
+ * Evidence, drawn as the four-step scale it is.
+ *
+ * It rendered as <Tag tone="muted"> — the same chip the wallet category uses
+ * two columns to its left. So the row's one ranked signal was dressed as a
+ * category, and with no visible scale behind them the words read as a status
+ * on the charity ("this one is Verified") rather than a step on a scale about
+ * its evidence. Every other ranked column here draws its rank; this one now
+ * does too, and the legend under the table says what is being ranked.
+ */
+const EvidenceCell: React.FC<{ stage: string; p: GmgPalette }> = ({ stage, p }) => {
+  const rank = EVIDENCE_RANK[stage] ?? 0;
+  return (
+    <span data-evidence={stage} style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+      <span aria-hidden="true" style={{ display: 'inline-flex', gap: 2, alignItems: 'flex-end' }}>
+        {Array.from({ length: EVIDENCE_STEPS }, (_, i) => (
+          <span
+            key={i}
+            style={{
+              width: 4,
+              height: 5 + i * 2,
+              borderRadius: 1,
+              background: i < rank ? p.accent : p.rule2,
+            }}
+          />
+        ))}
+      </span>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 10.5, letterSpacing: '0.04em', color: p.sub }}>
+        {stage}
+      </span>
+      {/* The bars are decorative; the rank they encode is not. */}
+      <span data-sr-only style={SR_ONLY}>{` — ${rank} of ${EVIDENCE_STEPS}`}</span>
+    </span>
+  );
+};
+
 /**
  * The mobile list's column track, shared by the sticky header and every card.
  *
- * Four fixed ball columns, then program %, then evidence, then the compare
- * box. Both rows are laid out on this same string, which is what keeps each
- * ball under its heading at any phone width. Change it in one place or the
- * headings stop meaning anything.
+ * Four fixed ball columns, then program %, then the compare box. Both rows
+ * are laid out on this same string, which is what keeps each ball under its
+ * heading at any phone width. Change it in one place or the headings stop
+ * meaning anything.
+ *
+ * Evidence used to sit between the percentage and compare, as a word chip:
+ * "Verified", "Established". On a phone that is the only ranked signal in the
+ * row rendered as a word, in the same Tag the wallet category uses — so the
+ * design called it a category, and the words read as a stamp on the charity
+ * rather than a step on a scale about its evidence. It keeps its column on
+ * desktop, where the rank is drawn and a legend sits under the table; the
+ * facet bar still filters by it at both widths.
  */
-const SIGNAL_COLS = 'repeat(4, 18px) 44px 1fr 52px';
+const SIGNAL_COLS = 'repeat(4, 18px) 1fr 52px';
 
 const SR_ONLY: React.CSSProperties = {
   position: 'absolute',
@@ -421,9 +469,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2 }}>
               Prog
             </span>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, justifySelf: 'end' }}>
-              Evidence
-            </span>
             {/* The checkbox below carries no visible word of its own, so this
                 heading is the only thing naming it. Without it the row ends in
                 an unexplained empty square. */}
@@ -495,9 +540,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   >
                     <span data-sr-only style={SR_ONLY}>Program spending: </span>
                     {row.programPct == null ? '—' : `${row.programPct}%`}
-                  </span>
-                  <span style={{ justifySelf: 'end', minWidth: 0 }}>
-                    <Tag tone="muted" p={p}>{row.verification}</Tag>
                   </span>
                   <button
                     type="button"
@@ -602,7 +644,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     {row.programPct == null ? '—' : `${row.programPct}%`}
                   </td>
                   <td style={{ padding: '8px 6px' }}>
-                    <Tag tone="muted" p={p}>{row.verification}</Tag>
+                    <EvidenceCell stage={row.verification} p={p} />
                   </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
                     {fmtMoney(row.revenue)}
@@ -612,6 +654,40 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               ))}
             </tbody>
           </table>
+
+          {/* What the Evidence column is a scale of.
+              The column header carries a title tooltip, which is invisible
+              until you hover the one word you already didn't understand.
+              Stated here instead, in rank order, so the four words are
+              legible without discovering anything. */}
+          <div
+            data-evidence-legend
+            style={{
+              marginTop: 18,
+              paddingTop: 14,
+              borderTop: sectionBorder,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+              gap: '10px 22px',
+            }}
+          >
+            <p style={{ gridColumn: '1 / -1', margin: 0, fontSize: 12, color: p.sub, maxWidth: '68ch' }}>
+              <Kicker p={p}>Evidence</Kicker>{' '}
+              rates how well a charity&rsquo;s <em>claims about its results</em> are
+              backed up &mdash; not the charity itself. None of these is a certification
+              Good Measure Giving issues.
+            </p>
+            {EVIDENCE_VALUES.map((stage) => (
+              <div key={stage} style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
+                <span style={{ flexShrink: 0 }}>
+                  <EvidenceCell stage={stage} p={p} />
+                </span>
+                <span style={{ fontSize: 11.5, color: p.sub2, lineHeight: 1.45 }}>
+                  {EVIDENCE_STAGE_EXPLAINERS[stage]}
+                </span>
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

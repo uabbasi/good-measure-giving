@@ -43,7 +43,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     category: 'methodology',
     q: "Why do I see qualitative labels instead of a big number?",
-    a: "We intentionally prioritize qualitative signals to avoid false precision. A charity now shows an archetype (what kind of organization it is), an evidence stage (Verified, Established, Building, or Limited Evidence), four signal states (Evidence, Financial Health, Donor Fit, Risk), and a recommendation cue (Maximum Alignment, Strong Alignment, Mixed Signals, or Needs Verification). The numeric score still exists and is available in collapsed methodology details, but it is no longer the primary cue for browsing."
+    a: "We intentionally prioritize qualitative signals to avoid false precision. A charity now shows an archetype (what kind of organization it is), an evidence stage rating how well its results are evidenced (Verified, Established, Building, or Early), four signal states (Evidence, Financial Health, Donor Fit, Risk), and a recommendation cue (Maximum Alignment, Strong Alignment, Mixed Signals, or Needs Verification). The numeric score still exists and is available in collapsed methodology details, but it is no longer the primary cue for browsing."
   },
   {
     category: 'methodology',

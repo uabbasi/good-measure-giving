@@ -6,6 +6,7 @@ import { buildCharitiesIndex } from '../../hooks/useCharities';
 import {
   INITIAL_FACET_STATE, facetReducer, applyFacets, facetCounts,
   isFacetActive, facetStateToSearch, facetStateFromSearch, CAUSE_KEYS, EVIDENCE_VALUES,
+  EVIDENCE_RANK,
 } from './facetState';
 
 const index = JSON.parse(readFileSync(join(__dirname, '../../../data/charities.json'), 'utf-8'));
@@ -174,5 +175,26 @@ describe('URL round trip', () => {
 
   it('does not resurrect the retired ?type= parameter as facet state', () => {
     expect(facetStateFromSearch('?type=serif')).toEqual(INITIAL_FACET_STATE);
+  });
+});
+
+describe('evidence scale ordering', () => {
+  // Evidence is a four-step scale, but its display order and its sort rank
+  // were two separate literals that disagreed: the filter bar listed Early
+  // above Building while the sort put Building above Early. The bottom two
+  // steps of the scale were swapped in the UI, and nothing failed.
+  it('offers the evidence filters best-first', () => {
+    expect([...EVIDENCE_VALUES]).toEqual(['Verified', 'Established', 'Building', 'Early']);
+  });
+
+  it('derives that order from the rank, so the two cannot drift again', () => {
+    const byRank = [...EVIDENCE_VALUES].sort((a, b) => EVIDENCE_RANK[b] - EVIDENCE_RANK[a]);
+    expect([...EVIDENCE_VALUES]).toEqual(byRank);
+  });
+
+  it('ranks every value it offers', () => {
+    for (const value of EVIDENCE_VALUES) {
+      expect(EVIDENCE_RANK[value]).toBeGreaterThan(0);
+    }
   });
 });
