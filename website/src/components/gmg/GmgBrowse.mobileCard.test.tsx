@@ -135,3 +135,44 @@ describe('GmgBrowse mobile scan list', () => {
     expect(box).toHaveAttribute('aria-checked', 'false');
   });
 });
+
+describe('GmgBrowse mobile card — what looks tappable', () => {
+  // The card navigates on tap, but said so nowhere: no chevron, no hover
+  // state a phone can show, and a name styled exactly like a heading. The one
+  // control that looked touchable was the compare checkbox, which is the one
+  // control that does not open the charity.
+
+  it('ends the identity row with a disclosure chevron', () => {
+    const { container } = renderBrowse();
+    const chevron = card(container).querySelector('[data-card-chevron]');
+
+    expect(chevron).not.toBeNull();
+    expect(chevron?.textContent).toBe('›');
+  });
+
+  it('hides the chevron from screen readers — the name already carries the link', () => {
+    const { container } = renderBrowse();
+    expect(card(container).querySelector('[data-card-chevron]')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('puts the chevron after the name, at the end of the row', () => {
+    const { container } = renderBrowse();
+    const name = screen.getByText('Test Relief Fund');
+    const chevron = card(container).querySelector('[data-card-chevron]') as HTMLElement;
+
+    // eslint-disable-next-line no-bitwise
+    expect(name.compareDocumentPosition(chevron) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('gives the card a pressed state, since a phone has no hover', () => {
+    const { container } = renderBrowse();
+    const css = container.querySelector('style')?.textContent ?? '';
+
+    expect(css).toContain('[data-charity-card]:active');
+    // The pressed colour comes from the palette through a custom property, so
+    // the rule works in both themes rather than hard-coding the light one.
+    expect(css).toContain('var(--gmg-card-press)');
+    const list = card(container).parentElement as HTMLElement;
+    expect(list.style.getPropertyValue('--gmg-card-press')).not.toBe('');
+  });
+});

@@ -383,7 +383,20 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
            Container tap navigates; the name is a real Link so keyboard and
            crawlers both work; compare is a real checkbox. */
-        <section style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8 }}>
+        <section
+          style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8, ['--gmg-card-press' as any]: p.bg3 }}
+        >
+          {/* A card that navigates has to say so. The desktop table ends every
+              row with a "›" and gets a hover state; the mobile card had
+              neither, so the only thing on it that looked touchable was the
+              compare checkbox — the one control that does NOT open the
+              charity. The chevron below is the standing cue; this is the
+              press state, which inline styles cannot express. The grey flash
+              Android paints on tap is suppressed in favour of it. */}
+          <style>{
+            '[data-charity-card]{-webkit-tap-highlight-color:transparent;transition:background-color 120ms ease}'
+            + '[data-charity-card]:active{background-color:var(--gmg-card-press)}'
+          }</style>
           <div
             style={{
               position: 'sticky',
@@ -439,6 +452,16 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   </Link>
                   <span style={{ flexShrink: 0 }}>
                     <Tag tone={row.walletIsZakat ? 'accent' : 'muted'} p={p}>{row.wallet}</Tag>
+                  </span>
+                  {/* Disclosure indicator — the same "›" the desktop table
+                      already ends each row with. Decorative: the name beside
+                      it is the real link and carries the destination. */}
+                  <span
+                    data-card-chevron
+                    aria-hidden="true"
+                    style={{ flexShrink: 0, color: p.sub2, fontSize: 16, lineHeight: 1 }}
+                  >
+                    ›
                   </span>
                 </div>
 
