@@ -10,7 +10,7 @@
 // announced becomes a bare graphic. These pin what makes the density safe.
 
 import '@testing-library/jest-dom';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -71,6 +71,14 @@ const visibleText = (el: HTMLElement): string => {
   const clone = el.cloneNode(true) as HTMLElement;
   clone.querySelectorAll('[data-sr-only]').forEach((s) => s.remove());
   return clone.textContent ?? '';
+};
+
+
+/** jsdom reads an inline hex back as `rgb(r, g, b)`. */
+const asRgb = (hex: string): string => {
+  const h = hex.replace('#', '');
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  return `rgb(${r}, ${g}, ${b})`;
 };
 
 describe('GmgBrowse mobile scan list', () => {
@@ -191,28 +199,70 @@ describe('GmgBrowse mobile card — what looks tappable', () => {
     expect(name.compareDocumentPosition(chevron) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('gives the card a pressed state, since a phone has no hover', () => {
+  it('actually changes the card when a finger goes down on it', () => {
+    // The regression this exists for: the press was a `:active` rule in a
+    // stylesheet, and the card sets `background` INLINE. An inline
+    // declaration beats any author rule that is not `!important`, so the rule
+    // lost the cascade in both themes and the press never rendered once — and
+    // because the same block killed the native Android tap flash, taps ended
+    // up with less feedback than before the feature existed. Asserting the
+    // CSS text was there is what let that ship; assert the element changes.
     const { container } = renderBrowse();
-    const css = container.querySelector('style')?.textContent ?? '';
+    const el = card(container);
+    const resting = el.style.background;
 
-    expect(css).toContain('[data-charity-card]:active');
-    // The pressed colour comes from the palette through a custom property, so
-    // the rule works in both themes rather than hard-coding the light one.
-    expect(css).toContain('var(--gmg-card-press)');
-    const list = card(container).parentElement as HTMLElement;
-    expect(list.style.getPropertyValue('--gmg-card-press')).not.toBe('');
+    fireEvent.pointerDown(el);
+
+    expect(el.style.background).not.toBe(resting);
+    expect(el.style.background).toBe(asRgb(gmgPalette(false).press));
   });
 
-  it('takes the pressed colour from the press token, not a resting elevation', () => {
-    // The first version reused bg3, which is a resting step and moves the two
-    // themes by wildly different amounts. See the contrast test below for why
-    // that mattered; this pins where the colour comes from.
+  it('marks the edge too, not just the fill', () => {
+    // Against the resting card the accent edge is 7.6:1 light and 9.9:1 dark,
+    // where any fill shift tops out near 2:1. On a dim screen the edge is the
+    // half of the cue that survives.
+    const { container } = renderBrowse();
+    const el = card(container);
+
+    fireEvent.pointerDown(el);
+    expect(el.style.borderColor).toBe(asRgb(gmgPalette(false).pressEdge));
+  });
+
+  it('snaps the press in rather than fading it in', () => {
+    // A tap can be 50ms. Easing in over 120ms means a quick one only ever
+    // reaches part of the colour before reversing.
+    const { container } = renderBrowse();
+    const el = card(container);
+
+    fireEvent.pointerDown(el);
+    expect(el.style.transition).toBe('none');
+  });
+
+  it('releases the press, and releases it on a scroll too', () => {
+    const { container } = renderBrowse();
+    const el = card(container);
+    const resting = el.style.background;
+
+    fireEvent.pointerDown(el);
+    fireEvent.pointerUp(el);
+    expect(el.style.background).toBe(resting);
+    // pointercancel is what fires when a touch becomes a scroll; without it
+    // every card dragged past would stay lit.
+    fireEvent.pointerDown(el);
+    fireEvent.pointerCancel(el);
+    expect(el.style.background).toBe(resting);
+    expect(el.style.borderColor).toBe(asRgb(gmgPalette(false).rule2));
+  });
+
+  it('presses in the palette of whichever theme is showing', () => {
     for (const isDark of [false, true]) {
       dark = isDark;
       const { container } = renderBrowse();
-      const list = card(container).parentElement as HTMLElement;
+      const el = card(container);
 
-      expect(list.style.getPropertyValue('--gmg-card-press')).toBe(gmgPalette(isDark).press);
+      fireEvent.pointerDown(el);
+      expect(el.style.background).toBe(asRgb(gmgPalette(isDark).press));
+      expect(el.style.borderColor).toBe(asRgb(gmgPalette(isDark).pressEdge));
       cleanup();
     }
     dark = false;

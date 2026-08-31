@@ -29,13 +29,27 @@ export interface GmgPalette {
   negBg: string;
   /**
    * A surface while it is being pressed. Distinct from bg3, which is a
-   * resting elevation step: bg3 moves the light surface 16/255 but the dark
-   * one only 6/255, so reusing it for touch feedback gave dark-mode users
-   * roughly a third of the signal — in practice, none. These two are sized
-   * to the same 30/255 step from their own card colour, so a tap looks like
-   * a tap in either theme, and body text stays above 9.9:1 on both.
+   * resting elevation step and moves the dark surface only 6/255.
+   *
+   * Sized by perceived lightness (CIE L*), not by RGB channel — an earlier
+   * pass matched the themes on an equal 30/255 channel step and called that
+   * equal feedback, which it is not: RGB is least perceptually uniform at the
+   * dark end. Light moves dL* 13.6, dark dL* 24.8, dark deliberately ahead
+   * because a dim phone screen is where this gets read. Body text stays above
+   * 6.8:1 on both, so a held card never swallows the charity's name.
+   *
+   * The fill is only half the cue; see pressEdge.
    */
   press: string;
+  /**
+   * The border of a pressed surface.
+   *
+   * Against the resting card this is 7.6:1 in light and 9.9:1 in dark, where
+   * the resting border is 1.4:1 and 1.6:1 — five times the separation any
+   * fill shift can buy, and it works by changing hue rather than lightness,
+   * which is what survives on a dark screen at low brightness.
+   */
+  pressEdge: string;
 }
 
 const light: GmgPalette = {
@@ -61,7 +75,8 @@ const light: GmgPalette = {
   cautionBg: '#f0e3b0',
   neg: '#a23824',
   negBg: '#f0d9d0',
-  press: '#cfc8b1',
+  press: '#c7c0a9',
+  pressEdge: '#3d4a30',
 };
 
 const dark: GmgPalette = {
@@ -87,7 +102,8 @@ const dark: GmgPalette = {
   cautionBg: '#38311e',
   neg: '#e58a70',
   negBg: '#3a231d',
-  press: '#363831',
+  press: '#4e5049',
+  pressEdge: '#b8c8a4',
 };
 
 export const gmgPalette = (isDark: boolean): GmgPalette => (isDark ? dark : light);

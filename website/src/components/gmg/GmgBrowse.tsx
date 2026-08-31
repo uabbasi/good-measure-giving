@@ -122,6 +122,51 @@ const EvidenceCell: React.FC<{ stage: string; p: GmgPalette }> = ({ stage, p }) 
  */
 const SIGNAL_COLS = 'repeat(4, 18px) 1fr 52px';
 
+/**
+ * Press feedback for the mobile card, written straight onto the element.
+ *
+ * This began as `[data-charity-card]:active { background-color: ... }` in a
+ * stylesheet, and it never applied once. The card sets `background` inline,
+ * and an inline declaration beats any author rule that is not `!important` —
+ * so the rule lost the cascade in both themes, silently. The same block also
+ * set `-webkit-tap-highlight-color: transparent`, which removed the flash
+ * Android paints on tap, so the net effect was *less* feedback than before
+ * there was any code for it at all.
+ *
+ * Two things follow from that, and both matter more than the colour:
+ *
+ *  - The pressed style is written inline, on the layer it has to win on. Not
+ *    `!important` in the sheet: that wins the cascade by shouting, and leaves
+ *    the same trap set for whoever next adds an inline style here.
+ *  - It is driven by pointer events rather than `:active`. `:active` on a
+ *    plain div under touch is not something to depend on, and this harness
+ *    cannot inject real touch to prove it either way — so the mechanism that
+ *    can be tested is the one to use.
+ *
+ * The colour snaps in with no transition and fades out over PRESS_FADE_MS, so
+ * a 50ms tap still shows the press at full strength rather than catching the
+ * first third of a fade in and then reversing.
+ *
+ * Written to the DOM directly instead of through React state because this
+ * fires on every touch of a 169-row list, and re-rendering all of it to
+ * recolour one card is a jank budget a phone does not have to spend.
+ */
+const PRESS_FADE_MS = 260;
+
+const PRESS_ON = (p: GmgPalette) => (e: React.PointerEvent<HTMLElement>) => {
+  const el = e.currentTarget;
+  el.style.transition = 'none';
+  el.style.background = p.press;
+  el.style.borderColor = p.pressEdge;
+};
+
+const PRESS_OFF = (p: GmgPalette) => (e: React.PointerEvent<HTMLElement>) => {
+  const el = e.currentTarget;
+  el.style.transition = '';
+  el.style.background = p.bg2;
+  el.style.borderColor = p.rule2;
+};
+
 const SR_ONLY: React.CSSProperties = {
   position: 'absolute',
   width: 1,
@@ -361,6 +406,8 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
   const sectionBorder = `1px solid ${p.rule}`;
   const hrefFor = charityPath;
+  const pressOn = useMemo(() => PRESS_ON(p), [p]);
+  const pressOff = useMemo(() => PRESS_OFF(p), [p]);
 
   const shell = (children: React.ReactNode) => (
     <div style={{ background: p.bg, color: p.fg, fontFamily: FONT_TEXT, minHeight: '100vh', ...fontVars }}>
@@ -431,19 +478,17 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
            Container tap navigates; the name is a real Link so keyboard and
            crawlers both work; compare is a real checkbox. */
-        <section
-          style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8, ['--gmg-card-press' as any]: p.press }}
-        >
-          {/* A card that navigates has to say so. The desktop table ends every
-              row with a "›" and gets a hover state; the mobile card had
-              neither, so the only thing on it that looked touchable was the
-              compare checkbox — the one control that does NOT open the
-              charity. The chevron below is the standing cue; this is the
-              press state, which inline styles cannot express. The grey flash
-              Android paints on tap is suppressed in favour of it. */}
+        <section style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8 }}>
+          {/* The chevron on each card is the standing "this opens something"
+              cue; the press state below is the one that fires on touch.
+
+              Only two properties here, and neither is set inline on the card:
+              the tap-highlight suppression, and the fade the card returns
+              along after a press. The pressed colours themselves are written
+              inline by the handlers — see PRESS_ON. */}
           <style>{
-            '[data-charity-card]{-webkit-tap-highlight-color:transparent;transition:background-color 120ms ease}'
-            + '[data-charity-card]:active{background-color:var(--gmg-card-press)}'
+            '[data-charity-card]{-webkit-tap-highlight-color:transparent;'
+            + `transition:background-color ${PRESS_FADE_MS}ms ease,border-color ${PRESS_FADE_MS}ms ease}`
           }</style>
           <div
             style={{
@@ -484,6 +529,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 key={row.ein}
                 data-charity-card={row.ein}
                 onClick={() => navigate(hrefFor(row.ein))}
+                onPointerDown={pressOn}
+                onPointerUp={pressOff}
+                /* pointercancel is what fires when a touch turns into a
+                   scroll, so without it every card you dragged past would
+                   stay lit. */
+                onPointerCancel={pressOff}
+                onPointerLeave={pressOff}
                 /* rule2, not the rule the rest of the page divides with: the
                    card fill sits 1.06:1 from the page behind it in dark mode,
                    so the border is doing nearly all the work of saying where

@@ -37,9 +37,24 @@ const contrast = (a: string, b: string): number => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-/** Largest single-channel move — how big the step looks, independent of theme. */
-const step = (a: string, b: string): number =>
-  Math.max(...rgb(a).map((c, i) => Math.abs(c - rgb(b)[i])));
+/** CIE L*, roughly perceptually uniform lightness. */
+const lightness = (hex: string): number => {
+  const y = luminance(hex);
+  return y > 0.008856 ? 116 * y ** (1 / 3) - 16 : 903.3 * y;
+};
+
+/**
+ * How big a colour change *looks*.
+ *
+ * The first version of these tests measured the largest RGB channel move and
+ * treated an equal step in each theme as equal feedback. It is not: RGB is
+ * least perceptually uniform at the dark end, so an equal channel step is not
+ * an equal-looking step. Measured in L*, the "equal" 30/255 pair was already
+ * uneven — and neither theme's press was rendering at all, for reasons the
+ * card test now covers.
+ */
+const perceivedStep = (a: string, b: string): number =>
+  Math.abs(lightness(a) - lightness(b));
 
 const light = gmgPalette(false);
 const dark = gmgPalette(true);
@@ -51,20 +66,38 @@ describe('press token', () => {
     expect(contrast(dark.press, dark.bg2)).toBeGreaterThan(1.25);
   });
 
-  it('gives both themes the same amount of feedback', () => {
-    // The actual bug: 16/255 versus 6/255 from one shared token.
-    const lightStep = step(light.press, light.bg2);
-    const darkStep = step(dark.press, dark.bg2);
+  it('gives both themes a press you can see, dark not the weaker one', () => {
+    const lightStep = perceivedStep(light.press, light.bg2);
+    const darkStep = perceivedStep(dark.press, dark.bg2);
 
-    expect(lightStep).toBeGreaterThanOrEqual(24);
-    expect(darkStep).toBeGreaterThanOrEqual(24);
-    expect(Math.abs(lightStep - darkStep)).toBeLessThanOrEqual(6);
+    expect(lightStep).toBeGreaterThan(12);
+    expect(darkStep).toBeGreaterThan(20);
+    // Dark leads on purpose: it is read on a dim screen, and it is the theme
+    // this was reported against twice.
+    expect(darkStep).toBeGreaterThanOrEqual(lightStep);
   });
 
   it('keeps card text readable while the card is held down', () => {
     // A press that swallows the charity's name trades one bug for another.
-    expect(contrast(light.fg, light.press)).toBeGreaterThan(7);
-    expect(contrast(dark.fg, dark.press)).toBeGreaterThan(7);
+    expect(contrast(light.fg, light.press)).toBeGreaterThan(6.5);
+    expect(contrast(dark.fg, dark.press)).toBeGreaterThan(6.5);
+  });
+
+  it('carries a pressed edge far stronger than any fill shift', () => {
+    // Against the resting card the edge clears 7:1 in both themes, where the
+    // fill tops out near 2:1. It changes hue rather than lightness, which is
+    // what survives on a phone at low brightness.
+    expect(contrast(light.pressEdge, light.bg2)).toBeGreaterThan(7);
+    expect(contrast(dark.pressEdge, dark.bg2)).toBeGreaterThan(7);
+    expect(contrast(light.pressEdge, light.bg2))
+      .toBeGreaterThan(contrast(light.press, light.bg2));
+    expect(contrast(dark.pressEdge, dark.bg2))
+      .toBeGreaterThan(contrast(dark.press, dark.bg2));
+  });
+
+  it('keeps the pressed edge visible against the pressed fill it sits on', () => {
+    expect(contrast(light.pressEdge, light.press)).toBeGreaterThan(3);
+    expect(contrast(dark.pressEdge, dark.press)).toBeGreaterThan(3);
   });
 
   it('stays distinct from bg3, the resting step it used to borrow', () => {
