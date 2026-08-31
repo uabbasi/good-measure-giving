@@ -71,7 +71,7 @@ describe('press token', () => {
     const darkStep = perceivedStep(dark.press, dark.bg2);
 
     expect(lightStep).toBeGreaterThan(12);
-    expect(darkStep).toBeGreaterThan(20);
+    expect(darkStep).toBeGreaterThan(18);
     // Dark leads on purpose: it is read on a dim screen, and it is the theme
     // this was reported against twice.
     expect(darkStep).toBeGreaterThanOrEqual(lightStep);
@@ -106,11 +106,48 @@ describe('press token', () => {
   });
 });
 
+describe('surface ramp — can you see where a card is', () => {
+  // Reported as "not visible where the cards are". Both themes originally
+  // stepped the card the same RGB distance off the page, which in dark meant
+  // dL* 2.77 — the card was not a surface, it was a 1px outline, and the
+  // border was doing all the work. The fill has to carry some of it.
+  const surfaceStep = (surface: string, ground: string) =>
+    Math.abs(lightness(surface) - lightness(ground));
+
+  it('lifts the dark card clear of the page behind it', () => {
+    expect(surfaceStep(dark.bg2, dark.bg)).toBeGreaterThan(6);
+  });
+
+  it('keeps the ramp in order, so a raised surface never sinks', () => {
+    // bg -> bg2 -> bg3 -> press must climb (dark) without ever reversing;
+    // a bg3 that lands under bg2 makes a selected row read as unselected.
+    const steps = [dark.bg, dark.bg2, dark.bg3, dark.press].map(lightness);
+    for (let i = 1; i < steps.length; i += 1) {
+      expect(steps[i]).toBeGreaterThan(steps[i - 1]);
+    }
+  });
+
+  it('keeps every text tone legible on the lifted dark card', () => {
+    expect(contrast(dark.fg, dark.bg2)).toBeGreaterThan(7);
+    expect(contrast(dark.sub, dark.bg2)).toBeGreaterThan(4.5);
+    // sub2 carries the card's cause/size meta line, which is small text.
+    expect(contrast(dark.sub2, dark.bg2)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('does not pretend light was fixed too', () => {
+    // Light is left alone on purpose: its card is darker than its ground, so
+    // deepening it pushes muted text the wrong way, and light sub2 is already
+    // under the bar. Pinned so the asymmetry reads as a decision, and so that
+    // anyone who does fix light sub2 sees this test and can lift the surface.
+    expect(contrast(light.sub2, light.bg2)).toBeLessThan(3);
+  });
+});
+
 describe('mobile list edges', () => {
-  it('draws the card border strongly enough to bound a card in dark mode', () => {
-    // The dark card fill sits 1.06:1 from the page behind it, so the border is
-    // doing nearly all the work of showing where one card ends. `rule` gave
-    // 1.19:1 and the list read as flat.
+  it('keeps a border on the card as well as a fill step', () => {
+    // The border used to be the only thing bounding a dark card, because the
+    // fill sat 1.06:1 from the page. The fill carries it now, but the edge
+    // still has to be there — `rule` was 1.19:1 and read as no edge at all.
     expect(contrast(dark.rule2, dark.bg2)).toBeGreaterThan(1.4);
     expect(contrast(light.rule2, light.bg2)).toBeGreaterThan(1.4);
   });

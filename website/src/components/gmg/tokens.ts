@@ -79,13 +79,24 @@ const light: GmgPalette = {
   pressEdge: '#3d4a30',
 };
 
+// The dark surface ramp is scaled further from its ground than the light one,
+// and deliberately so. Both themes originally stepped bg -> bg2 by about the
+// same RGB amount, which put the dark card dL* 2.77 from the page behind it:
+// not a surface at all, just a 1px outline, and reported as not being able to
+// see where the cards were. Dark now steps dL* 7.1, light stays at 3.1.
+//
+// Light is NOT matched to it on purpose. There the card is darker than its
+// ground, so deepening it pushes muted text the wrong way — and light `sub2`
+// already sits at 2.69:1 on the card, under the 4.5:1 small text wants. That
+// is a real problem, but it is a pre-existing one, and darkening the surface
+// under it would have made it worse rather than better.
 const dark: GmgPalette = {
   bg: '#13140e',
-  bg2: '#181a13',
-  bg3: '#1d2018',
+  bg2: '#20231a',
+  bg3: '#272c22',
   fg: '#ecebe4',
   sub: '#9aa094',
-  sub2: '#6f7468',
+  sub2: '#858a7e',
   rule: '#262921',
   rule2: '#3a3e34',
   accent: '#b8c8a4',
@@ -95,7 +106,7 @@ const dark: GmgPalette = {
   danger: '#c47a6a',
   chip: '#d6e0c5',
   chipFg: '#13140e',
-  card: '#1a1d15',
+  card: '#20231a',
   pos: '#9fce8f',
   posBg: '#22311b',
   caution: '#dcc46a',

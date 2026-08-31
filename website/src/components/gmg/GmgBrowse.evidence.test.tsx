@@ -14,7 +14,7 @@
  *  - The only explanation was a title tooltip on the column header, which is
  *    invisible until you hover the one word you already didn't understand.
  *
- * The column stays on desktop with its rank drawn and a legend under the
+ * The column stays on desktop with its rank drawn and a legend above the
  * table; the phone card drops it (see GmgBrowse.mobileCard.test.tsx).
  */
 
@@ -128,6 +128,18 @@ describe('Evidence column on desktop', () => {
     expect(text).toMatch(/claims about its results/i);
     expect(text).toMatch(/not the charity itself/i);
     expect(text).toMatch(/certification/i);
+  });
+
+  it('puts the legend above the table, not after 169 rows of it', () => {
+    // A key you meet after scrolling the whole table is a key you needed at
+    // the top of it.
+    const { container } = renderBrowse();
+    const table = container.querySelector('table') as HTMLElement;
+
+    // eslint-disable-next-line no-bitwise
+    const legendComesFirst = legend(container).compareDocumentPosition(table)
+      & Node.DOCUMENT_POSITION_FOLLOWING;
+    expect(legendComesFirst).toBeTruthy();
   });
 
   it('lists the legend best-first, matching the column sort', () => {

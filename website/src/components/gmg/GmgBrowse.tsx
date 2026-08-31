@@ -76,7 +76,7 @@ const EVIDENCE_STEPS = 4;
  * category, and with no visible scale behind them the words read as a status
  * on the charity ("this one is Verified") rather than a step on a scale about
  * its evidence. Every other ranked column here draws its rank; this one now
- * does too, and the legend under the table says what is being ranked.
+ * does too, and the legend above the table says what is being ranked.
  */
 const EvidenceCell: React.FC<{ stage: string; p: GmgPalette }> = ({ stage, p }) => {
   const rank = EVIDENCE_RANK[stage] ?? 0;
@@ -117,7 +117,7 @@ const EvidenceCell: React.FC<{ stage: string; p: GmgPalette }> = ({ stage, p }) 
  * row rendered as a word, in the same Tag the wallet category uses — so the
  * design called it a category, and the words read as a stamp on the charity
  * rather than a step on a scale about its evidence. It keeps its column on
- * desktop, where the rank is drawn and a legend sits under the table; the
+ * desktop, where the rank is drawn and a legend sits above the table; the
  * facet bar still filters by it at both widths.
  */
 const SIGNAL_COLS = 'repeat(4, 18px) 1fr 52px';
@@ -536,11 +536,11 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                    stay lit. */
                 onPointerCancel={pressOff}
                 onPointerLeave={pressOff}
-                /* rule2, not the rule the rest of the page divides with: the
-                   card fill sits 1.06:1 from the page behind it in dark mode,
-                   so the border is doing nearly all the work of saying where
-                   one card ends. At `rule` that edge was 1.19:1 and the list
-                   read as flat. */
+                /* rule2, not the rule the rest of the page divides with. This
+                   used to be the ONLY thing bounding a card in dark mode,
+                   because the fill sat 1.06:1 from the page behind it; the
+                   lifted bg2 carries that now, but at `rule` the edge itself
+                   was 1.19:1, which is no edge. */
                 style={{ border: `1px solid ${p.rule2}`, borderRadius: 8, padding: '10px 13px 11px', background: p.bg2, cursor: 'pointer' }}
               >
                 {/* Identity leads. */}
@@ -615,6 +615,42 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
            sideways and cutting off the last column. Scroll it inside its own
            container instead — same treatment GmgCompare already uses. */
         <section style={{ padding: `0 ${padX}px 28px`, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          {/* What the Evidence column is a scale of.
+              The column header carries a title tooltip, which is invisible
+              until you hover the one word you already didn't understand.
+              Stated here instead, in rank order, so the four words are
+              legible without discovering anything.
+
+              Above the table rather than below it: a key you meet after
+              scrolling 169 rows is a key you needed 169 rows ago. */}
+          <div
+            data-evidence-legend
+            style={{
+              marginBottom: 16,
+              paddingBottom: 14,
+              borderBottom: sectionBorder,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+              gap: '10px 22px',
+            }}
+          >
+            <p style={{ gridColumn: '1 / -1', margin: 0, fontSize: 12, color: p.sub, maxWidth: '68ch' }}>
+              <Kicker p={p}>Evidence</Kicker>{' '}
+              rates how well a charity&rsquo;s <em>claims about its results</em> are
+              backed up &mdash; not the charity itself. None of these is a certification
+              Good Measure Giving issues.
+            </p>
+            {EVIDENCE_VALUES.map((stage) => (
+              <div key={stage} style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
+                <span style={{ flexShrink: 0 }}>
+                  <EvidenceCell stage={stage} p={p} />
+                </span>
+                <span style={{ fontSize: 11.5, color: p.sub2, lineHeight: 1.45 }}>
+                  {EVIDENCE_STAGE_EXPLAINERS[stage]}
+                </span>
+              </div>
+            ))}
+          </div>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 900 }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
@@ -706,40 +742,6 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               ))}
             </tbody>
           </table>
-
-          {/* What the Evidence column is a scale of.
-              The column header carries a title tooltip, which is invisible
-              until you hover the one word you already didn't understand.
-              Stated here instead, in rank order, so the four words are
-              legible without discovering anything. */}
-          <div
-            data-evidence-legend
-            style={{
-              marginTop: 18,
-              paddingTop: 14,
-              borderTop: sectionBorder,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-              gap: '10px 22px',
-            }}
-          >
-            <p style={{ gridColumn: '1 / -1', margin: 0, fontSize: 12, color: p.sub, maxWidth: '68ch' }}>
-              <Kicker p={p}>Evidence</Kicker>{' '}
-              rates how well a charity&rsquo;s <em>claims about its results</em> are
-              backed up &mdash; not the charity itself. None of these is a certification
-              Good Measure Giving issues.
-            </p>
-            {EVIDENCE_VALUES.map((stage) => (
-              <div key={stage} style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
-                <span style={{ flexShrink: 0 }}>
-                  <EvidenceCell stage={stage} p={p} />
-                </span>
-                <span style={{ fontSize: 11.5, color: p.sub2, lineHeight: 1.45 }}>
-                  {EVIDENCE_STAGE_EXPLAINERS[stage]}
-                </span>
-              </div>
-            ))}
-          </div>
         </section>
       )}
 

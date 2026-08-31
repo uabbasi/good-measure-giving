@@ -123,7 +123,7 @@ describe('GmgBrowse mobile scan list', () => {
     // the wallet category uses — so the design called it a category, and
     // "Verified" read as a stamp on the charity rather than a step on a scale
     // about its evidence. It keeps its column on desktop, where the rank is
-    // drawn and a legend sits under the table.
+    // drawn and a legend sits above the table.
     const { container } = renderBrowse();
     const seen = visibleText(card(container));
 
