@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { SignInButton } from './SignInButton';
+import { trackSignInSuccess } from '../utils/analytics';
 import { signInWithPopup } from 'firebase/auth';
 
 vi.mock('./firebase', () => ({ auth: {}, isConfigured: true }));
 vi.mock('./useAuth', () => ({ useAuth: () => ({ isSignedIn: false, firstName: null }) }));
-vi.mock('../utils/analytics', () => ({ trackSignIn: vi.fn(), trackSignInError: vi.fn() }));
+vi.mock('../utils/analytics', () => ({ trackSignIn: vi.fn(), trackSignInError: vi.fn(), trackSignInSuccess: vi.fn() }));
 vi.mock('firebase/auth', () => ({
   GoogleAuthProvider: vi.fn(),
   OAuthProvider: class {
@@ -20,6 +21,7 @@ vi.mock('firebase/auth', () => ({
 }));
 
 beforeEach(() => {
+  vi.clearAllMocks();
   (signInWithPopup as unknown as ReturnType<typeof vi.fn>).mockReset();
 });
 
@@ -40,6 +42,7 @@ describe('SignInButton — popup sign-in closes the modal', () => {
     fireEvent.click(screen.getByRole('button', { name: /Continue with Google/i }));
 
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(trackSignInSuccess).toHaveBeenCalledExactlyOnceWith(await vi.mocked(signInWithPopup).mock.results[0].value);
   });
 
   it('closes after a successful Apple popup sign-in, even when the user needs a name', async () => {
@@ -52,6 +55,7 @@ describe('SignInButton — popup sign-in closes the modal', () => {
     fireEvent.click(screen.getByRole('button', { name: /Continue with Apple/i }));
 
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(trackSignInSuccess).toHaveBeenCalledExactlyOnceWith(await vi.mocked(signInWithPopup).mock.results[0].value);
   });
 
   it('does NOT close when the popup sign-in fails', async () => {

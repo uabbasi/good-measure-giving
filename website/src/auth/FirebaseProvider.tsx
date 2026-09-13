@@ -52,6 +52,7 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
 
     // Handle pending redirect sign-in (mobile flow)
     getRedirectResult(auth).then((result) => {
+      if (result) trackSignInSuccess(result);
       if (result?.user && !result.user.displayName) {
         window.dispatchEvent(new CustomEvent('gmg:needs-name'));
       }
@@ -66,12 +67,10 @@ export const FirebaseProvider: React.FC<Props> = ({ children }) => {
       setUser(firebaseUser);
       setIsLoading(false);
 
-      // Track sign-in
+      // Update the UI for an authenticated user, including restored sessions.
       if (firebaseUser && !previousUid) {
-        const provider = firebaseUser.providerData[0]?.providerId || 'unknown';
         const createdAt = new Date(firebaseUser.metadata.creationTime || 0).getTime();
         const isNewUser = Date.now() - createdAt < 60_000;
-        trackSignInSuccess(provider, isNewUser ? 'signup' : 'login');
         clearViewedEins();
         if (isNewUser) {
           window.dispatchEvent(new CustomEvent('gmg:welcome'));

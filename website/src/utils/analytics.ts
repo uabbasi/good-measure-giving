@@ -10,6 +10,7 @@
  */
 
 import type { CharityTier } from '../../types';
+import { getAdditionalUserInfo, type UserCredential } from 'firebase/auth';
 
 // Flow step names for journey tracking
 type FlowStep = 'landing' | 'browse' | 'search' | 'card_click' | 'charity_view' | 'donate' | 'sign_in';
@@ -24,23 +25,24 @@ declare global {
 
 const GA_MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID || '').trim();
 
-function canInitializeAnalytics(): boolean {
+function isProductionHost(): boolean {
   if (typeof window === 'undefined') return false;
-  if (!GA_MEASUREMENT_ID) return false;
-
-  const hostname = window.location.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return false;
-  }
-
-  return true;
+  return ['goodmeasuregiving.org', 'www.goodmeasuregiving.org'].includes(window.location.hostname);
 }
 
 /**
- * Initialize Google Analytics from environment configuration.
+ * Initialize production-only Cloudflare and Google Analytics tracking.
  */
 export function initializeAnalytics(): void {
-  if (!canInitializeAnalytics()) return;
+  if (!isProductionHost()) return;
+  if (!document.querySelector('script[data-cf-beacon]')) {
+    const beacon = document.createElement('script');
+    beacon.async = true;
+    beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    beacon.setAttribute('data-cf-beacon', '{"token":"4d17e2553e564280b83c45d0b71564fa"}');
+    document.head.appendChild(beacon);
+  }
+  if (!GA_MEASUREMENT_ID) return;
   if (typeof window.gtag === 'function') return;
 
   const script = document.createElement('script');
@@ -57,6 +59,8 @@ export function initializeAnalytics(): void {
 
   window.gtag('js', new Date());
   window.gtag('config', GA_MEASUREMENT_ID, {
+    // App's router sends page_view. GA4 stream history tracking must also be off.
+    send_page_view: false,
     anonymize_ip: true,
     allow_google_signals: false,
     allow_ad_personalization_signals: false,
@@ -152,16 +156,7 @@ function getFlowData(): { flowId: string; flowPath: string; flowStep: number } {
  * Returns false for localhost/dev to avoid polluting analytics
  */
 function isGtagAvailable(): boolean {
-  if (typeof window === 'undefined') return false;
-  if (typeof window.gtag !== 'function') return false;
-
-  // Disable analytics on localhost/dev environments
-  const hostname = window.location.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return false;
-  }
-
-  return true;
+  return isProductionHost() && typeof window.gtag === 'function';
 }
 
 /**
@@ -183,6 +178,7 @@ function safeGtag(...args: unknown[]): void {
  * Called on route changes
  */
 export function trackPageView(path: string, title?: string): void {
+  if (!isGtagAvailable()) return;
   // Determine flow step based on path
   let flowStep: FlowStep | null = null;
   if (path === '/' || path === '') flowStep = 'landing';
@@ -193,6 +189,19 @@ export function trackPageView(path: string, title?: string): void {
   safeGtag('event', 'page_view', {
     page_path: path,
     page_title: title || document.title,
+    flow_id: flow.flowId,
+    flow_path: flow.flowPath,
+    flow_step: flow.flowStep,
+  });
+}
+
+/** Track a loaded charity, including direct arrivals on its detail page. */
+export function trackCharityView(charityId: string, charityName: string): void {
+  if (!isGtagAvailable()) return;
+  const flow = addFlowStep('charity_view');
+  safeGtag('event', 'charity_view', {
+    charity_id: charityId,
+    charity_name: charityName,
     flow_id: flow.flowId,
     flow_path: flow.flowPath,
     flow_step: flow.flowStep,
@@ -281,16 +290,16 @@ export function trackSignInError(provider: 'google' | 'apple' | 'email', errorCo
 }
 
 /**
- * Track successful sign-ins (fired from auth state change)
- * @param provider - OAuth provider (google, apple, etc.)
- * @param authType - 'signup' for new users, 'login' for returning users
+ * Track a completed popup, redirect, or email sign-in, never session restoration.
  */
-export function trackSignInSuccess(provider: string, authType: 'signup' | 'login'): void {
+export function trackSignInSuccess(result: UserCredential): void {
+  if (!isGtagAvailable()) return;
+  const provider = result.providerId || result.user.providerData[0]?.providerId || 'unknown';
   const flow = getFlowData(); // Don't add step, sign_in_start already did
 
   safeGtag('event', 'sign_in_success', {
-    method: provider,
-    auth_type: authType,
+    method: provider === 'password' ? 'email' : provider.replace(/\.com$/, ''),
+    auth_type: getAdditionalUserInfo(result)?.isNewUser ? 'signup' : 'login',
     flow_id: flow.flowId,
     flow_path: flow.flowPath,
     flow_step: flow.flowStep,

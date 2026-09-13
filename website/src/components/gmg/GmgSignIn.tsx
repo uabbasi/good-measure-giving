@@ -16,7 +16,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { auth, isConfigured } from '../../auth/firebase';
-import { trackSignIn, trackSignInError } from '../../utils/analytics';
+import { trackSignIn, trackSignInError, trackSignInSuccess } from '../../utils/analytics';
 import {
   GmgPalette,
   FONT_DISPLAY,
@@ -124,7 +124,7 @@ export const GmgSignIn: React.FC<{
       if (isMobileBrowser()) {
         await signInWithRedirect(auth, provider);
       } else {
-        await signInWithPopup(auth, provider);
+        trackSignInSuccess(await signInWithPopup(auth, provider));
         close();
       }
     } catch (err: unknown) {
@@ -147,6 +147,7 @@ export const GmgSignIn: React.FC<{
         await signInWithRedirect(auth, provider);
       } else {
         const result = await signInWithPopup(auth, provider);
+        trackSignInSuccess(result);
         if (result.user && !result.user.displayName) {
           window.dispatchEvent(new CustomEvent('gmg:needs-name'));
         }
@@ -172,10 +173,12 @@ export const GmgSignIn: React.FC<{
     trackSignIn('email');
     try {
       if (isNewAccount) {
-        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        trackSignInSuccess(result);
+        const { user } = result;
         if (fullName.trim()) await updateProfile(user, { displayName: fullName.trim() });
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        trackSignInSuccess(await signInWithEmailAndPassword(auth, email, password));
       }
       close();
     } catch (err: unknown) {

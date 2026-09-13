@@ -4,8 +4,9 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
-import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { trackCharityCardClick, trackSearch } from '../../utils/analytics';
 import { useCharities } from '../../hooks/useCharities';
 import {
   GmgPalette,
@@ -404,6 +405,24 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     });
   }, [allRows, state, sortBy, sortDir]);
 
+  const lastSearch = useRef('');
+  useEffect(() => {
+    if (loading) return;
+    const query = state.query.trim();
+    if (!query) { lastSearch.current = ''; return; }
+    if (query === lastSearch.current) return;
+    const timer = setTimeout(() => {
+      trackSearch(query, rows.length);
+      lastSearch.current = query;
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [state.query, rows.length, loading]);
+
+  const trackRowClick = (row: GmgRow, position: number) => {
+    const charity = charities.find((c) => c.ein === row.ein);
+    trackCharityCardClick(row.ein, row.name, charity?.tier ?? 'baseline', position);
+  };
+
   const sectionBorder = `1px solid ${p.rule}`;
   const hrefFor = charityPath;
   const pressOn = useMemo(() => PRESS_ON(p), [p]);
@@ -522,13 +541,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             </span>
           </div>
 
-          {rows.map((row) => {
+          {rows.map((row, i) => {
             const isSelected = selected.includes(row.ein);
             return (
               <div
                 key={row.ein}
                 data-charity-card={row.ein}
-                onClick={() => navigate(hrefFor(row.ein))}
+                onClick={() => { trackRowClick(row, i); navigate(hrefFor(row.ein)); }}
                 onPointerDown={pressOn}
                 onPointerUp={pressOff}
                 /* pointercancel is what fires when a touch turns into a
@@ -547,7 +566,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
                   <Link
                     to={hrefFor(row.ein)}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); trackRowClick(row, i); }}
                     style={{ display: 'block', textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
                   >
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, lineHeight: 1.15, letterSpacing: ft.displayTracking }}>
@@ -690,7 +709,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               {rows.map((row, i) => (
                 <tr
                   key={row.ein}
-                  onClick={() => navigate(hrefFor(row.ein))}
+                  onClick={() => { trackRowClick(row, i); navigate(hrefFor(row.ein)); }}
                   style={{ borderBottom: sectionBorder, background: selected.includes(row.ein) ? p.bg3 : i % 2 === 0 ? 'transparent' : p.bg2, cursor: 'pointer' }}
                 >
                   <td style={{ padding: '8px 6px' }} onClick={(e) => e.stopPropagation()}>
@@ -705,7 +724,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <td style={{ padding: '8px 6px' }}>
                     <Link
                       to={hrefFor(row.ein)}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => { e.stopPropagation(); trackRowClick(row, i); }}
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <div style={{ fontFamily: FONT_DISPLAY, fontSize: 17, color: p.fg, lineHeight: 1.1, letterSpacing: ft.displayTracking }}>

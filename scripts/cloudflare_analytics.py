@@ -1,7 +1,7 @@
 """Cloudflare analytics collector for Good Measure Giving.
 
 Queries Cloudflare GraphQL API for zone analytics (HTTP-level) and
-Web Analytics RUM data (beacon-based, real browser visits).
+Web Analytics RUM data (beacon-based page loads; may include automation).
 Outputs structured JSON to stdout for consumption by the /analytics command.
 
 Dependencies: Python stdlib only.
@@ -41,20 +41,19 @@ def graphql_query(token: str, query: str) -> dict:
         "Content-Type": "application/json",
     })
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, timeout=30) as resp:
             result = json.loads(resp.read())
     except urllib.error.HTTPError as e:
         body = e.read().decode() if e.fp else ""
-        print(f"Error: Cloudflare API {e.code}: {body[:300]}", file=sys.stderr)
-        return {}
+        raise RuntimeError(f"Cloudflare API {e.code}: {body[:300]}") from e
     if result.get("errors"):
-        print(f"GraphQL errors: {json.dumps(result['errors'], indent=2)}", file=sys.stderr)
+        raise RuntimeError(f"Cloudflare GraphQL: {json.dumps(result['errors'])}")
     return result.get("data") or {}
 
 
 def get_date_range(days: int = 7) -> tuple[str, str]:
-    end = datetime.now(timezone.utc).date()
-    start = end - timedelta(days=days)
+    end = datetime.now(timezone.utc).date() - timedelta(days=1)
+    start = end - timedelta(days=days - 1)
     return start.isoformat(), end.isoformat()
 
 
@@ -90,9 +89,8 @@ def fetch_zone_analytics(token: str, start: str, end: str) -> list:
 
 
 def fetch_zone_top_paths(token: str, limit: int = 15) -> list:
-    """Top requested paths (last 24h only — free plan limit)."""
+    """Top requested paths (yesterday UTC only — free plan limit)."""
     yesterday = (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
-    today = datetime.now(timezone.utc).date().isoformat()
     query = f"""{{
   viewer {{
     zones(filter: {{zoneTag: "{ZONE_ID}"}}) {{
@@ -101,7 +99,7 @@ def fetch_zone_top_paths(token: str, limit: int = 15) -> list:
         orderBy: [count_DESC]
         filter: {{
           date_geq: "{yesterday}"
-          date_leq: "{today}"
+          date_leq: "{yesterday}"
           requestSource: "eyeball"
         }}
       ) {{
@@ -121,9 +119,8 @@ def fetch_zone_top_paths(token: str, limit: int = 15) -> list:
 
 
 def fetch_zone_top_countries(token: str, limit: int = 10) -> list:
-    """Top countries (last 24h only — free plan limit)."""
+    """Top countries (yesterday UTC only — free plan limit)."""
     yesterday = (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
-    today = datetime.now(timezone.utc).date().isoformat()
     query = f"""{{
   viewer {{
     zones(filter: {{zoneTag: "{ZONE_ID}"}}) {{
@@ -132,7 +129,7 @@ def fetch_zone_top_countries(token: str, limit: int = 10) -> list:
         orderBy: [count_DESC]
         filter: {{
           date_geq: "{yesterday}"
-          date_leq: "{today}"
+          date_leq: "{yesterday}"
           requestSource: "eyeball"
         }}
       ) {{
@@ -152,14 +149,14 @@ def fetch_zone_top_countries(token: str, limit: int = 10) -> list:
 
 
 def fetch_rum_pageloads(token: str, start: str, end: str) -> list:
-    """Web Analytics (RUM beacon) data: real browser visits, page load counts."""
+    """Web Analytics (RUM beacon) data: page loads excluding known bots."""
     query = f"""{{
   viewer {{
     accounts(filter: {{accountTag: "{ACCOUNT_ID}"}}) {{
       rumPageloadEventsAdaptiveGroups(
         limit: 30
         orderBy: [date_DESC]
-        filter: {{date_geq: "{start}", date_leq: "{end}"}}
+        filter: {{date_geq: "{start}", date_leq: "{end}", requestHost_in: ["goodmeasuregiving.org", "www.goodmeasuregiving.org"], bot: 0}}
       ) {{
         count
         dimensions {{
@@ -186,8 +183,8 @@ def fetch_rum_top_paths(token: str, start: str, end: str, limit: int = 15) -> li
     accounts(filter: {{accountTag: "{ACCOUNT_ID}"}}) {{
       rumPageloadEventsAdaptiveGroups(
         limit: {limit}
-        orderBy: [sum_visits_DESC]
-        filter: {{date_geq: "{start}", date_leq: "{end}"}}
+        orderBy: [count_DESC]
+        filter: {{date_geq: "{start}", date_leq: "{end}", requestHost_in: ["goodmeasuregiving.org", "www.goodmeasuregiving.org"], bot: 0}}
       ) {{
         count
         dimensions {{
@@ -214,8 +211,8 @@ def fetch_rum_top_countries(token: str, start: str, end: str, limit: int = 10) -
     accounts(filter: {{accountTag: "{ACCOUNT_ID}"}}) {{
       rumPageloadEventsAdaptiveGroups(
         limit: {limit}
-        orderBy: [sum_visits_DESC]
-        filter: {{date_geq: "{start}", date_leq: "{end}"}}
+        orderBy: [count_DESC]
+        filter: {{date_geq: "{start}", date_leq: "{end}", requestHost_in: ["goodmeasuregiving.org", "www.goodmeasuregiving.org"], bot: 0}}
       ) {{
         count
         dimensions {{
@@ -242,8 +239,8 @@ def fetch_rum_browsers(token: str, start: str, end: str, limit: int = 10) -> lis
     accounts(filter: {{accountTag: "{ACCOUNT_ID}"}}) {{
       rumPageloadEventsAdaptiveGroups(
         limit: {limit}
-        orderBy: [sum_visits_DESC]
-        filter: {{date_geq: "{start}", date_leq: "{end}"}}
+        orderBy: [count_DESC]
+        filter: {{date_geq: "{start}", date_leq: "{end}", requestHost_in: ["goodmeasuregiving.org", "www.goodmeasuregiving.org"], bot: 0}}
       ) {{
         count
         dimensions {{
@@ -301,21 +298,39 @@ def main():
     start, end = get_date_range(7)
     print(f"Date range: {start} to {end}", file=sys.stderr)
 
-    # Fetch all data
-    zone_daily = fetch_zone_analytics(token, start, end)
-    zone_paths = fetch_zone_top_paths(token)
-    zone_countries = fetch_zone_top_countries(token)
-    rum_daily = fetch_rum_pageloads(token, start, end)
-    rum_paths = fetch_rum_top_paths(token, start, end)
-    rum_countries = fetch_rum_top_countries(token, start, end)
-    rum_browsers = fetch_rum_browsers(token, start, end)
+    # Keep a failed source visibly unavailable while preserving the other sources.
+    errors = {}
+
+    def fetch(name, function, *args):
+        try:
+            return function(token, *args)
+        except (RuntimeError, urllib.error.URLError, TimeoutError, ValueError) as error:
+            errors[name] = str(error)
+            print(f"{name}: {error}", file=sys.stderr)
+            return []
+
+    zone_daily = fetch("zone_daily", fetch_zone_analytics, start, end)
+    zone_paths = fetch("zone_paths", fetch_zone_top_paths)
+    zone_countries = fetch("zone_countries", fetch_zone_top_countries)
+    rum_daily = fetch("rum_daily", fetch_rum_pageloads, start, end)
+    rum_paths = fetch("rum_paths", fetch_rum_top_paths, start, end)
+    rum_countries = fetch("rum_countries", fetch_rum_top_countries, start, end)
+    rum_browsers = fetch("rum_browsers", fetch_rum_browsers, start, end)
 
     print(f"Zone: {len(zone_daily)} days, RUM: {len(rum_daily)} days", file=sys.stderr)
 
     # Build report
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "date_range": {"start": start, "end": end},
+        "date_range": {"start": start, "end": end, "timezone": "UTC"},
+        "zone_rankings_date_range": {"start": end, "end": end, "timezone": "UTC"},
+        "errors": errors,
+        "notes": [
+            "RUM is scoped to goodmeasuregiving.org and www.goodmeasuregiving.org, excluding known bots (bot=0); unclassified automation can remain.",
+            "RUM visits counts page loads initiated from another website according to Cloudflare; it is not unique people or GA4 sessions. Rank RUM by pageloads.",
+            "Zone requests include assets and bots. Zone unique_ips totals sum daily unique IPs, not unique visitors across the week.",
+            "Do not infer ad-blocker prevalence or human traffic from the gap between Cloudflare and GA4.",
+        ],
         "daily": build_daily_table(zone_daily, rum_daily),
         "totals": {
             "zone": {
@@ -345,7 +360,7 @@ def main():
                 for r in zone_countries
             ],
             "rum": [
-                {"country": r["dimensions"]["countryName"], "visits": r["sum"]["visits"]}
+                {"country": r["dimensions"]["countryName"], "visits": r["sum"]["visits"], "pageloads": r["count"]}
                 for r in rum_countries
             ],
         },
@@ -355,6 +370,18 @@ def main():
         ],
     }
 
+    if "zone_daily" in errors:
+        report["totals"]["zone"] = None
+    if "rum_daily" in errors:
+        report["totals"]["rum"] = None
+    for source, section, key in [
+        ("zone_paths", "top_paths", "zone"), ("rum_paths", "top_paths", "rum"),
+        ("zone_countries", "top_countries", "zone"), ("rum_countries", "top_countries", "rum"),
+    ]:
+        if source in errors:
+            report[section][key] = None
+    if "rum_browsers" in errors:
+        report["browsers"] = None
     json.dump(report, sys.stdout, indent=2)
     print(file=sys.stdout)
 

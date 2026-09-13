@@ -151,6 +151,10 @@ def run_ga4_report(token: str, dimensions: list[str], metrics: list[str],
         "metrics": [{"name": m} for m in metrics],
         "limit": limit,
     }
+    body["dimensionFilter"] = {"filter": {
+        "fieldName": "hostName",
+        "inListFilter": {"values": ["goodmeasuregiving.org", "www.goodmeasuregiving.org"]},
+    }}
     data = json.dumps(body).encode()
     req = urllib.request.Request(url, data=data, headers={
         "Authorization": f"Bearer {token}",
@@ -350,7 +354,7 @@ def build_report(users: list, bookmarks: list, donations: list,
     print()
 
     print(f"PMF PROXY SCORE: {pmf_score:.1f}%")
-    print(f"  (% of {len(mature_users)} users 30+ days old in Tier 1)")
+    print(f"  (% of {len(mature_users)} users 30+ days old with historical Tier 1 features; not retention or a PMF survey)")
     print()
 
     # ─── Tier 1 profile ("Nicole") ───
@@ -467,12 +471,12 @@ def build_report(users: list, bookmarks: list, donations: list,
 
     # ─── Recency (Firestore updatedAt) ───
 
-    print("RECENCY (Firestore updatedAt)")
+    print("PROFILE UPDATES (Firestore updatedAt; not site activity)")
     seven_days_ago = (now - timedelta(days=7)).isoformat()
     active_30d = sum(1 for u in users if (u.get("updatedAt") or "") >= thirty_days_ago)
     active_7d = sum(1 for u in users if (u.get("updatedAt") or "") >= seven_days_ago)
-    print(f"  Active last 30 days:  {active_30d} users")
-    print(f"  Active last 7 days:   {active_7d} users")
+    print(f"  Profiles updated last 30 days:  {active_30d} users")
+    print(f"  Profiles updated last 7 days:   {active_7d} users")
 
     # updatedAt histogram (by month)
     month_counts: dict[str, int] = defaultdict(int)
@@ -481,7 +485,7 @@ def build_report(users: list, bookmarks: list, donations: list,
         if updated:
             month_counts[updated[:7]] += 1
     if month_counts:
-        print("  Last activity distribution:")
+        print("  Last profile update or creation:")
         for month in sorted(month_counts.keys()):
             bar = "█" * month_counts[month]
             print(f"    {month}  {bar} {month_counts[month]}")
@@ -498,7 +502,7 @@ def build_report(users: list, bookmarks: list, donations: list,
         # Acquisition funnel
         if ga4.get("funnel"):
             funnel = ga4["funnel"]
-            print("ACQUISITION FUNNEL (all-time)")
+            print("EVENT REACH (all-time, production hosts; not a cohort funnel)")
             steps = [
                 ("first_visit", "First visits"),
                 ("page_view", "Page views"),
@@ -518,15 +522,8 @@ def build_report(users: list, bookmarks: list, donations: list,
                     print(f"  {label:25s}  {users_count:4d} users  ({events:6d} events)  {bar}")
             print(f"  {'Registered (Firestore)':25s}  {total:4d} users")
 
-            # Conversion rates
-            first_visit_users = funnel.get("first_visit", {}).get("users", 0)
-            signin_start = funnel.get("sign_in_start", {}).get("users", 0)
-            signin_success = funnel.get("sign_in_success", {}).get("users", 0)
-            if first_visit_users:
-                print(f"\n  Visitor → sign-in start:    {signin_start}/{first_visit_users} ({signin_start/first_visit_users*100:.1f}%)")
-                print(f"  Visitor → sign-in success:  {signin_success}/{first_visit_users} ({signin_success/first_visit_users*100:.1f}%)")
-            if signin_start:
-                print(f"  Sign-in start → success:    {signin_success}/{signin_start} ({signin_success/signin_start*100:.1f}%)")
+            print("  Event users overlap; aggregate totals cannot measure ordered sign-in conversion.")
+            print("  Historical sign-in successes included restored Firebase sessions.")
 
             # Post-signup engagement events
             post_signup_events = [
@@ -538,7 +535,7 @@ def build_report(users: list, bookmarks: list, donations: list,
             ]
             has_any = any(key in funnel for key, _ in post_signup_events)
             if has_any:
-                print("\n  Post-signup engagement events:")
+                print("\n  Feature events (not restricted to signed-in users):")
                 for key, label in post_signup_events:
                     if key in funnel:
                         print(f"    {label:25s}  {funnel[key]['users']:3d} users  ({funnel[key]['count']} events)")
@@ -570,7 +567,7 @@ def build_report(users: list, bookmarks: list, donations: list,
                 mau = int(row["active28DayUsers"])
                 new = int(row["newUsers"])
                 bar = "█" * min(dau, 40)
-                print(f"  {formatted}  DAU={dau:3d}  WAU={wau:3d}  MAU={mau:3d}  new={new:2d}  {bar}")
+                print(f"  {formatted}  DAU={dau:3d}  WAU={wau:3d}  active28d={mau:3d}  new={new:2d}  {bar}")
 
             # Stickiness: avg DAU / latest MAU (excludes spike days)
             if len(trend) >= 7:
@@ -578,7 +575,7 @@ def build_report(users: list, bookmarks: list, donations: list,
                 avg_dau = sum(int(r["active1DayUsers"]) for r in last_7) / 7
                 latest_mau = int(last_7[0]["active28DayUsers"])
                 stickiness = avg_dau / latest_mau * 100 if latest_mau else 0
-                print(f"\n  Stickiness (avg DAU last 7d / MAU): {stickiness:.1f}%  (avg DAU={avg_dau:.1f}, MAU={latest_mau})")
+                print(f"\n  Stickiness proxy (avg DAU last 7d / latest active28d): {stickiness:.1f}%  (avg DAU={avg_dau:.1f}, active28d={latest_mau})")
             print()
 
         # Top pages

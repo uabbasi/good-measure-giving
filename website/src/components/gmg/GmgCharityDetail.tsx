@@ -2,8 +2,9 @@
 // Reachable via /charity/:id. Renders real charity data in the
 // sage-on-bone, Harvey-ball design from the claude.ai handoff.
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { trackCharityView, trackDonateClick, trackOutboundClick } from '../../utils/analytics';
 import { charityPath } from '../../lib/paths';
 import { EDITION } from '../../config/siteVersion';
 import { useCharities } from '../../hooks/useCharities';
@@ -206,6 +207,9 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 }) => {
   const p = gmgPalette(isDark);
   const c = adaptCharity(charity);
+  useEffect(() => {
+    if (c.ein) trackCharityView(c.ein, c.name);
+  }, [c.ein, c.name]);
   const isMobile = useIsMobile();
   const { summaries } = useCharities();
   // False during SSR and until Firebase auth resolves post-hydration — see
@@ -341,6 +345,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {c.donateUrl && (
                 <a
                   href={c.donateUrl}
+                  onClick={(event) => trackDonateClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ padding: '10px 16px', borderRadius: 99, background: p.chip, color: p.chipFg, fontSize: 12, fontWeight: 500, textDecoration: 'none' }}
@@ -351,6 +356,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               {c.website && c.website !== c.donateUrl && (
                 <a
                   href={c.website}
+                  onClick={(event) => trackOutboundClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

@@ -56,3 +56,19 @@ Do not store private server side secrets in `VITE_*` variables.
 ### Analytics not tracking
 - Confirm `VITE_GA_MEASUREMENT_ID` is set in Cloudflare
 - Confirm traffic is not from localhost
+
+### Analytics configuration for the tracking repair
+
+The application sends its own `page_view` events on route changes and suppresses the initial automatic GA4 page view. Keep **Page views → Advanced settings → Page changes based on browser history events** disabled in GA4 Enhanced Measurement for the GMG web stream. Leave the other Enhanced Measurement settings enabled. The API equivalent is `pageChangesEnabled: false` on property `518369044`, stream `13243971387`. Otherwise route changes will still be counted twice.
+
+Register these event-scoped custom dimensions in GA4 so the analytics reports can query them:
+
+| Event parameter | Display name |
+| --- | --- |
+| `charity_name` | Charity name |
+| `auth_type` | Authentication type |
+| `search_term` | Search term |
+
+These settings require GA4 Editor access. The service account's Editor access, the disabled history setting, and all three custom dimensions were verified through the Admin and reporting APIs on 2026-09-11. Registration makes future event parameters reportable; it does not repair historical data.
+
+Both GA4 and Cloudflare's beacon load only on `goodmeasuregiving.org` and `www.goodmeasuregiving.org`. Local and preview hosts intentionally send neither tracker. After deployment, verify one GA4 page view per page load/route change, a settled `search` event, `charity_card_click`, `charity_view`, and `donate_click`. Successful sign-ins should fire only after completed popup, redirect, or email authentication, never when restoring an existing session. A donation click records an outbound action, not a completed donation.

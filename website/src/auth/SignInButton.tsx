@@ -16,7 +16,7 @@ import {
 } from 'firebase/auth';
 import { auth, isConfigured } from './firebase';
 import { useAuth } from './useAuth';
-import { trackSignIn, trackSignInError } from '../utils/analytics';
+import { trackSignIn, trackSignInError, trackSignInSuccess } from '../utils/analytics';
 
 interface SignInButtonProps {
   variant?: 'default' | 'compact' | 'button' | 'custom';
@@ -110,7 +110,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
       if (isMobileBrowser()) {
         await signInWithRedirect(auth, provider);
       } else {
-        await signInWithPopup(auth, provider);
+        trackSignInSuccess(await signInWithPopup(auth, provider));
         closeModal();
       }
     } catch (err: unknown) {
@@ -135,6 +135,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
         await signInWithRedirect(auth, provider);
       } else {
         const result = await signInWithPopup(auth, provider);
+        trackSignInSuccess(result);
         if (result.user && !result.user.displayName) {
           window.dispatchEvent(new CustomEvent('gmg:needs-name'));
         }
@@ -162,12 +163,14 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     trackSignIn('email');
     try {
       if (isNewAccount) {
-        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        trackSignInSuccess(result);
+        const { user } = result;
         if (fullName.trim()) {
           await updateProfile(user, { displayName: fullName.trim() });
         }
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        trackSignInSuccess(await signInWithEmailAndPassword(auth, email, password));
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code ?? 'unknown';

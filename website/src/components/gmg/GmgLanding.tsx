@@ -4,6 +4,7 @@
 
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { trackHeroCTA, trackCharityCardClick } from '../../utils/analytics';
 import { charityPath, paths } from '../../lib/paths';
 import { Coins, HeartHandshake, Moon } from 'lucide-react';
 import { useCharities } from '../../hooks/useCharities';
@@ -117,12 +118,14 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 32 }}>
             <Link
               to="/browse/"
+              onClick={() => trackHeroCTA('browse_charities', '/browse/')}
               style={{ padding: '13px 24px', borderRadius: 99, background: p.accent, color: p.bg, fontSize: 15, fontWeight: 500, textDecoration: 'none' }}
             >
               Browse charities
             </Link>
             <Link
               to={paths.methodology}
+              onClick={() => trackHeroCTA('how_it_works', paths.methodology)}
               style={{ padding: '13px 22px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule2}`, color: p.fg, fontSize: 15, textDecoration: 'none' }}
             >
               How it works
@@ -184,7 +187,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <span style={{ fontSize: 13.5, color: ratingColor(featuredOverall, p), fontWeight: 500 }}>{featuredOverall} overall</span>
             </div>
             <div style={{ marginTop: 22 }}>
-              <Link to={charityPath(featured.ein)} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
+              <Link onClick={() => trackCharityCardClick(featured.ein, featured.name, sorted[0].tier ?? 'baseline', 0)} to={charityPath(featured.ein)} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
                 Read the review →
               </Link>
             </div>
