@@ -1,2 +1,10 @@
 [features]
 hooks = true
+
+# Reuse Claude's existing local GA4 server and credential file.
+[mcp_servers.analytics-mcp]
+command = "ga4-mcp-server"
+
+[mcp_servers.analytics-mcp.env]
+GA4_PROPERTY_ID = "518369044"
+GOOGLE_APPLICATION_CREDENTIALS = "/Users/uabbasi/.secrets/Roshni-3eada2766db6.json"
