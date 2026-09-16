@@ -30,6 +30,27 @@ export function RouteMetadata() {
     };
     document.title = meta.title;
     const setMeta = (attr: 'name' | 'property', key: string, content: string) => {
+      // Preserve filtered-browse robots directive (noindex,follow) set by GmgBrowse.
+      if (attr === 'name' && key === 'robots') {
+        const facetTag = document.head.querySelector<HTMLMetaElement>(
+          'meta[name="robots"][data-gmg-facets]'
+        );
+        const facetNoindex = facetTag?.getAttribute('content')?.includes('noindex');
+        if (!content.includes('noindex') && facetNoindex) {
+          // Do not override an active filtered-browse directive.
+          return;
+        }
+        let node = document.head.querySelector<HTMLMetaElement>(
+          'meta[name="robots"]:not([data-gmg-facets])'
+        );
+        if (!node) {
+          node = document.createElement('meta');
+          node.setAttribute('name', 'robots');
+          document.head.appendChild(node);
+        }
+        node.content = content;
+        return;
+      }
       let node = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
       if (!node) { node = document.createElement('meta'); node.setAttribute(attr, key); document.head.appendChild(node); }
       node.content = content;
