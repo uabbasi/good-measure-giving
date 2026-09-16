@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif AI transparency index (/prompts).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { promptPath } from '../src/lib/paths';
 import {
   GmgContentFrame,
@@ -72,10 +72,6 @@ export const PromptsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  useEffect(() => {
-    document.title = 'AI Transparency | Good Measure Giving';
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, []);
 
   const filteredPrompts = useMemo(() => {
     if (!data) return [];

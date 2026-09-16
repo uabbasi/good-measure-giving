@@ -85,6 +85,8 @@ function generateSitemap() {
     { path: '/link-to-us', priority: '0.6', changefreq: 'monthly' },
     { path: '/changelog', priority: '0.5', changefreq: 'weekly' },
     { path: '/about', priority: '0.6', changefreq: 'monthly' },
+    { path: '/privacy', priority: '0.3', changefreq: 'monthly' },
+    { path: '/terms', priority: '0.3', changefreq: 'monthly' },
     { path: '/faq', priority: '0.6', changefreq: 'monthly' },
     { path: '/prompts', priority: '0.7', changefreq: 'monthly' },
   ];

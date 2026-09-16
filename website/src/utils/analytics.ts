@@ -24,6 +24,49 @@ declare global {
 }
 
 const GA_MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID || '').trim();
+export type AnalyticsConsent = 'accepted' | 'declined' | null;
+const CONSENT_KEY = 'gmg_analytics_consent';
+let consentOverride: AnalyticsConsent | undefined;
+
+export function getAnalyticsConsent(): AnalyticsConsent {
+  if (consentOverride !== undefined) return consentOverride;
+  try {
+    const value = localStorage.getItem(CONSENT_KEY);
+    return value === 'accepted' || value === 'declined' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setAnalyticsConsent(choice: Exclude<AnalyticsConsent, null>): void {
+  consentOverride = choice;
+  try {
+    localStorage.setItem(CONSENT_KEY, choice);
+    consentOverride = undefined;
+  } catch { /* Session-only choice when storage is blocked. */ }
+  (window as unknown as Record<string, unknown>)[`ga-disable-${GA_MEASUREMENT_ID}`] = choice !== 'accepted';
+  if (choice === 'declined') {
+    window.gtag = undefined;
+    window.dataLayer = [];
+    document.querySelectorAll('script[src*="googletagmanager.com"], script[data-cf-beacon]').forEach(node => node.remove());
+    // Remove host-only and parent-domain GA cookies without touching login state.
+    const domains = ['', window.location.hostname, 'goodmeasuregiving.org'];
+    for (const cookie of document.cookie.split(';')) {
+      const name = cookie.trim().split('=')[0];
+      if (!/^_ga(?:_|$)|^_gid$|^_gat(?:_|$)/.test(name)) continue;
+      for (const domain of domains) {
+        document.cookie = `${name}=; Max-Age=0; path=/;${domain ? ` domain=${domain};` : ''}`;
+      }
+    }
+    try {
+      for (const key of [FLOW_ID_KEY, FLOW_PATH_KEY, FLOW_STEP_KEY]) sessionStorage.removeItem(key);
+    } catch { /* Storage may be unavailable. */ }
+  } else {
+    initializeAnalytics();
+    trackPageView(window.location.pathname);
+  }
+  window.dispatchEvent(new Event('analytics-consent-change'));
+}
 
 function isProductionHost(): boolean {
   if (typeof window === 'undefined') return false;
@@ -34,7 +77,7 @@ function isProductionHost(): boolean {
  * Initialize production-only Cloudflare and Google Analytics tracking.
  */
 export function initializeAnalytics(): void {
-  if (!isProductionHost()) return;
+  if (!isProductionHost() || getAnalyticsConsent() !== 'accepted') return;
   if (!document.querySelector('script[data-cf-beacon]')) {
     const beacon = document.createElement('script');
     beacon.async = true;
@@ -156,7 +199,7 @@ function getFlowData(): { flowId: string; flowPath: string; flowStep: number } {
  * Returns false for localhost/dev to avoid polluting analytics
  */
 function isGtagAvailable(): boolean {
-  return isProductionHost() && typeof window.gtag === 'function';
+  return isProductionHost() && getAnalyticsConsent() === 'accepted' && typeof window.gtag === 'function';
 }
 
 /**

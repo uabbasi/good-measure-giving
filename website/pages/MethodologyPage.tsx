@@ -117,10 +117,6 @@ const DontRow: React.FC<{ p: GmgPalette; children: React.ReactNode }> = ({ p, ch
 );
 
 export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
-  React.useEffect(() => {
-    document.title = 'Our Methodology | Good Measure Giving';
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, []);
   const { charities, summaries, loading } = useCharities();
   const { report: calibrationReport } = useCalibrationReport();
 

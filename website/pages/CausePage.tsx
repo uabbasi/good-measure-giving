@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif Cause hub page (/causes/:slug).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { charityPath, paths } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
@@ -36,12 +36,6 @@ export const CausePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const cause = useMemo(() => CAUSES.find((c) => c.slug === slug), [slug]);
   const category = slug ? slugToCategory(slug) : null;
 
-  useEffect(() => {
-    if (cause) {
-      document.title = `Best Muslim ${cause.displayName} Charities | Good Measure Giving`;
-    }
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [cause]);
 
   // These pages are titled "Best Muslim {Cause} Charities" — list only Muslim
   // orgs, not every charity that happens to share the cause category. Filtering

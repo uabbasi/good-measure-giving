@@ -50,9 +50,20 @@ export default {
       return assetResponse;
     }
 
-    // Extensionless miss — a client-only route. Serve the SPA shell so the
-    // router can render it (including the 404 route).
-    const spaRequest = new Request(new URL('/', url), request);
-    return env.ASSETS.fetch(spaRequest);
+    // Only known client-only routes get a successful SPA fallback.
+    let clientRoute = /^\/(?:profile|compare|bookmarks)\/?$/.test(url.pathname)
+      || /^\/plan\/join\/[^/]+\/[^/]+\/?$/.test(url.pathname);
+    // Unlisted charities and planned prompts intentionally have no static page.
+    // Preserve their links only when the underlying record actually exists.
+    const charity = url.pathname.match(/^\/charity\/(\d{2}-\d{7})\/?$/);
+    const prompt = url.pathname.match(/^\/prompts\/([\w-]+)\/?$/);
+    const dataPath = charity ? `/data/charities/charity-${charity[1]}.json`
+      : prompt ? `/data/prompts/${prompt[1]}.json` : null;
+    if (dataPath) clientRoute = (await env.ASSETS.fetch(new Request(new URL(dataPath, url)))).ok;
+    const fallback = await env.ASSETS.fetch(new Request(new URL(clientRoute ? '/' : '/404.html', url), request));
+    return clientRoute ? fallback : new Response(fallback.body, {
+      status: 404,
+      headers: fallback.headers,
+    });
   },
 };

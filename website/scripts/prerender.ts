@@ -112,7 +112,7 @@ interface PageMeta {
 // ── SSR route classification ───────────────────────────────────────────
 
 export const SSR_ROUTE_PREFIXES = ['/charity/', '/guides/', '/causes/', '/zakat-calculator/', '/prompts/'];
-export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq', '/privacy', '/changelog']);
+export const SSR_EXACT_ROUTES = new Set(['/', '/browse', '/guides', '/causes', '/best-muslim-charities-in-usa', '/zakat-calculator', '/prompts', '/methodology', '/link-to-us', '/about', '/faq', '/privacy', '/terms', '/changelog']);
 
 export function isSsrRoute(route: string): boolean {
   if (SSR_EXACT_ROUTES.has(route)) return true;
@@ -192,6 +192,13 @@ function escapeHtml(text: string): string {
 
 function buildStaticMeta(): PageMeta[] {
   return [
+    {
+      route: '/terms',
+      title: 'Terms of Use | Good Measure Giving',
+      description: 'Terms for using Good Measure Giving charity research, calculators, accounts, and shared giving plans.',
+      canonical: `${SITE_URL}/terms`,
+      ogType: 'website',
+    },
     {
       route: '/',
       title: 'Good Measure Giving | Muslim Charity Evaluator',
@@ -865,7 +872,7 @@ function injectMeta(html: string, meta: PageMeta): string {
     `<meta property="og:type" content="${meta.ogType}" />`,
     `<meta property="og:url" content="${canonicalUrl}" />`,
     `<meta property="og:site_name" content="Good Measure Giving" />`,
-    `<meta property="og:image" content="${SITE_URL}/og-share.png" />`,
+    `<meta property="og:image" content="${SITE_URL}/og-share.jpg" />`,
   ].join('\n    ');
 
   // Remove existing OG tags and re-inject
@@ -903,7 +910,7 @@ function writeRedirects(metas: PageMeta[]): number {
   const routes = Array.from(
     new Set(metas.map((m) => m.route).filter((route) => route !== '/' && !route.endsWith('/')))
   );
-  const rules = routes.map((route) => `${route} ${route}/ 308`);
+  const rules = ['/og-share.png /og-share.jpg 301', ...routes.map((route) => `${route} ${route}/ 308`)];
   fs.writeFileSync(path.join(DIST_DIR, '_redirects'), rules.join('\n') + '\n', 'utf-8');
   return rules.length;
 }
@@ -948,10 +955,12 @@ async function prerenderPages() {
   // render as stubs on the SPA side and would look thin to crawlers.
   const PROMPTS_INDEX_PATH = path.join(__dirname, '../public/data/prompts/index.json');
   let prompts: PromptSummary[] = [];
+  let allPrompts: PromptSummary[] = [];
   let promptsIndexObj: unknown = null;
   if (fs.existsSync(PROMPTS_INDEX_PATH)) {
     const promptsIndex: PromptsIndex = JSON.parse(fs.readFileSync(PROMPTS_INDEX_PATH, 'utf-8'));
-    prompts = (promptsIndex.prompts || []).filter((p) => p.status !== 'planned');
+    allPrompts = promptsIndex.prompts || [];
+    prompts = allPrompts.filter((p) => p.status !== 'planned');
     promptsIndexObj = promptsIndex;
   }
 
@@ -1057,6 +1066,18 @@ async function prerenderPages() {
   const promptCount = prompts.length > 0 ? prompts.length + 1 : 0; // +1 for hub
   console.log(`Prerender: ${metas.length} pages (${metas.length - charities.length - promptCount - causeCount - guideCount - calculatorCount} static + ${charities.length} charities + ${promptCount} prompts + ${causeCount} causes + ${guideCount} guides + ${calculatorCount} calculator)`);
 
+  const metadataOnly = process.argv.includes('--metadata-only');
+  const metadataDir = metadataOnly ? path.join(__dirname, '../public') : DIST_DIR;
+  const clientMetas = [...metas];
+  for (const charity of (charitiesIndex.charities as CharitySummary[]).filter(c => c.hideFromCurated)) {
+    const detailPath = path.join(DATA_DIR, `charity-${charity.ein}.json`);
+    if (fs.existsSync(detailPath)) clientMetas.push({ ...buildCharityMeta(JSON.parse(fs.readFileSync(detailPath, 'utf-8'))), noindex: true });
+  }
+  for (const prompt of allPrompts.filter(p => p.status === 'planned')) clientMetas.push({ ...buildPromptMeta(prompt), noindex: true });
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(path.join(metadataDir, 'page-meta.json'), JSON.stringify(Object.fromEntries(clientMetas.map(({ route, ...meta }) => [route, meta]))));
+  if (metadataOnly) return;
+
   const redirectCount = writeRedirects(metas);
   console.log(`Wrote ${redirectCount} trailing-slash 308 redirects to dist/_redirects`);
 
@@ -1077,6 +1098,13 @@ async function prerenderPages() {
   };
 
   let written = 0;
+  const notFoundMeta: PageMeta = {
+    route: '/404', title: 'Page Not Found | Good Measure Giving',
+    description: 'The requested page could not be found. Browse our charity evaluations instead.',
+    canonical: `${SITE_URL}/404/`, ogType: 'website', noindex: true,
+  };
+  const notFoundBody = await render('/404', seedFor('/404', ctx));
+  fs.writeFileSync(path.join(DIST_DIR, '404.html'), injectMeta(baseHtml, notFoundMeta).replace('<div id="root"></div>', `<div id="root">${notFoundBody}</div>`));
   for (const meta of metas) {
     let html = injectMeta(baseHtml, meta);
     if (isSsrRoute(meta.route)) {

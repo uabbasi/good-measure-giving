@@ -2,7 +2,7 @@
 // (/zakat-calculator/:asset). Motif-only: renders its own GmgNav + footer via the
 // content kit. Calculation logic + hooks are unchanged from the legacy version.
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { zakatCalculatorPath, paths } from '../src/lib/paths';
 import { calculateZakat } from '../src/utils/zakatCalculator';
@@ -37,10 +37,6 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
 
   const asset = data?.assets.find((a) => a.slug === assetSlug);
 
-  useEffect(() => {
-    if (asset) document.title = asset.metaTitle;
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [asset]);
 
   if (!assetSlug || !isValidAssetSlug(assetSlug)) {
     return <Navigate to="/zakat-calculator" replace />;

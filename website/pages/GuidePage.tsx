@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif Guide article page (/guides/:slug).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { charityPath, causePath, paths } from '../src/lib/paths';
 import {
@@ -23,10 +23,6 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { slug } = useParams<{ slug: string }>();
   const { guide, loading, notFound } = useGuide(slug || '');
 
-  useEffect(() => {
-    if (guide) document.title = guide.metaTitle;
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [guide]);
 
   if (notFound) return <Navigate to="/guides" replace />;
 

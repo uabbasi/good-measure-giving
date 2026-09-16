@@ -20,9 +20,12 @@ function makeAssets(paths: Record<string, string>) {
 
 const PRERENDERED = {
   '/': '<title>Good Measure Giving</title>',
+  '/404.html': '<h1>Page not found</h1>',
   '/methodology/': '<title>Methodology</title>',
   '/charity/13-5660870/': '<title>International Rescue Committee</title>',
   '/assets/index-abc123.js': 'console.log(1)',
+  '/data/charities/charity-04-2535767.json': '{"name":"Unlisted charity"}',
+  '/data/prompts/planned_prompt.json': '{"status":"planned"}',
 };
 
 function get(path: string) {
@@ -30,6 +33,17 @@ function get(path: string) {
 }
 
 describe('worker asset routing', () => {
+  it.each(['/missing/', '/charity/00-0000000/', '/guides/missing/', '/plan/join/'])('returns custom HTML with a 404 status for %s', async (path) => {
+    const response = await worker.fetch(get(path), { ASSETS: makeAssets(PRERENDERED) });
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe('<h1>Page not found</h1>');
+  });
+
+  it.each(['/profile/', '/compare/', '/plan/join/plan-id/invite-token/', '/charity/04-2535767/', '/prompts/planned_prompt/'])('preserves client-only route %s', async (path) => {
+    const response = await worker.fetch(get(path), { ASSETS: makeAssets(PRERENDERED) });
+    expect(response.status).toBe(200);
+  });
+
   it('serves each prerendered page instead of the SPA shell', async () => {
     // The regression this guards: rewriting every extensionless path to "/"
     // served the homepage for all 196 prerendered URLs, erasing the SSG output

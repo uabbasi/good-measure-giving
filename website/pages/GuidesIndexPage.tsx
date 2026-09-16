@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif Guides index page (/guides).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { guidePath } from '../src/lib/paths';
 import {
   GmgContentFrame,
@@ -18,12 +18,6 @@ import { useGuides } from '../src/hooks/useGuides';
 export const GuidesIndexPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { guides, loading } = useGuides();
 
-  useEffect(() => {
-    document.title = 'Guides | Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   return (
     <GmgContentFrame isDark={isDark} maxWidth={760}>

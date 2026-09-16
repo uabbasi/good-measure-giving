@@ -46,12 +46,6 @@ const INDEPENDENCE: string[] = [
 ];
 
 export const AboutPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
-  React.useEffect(() => {
-    document.title = 'About | Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   return (
     <GmgContentFrame isDark={isDark} active="About" maxWidth={760}>

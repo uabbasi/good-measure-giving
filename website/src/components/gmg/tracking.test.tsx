@@ -15,16 +15,39 @@ vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
 vi.mock('./useIsMobile', () => ({ useIsMobile: () => mobile }));
 
+function memoryStorage() {
+  const map = new Map<string, string>();
+  return {
+    getItem: (key: string) => (map.has(key) ? map.get(key)! : null),
+    setItem: (key: string, value: string) => { map.set(String(key), String(value)); },
+    removeItem: (key: string) => { map.delete(key); },
+    clear: () => { map.clear(); },
+    get length() { return map.size; },
+    key: (index: number) => [...map.keys()][index] ?? null,
+  };
+}
+let local: ReturnType<typeof memoryStorage>;
+let session: ReturnType<typeof memoryStorage>;
+
 beforeEach(() => {
+  local = memoryStorage();
+  session = memoryStorage();
+  vi.stubGlobal('localStorage', local);
+  vi.stubGlobal('sessionStorage', session);
+  Object.defineProperty(window, 'localStorage', { configurable: true, value: local });
+  Object.defineProperty(window, 'sessionStorage', { configurable: true, value: session });
+  local.setItem('gmg_analytics_consent', 'accepted');
   window.gtag = vi.fn();
   window.history.replaceState(null, '', '/');
-  sessionStorage.clear();
+  session.clear();
   vi.useFakeTimers();
 });
 afterEach(() => {
+  local.removeItem('gmg_analytics_consent');
   cleanup();
   vi.useRealTimers();
   delete window.gtag;
+  vi.unstubAllGlobals();
 });
 const events = (name: string) => vi.mocked(window.gtag!).mock.calls.filter(([, event]) => event === name);
 
