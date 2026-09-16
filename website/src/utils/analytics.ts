@@ -86,6 +86,8 @@ export function initializeAnalytics(): void {
     document.head.appendChild(beacon);
   }
   if (!GA_MEASUREMENT_ID) return;
+  // Ensure GA is not disabled in this tab after a prior decline.
+  (window as unknown as Record<string, unknown>)[`ga-disable-${GA_MEASUREMENT_ID}`] = false;
   if (typeof window.gtag === 'function') return;
 
   const script = document.createElement('script');

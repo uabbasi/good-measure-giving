@@ -1326,6 +1326,12 @@ _COST_PER_BENEFICIARY_CLAIM = re.compile(
     r"\$\s*[\d,]+(?:\.\d+)?\s*(?:/|\s+per\s+)beneficiary", re.IGNORECASE
 )
 
+# Also match narrative phrasing where the amount follows the phrase:
+# "cost per beneficiary of $353.70", "cost per beneficiary … $2,478.87"
+_CPB_PHRASE_THEN_AMOUNT = re.compile(
+    r"cost\s+per\s+beneficiary[^$\n]*\$\s*[\d,]+(?:\.\d+)?", re.IGNORECASE
+)
+
 
 # The eight asnaf, spelled exactly as ASNAF_TAGS in
 # website/src/components/gmg/adapters/regions.ts. That file is the display
@@ -1415,7 +1421,9 @@ def _suppress_untrusted_cost_per_beneficiary(
     def _scrub(text: Any) -> Any:
         if not isinstance(text, str):
             return text
-        return _COST_PER_BENEFICIARY_CLAIM.sub("cost per beneficiary unavailable", text)
+        scrubbed = _COST_PER_BENEFICIARY_CLAIM.sub("cost per beneficiary unavailable", text)
+        scrubbed = _CPB_PHRASE_THEN_AMOUNT.sub("cost per beneficiary unavailable", scrubbed)
+        return scrubbed
 
     for holder, key in [(impact, "rationale")] + [
         (c, "evidence") for c in impact.get("components") or [] if isinstance(c, dict)
@@ -1425,6 +1433,37 @@ def _suppress_untrusted_cost_per_beneficiary(
         was = holder[key]
         holder[key] = _scrub(was)
         changed = changed or holder[key] != was
+
+    # Also scrub narrative prose (baseline/rich) that still asserts a per-beneficiary figure.
+    # These are LLM-generated and may include the money token in free text; replace only the token.
+    def _scrub_inplace(obj: Any) -> bool:
+        mutated = False
+        if isinstance(obj, dict):
+            for k, v in list(obj.items()):
+                if isinstance(v, (dict, list)):
+                    mutated = _scrub_inplace(v) or mutated
+                elif isinstance(v, str):
+                    new_v = _COST_PER_BENEFICIARY_CLAIM.sub("cost per beneficiary unavailable", v)
+                    new_v = _CPB_PHRASE_THEN_AMOUNT.sub("cost per beneficiary unavailable", new_v)
+                    if new_v != v:
+                        obj[k] = new_v
+                        mutated = True
+        elif isinstance(obj, list):
+            for i, v in enumerate(list(obj)):
+                if isinstance(v, (dict, list)):
+                    mutated = _scrub_inplace(v) or mutated
+                elif isinstance(v, str):
+                    new_v = _COST_PER_BENEFICIARY_CLAIM.sub("cost per beneficiary unavailable", v)
+                    new_v = _CPB_PHRASE_THEN_AMOUNT.sub("cost per beneficiary unavailable", new_v)
+                    if new_v != v:
+                        obj[i] = new_v
+                        mutated = True
+        return mutated
+
+    for key in ("baseline_narrative", "rich_narrative"):
+        if isinstance(amal_evaluation.get(key), dict):
+            if _scrub_inplace(amal_evaluation[key]):
+                changed = True
 
     return changed
 

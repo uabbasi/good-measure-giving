@@ -136,3 +136,38 @@ class TestTheDisplayStringsAreScrubbedToo:
 
         assert _suppress_untrusted_cost_per_beneficiary(ev, False) is False
         assert "$218739.75/beneficiary" in ev["score_details"]["impact"]["rationale"]
+
+
+class TestNarrativeTextIsScrubbedToo:
+    def test_rich_and_baseline_narratives_remove_figures(self):
+        ev = {
+            "score_details": {"impact": {"cost_per_beneficiary": 353.7}},
+            "baseline_narrative": {
+                "amal_score_rationale": "High cost per beneficiary of $353.70 is concerning.",
+                "areas_for_improvement": [
+                    "The program spends $353.70 per beneficiary.",
+                    "Other note without a figure.",
+                ],
+            },
+            "rich_narrative": {
+                "case_against": {
+                    "risk_factors": [
+                        "High unit cost per beneficiary ($353.70)",
+                        "Expenses exceed revenue.",
+                    ],
+                    "summary": "At $353.70 per beneficiary, reach is constrained.",
+                },
+                "areas_for_improvement": [
+                    {"area": "Unit cost", "context": "Costs are $353.70/beneficiary."}
+                ],
+            },
+        }
+        changed = _suppress_untrusted_cost_per_beneficiary(ev, True)
+        assert changed is True
+        # Baseline
+        assert "cost per beneficiary unavailable" in ev["baseline_narrative"]["amal_score_rationale"]
+        assert "cost per beneficiary unavailable" in ev["baseline_narrative"]["areas_for_improvement"][0]
+        # Rich
+        assert "cost per beneficiary unavailable" in ev["rich_narrative"]["case_against"]["risk_factors"][0]
+        assert "cost per beneficiary unavailable" in ev["rich_narrative"]["case_against"]["summary"]
+        assert "cost per beneficiary unavailable" in ev["rich_narrative"]["areas_for_improvement"][0]["context"]

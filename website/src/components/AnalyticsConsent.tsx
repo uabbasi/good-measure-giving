@@ -1,6 +1,12 @@
 import React, { useSyncExternalStore } from 'react';
 import { Link } from 'react-router-dom';
-import { getAnalyticsConsent, setAnalyticsConsent, type AnalyticsConsent as Choice } from '../utils/analytics';
+import {
+  getAnalyticsConsent,
+  setAnalyticsConsent,
+  initializeAnalytics,
+  trackPageView,
+  type AnalyticsConsent as Choice,
+} from '../utils/analytics';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { gmgPalette } from './gmg/tokens';
 
@@ -8,9 +14,20 @@ function subscribe(onChange: () => void) {
   const storageChanged = (event: StorageEvent) => {
     if (event.key !== 'gmg_analytics_consent' && event.key !== null) return;
     // Honor a withdrawal in another tab, including unloading its running scripts.
-    if (getAnalyticsConsent() !== 'accepted' && document.querySelector('script[data-cf-beacon], script[src*="googletagmanager.com"]')) {
+    if (
+      getAnalyticsConsent() !== 'accepted' &&
+      document.querySelector('script[data-cf-beacon], script[src*="googletagmanager.com"]')
+    ) {
       setAnalyticsConsent('declined');
       window.location.reload();
+    }
+    // When another tab accepts consent, initialize analytics here and record this page view.
+    if (
+      getAnalyticsConsent() === 'accepted' &&
+      !document.querySelector('script[data-cf-beacon], script[src*="googletagmanager.com"]')
+    ) {
+      initializeAnalytics();
+      trackPageView(window.location.pathname);
     }
     onChange();
   };
