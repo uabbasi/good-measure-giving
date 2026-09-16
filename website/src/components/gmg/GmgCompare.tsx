@@ -14,9 +14,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from './tokens';
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker, Figure } from './primitives';
@@ -104,8 +102,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { charities, loading: indexLoading } = useCharities();
   const location = useLocation();
 
-  const variant: FontVariant = resolveFontVariant(new URLSearchParams(location.search).get('type'));
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,

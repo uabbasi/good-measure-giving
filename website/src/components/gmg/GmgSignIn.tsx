@@ -22,8 +22,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
+  FONT_THEME,
 } from './tokens';
 import { GmgLogo } from './primitives';
 
@@ -49,10 +48,7 @@ export const GmgSignIn: React.FC<{
   const [password, setPassword] = useState('');
   const [isNewAccount, setIsNewAccount] = useState(false);
 
-  const variant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,

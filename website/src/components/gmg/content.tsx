@@ -11,10 +11,8 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
+  FONT_THEME,
   type FontTheme,
-  type FontVariant,
 } from './tokens';
 import { GmgNav } from './chrome';
 import { GmgLogo } from './primitives';
@@ -23,10 +21,7 @@ import { useIsMobile } from './useIsMobile';
 
 // Resolve the motif font CSS vars (mirrors ChangelogPage / GmgChromeFrame).
 export function useMotifFontVars(): { ft: FontTheme; fontVars: React.CSSProperties } {
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,

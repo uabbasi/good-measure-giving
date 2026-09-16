@@ -33,6 +33,27 @@ function get(path: string) {
 }
 
 describe('worker asset routing', () => {
+  it.each([
+    ['/?type=instrument', '/'],
+    ['/charity/13-5660870/?view=terminal', '/charity/13-5660870/'],
+    ['/compare/?eins=81-3451645%2C81-2566656&type=caslon&view=terminal', '/compare/?eins=81-3451645%2C81-2566656'],
+    ['/methodology/?type=&type=unknown&view=&utm_source=newsletter&q=food+aid', '/methodology/?utm_source=newsletter&q=food+aid'],
+  ])('permanently redirects retired display parameters in %s', async (path, target) => {
+    const env = { ASSETS: makeAssets(PRERENDERED) };
+    const response = await worker.fetch(get(path), env);
+    expect(response.status).toBe(301);
+    expect(response.headers.get('location')).toBe(`https://goodmeasuregiving.org${target}`);
+    expect((await worker.fetch(get(target), env)).status).toBe(200);
+  });
+
+  it('normalizes HEAD requests but leaves POST requests and file queries alone', async () => {
+    const env = { ASSETS: makeAssets(PRERENDERED) };
+    const url = 'https://goodmeasuregiving.org/?view=terminal';
+    expect((await worker.fetch(new Request(url, { method: 'HEAD' }), env)).status).toBe(301);
+    expect((await worker.fetch(new Request(url, { method: 'POST' }), env)).status).toBe(200);
+    expect((await worker.fetch(get('/assets/index-abc123.js?type=module&view=raw'), env)).status).toBe(200);
+  });
+
   it.each(['/missing/', '/charity/00-0000000/', '/guides/missing/', '/plan/join/'])('returns custom HTML with a 404 status for %s', async (path) => {
     const response = await worker.fetch(get(path), { ASSETS: makeAssets(PRERENDERED) });
     expect(response.status).toBe(404);
@@ -86,12 +107,12 @@ describe('worker asset routing', () => {
       .mockResolvedValue(new Response('auth handler', { status: 200 }));
 
     try {
-      const response = await worker.fetch(get('/__/auth/handler?foo=1'), env);
+      const response = await worker.fetch(get('/__/auth/handler?type=signIn&view=popup'), env);
 
       expect(await response.text()).toBe('auth handler');
       expect(env.ASSETS.fetch).not.toHaveBeenCalled();
       expect(upstream.mock.calls[0][0]).toBe(
-        'https://good-measure-giving.firebaseapp.com/__/auth/handler?foo=1',
+        'https://good-measure-giving.firebaseapp.com/__/auth/handler?type=signIn&view=popup',
       );
     } finally {
       upstream.mockRestore();

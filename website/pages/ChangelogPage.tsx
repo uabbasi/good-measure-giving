@@ -10,9 +10,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from '../src/components/gmg/tokens';
 import { GmgNav } from '../src/components/gmg/chrome';
 import { useIsMobile } from '../src/components/gmg/useIsMobile';
@@ -64,10 +62,7 @@ export const ChangelogPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const padX = isMobile ? 20 : 24;
 
 
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,

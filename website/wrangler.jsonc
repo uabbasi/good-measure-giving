@@ -11,6 +11,8 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
+    // Page requests must reach the Worker to retire legacy display URLs.
+    "run_worker_first": ["/*", "!/assets/*", "!/data/*"],
     "not_found_handling": "none"
   }
 }
