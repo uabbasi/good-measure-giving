@@ -63,12 +63,6 @@ export const ChangelogPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const isMobile = useIsMobile();
   const padX = isMobile ? 20 : 24;
 
-  React.useEffect(() => {
-    document.title = 'Changelog — Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   const variant: FontVariant = resolveFontVariant(
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,

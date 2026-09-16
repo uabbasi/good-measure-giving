@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif Zakat Calculator hub (/zakat-calculator).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { zakatCalculatorPath } from '../src/lib/paths';
 import {
   GmgContentFrame,
@@ -30,12 +30,6 @@ const SLUG_TO_LABEL: Record<string, string> = {
 export const ZakatCalculatorHubPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { data, loading } = useCalculatorData();
 
-  useEffect(() => {
-    document.title = 'Zakat Calculator 2026 | Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   const availableSlugs = new Set((data?.assets || []).map((a) => a.slug));
 

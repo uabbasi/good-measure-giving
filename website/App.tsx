@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -16,6 +16,7 @@ const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ de
 const FAQPage = lazy(() => import('./pages/FAQPage').then(m => ({ default: m.FAQPage })));
 const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const PromptsPage = lazy(() => import('./pages/PromptsPage').then(m => ({ default: m.PromptsPage })));
 const PromptDetailPage = lazy(() => import('./pages/PromptDetailPage').then(m => ({ default: m.PromptDetailPage })));
@@ -42,7 +43,8 @@ import { ClientOnly } from './src/components/ClientOnly';
 import { GmgChromeFrame } from './src/components/gmg/chrome';
 import { DevQuickLogin } from './src/auth/DevQuickLogin';
 import { ScrollToTop } from './components/ScrollToTop';
-import { trackPageView } from './src/utils/analytics';
+import { AnalyticsConsent } from './src/components/AnalyticsConsent';
+import { RouteMetadata } from './src/components/RouteMetadata';
 
 
 // TanStack Query client — staleTime: Infinity because charity data is static JSON
@@ -82,6 +84,7 @@ const MOTIF_CONTENT_ROUTES = new Set<string>([
   '/methodology',
   '/about',
   '/privacy',
+  '/terms',
   '/faq',
   '/causes',
   '/guides',
@@ -121,11 +124,6 @@ export const AppContent: React.FC = () => {
     MOTIF_CONTENT_PREFIXES.some((pre) => path.startsWith(pre));
   const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
 
-  // T049: Track page views on route changes
-  useEffect(() => {
-    trackPageView(location.pathname);
-  }, [location.pathname]);
-
   return (
     <div className={isGmgPreview ? 'min-h-screen flex flex-col' : `${isLandingPage ? 'h-[100dvh] lg:h-auto lg:min-h-screen overflow-hidden lg:overflow-visible' : 'min-h-screen'} flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       {/* Skip to main content link for keyboard users */}
@@ -136,8 +134,9 @@ export const AppContent: React.FC = () => {
         Skip to main content
       </a>
       {!isGmgPreview && <Navbar />}
+      <RouteMetadata />
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
-        <Suspense fallback={null}>
+        <Suspense fallback={<div role="status" aria-live="polite" className="min-h-[40vh] flex items-center justify-center p-8">Loading page…</div>}>
           <Routes>
             <Route path="/" element={<GmgLanding isDark={isDark} />} />
             <Route path="/browse" element={<GmgBrowse isDark={isDark} />} />
@@ -148,6 +147,7 @@ export const AppContent: React.FC = () => {
             <Route path="/faq" element={<FAQPage isDark={isDark} />} />
             <Route path="/about" element={<AboutPage isDark={isDark} />} />
             <Route path="/privacy" element={<PrivacyPage isDark={isDark} />} />
+            <Route path="/terms" element={<TermsPage isDark={isDark} />} />
             <Route path="/bookmarks" element={<Navigate to="/profile" replace />} />
             <Route path="/compare" element={<GmgCompare isDark={isDark} />} />
             <Route path="/profile" element={<GmgChromeFrame isDark={isDark} requireAuth><ProfilePage /></GmgChromeFrame>} />
@@ -169,6 +169,7 @@ export const AppContent: React.FC = () => {
       </main>
       {!isGmgPreview && (isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />)}
       <ClientOnly>
+        {path !== '/privacy' && <AnalyticsConsent />}
         {!isGmgPreview && <CompareBar />}
         {!isGmgPreview && !isLandingPage && <MobileBottomNav />}
         {!isGmgPreview && <WelcomeTour />}

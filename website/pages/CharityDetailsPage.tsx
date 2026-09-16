@@ -15,14 +15,6 @@ export const CharityDetailsPage: React.FC = () => {
   const { isSignedIn } = useAuth();
   const { recordView } = useRichAccess(id);
 
-  // Set page title with charity name
-  useEffect(() => {
-    if (charity) {
-      document.title = `${charity.name} | Good Measure Giving`;
-    }
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [charity]);
-
   // Record view for anonymous users (progressive reveal).
   // GmgCharityDetail does NOT record views, so this must stay here.
   // Gated on `charity` so a stale or mistyped link doesn't spend one of the

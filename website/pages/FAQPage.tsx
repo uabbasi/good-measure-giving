@@ -27,12 +27,6 @@ const CATEGORIES: { id: FaqItem['category']; label: string; description: string 
 ];
 
 export const FAQPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
-  React.useEffect(() => {
-    document.title = 'FAQ | Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   return (
     <GmgContentFrame isDark={isDark} maxWidth={760}>

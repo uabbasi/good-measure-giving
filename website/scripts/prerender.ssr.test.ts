@@ -5,6 +5,7 @@ test('classifies SSR vs meta-only routes', () => {
   expect(isSsrRoute('/guides')).toBe(true);
   expect(isSsrRoute('/guides/zakat-101')).toBe(true);
   expect(isSsrRoute('/about')).toBe(true);
+  expect(isSsrRoute('/terms')).toBe(true);
   // Home and Browse are indexable and listed in the sitemap, so they must be
   // SSR'd with real content — empty shells caused "Discovered – not indexed".
   expect(isSsrRoute('/')).toBe(true);

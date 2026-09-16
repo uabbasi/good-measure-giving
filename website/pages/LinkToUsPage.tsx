@@ -100,10 +100,6 @@ const SnippetBlock: React.FC<{ p: GmgPalette; title: string; snippet: string }> 
 );
 
 export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
-  React.useEffect(() => {
-    document.title = 'Link to Us | Good Measure Giving';
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, []);
 
   const badgeSnippet = buildTrustBadgeSnippet(EXAMPLE_CHARITY);
   const textLinks = buildTextLinkSnippets();

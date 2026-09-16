@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif ranked hub (/best-muslim-charities-in-usa).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
@@ -109,10 +109,6 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
   const { summaries, loading } = useCharities();
   const year = new Date().getFullYear();
 
-  useEffect(() => {
-    document.title = `Best Muslim Charities in the USA (${year}) | Good Measure Giving`;
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, [year]);
 
   // Ranking + filtering preserved byte-identical so the prerender ItemList JSON-LD
   // (top-20 by GMG score) still matches the rendered list.

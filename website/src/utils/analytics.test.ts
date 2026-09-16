@@ -2,11 +2,44 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { UserCredential } from 'firebase/auth';
 import { initializeAnalytics, trackPageView, trackSignInSuccess } from './analytics';
 
+vi.hoisted(() => vi.stubEnv('VITE_GA_MEASUREMENT_ID', 'G-TEST123'));
+
 vi.mock('firebase/auth', () => ({ getAdditionalUserInfo: (result: any) => result.additionalUserInfo }));
 
+function memoryStorage() {
+  const map = new Map<string, string>();
+  return {
+    getItem: (key: string) => (map.has(key) ? map.get(key)! : null),
+    setItem: (key: string, value: string) => { map.set(String(key), String(value)); },
+    removeItem: (key: string) => { map.delete(key); },
+    clear: () => { map.clear(); },
+    get length() { return map.size; },
+    key: (index: number) => [...map.keys()][index] ?? null,
+  };
+}
+
 beforeEach(() => {
-  vi.stubGlobal('window', { location: new URL('https://goodmeasuregiving.org/') });
-  sessionStorage.clear();
+  const local = memoryStorage();
+  const session = memoryStorage();
+  vi.stubGlobal('window', {
+    location: new URL('https://goodmeasuregiving.org/'),
+    localStorage: local,
+    sessionStorage: session,
+  });
+  vi.stubGlobal('localStorage', local);
+  vi.stubGlobal('sessionStorage', session);
+  local.setItem('gmg_analytics_consent', 'accepted');
+});
+
+it.each([null, 'declined', 'invalid'])('does not load analytics or emit events without consent: %s', (choice) => {
+  if (choice === null) localStorage.removeItem('gmg_analytics_consent');
+  else localStorage.setItem('gmg_analytics_consent', choice);
+  initializeAnalytics();
+  expect(document.head.querySelector('script')).toBeNull();
+  window.gtag = vi.fn();
+  trackPageView('/browse/');
+  expect(window.gtag).not.toHaveBeenCalled();
+  expect(sessionStorage.length).toBe(0);
 });
 afterEach(() => {
   document.head.querySelectorAll('script').forEach((script) => script.remove());
@@ -42,4 +75,36 @@ it.each([true, false])('uses the authentication result to classify a new user: %
   expect(window.gtag).toHaveBeenCalledWith('event', 'sign_in_success', expect.objectContaining({
     method: 'google', auth_type: isNewUser ? 'signup' : 'login',
   }));
+});
+
+it('keeps analytics off when consent storage cannot be read', () => {
+  const getItem = vi.spyOn(localStorage, 'getItem').mockImplementation(() => { throw new Error('Storage blocked'); });
+  try {
+    initializeAnalytics();
+    expect(document.querySelector('script')).toBeNull();
+  } finally { getItem.mockRestore(); }
+});
+
+it('withdraws consent without deleting login cookies, and allows opting in again', async () => {
+  vi.resetModules();
+  const analytics = await import('./analytics');
+  window.dispatchEvent = vi.fn();
+  document.cookie = '_ga=test; path=/';
+  document.cookie = 'login_session=keep; path=/';
+  analytics.initializeAnalytics();
+  analytics.trackPageView('/');
+  analytics.setAnalyticsConsent('declined');
+  expect(analytics.getAnalyticsConsent()).toBe('declined');
+  expect(document.querySelector('script')).toBeNull();
+  expect(document.cookie).not.toContain('_ga=');
+  expect(document.cookie).toContain('login_session=keep');
+  expect(sessionStorage.getItem('gmg_flow_id')).toBeNull();
+  expect((window as any)['ga-disable-G-TEST123']).toBe(true);
+  window.gtag = vi.fn();
+  analytics.trackPageView('/browse/');
+  expect(window.gtag).not.toHaveBeenCalled();
+  window.gtag = undefined;
+  analytics.setAnalyticsConsent('accepted');
+  expect((window as any)['ga-disable-G-TEST123']).toBe(false);
+  expect(document.querySelector('script[src*="googletagmanager"]')).not.toBeNull();
 });

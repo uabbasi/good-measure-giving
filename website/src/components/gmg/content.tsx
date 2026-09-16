@@ -492,10 +492,11 @@ export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, i
         }}
       >
         <span>© {new Date().getUTCFullYear()} Good Measure Giving</span>
-        <span style={{ display: 'flex', gap: 16 }}>
-          <Link to="/privacy" style={{ color: p.sub2, textDecoration: 'none' }}>
-            Privacy
+        <span style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+          <Link to="/privacy/" style={{ color: p.sub2, textDecoration: 'none' }}>
+            Privacy & analytics preferences
           </Link>
+          <Link to="/terms/" style={{ color: p.sub2, textDecoration: 'none' }}>Terms</Link>
         </span>
       </div>
     </footer>

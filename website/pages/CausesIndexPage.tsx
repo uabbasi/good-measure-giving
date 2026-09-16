@@ -1,7 +1,7 @@
 // Good Measure Giving — "Modern" motif Causes index page (/causes).
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { causePath } from '../src/lib/paths';
 import {
   GmgContentFrame,
@@ -26,12 +26,6 @@ interface CauseData {
 const CAUSES: CauseData[] = causesData.causes as CauseData[];
 
 export const CausesIndexPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
-  useEffect(() => {
-    document.title = 'Causes | Good Measure Giving';
-    return () => {
-      document.title = 'Good Measure Giving | Muslim Charity Evaluator';
-    };
-  }, []);
 
   return (
     <GmgContentFrame isDark={isDark} maxWidth={960}>

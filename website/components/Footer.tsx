@@ -43,8 +43,9 @@ export const Footer: React.FC = () => {
               About
             </Link>
             <Link to="/privacy" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Privacy Policy
+              Privacy & analytics preferences
             </Link>
+            <Link to="/terms/" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Terms</Link>
             <Link to="/prompts" className={`hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               AI Transparency
             </Link>

@@ -6,10 +6,6 @@ import { useLandingTheme } from '../contexts/LandingThemeContext';
 export const NotFoundPage: React.FC = () => {
   const { isDark } = useLandingTheme();
 
-  React.useEffect(() => {
-    document.title = 'Page Not Found | Good Measure Giving';
-    return () => { document.title = 'Good Measure Giving | Muslim Charity Evaluator'; };
-  }, []);
 
   return (
     <div className={`min-h-[70vh] flex items-center justify-center py-16 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
