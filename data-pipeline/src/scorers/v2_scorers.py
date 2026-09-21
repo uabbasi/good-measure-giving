@@ -2160,6 +2160,10 @@ class RiskScorer:
     - related_party_transactions: -3 (Form 990 Part VI Line 2)
 
     Conflict zone operations never penalized.
+
+    Overall level is UNKNOWN, not LOW, when none of the inputs the checks
+    test are present (no 990, no governance data): a clean register only
+    means "clean" if something was checkable.
     """
 
     def evaluate(self, metrics: CharityMetrics) -> tuple[CaseAgainst, int]:
@@ -2177,8 +2181,9 @@ class RiskScorer:
         risks.extend(self._check_contradiction_signals(metrics))
 
         total_deduction = self._calculate_deduction(risks, metrics, tier)
-        overall_risk_level = self._determine_risk_level(total_deduction)
-        risk_summary = self._build_summary(risks)
+        risk_inputs_available = self._has_risk_inputs(metrics)
+        overall_risk_level = self._determine_risk_level(total_deduction, risk_inputs_available)
+        risk_summary = self._build_summary(risks, risk_inputs_available)
 
         case_against = CaseAgainst(
             risks=risks,
@@ -2187,6 +2192,40 @@ class RiskScorer:
             total_deduction=total_deduction,
         )
         return case_against, total_deduction
+
+    # The financial/governance inputs the checks below actually test. Every
+    # check is null-gated (`if ratio is not None and ...`), so a charity with
+    # no Form 990 fires none of them and lands on a 0 deduction -- which used
+    # to render as LOW, the same green a fully-audited charity earns. A 0 with
+    # nothing to check means "not assessed", not "no red flags": 6 of 169
+    # published charities (all `no_filings`) were reading as low-risk on an
+    # empty register. _determine_risk_level reports UNKNOWN for that case.
+    _RISK_INPUT_FIELDS = (
+        "program_expense_ratio",
+        "cash_adjusted_program_ratio",
+        "working_capital_ratio",
+        "reserves_months",
+        "noncash_ratio",
+        "domestic_burn_rate",
+        "total_revenue",
+        "total_assets",
+        "board_size",
+        "material_diversion_of_assets_reported",
+        "family_business_relationships_among_officers",
+    )
+
+    def _has_risk_inputs(self, metrics: CharityMetrics) -> bool:
+        """Whether any input the risk checks test is present for this charity.
+
+        Deliberately excludes the website-derived impact signals (theory of
+        change, outcome reporting): those say nothing about financial or
+        governance risk, which is what the risk level claims to report.
+        """
+        if any(getattr(metrics, field, None) is not None for field in self._RISK_INPUT_FIELDS):
+            return True
+        if metrics.cn_beacons or metrics.contradiction_signals:
+            return True
+        return bool(metrics.latest_known_filing_year or metrics.financial_data_tax_year)
 
     def _check_financial_risks(self, metrics: CharityMetrics) -> list[RiskFactor]:
         risks = []
@@ -2337,7 +2376,9 @@ class RiskScorer:
         """
         risks = []
         age = self._filing_age_years(metrics)
-        if age is None or age < 3:
+        if age is None:
+            return self._check_missing_filings(metrics)
+        if age < 3:
             return risks
         fy = metrics.latest_known_filing_year or metrics.financial_data_tax_year
         if age >= 5:
@@ -2359,6 +2400,37 @@ class RiskScorer:
                 )
             )
         return risks
+
+    def _check_missing_filings(self, metrics: CharityMetrics) -> list[RiskFactor]:
+        """Flag an org with no Form 990 on record at all.
+
+        `_filing_age_years` returns None both for orgs legally exempt from
+        filing and for orgs whose filing year is simply unknown, so an org
+        that has never filed slipped past the stale-filing check entirely --
+        while one that filed in FY2019 took -2. The gap is now named.
+
+        Recorded with NO point deduction on purpose: ProPublica's
+        `filing_requirement_code` misses church/mosque exemptions (the
+        Islamic Society of Greater Houston reads as required-to-file while
+        operating as a congregation, which the IRS exempts), so deducting
+        here would punish legitimately exempt religious orgs for a source
+        defect. The flag is what makes the register honest; the consequence
+        of the missing data is an UNKNOWN risk level, not a penalty.
+        """
+        if metrics.form_990_exempt or not metrics.no_filings:
+            return []
+        if metrics.latest_known_filing_year or metrics.financial_data_tax_year:
+            return []
+        return [
+            RiskFactor(
+                category=RiskCategory.OPERATIONAL,
+                description=(
+                    "No Form 990 filings on record — financial and governance checks could not be run"
+                ),
+                severity=RiskSeverity.MEDIUM,
+                data_source="ProPublica 990",
+            )
+        ]
 
     def _check_gik_risk(self, metrics: CharityMetrics) -> list[RiskFactor]:
         """Check for GIK (gifts-in-kind) inflation risk."""
@@ -2595,16 +2667,25 @@ class RiskScorer:
 
         return capped
 
-    def _determine_risk_level(self, deduction: int) -> str:
+    def _determine_risk_level(self, deduction: int, risk_inputs_available: bool = True) -> str:
         if deduction <= -8:
             return "HIGH"
         elif deduction <= -5:
             return "ELEVATED"
         elif deduction <= -2:
             return "MODERATE"
+        # Only claim LOW when at least one check could run. An unassessable
+        # charity is UNKNOWN -- absence of evidence, not evidence of absence.
+        if not risk_inputs_available:
+            return "UNKNOWN"
         return "LOW"
 
-    def _build_summary(self, risks: list[RiskFactor]) -> str:
+    def _build_summary(self, risks: list[RiskFactor], risk_inputs_available: bool = True) -> str:
+        if not risk_inputs_available and not any(r.severity == RiskSeverity.HIGH for r in risks):
+            return (
+                "Not enough public financial or governance data to assess risk. "
+                "This is an absence of information, not a clean bill of health."
+            )
         if not risks:
             return "No significant risks identified."
         high_risks = [r for r in risks if r.severity == RiskSeverity.HIGH]

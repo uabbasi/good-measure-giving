@@ -615,6 +615,75 @@ class TestRiskScorer:
         _case_against, deduction = scorer.evaluate(m)
         assert deduction == 0
 
+    def test_no_checkable_data_is_unknown_not_low(self):
+        """An empty register with nothing to check is UNKNOWN, not LOW.
+
+        Every check is null-gated, so a charity with no Form 990 fires none
+        of them and scores 0 — which used to render as the same green LOW a
+        fully-audited charity earns. Six of the 169 published charities (all
+        `no_filings`) were reading that way, the Islamic Society of Greater
+        Houston among them.
+        """
+        m = _base_metrics(no_filings=True)
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+        assert case_against.overall_risk_level == "UNKNOWN"
+        assert "not enough public" in case_against.risk_summary.lower()
+
+    def test_clean_charity_with_data_still_reads_low(self):
+        """The fix must not turn audited charities into unrated ones."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            working_capital_ratio=3.0,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 2,
+        )
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+        assert case_against.overall_risk_level == "LOW"
+
+    def test_a_single_known_input_is_enough_to_rate(self):
+        """Board size alone means a check ran — that charity is rated."""
+        m = _base_metrics(board_size=7)
+        case_against, _deduction = RiskScorer().evaluate(m)
+        assert case_against.overall_risk_level == "LOW"
+
+    def test_never_filed_is_flagged_but_not_deducted(self):
+        """`_filing_age_years` returns None for never-filed AND for exempt, so
+        an org with no 990 at all slipped past the stale-filing check while one
+        that filed in FY2019 took -2. Flagged now — without a deduction, since
+        ProPublica's filing_requirement_code misses church/mosque exemptions."""
+        m = _base_metrics(no_filings=True, form_990_exempt=False)
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == 0
+        assert any("no form 990 filings on record" in r.description.lower() for r in case_against.risks)
+
+    def test_exempt_org_is_not_flagged_for_missing_filings(self):
+        """A church/mosque that is legally exempt isn't delinquent."""
+        m = _base_metrics(no_filings=True, form_990_exempt=True)
+        case_against, _deduction = RiskScorer().evaluate(m)
+        assert not any("no form 990 filings" in r.description.lower() for r in case_against.risks)
+        assert case_against.overall_risk_level == "UNKNOWN"
+
+    def test_stale_filer_keeps_its_deduction(self):
+        """The never-filed branch must not swallow the stale-filing path."""
+        from datetime import date
+
+        m = _base_metrics(
+            program_expense_ratio=0.85,
+            board_size=7,
+            reports_outcomes=True,
+            has_theory_of_change=True,
+            financial_data_tax_year=date.today().year - 6,
+        )
+        case_against, deduction = RiskScorer().evaluate(m)
+        assert deduction == -4
+        assert case_against.overall_risk_level == "MODERATE"
+
     def test_near_zero_working_capital_is_deducted_like_any_sub_one_month(self):
         """`wc >= 0.1` let the worst reserve positions escape the deduction.
 

@@ -134,7 +134,12 @@ class CaseAgainst(BaseModel):
         default_factory=list,
         description="List of identified risk factors",
     )
-    overall_risk_level: str = Field(description="Overall risk level: LOW, MODERATE, ELEVATED, or HIGH")
+    overall_risk_level: str = Field(
+        description=(
+            "Overall risk level: LOW, MODERATE, ELEVATED, HIGH, or UNKNOWN when there is "
+            "no public financial/governance data for the checks to run against"
+        )
+    )
     risk_summary: str = Field(description="1-2 sentence summary of key risks for donors")
     total_deduction: Optional[int] = Field(
         default=None,

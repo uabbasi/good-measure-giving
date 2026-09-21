@@ -15,8 +15,11 @@ export const RATING_SCALE: Record<Rating, { fill: number; tone: keyof GmgPalette
 };
 
 // Risk level → semantic tone (lower risk is positive).
+// UNRATED/UNKNOWN is neutral, not caution: we aren't warning about the
+// charity, we're saying we couldn't check it.
 export const riskTone = (level: string): keyof GmgPalette => {
   const l = (level || '').toUpperCase();
+  if (l === 'UNRATED' || l === 'UNKNOWN') return 'sub';
   if (l.startsWith('LOW')) return 'pos';
   if (l.startsWith('HIGH')) return 'neg';
   return 'caution';

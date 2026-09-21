@@ -409,6 +409,12 @@ def _derive_donor_fit_signal_state(evaluation: dict | None, score_details: dict[
 
 
 def _derive_risk_signal_state(score_details: dict[str, Any], cfg: dict[str, Any]) -> str:
+    # UNKNOWN means the scorer had nothing to check (no 990, no governance
+    # data), so the 0 deduction below is silence, not a clean result. Never
+    # let that silence read as the strongest risk signal on the index.
+    if _safe_upper((score_details.get("risks") or {}).get("overall_risk_level")) == "UNKNOWN":
+        return "Limited"
+
     risk_cfg = (cfg.get("signals") or {}).get("risk", {})
     governance_strong_min = float(risk_cfg.get("governance_strong_min", 0.60))
     governance_moderate_min = float(risk_cfg.get("governance_moderate_min", 0.40))

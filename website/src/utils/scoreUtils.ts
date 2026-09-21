@@ -370,17 +370,23 @@ const deriveSignalStates = (charity: SummaryLike): UISignalsV1['signal_states'] 
   const riskCfg = uiSignalsConfig.signals.risk;
   const overallRiskLevel = (scoreDetails?.risks?.overall_risk_level as string | undefined)?.toUpperCase();
   const risk: UISignalState =
-    overallRiskLevel === 'LOW'
-      ? 'Strong'
-      : overallRiskLevel === 'HIGH'
-        ? 'Limited'
-        : overallRiskLevel === 'MODERATE'
-          ? 'Moderate'
-          : riskDeduction === 0 && governanceRatio != null && governanceRatio >= riskCfg.governance_strong_min
-            ? 'Strong'
-            : riskDeduction <= riskCfg.deduction_limited_max || (governanceRatio != null && governanceRatio < riskCfg.governance_moderate_min)
-              ? 'Limited'
-              : 'Moderate';
+    // UNKNOWN is the scorer saying it had nothing to check (no 990, no
+    // governance data). That silence must never surface as the strongest
+    // signal, and it must not fall through to the governance heuristic
+    // below either — that heuristic reads the same missing data.
+    overallRiskLevel === 'UNKNOWN'
+      ? 'Limited'
+      : overallRiskLevel === 'LOW'
+        ? 'Strong'
+        : overallRiskLevel === 'HIGH'
+          ? 'Limited'
+          : overallRiskLevel === 'MODERATE'
+            ? 'Moderate'
+            : riskDeduction === 0 && governanceRatio != null && governanceRatio >= riskCfg.governance_strong_min
+              ? 'Strong'
+              : riskDeduction <= riskCfg.deduction_limited_max || (governanceRatio != null && governanceRatio < riskCfg.governance_moderate_min)
+                ? 'Limited'
+                : 'Moderate';
 
   return { evidence, financial_health, donor_fit, risk };
 };

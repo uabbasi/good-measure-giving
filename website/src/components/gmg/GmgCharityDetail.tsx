@@ -37,7 +37,7 @@ import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { useCommunityMember } from '../../auth/useAuth';
 import { AnonWall } from './AnonWall';
-import { adaptCharity, GmgDimension } from './charityAdapter';
+import { adaptCharity, isRiskUnrated, GmgDimension } from './charityAdapter';
 import { EVIDENCE_STAGE_EXPLAINERS } from './facetState';
 import { dataVintage } from './sections/dataVintage';
 import { WhatTheyDo } from './sections/WhatTheyDo';
@@ -270,7 +270,9 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
     ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—', 'working capital'],
     ['Revenue', usd(c.totalRevenue), c.fiscalYear ? `FY${c.fiscalYear}${fyDated ? ' · dated' : ''}` : 'IRS 990'],
     ['Track record', c.trackRecordYears != null ? `${c.trackRecordYears} yr` : '—', c.founded ? `est. ${c.founded}` : ''],
-    ['Risk', c.riskLevel, 'overall'],
+    // UNRATED reads as "we couldn't check", and its sub-label has to say so —
+    // "overall" under UNRATED would imply a verdict we don't have.
+    ['Risk', c.riskLevel, isRiskUnrated(c.riskLevel) ? 'insufficient data' : 'overall'],
   ];
 
   // A phone fits three of these cells across, so a cell reading "— / not

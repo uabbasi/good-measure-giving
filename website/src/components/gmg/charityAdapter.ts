@@ -383,6 +383,47 @@ export interface GmgCharity {
   theoryOfChange: string | null;
 }
 
+/**
+ * The risk level a charity's own data actually supports.
+ *
+ * Every pipeline risk check is null-gated, so a charity with no Form 990
+ * fires none of them, scores a 0 deduction, and used to arrive here as
+ * "LOW" — printed in green next to a fully-audited charity's LOW. The
+ * scorer now says UNKNOWN for that case; this also recognises the same
+ * state in records exported before that change (empty register, zero
+ * deduction, no financial or governance inputs) so the fix doesn't wait on
+ * a re-run. Six of the 169 published charities are in that state today,
+ * all of them `noFilings`.
+ *
+ * The old `?? 'LOW'` default was the same bug one level up: a record with
+ * no risk block at all is not a low-risk charity.
+ */
+export const RISK_LEVEL_UNRATED = 'UNRATED';
+
+const RISK_FINANCIAL_INPUTS = [
+  'totalRevenue', 'totalExpenses', 'programExpenses', 'programExpenseRatio',
+  'workingCapitalMonths', 'totalAssets', 'netAssets', 'noncashRatio',
+  'domesticBurnRate', 'cashAdjustedProgramRatio',
+] as const;
+
+const hasRiskInputs = (c: any): boolean => {
+  const f = c?.financials ?? {};
+  if (RISK_FINANCIAL_INPUTS.some(k => f?.[k] != null)) return true;
+  return c?.baselineGovernance != null || c?.trustSignals != null;
+};
+
+export const deriveRiskLevel = (c: any, sd: any): string => {
+  const level = String(sd?.risks?.overall_risk_level ?? '').toUpperCase();
+  if (!level || level === 'UNKNOWN') return RISK_LEVEL_UNRATED;
+  const register = sd?.risks?.risks;
+  const emptyRegister = Array.isArray(register) && register.length === 0 && !(sd?.risks?.total_deduction ?? 0);
+  if (emptyRegister && !hasRiskInputs(c)) return RISK_LEVEL_UNRATED;
+  return level;
+};
+
+export const isRiskUnrated = (level: string | null | undefined): boolean =>
+  String(level ?? '').toUpperCase() === RISK_LEVEL_UNRATED;
+
 // Lightweight per-row projection for the index table.
 export const adaptRow = (c: any): GmgRow => {
   const ae = c?.amalEvaluation ?? {};
@@ -490,7 +531,7 @@ export const adaptCharity = (c: any): GmgCharity => {
     amalScore: num(ae?.amal_score),
     evaluatedOn: (ae?.evaluation_date ?? '').slice(0, 10),
     updatedOn: (c?.lastUpdated ?? '').slice(0, 10),
-    riskLevel: sd?.risks?.overall_risk_level ?? 'LOW',
+    riskLevel: deriveRiskLevel(c, sd),
 
     impact: buildDimension(sd?.impact, cs?.impact, 50),
     alignment: buildDimension(sd?.alignment, cs?.alignment, 50),

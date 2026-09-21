@@ -24,7 +24,7 @@ import { Tag, Kicker } from '../primitives';
 import { GmgPalette, FONT_DISPLAY, FONT_MONO } from '../tokens';
 import { riskTone } from '../rating';
 import { useIsMobile } from '../useIsMobile';
-import type { GmgCharity } from '../charityAdapter';
+import { isRiskUnrated, type GmgCharity } from '../charityAdapter';
 
 const TagRow: React.FC<{ label: string; items: string[]; p: GmgPalette }> = ({ label, items, p }) => {
   if (items.length === 0) return null;
@@ -85,7 +85,9 @@ export const WhatTheyDo: React.FC<{
             ['Programs', c.programs.join(', ')], ['Populations', c.populations.join(', ')],
             ['Founded', c.founded ? `${c.founded}${c.trackRecordYears ? ` · ${c.trackRecordYears} yrs` : ''}` : ''],
             ['Wallet', c.wallet], ['Asnaf', c.asnaf || (c.claimsZakat ? 'Claims zakat' : '')],
-            ['Risk level', c.riskLevel],
+            // Quick facts has no sub-label slot, so UNRATED carries its
+            // reason inline — a bare "UNRATED" reads as a missing value.
+            ['Risk level', isRiskUnrated(c.riskLevel) ? 'UNRATED · INSUFFICIENT DATA' : c.riskLevel],
           ] as [string, string][])
             .filter(([, v]) => v)
             .map(([k, v], i, arr) => {
