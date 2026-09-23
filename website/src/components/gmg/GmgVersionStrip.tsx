@@ -84,7 +84,7 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
                 </React.Fragment>
               ))}
         </span>
-        <Link to="/changelog" style={linkStyle}>
+        <Link to="/changelog/" style={linkStyle}>
           CHANGELOG
         </Link>
       </div>

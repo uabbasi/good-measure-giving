@@ -859,7 +859,7 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   </p>
                   <p style={{ fontSize: 12.5, color: p.sub2, margin: 0 }}>
                     Run a charity yourself? Add our trust badge or a backlink from our{' '}
-                    <Link to="/link-to-us" style={{ color: p.accent, textDecoration: 'none' }}>Link to Us</Link> page.
+                    <Link to="/link-to-us/" style={{ color: p.accent, textDecoration: 'none' }}>Link to Us</Link> page.
                   </p>
                 </Card>
               </div>

@@ -79,10 +79,10 @@ export const Navbar: React.FC<NavbarProps> = ({ forceTheme: propForceTheme }) =>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-2">
-              <Link to="/browse" className={getLinkClasses('/browse')}>Browse Charities</Link>
-              <Link to="/methodology" className={getLinkClasses('/methodology')}>Methodology</Link>
-              <Link to="/faq" className={getLinkClasses('/faq')}>FAQ</Link>
-              <Link to="/about" className={getLinkClasses('/about')}>About</Link>
+              <Link to="/browse/" className={getLinkClasses('/browse')}>Browse Charities</Link>
+              <Link to="/methodology/" className={getLinkClasses('/methodology')}>Methodology</Link>
+              <Link to="/faq/" className={getLinkClasses('/faq')}>FAQ</Link>
+              <Link to="/about/" className={getLinkClasses('/about')}>About</Link>
               {isSignedIn && (
                 <div className={`ml-2 pl-2 border-l ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                   <Link

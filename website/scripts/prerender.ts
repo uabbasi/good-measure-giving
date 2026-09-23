@@ -918,11 +918,11 @@ function writeRedirects(metas: PageMeta[]): number {
 // ── Prerender orchestration ────────────────────────────────────────────
 
 async function prerenderPages() {
-  // Load charity data — curated only; hidden charities get no static page
+  // Load charity data. Hidden charities still get a static page (browse and
+  // similar-charity blocks link to them), but noindex and out of the sitemap —
+  // without a page Google got the home shell (canonical "/") at their URLs.
   const charitiesIndex = JSON.parse(fs.readFileSync(CHARITIES_JSON, 'utf-8'));
-  const charities: CharitySummary[] = (charitiesIndex.charities || []).filter(
-    (c: CharitySummary) => !c.hideFromCurated
-  );
+  const charities: CharitySummary[] = charitiesIndex.charities || [];
 
   // Build meta for all pages
   const metas: PageMeta[] = [...buildStaticMeta()];
@@ -935,7 +935,7 @@ async function prerenderPages() {
     if (fs.existsSync(detailPath)) {
       const detail: CharityDetail = JSON.parse(fs.readFileSync(detailPath, 'utf-8'));
       charityDetails.set(detail.ein, detail);
-      metas.push(buildCharityMeta(detail));
+      metas.push({ ...buildCharityMeta(detail), noindex: charity.hideFromCurated || undefined });
     } else {
       // Minimal meta from index data
       metas.push({
@@ -947,6 +947,7 @@ async function prerenderPages() {
         ),
         canonical: `${SITE_URL}/charity/${charity.ein}`,
         ogType: 'article',
+        noindex: charity.hideFromCurated || undefined,
       });
     }
   }
@@ -970,11 +971,16 @@ async function prerenderPages() {
   for (const prompt of prompts) {
     metas.push(buildPromptMeta(prompt));
   }
+  // Planned prompts are linked from the hub, so they need a real (noindex) page
+  // rather than the SPA fallback's home shell with canonical "/".
+  for (const prompt of allPrompts.filter((p) => p.status === 'planned')) {
+    metas.push({ ...buildPromptMeta(prompt), noindex: true });
+  }
 
   // Load full prompt JSONs for SSR seed
   const promptById = new Map<string, unknown>();
   const PROMPTS_DATA_DIR = path.join(__dirname, '../public/data/prompts');
-  for (const prompt of prompts) {
+  for (const prompt of allPrompts) {
     const promptPath = path.join(PROMPTS_DATA_DIR, `${prompt.id}.json`);
     if (fs.existsSync(promptPath)) {
       promptById.set(prompt.id, JSON.parse(fs.readFileSync(promptPath, 'utf-8')));
@@ -1069,11 +1075,6 @@ async function prerenderPages() {
   const metadataOnly = process.argv.includes('--metadata-only');
   const metadataDir = metadataOnly ? path.join(__dirname, '../public') : DIST_DIR;
   const clientMetas = [...metas];
-  for (const charity of (charitiesIndex.charities as CharitySummary[]).filter(c => c.hideFromCurated)) {
-    const detailPath = path.join(DATA_DIR, `charity-${charity.ein}.json`);
-    if (fs.existsSync(detailPath)) clientMetas.push({ ...buildCharityMeta(JSON.parse(fs.readFileSync(detailPath, 'utf-8'))), noindex: true });
-  }
-  for (const prompt of allPrompts.filter(p => p.status === 'planned')) clientMetas.push({ ...buildPromptMeta(prompt), noindex: true });
   fs.mkdirSync(metadataDir, { recursive: true });
   fs.writeFileSync(path.join(metadataDir, 'page-meta.json'), JSON.stringify(Object.fromEntries(clientMetas.map(({ route, ...meta }) => [route, meta]))));
   if (metadataOnly) return;
@@ -1122,6 +1123,19 @@ async function prerenderPages() {
     written++;
   }
   console.log(`Prerender complete: ${written} pages written to dist/`);
+
+  // Every crawlable internal link must hit a prerendered page at its slash form.
+  // A no-slash href is a 308 ("Page with redirect"); a route with no page gets
+  // the SPA fallback's home shell, canonical "/" ("Alternate page ... canonical").
+  const bad = new Set<string>();
+  for (const meta of metas) {
+    const file = meta.route === '/' ? path.join(DIST_DIR, 'index.html') : path.join(DIST_DIR, meta.route, 'index.html');
+    for (const [, href] of fs.readFileSync(file, 'utf-8').matchAll(/href="(\/[^"#?]*)/g)) {
+      if (/\.[a-z0-9]+$/i.test(href)) continue; // static assets
+      if (!href.endsWith('/') || !fs.existsSync(path.join(DIST_DIR, href, 'index.html'))) bad.add(`${href} (on ${meta.route})`);
+    }
+  }
+  if (bad.size) throw new Error(`Internal links that redirect or have no prerendered page:\n  ${[...bad].join('\n  ')}`);
 }
 
 // Only run when executed directly (not when imported by tests)
