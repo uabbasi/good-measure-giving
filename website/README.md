@@ -63,8 +63,7 @@ cp .env.example .env.local
 ```
 
 Common values:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+- `VITE_FIREBASE_*` (API key, app ID, auth domain, messaging sender ID, project ID, storage bucket)
 - `VITE_GA_MEASUREMENT_ID` (optional)
 
 Notes:
