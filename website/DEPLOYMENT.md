@@ -1,56 +1,72 @@
 # Good Measure Giving Website Deployment
 
-This website is a Vite React SPA deployed on Cloudflare Pages.
+The site is a Vite React app with build-time prerendering, deployed as a
+Cloudflare **Worker** with static assets (`wrangler.jsonc`, entry `src/worker.ts`).
+It is not a Cloudflare Pages project.
 
-## Cloudflare Pages Configuration
+## Cloudflare Workers Builds
 
-Use these project settings:
+Pushing to `main` triggers a build (trigger "Deploy default branch"):
 
-- Framework preset: `Vite`
-- Root directory: `website`
+- Root directory: `/website`
 - Build command: `npm run build`
-- Build output directory: `dist`
-- Node version: `20` (recommended)
+- Deploy command: `npx wrangler deploy`
+- Branches: `main` only. Other branches and PRs get no build or preview.
+- Node: Cloudflare's default (24.x as of Sep 2026)
 
-## SPA Routing
+`npm run build` runs `vite build`, then `postbuild`: the SSR bundle, `generateSitemap.ts`,
+and `prerender.ts`, which writes a static page per route into `dist/`.
 
-Client side routes must fallback to `index.html`.
+The prerender fails the build if any internal link lacks a trailing slash or points
+at a route with no prerendered page. A failed build does not deploy; the live site
+stays on the last good version.
 
-Create `website/public/_redirects` with:
+## Routing
 
-```text
-/*  /index.html  200
-```
+`src/worker.ts` handles every request:
 
-Without this, direct loads like `/charity/<id>` can return 404.
+1. Proxies `/__/auth/*` to Firebase (same-origin auth for Safari).
+2. Serves the static asset. `/foo/` resolves to the prerendered `/foo/index.html`.
+3. Falls back to the SPA shell only for routes with no prerendered page.
+
+`assets.not_found_handling` must stay `"none"` so the assets layer doesn't
+intercept `/__/auth/*` before the Worker runs. No-slash URLs 308-redirect to the
+slash form via the `dist/_redirects` file that `prerender.ts` generates.
 
 ## Environment Variables (Cloudflare)
 
-Set in Cloudflare Pages project settings:
+Set on the Workers Builds trigger (build-time variables):
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_GA_MEASUREMENT_ID` (optional)
+- `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_AUTH_DOMAIN`,
+  `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_PROJECT_ID`,
+  `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_GA_MEASUREMENT_ID`
 
-Do not store private server side secrets in `VITE_*` variables.
+`VITE_*` values are embedded client side at build time. Never put private
+secrets in them.
 
 ## Release Checklist
 
-1. Run `npm install`
-2. Run `npm run build`
-3. Run `npm run preview` and verify routes
-4. Verify data conversion output in `src/data/charities.ts`
-5. Push to `main` and confirm Cloudflare deploy succeeds
-6. Validate production routes and charity detail pages
+1. Run `npm run build` locally; it fails on the same link checks Cloudflare runs
+2. Run `npm run preview` and spot-check routes and charity detail pages
+3. Push to `main`
+4. Confirm the "Workers Builds: good-measure-giving" check on the commit succeeds
+5. Spot-check production routes
 
 ## Troubleshooting
 
-### Direct route returns 404
-- Confirm `public/_redirects` is present in deployed build
-- Confirm Cloudflare project root is `website`
+### Build failed on Cloudflare
+- Read the build log in the Cloudflare dashboard, or via the API:
+  `GET /accounts/<account>/builds/builds/<build_uuid>/logs`
+- "Internal links that redirect or have no prerendered page": fix the listed
+  href (add the trailing slash, or make sure the target route is prerendered)
+
+### Direct route shows the home page
+- The route has no prerendered page, so the Worker served the SPA shell. Check
+  that `prerender.ts` emits it
 
 ### Data is stale
-- Re run pipeline export and `npm run convert-data`
+- Re-run the pipeline export and `npm run convert-data`
 - Rebuild and redeploy
 
 ### Analytics not tracking

@@ -74,8 +74,8 @@ Notes:
 
 ## Deployment
 
-Deployment target is Cloudflare Pages.
-See `DEPLOYMENT.md` for build settings and SPA routing rules.
+Deployment target is a Cloudflare Worker with static assets (Workers Builds on `main`).
+See `DEPLOYMENT.md` for build settings and routing.
 
 ## Tests
 
