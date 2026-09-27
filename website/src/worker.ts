@@ -36,6 +36,16 @@ export default {
       });
     }
 
+    // Retired display previews share the normal page URL. Keep functional
+    // parameters (filters, comparison EINs, attribution) and auth/files intact.
+    const hasExtension = /\.\w{1,10}$/.test(url.pathname);
+    if (!hasExtension && (request.method === 'GET' || request.method === 'HEAD')
+      && (url.searchParams.has('view') || url.searchParams.has('type'))) {
+      url.searchParams.delete('view');
+      url.searchParams.delete('type');
+      return Response.redirect(url.href, 301);
+    }
+
     // Always try the real asset first. The assets layer resolves /foo/ to
     // /foo/index.html, which is how the ~196 prerendered pages get served —
     // rewriting to / before this point would hand every one of them the
@@ -44,8 +54,6 @@ export default {
 
     // A path with a file extension is a real file request. If it is missing it
     // should 404 as itself rather than fall back to an HTML shell.
-    const hasExtension = /\.\w{1,10}$/.test(url.pathname);
-
     if (assetResponse.status !== 404 || hasExtension) {
       return assetResponse;
     }

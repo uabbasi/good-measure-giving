@@ -19,9 +19,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from './tokens';
 import { ratingColor, riskTone } from './rating';
 import {
@@ -244,10 +242,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   }, [summaries, charity]);
   const padX = isMobile ? 16 : 24;
 
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
 
   const sectionBorder = `1px solid ${p.rule}`;
   const fontVars = {

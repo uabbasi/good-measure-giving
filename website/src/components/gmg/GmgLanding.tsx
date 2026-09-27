@@ -13,9 +13,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from './tokens';
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Bismillah } from './primitives';
@@ -35,10 +33,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const padX = isMobile ? 20 : 24;
   const { charities, summaries } = useCharities();
 
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,

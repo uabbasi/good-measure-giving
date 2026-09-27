@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Sun, Moon } from 'lucide-react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { FeedbackButton } from '../src/components/FeedbackButton';
@@ -7,14 +7,6 @@ import { FeedbackButton } from '../src/components/FeedbackButton';
 export const Footer: React.FC = () => {
   const { isDark, toggleTheme } = useLandingTheme();
   const [showSuggest, setShowSuggest] = useState(false);
-  const location = useLocation();
-
-  // Show view toggle only on charity detail pages (desktop only)
-  const isCharityDetail = /^\/charity\//.test(location.pathname);
-  const isTerminal = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'terminal';
-  const alternateViewUrl = isTerminal
-    ? location.pathname
-    : `${location.pathname}?view=terminal`;
 
   return (
     <footer className={`border-t py-8 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
@@ -59,15 +51,6 @@ export const Footer: React.FC = () => {
               Contact
             </a>
             <FeedbackButton inline />
-            {/* View toggle - only on charity detail pages, desktop only */}
-            {isCharityDetail && (
-              <Link
-                to={alternateViewUrl}
-                className={`hidden lg:inline hover:text-emerald-600 transition-colors ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
-              >
-                {isTerminal ? 'Tabbed View' : 'Terminal View'}
-              </Link>
-            )}
             {/* Theme Toggle - icon only */}
             <button
               onClick={toggleTheme}

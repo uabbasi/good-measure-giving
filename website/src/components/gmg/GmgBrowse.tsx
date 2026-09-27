@@ -15,9 +15,7 @@ import {
   FONT_DISPLAY,
   FONT_TEXT,
   FONT_MONO,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from './tokens';
 import { Rating, ratingColor } from './rating';
 import { HarveyBall, Tag, Kicker } from './primitives';
@@ -275,10 +273,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const padX = isMobile ? 16 : 24;
   const { charities, loading } = useCharities();
 
-  const variant: FontVariant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,
@@ -295,8 +290,8 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   // Facet state is shareable but must never create a crawlable URL or a
   // history entry: replaceState only, and the prerender emits just /browse.
   // Merge into the existing query string rather than replacing it wholesale —
-  // params this page doesn't own (utm_source, gclid, the ?type= font preview,
-  // …) must survive both mount and every later facet change.
+  // params this page doesn't own (utm_source, gclid, …) must survive both
+  // mount and every later facet change.
   //
   // Debounced: `query` lives in this same state, so every keystroke in the
   // search box would otherwise fire its own history.replaceState — browsers

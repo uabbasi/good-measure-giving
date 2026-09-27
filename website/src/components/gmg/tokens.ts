@@ -119,65 +119,24 @@ const dark: GmgPalette = {
 
 export const gmgPalette = (isDark: boolean): GmgPalette => (isDark ? dark : light);
 
-// Fonts are referenced through CSS variables set on the motif root, so switching
-// type direction is instant (no prop threading through every primitive).
+// Fonts are referenced through CSS variables set on each motif root.
 export const FONT_DISPLAY = 'var(--gmg-display)';
 export const FONT_TEXT = 'var(--gmg-text)';
 export const FONT_MONO = 'var(--gmg-mono)';
 export const FONT_ARABIC = 'var(--gmg-arabic)';
-
-export type FontVariant = 'spectral' | 'bricolage' | 'caslon' | 'instrument';
 
 export interface FontTheme {
   display: string;
   text: string;
   mono: string;
   arabic: string;
-  label: string;
-  // Display serifs read large; tighten tracking less than the sans options.
   displayTracking: string;
 }
 
-const TEXT = "'Geist', 'Inter', system-ui, sans-serif";
-const MONO = "'JetBrains Mono', ui-monospace, monospace";
-const ARABIC = "'Amiri', serif";
-
-export const FONT_THEMES: Record<FontVariant, FontTheme> = {
-  spectral: {
-    display: "'Spectral', Georgia, serif",
-    text: TEXT,
-    mono: MONO,
-    arabic: ARABIC,
-    label: 'Spectral',
-    displayTracking: '-0.01em',
-  },
-  bricolage: {
-    display: "'Bricolage Grotesque', 'Geist', sans-serif",
-    text: TEXT,
-    mono: MONO,
-    arabic: ARABIC,
-    label: 'Bricolage',
-    displayTracking: '-0.02em',
-  },
-  caslon: {
-    display: "'Libre Caslon Display', Georgia, serif",
-    text: TEXT,
-    mono: MONO,
-    arabic: ARABIC,
-    label: 'Caslon',
-    displayTracking: '-0.005em',
-  },
-  instrument: {
-    display: "'Instrument Serif', Georgia, serif",
-    text: TEXT,
-    mono: MONO,
-    arabic: ARABIC,
-    label: 'Instrument',
-    displayTracking: '-0.035em',
-  },
+export const FONT_THEME: FontTheme = {
+  display: "'Spectral', Georgia, serif",
+  text: "'Geist', 'Inter', system-ui, sans-serif",
+  mono: "'JetBrains Mono', ui-monospace, monospace",
+  arabic: "'Amiri', serif",
+  displayTracking: '-0.01em',
 };
-
-export const DEFAULT_FONT_VARIANT: FontVariant = 'spectral';
-
-export const resolveFontVariant = (raw: string | null | undefined): FontVariant =>
-  raw && raw in FONT_THEMES ? (raw as FontVariant) : DEFAULT_FONT_VARIANT;

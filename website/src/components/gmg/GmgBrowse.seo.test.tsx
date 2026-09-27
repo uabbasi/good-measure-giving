@@ -93,6 +93,12 @@ afterEach(() => {
 });
 
 describe('GmgBrowse SEO guard', () => {
+  it('keeps default typography even on an old font-preview URL', () => {
+    window.history.replaceState({}, '', '/browse?type=caslon');
+    const { container } = renderBrowse();
+    expect((container.firstElementChild as HTMLElement).style.getPropertyValue('--gmg-display')).toBe("'Spectral', Georgia, serif");
+  });
+
   it('adds no robots meta on the default view', () => {
     renderBrowse();
     expect(robotsTag()).toBeNull();
@@ -169,7 +175,7 @@ describe('GmgBrowse SEO guard', () => {
 
   // The URL sync effect must MERGE facet params into the query string, not
   // replace it wholesale — otherwise anything this page doesn't own
-  // (utm_source, gclid, a hand-typed ?type=) is wiped on mount and again on
+  // (utm_source, gclid) is wiped on mount and again on
   // every later state change.
   it('preserves a non-facet query param on mount and after a facet click', async () => {
     window.history.pushState({}, '', '/browse?utm_source=newsletter');

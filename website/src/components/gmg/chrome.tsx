@@ -1,4 +1,4 @@
-// Shared GMG motif chrome — nav header + live typeface switcher — used by every
+// Shared GMG motif chrome — nav header and page frame — used by every
 // motif surface (charity detail, index, …).
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -11,9 +11,7 @@ import {
   gmgPalette,
   FONT_DISPLAY,
   FONT_TEXT,
-  FONT_THEMES,
-  resolveFontVariant,
-  type FontVariant,
+  FONT_THEME,
 } from './tokens';
 import { GmgLogo, Tag } from './primitives';
 import { paths } from '../../lib/paths';
@@ -222,10 +220,7 @@ export const GmgChromeFrame: React.FC<{
   const isMobile = useIsMobile();
   const { isSignedIn, isLoaded } = useAuth();
   const [gateSignInOpen, setGateSignInOpen] = useState(false);
-  const variant = resolveFontVariant(
-    typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('type') : null,
-  );
-  const ft = FONT_THEMES[variant];
+  const ft = FONT_THEME;
   const fontVars = {
     ['--gmg-display' as any]: ft.display,
     ['--gmg-text' as any]: ft.text,
@@ -264,33 +259,3 @@ export const GmgChromeFrame: React.FC<{
     </div>
   );
 };
-
-// Live typeface switcher — links preserve the current surface (basePath).
-export const TypeSwitcher: React.FC<{ p: GmgPalette; variant: FontVariant; basePath: string }> = ({
-  p,
-  variant,
-  basePath,
-}) => (
-  <>
-    <span style={{ color: p.sub2 }}>TYPEFACE</span>
-    {(Object.keys(FONT_THEMES) as FontVariant[]).map((v) => (
-      <Link
-        key={v}
-        to={`${basePath}?type=${v}`}
-        rel="nofollow"
-        style={{
-          padding: '2px 8px',
-          borderRadius: 99,
-          textDecoration: 'none',
-          fontSize: 10,
-          letterSpacing: '0.04em',
-          border: `1px solid ${v === variant ? p.chip : p.rule}`,
-          background: v === variant ? p.chip : 'transparent',
-          color: v === variant ? p.chipFg : p.sub,
-        }}
-      >
-        {FONT_THEMES[v].label}
-      </Link>
-    ))}
-  </>
-);
