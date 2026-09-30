@@ -6,9 +6,6 @@ import { LazyMotion, domAnimation } from 'motion/react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LandingThemeProvider, useLandingTheme } from './contexts/LandingThemeContext';
 import { UserFeaturesProvider } from './src/contexts/UserFeaturesContext';
-import { Navbar } from './components/Navbar';
-// BetaBanner moved inline to Navbar as a subtle pill
-import { Footer } from './components/Footer';
 const CharityDetailsPage = lazy(() => import('./pages/CharityDetailsPage').then(m => ({ default: m.CharityDetailsPage })));
 const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then(m => ({ default: m.MethodologyPage })));
 const LinkToUsPage = lazy(() => import('./pages/LinkToUsPage').then(m => ({ default: m.LinkToUsPage })));
@@ -32,10 +29,6 @@ const JoinPlanPage = lazy(() => import('./pages/JoinPlanPage').then(m => ({ defa
 const GmgBrowse = lazy(() => import('./src/components/gmg/GmgBrowse').then(m => ({ default: m.GmgBrowse })));
 const GmgLanding = lazy(() => import('./src/components/gmg/GmgLanding').then(m => ({ default: m.GmgLanding })));
 const GmgCompare = lazy(() => import('./src/components/gmg/GmgCompare').then(m => ({ default: m.GmgCompare })));
-import { CompareBar } from './src/components/CompareBar';
-import { MobileBottomNav } from './src/components/MobileBottomNav';
-import { WelcomeTour } from './src/components/WelcomeTour';
-import { IntroPresentation } from './src/components/IntroPresentation';
 import { BookmarkToast } from './src/components/BookmarkToast';
 import { BookmarkAutoCategorize } from './src/components/BookmarkAutoCategorize';
 import { NamePromptModal } from './src/auth';
@@ -76,56 +69,15 @@ export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.
 
 // T009-T011: Removed ThirdBucket theme switching - single Amal theme only
 
-// Content/SEO pages converted to the Modern motif (motif-only, no legacy variant).
-// Each renders its own GmgNav + footer via the content kit; add a route here as it
-// is converted so the app's legacy Navbar/Footer is suppressed for it.
-const MOTIF_CONTENT_ROUTES = new Set<string>([
-  '/changelog',
-  '/methodology',
-  '/about',
-  '/privacy',
-  '/terms',
-  '/faq',
-  '/causes',
-  '/guides',
-  '/prompts',
-  '/link-to-us',
-  '/best-muslim-charities-in-usa',
-  '/zakat-calculator',
-]);
-
-// Dynamic detail routes converted to the motif. MOTIF_CONTENT_ROUTES is matched by
-// exact pathname, so these prefixes catch /causes/:slug, /guides/:slug, /prompts/:id.
-const MOTIF_CONTENT_PREFIXES = ['/causes/', '/guides/', '/prompts/', '/zakat-calculator/'];
-
 export const AppContent: React.FC = () => {
   const location = useLocation();
   const { isDark } = useLandingTheme();
-  // Canonical URLs carry a trailing slash (e.g. /browse/, /about/). The design-mode
-  // checks below match exact paths, so normalize the trailing slash first —
-  // otherwise a RELOADED canonical URL fails the exact match and falls through to
-  // the legacy design, even though SSR and in-app navigation resolved the motif.
+  // Canonical URLs carry a trailing slash (e.g. /browse/); normalize it so the
+  // exact-path checks below also match a reloaded canonical URL.
   const path = location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname;
   const isLandingPage = path === '/';
-  // GMG "Modern" motif is the only design. Two motif flavors, both suppress the app
-  // Navbar/Footer/overlays:
-  //  - full-bleed: motif pages that render their own GmgNav (landing, browse, …)
-  //  - auth-chrome: signed-in pages wrapped in motif chrome (profile, invites)
-  // The legacy design escape hatch has been retired; rollback lives in git history.
-  const isGmgFullBleed =
-    path.startsWith('/charity/') ||
-    path === '/browse' ||
-    path === '/compare' ||
-    path === '/';
-  const isGmgAuthChrome =
-    path === '/profile' || path.startsWith('/plan/join');
-  const isGmgMotifOnly =
-    MOTIF_CONTENT_ROUTES.has(path) ||
-    MOTIF_CONTENT_PREFIXES.some((pre) => path.startsWith(pre));
-  const isGmgPreview = isGmgFullBleed || isGmgAuthChrome || isGmgMotifOnly;
-
   return (
-    <div className={isGmgPreview ? 'min-h-screen flex flex-col' : `${isLandingPage ? 'h-[100dvh] lg:h-auto lg:min-h-screen overflow-hidden lg:overflow-visible' : 'min-h-screen'} flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className="min-h-screen flex flex-col">
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main"
@@ -133,7 +85,6 @@ export const AppContent: React.FC = () => {
       >
         Skip to main content
       </a>
-      {!isGmgPreview && <Navbar />}
       <RouteMetadata />
       <main id="main" className={`flex-grow ${isLandingPage ? 'min-h-0 overflow-hidden lg:min-h-0 lg:overflow-visible' : ''}`}>
         <Suspense fallback={<div role="status" aria-live="polite" className="min-h-[40vh] flex items-center justify-center p-8">Loading page…</div>}>
@@ -167,13 +118,8 @@ export const AppContent: React.FC = () => {
           </Routes>
         </Suspense>
       </main>
-      {!isGmgPreview && (isLandingPage ? <div className="hidden lg:block"><Footer /></div> : <Footer />)}
       <ClientOnly>
         {path !== '/privacy' && <AnalyticsConsent />}
-        {!isGmgPreview && <CompareBar />}
-        {!isGmgPreview && !isLandingPage && <MobileBottomNav />}
-        {!isGmgPreview && <WelcomeTour />}
-        {!isGmgPreview && <IntroPresentation />}
         <BookmarkToast />
         <BookmarkAutoCategorize />
         <NamePromptModal />

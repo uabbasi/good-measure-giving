@@ -2,9 +2,37 @@
 
 /* Tailwind 4 theme extensions */
 @theme {
-  --font-sans: 'Inter', sans-serif;
-  --font-merriweather: 'Merriweather', serif;
+  --font-sans: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-merriweather: 'Spectral', Georgia, serif;
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
+
+  /* The giving plan, invites and donation forms are written in Tailwind slate and
+     emerald classes. Re-point those scales at the site's bone/charcoal and sage
+     (src/components/gmg/tokens.ts) so they match the public pages in both themes.
+     slate-50 = light page, slate-950 = dark page, slate-900 = dark card. */
+  --color-slate-50: #f4efde;
+  --color-slate-100: #ede6cf;
+  --color-slate-200: #dfdac7;
+  --color-slate-300: #c9c2a8;
+  --color-slate-400: #9aa094;
+  --color-slate-500: #686d5f;
+  --color-slate-600: #5e6356;
+  --color-slate-700: #3a3e34;
+  --color-slate-800: #272c22;
+  --color-slate-900: #20231a;
+  --color-slate-950: #13140e;
+  --color-emerald-50: #eef4e6;
+  --color-emerald-100: #dde9cf;
+  --color-emerald-200: #c3d8b0;
+  --color-emerald-300: #b8c8a4;
+  --color-emerald-400: #9fce8f;
+  --color-emerald-500: #457539;
+  --color-emerald-600: #3a6b34;
+  --color-emerald-700: #2f5a2b;
+  --color-emerald-800: #244622;
+  --color-emerald-900: #1b351a;
+  --color-emerald-950: #12240f;
+  --color-white: #fbf8ef;
 }
 
 @keyframes slide-in-right {

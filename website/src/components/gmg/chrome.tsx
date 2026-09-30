@@ -206,10 +206,10 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   );
 };
 
-// Motif chrome wrapper for legacy authenticated surfaces (Profile, plan invites)
-// that don't render their own motif header. Suppresses the app Navbar/Footer
-// upstream and frames the page in the motif background + GmgNav so the handoff
-// from a motif page into the signed-in app no longer switches design languages.
+// Motif chrome wrapper for signed-in surfaces (Profile, plan invites) that don't
+// render their own motif header: frames the page in the motif background, text
+// colour and GmgNav so the handoff from a motif page into the signed-in app no
+// longer switches design languages.
 // The page body stays as-is — deep theming is a later phase.
 export const GmgChromeFrame: React.FC<{
   isDark: boolean;
@@ -234,7 +234,7 @@ export const GmgChromeFrame: React.FC<{
   const gated = requireAuth && isLoaded && !isSignedIn;
 
   return (
-    <div style={{ background: p.bg, minHeight: '100vh', fontFamily: FONT_TEXT, ...fontVars }}>
+    <div style={{ background: p.bg, color: p.fg, minHeight: '100vh', fontFamily: FONT_TEXT, ...fontVars }}>
       <GmgNav p={p} isMobile={isMobile} />
       {gated ? (
         <section style={{ maxWidth: 540, margin: '0 auto', padding: isMobile ? '64px 20px' : '104px 24px', textAlign: 'center' }}>

@@ -9,12 +9,15 @@ import { useCharities } from '../src/hooks/useCharities';
 import { weightsToPercents } from '../src/lib/sharedPlanLogic';
 import { trackPlanPreview, trackPlanJoined } from '../src/utils/analytics';
 import type { SharedPlan, PlanMember } from '../src/types/sharedPlan';
+import { useLandingTheme } from '../contexts/LandingThemeContext';
+import { gmgPalette } from '../src/components/gmg/tokens';
 
 export const JoinPlanPage: React.FC = () => {
   const { planId, token } = useParams<{ planId: string; token: string }>();
   const { userId } = useFirebaseData();
   const { user } = useFirebaseAuth();
   const navigate = useNavigate();
+  const pal = gmgPalette(useLandingTheme().isDark);
   const { join } = useSharedPlan(planId ?? null);
   const { summaries } = useCharities();
   const [plan, setPlan] = useState<SharedPlan | null>(null);
@@ -48,7 +51,7 @@ export const JoinPlanPage: React.FC = () => {
     return (
       <div className="min-h-screen max-w-2xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-semibold mb-2">This invite link isn't valid</h1>
-        <p className="text-slate-600 mb-8">
+        <p className="mb-8" style={{ color: pal.sub }}>
           It may have been revoked, replaced by a newer link, or mistyped. Ask
           whoever invited you to send a fresh one.
         </p>
@@ -63,7 +66,7 @@ export const JoinPlanPage: React.FC = () => {
   }
   if (state === 'loading' || !plan) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500">
+      <div className="min-h-screen flex items-center justify-center" style={{ color: pal.sub }}>
         Loading…
       </div>
     );
@@ -83,15 +86,15 @@ export const JoinPlanPage: React.FC = () => {
 
   return (
     <div className="min-h-screen max-w-2xl mx-auto px-4 py-12">
-      <p className="text-sm uppercase tracking-wide text-emerald-700">You're invited</p>
+      <p className="text-sm uppercase tracking-wide" style={{ color: pal.accent2 }}>You're invited</p>
       <h1 className="text-3xl font-semibold mb-2">The {plan.name} is planning their giving</h1>
-      <p className="text-slate-600 mb-8">Here's how they're splitting it. Join to add your own giving.</p>
+      <p className="mb-8" style={{ color: pal.sub }}>Here's how they're splitting it. Join to add your own giving.</p>
 
-      <ul className="divide-y divide-slate-200 dark:divide-slate-700 mb-8">
+      <ul className="divide-y mb-8" style={{ borderColor: pal.rule }}>
         {plan.items.map(i => (
-          <li key={i.id} className="flex justify-between py-2">
+          <li key={i.id} className="flex justify-between py-2" style={{ borderColor: pal.rule }}>
             <span>{i.kind === 'charity' ? charityName(i.ref) : i.ref.replace(/-/g, ' ')}</span>
-            <span className="text-slate-500">{percents[i.id]}%</span>
+            <span style={{ color: pal.sub }}>{percents[i.id]}%</span>
           </li>
         ))}
       </ul>
