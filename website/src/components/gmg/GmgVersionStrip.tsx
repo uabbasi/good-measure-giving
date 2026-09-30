@@ -60,7 +60,7 @@ export const GmgVersionStrip: React.FC<{ p: GmgPalette; isMobile: boolean }> = (
         borderBottom: `1px solid ${p.rule}`,
         color: p.sub2,
         fontFamily: FONT_MONO,
-        fontSize: 10.5,
+        fontSize: 11,
         letterSpacing: '0.08em',
         lineHeight: 1.2,
       }}

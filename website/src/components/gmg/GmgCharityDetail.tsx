@@ -322,6 +322,17 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 <Tag p={p} title={EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage]}>{c.evidenceStage}</Tag>
               )}
             </div>
+            {/* The tags' definitions, in the page: a `title` tooltip never opens on touch. */}
+            {((c.assessmentLabel && ASSESSMENT_LABEL_EXPLAINERS[c.assessmentLabel]) || (c.evidenceStage && EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage])) && (
+              <p style={{ fontSize: 12, lineHeight: 1.5, color: p.sub, margin: '12px 0 0', maxWidth: '68ch' }}>
+                {c.assessmentLabel && ASSESSMENT_LABEL_EXPLAINERS[c.assessmentLabel] && (
+                  <><strong style={{ color: p.fg, fontWeight: 500 }}>{c.assessmentLabel}:</strong> {ASSESSMENT_LABEL_EXPLAINERS[c.assessmentLabel]}{' '}</>
+                )}
+                {c.evidenceStage && EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage] && (
+                  <><strong style={{ color: p.fg, fontWeight: 500 }}>{c.evidenceStage}:</strong> {EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage]}</>
+                )}
+              </p>
+            )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
                 <a

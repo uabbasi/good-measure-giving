@@ -156,7 +156,7 @@ export const Kicker = React.memo(function Kicker({
     <span
       style={{
         fontFamily: FONT_MONO,
-        fontSize: 10,
+        fontSize: 11,
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
         color: p.sub,

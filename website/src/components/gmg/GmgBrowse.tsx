@@ -250,15 +250,45 @@ const SortableTh: React.FC<{
   const active = sortBy === col.key;
   return (
     <th
-      style={{ padding: '10px 6px', width: col.width, textAlign: col.align ?? 'left', cursor: 'pointer', userSelect: 'none', color: active ? p.fg : undefined }}
-      title={col.tip}
-      onClick={() => onSort(col.key)}
+      style={{ padding: '10px 6px', width: col.width, textAlign: col.align ?? 'left', userSelect: 'none', color: active ? p.fg : undefined }}
       aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
-      {col.label}
-      {col.tip && <span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>}
-      <span style={{ marginLeft: 4, color: active ? p.accent : 'transparent' }}>{sortDir === 'asc' ? '▲' : '▼'}</span>
+      {/* A real button, so the column can be sorted from the keyboard and is
+          announced as a control; the th itself only carries aria-sort. */}
+      <button
+        type="button"
+        onClick={() => onSort(col.key)}
+        title={col.tip}
+        style={{ font: 'inherit', color: 'inherit', letterSpacing: 'inherit', textTransform: 'inherit', textAlign: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+      >
+        {col.label}
+        {col.tip && <span style={{ color: p.sub2, marginLeft: 3 }} aria-hidden="true">ⓘ</span>}
+        <span style={{ marginLeft: 4, color: active ? p.accent : 'transparent' }} aria-hidden="true">{sortDir === 'asc' ? '▲' : '▼'}</span>
+      </button>
     </th>
+  );
+};
+
+
+// Definitions for the table's columns, in the page rather than only in hover
+// tooltips: a touch screen or a keyboard can never open a `title`.
+const ColumnGuide: React.FC<{ p: GmgPalette; padX?: number }> = ({ p, padX = 0 }) => {
+  const items: [string, string][] = [
+    ['Zakat or sadaqah', 'Accepts zakat (the charity says so publicly) or Sadaqah.'],
+    ...COLS.filter((c) => c.tip).map((c): [string, string] => [c.label, c.tip as string]),
+  ];
+  return (
+    <details style={{ padding: `0 ${padX}px`, margin: '0 0 12px', fontSize: 12.5, lineHeight: 1.5, color: p.sub }}>
+      <summary style={{ cursor: 'pointer', color: p.accent, fontWeight: 500 }}>What do these columns mean?</summary>
+      <dl style={{ margin: '10px 0 0', display: 'grid', gridTemplateColumns: 'max-content 1fr', gap: '6px 16px' }}>
+        {items.map(([term, def]) => (
+          <React.Fragment key={term}>
+            <dt style={{ fontWeight: 500, color: p.fg }}>{term}</dt>
+            <dd style={{ margin: 0 }}>{def}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+    </details>
   );
 };
 
@@ -489,6 +519,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
            Container tap navigates; the name is a real Link so keyboard and
            crawlers both work; compare is a real checkbox. */
         <section style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8 }}>
+          <ColumnGuide p={p} />
           {/* The chevron on each card is the standing "this opens something"
               cue; the press state below is the one that fires on touch.
 
@@ -664,14 +695,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </div>
             ))}
           </div>
+          <ColumnGuide p={p} />
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 900 }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
                 style={{
                   borderBottom: sectionBorder,
-                  color: p.sub2,
+                  color: p.sub,
                   fontFamily: FONT_MONO,
-                  fontSize: 9.5,
+                  fontSize: 10.5,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                   textAlign: 'left',
@@ -679,20 +711,23 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               >
                 <th style={{ padding: '10px 6px', width: 28 }} />
                 <th
-                  style={{ padding: '10px 6px', cursor: 'pointer', userSelect: 'none', color: sortBy === 'name' ? p.fg : undefined }}
-                  onClick={() => onSort('name')}
+                  style={{ padding: '10px 6px', userSelect: 'none', color: sortBy === 'name' ? p.fg : undefined }}
                   aria-sort={sortBy === 'name' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  Charity / EIN
-                  <span style={{ marginLeft: 4, color: sortBy === 'name' ? p.accent : 'transparent' }}>
-                    {sortDir === 'asc' ? '▲' : '▼'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onSort('name')}
+                    style={{ font: 'inherit', color: 'inherit', letterSpacing: 'inherit', textTransform: 'inherit', textAlign: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                  >
+                    Charity / EIN
+                    <span style={{ marginLeft: 4, color: sortBy === 'name' ? p.accent : 'transparent' }} aria-hidden="true">
+                      {sortDir === 'asc' ? '▲' : '▼'}
+                    </span>
+                  </button>
                 </th>
                 {/* Cause then Wallet (wallet is filter-only, not sortable) */}
                 <SortableTh col={COLS[0]} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
-                <th style={{ padding: '10px 6px', width: 110 }} title="Accepts zakat (the charity says so publicly) or Sadaqah.">
-                  Zakat or sadaqah<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
-                </th>
+                <th style={{ padding: '10px 6px', width: 110 }}>Zakat or sadaqah</th>
                 {COLS.slice(1).map((col) => (
                   <SortableTh key={col.key} col={col} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
                 ))}

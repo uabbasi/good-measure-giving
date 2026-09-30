@@ -57,13 +57,13 @@ const light: GmgPalette = {
   bg2: '#ede6cf',
   bg3: '#e5dcbf',
   fg: '#13160e',
-  sub: '#5e6356',
-  sub2: '#8a8e80',
+  sub: '#525749',
+  sub2: '#63685a',
   rule: '#dfdac7',
   rule2: '#c9c2a8',
   accent: '#3d4a30',
-  accent2: '#6b7a55',
-  warn: '#7a6a2a',
+  accent2: '#586744',
+  warn: '#6b5c1f',
   warnBg: '#efe4b8',
   danger: '#9c4a3a',
   chip: '#1f2218',
@@ -71,7 +71,7 @@ const light: GmgPalette = {
   card: '#ebe4cc',
   pos: '#3a6b34',
   posBg: '#dde9cf',
-  caution: '#8a6410',
+  caution: '#7a560a',
   cautionBg: '#f0e3b0',
   neg: '#a23824',
   negBg: '#f0d9d0',
@@ -85,25 +85,25 @@ const light: GmgPalette = {
 // not a surface at all, just a 1px outline, and reported as not being able to
 // see where the cards were. Dark now steps dL* 7.1, light stays at 3.1.
 //
-// Light is NOT matched to it on purpose. There the card is darker than its
-// ground, so deepening it pushes muted text the wrong way — and light `sub2`
-// already sits at 2.69:1 on the card, under the 4.5:1 small text wants. That
-// is a real problem, but it is a pre-existing one, and darkening the surface
-// under it would have made it worse rather than better.
+// Light is NOT matched to it on purpose: there the card is darker than its
+// ground, so deepening it pushes muted text the wrong way. Light `sub` and `sub2`
+// (and `accent2`, `warn`, `caution`) were darkened to 4.5:1 or better on the page,
+// card and bg2 so small text passes; `sub2` still reaches only ~4.2:1 on bg3, the
+// darkest light surface, which carries no body text.
 const dark: GmgPalette = {
   bg: '#13140e',
   bg2: '#20231a',
   bg3: '#272c22',
   fg: '#ecebe4',
   sub: '#9aa094',
-  sub2: '#858a7e',
+  sub2: '#92978a',
   rule: '#262921',
   rule2: '#3a3e34',
   accent: '#b8c8a4',
   accent2: '#8fa178',
   warn: '#d4c478',
   warnBg: '#3a3322',
-  danger: '#c47a6a',
+  danger: '#cc8576',
   chip: '#d6e0c5',
   chipFg: '#13140e',
   card: '#20231a',
