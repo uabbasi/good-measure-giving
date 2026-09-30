@@ -39,9 +39,10 @@ export interface GmgRow {
   programPct: number | null;
   // Qualitative signal ratings (ui_signals_v1.signal_states), shown as Harvey
   // balls on the index. All point the same way: Strong = good.
-  financialHealth: Rating;
-  risk: Rating; // Strong = low risk / strong risk-management
-  donorFit: Rating;
+  // null = the pipeline had no signal for this charity (shown as "—", never guessed).
+  financialHealth: Rating | null;
+  risk: Rating | null; // governance signal: Strong = healthiest (the full risk register is on the charity's page)
+  donorFit: Rating | null;
   revenue: number | null; // annual revenue — the "Size" column
   /** Enum key behind `cause` — the facet key. `cause` stays the display label. */
   causeKey: string;
@@ -176,7 +177,7 @@ const walletLabel = (tag: string | undefined): string => {
 
 // ui_signals_v1.signal_states use a 3-level scale (Strong/Moderate/Limited);
 // map onto the 5-level Harvey scale as full / half / empty.
-const signalToRating = (s: unknown): Rating => {
+const signalToRating = (s: unknown): Rating | null => {
   switch (String(s || '').toLowerCase()) {
     case 'strong':
       return 'Strong';
@@ -185,7 +186,8 @@ const signalToRating = (s: unknown): Rating => {
     case 'limited':
       return 'Weak';
     default:
-      return 'Moderate';
+      // No signal is not a middling signal: don't invent a rating.
+      return null;
   }
 };
 
@@ -261,9 +263,9 @@ export interface GmgCharity {
   // Browse-consistent signal ratings (Harvey balls). `overall` is the GMG band
   // (null when unscored); the rest come from ui_signals_v1.signal_states.
   overall: Rating | null;
-  financialHealth: Rating;
-  risk: Rating;
-  donorFit: Rating;
+  financialHealth: Rating | null;
+  risk: Rating | null;
+  donorFit: Rating | null;
   assessmentLabel: string | null;
   archetypeLabel: string | null;
   evidenceStage: string | null;
