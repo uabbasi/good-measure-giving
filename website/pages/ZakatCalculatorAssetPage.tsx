@@ -130,9 +130,9 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
 
               {estimate.isAboveNisab && estimate.zakatAmount > 0 && (
                 <div style={{ marginTop: 20, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                  <CtaLink p={p} to="/browse/?zakat=eligible">See zakat-eligible charities →</CtaLink>
+                  <CtaLink p={p} to="/browse/?wallet=zakat">See zakat-eligible charities →</CtaLink>
                   <Link
-                    to="/profile"
+                    to={`/profile/?zakat=${Math.round(estimate.zakatAmount)}`}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -146,7 +146,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                       textDecoration: 'none',
                     }}
                   >
-                    Save this plan
+                    Set as my zakat target
                   </Link>
                 </div>
               )}

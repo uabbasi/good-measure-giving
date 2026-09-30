@@ -21,7 +21,7 @@ export const givingPlanTourSteps: DriveStep[] = [
     popover: {
       title: 'Add Charities',
       description:
-        'Charities you save while browsing automatically appear here. You can also search and add charities directly.',
+        'Use \u201cAdd to giving\u201d on any charity\u2019s page and it lands here. You can also search and add charities directly.',
     },
   },
   {
@@ -41,11 +41,11 @@ export const givingPlanTourSteps: DriveStep[] = [
     },
   },
   {
-    element: '[data-tour="giving-history-tab"]',
+    element: '[data-tour="giving-history"]',
     popover: {
-      title: 'Giving History',
+      title: 'Donation history',
       description:
-        'Switch to the History tab to see all your logged donations, edit entries, and export by year.',
+        'Every donation you log is listed below your plan, where you can edit entries and export by year.',
     },
   },
 ];

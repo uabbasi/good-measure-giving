@@ -8,6 +8,8 @@ import { GmgLanding } from './GmgLanding';
 
 const charities = [{ ein: '12-3456789', name: 'Test Relief', tier: 'rich', website: 'https://example.org', donationUrl: 'https://example.org/donate' }];
 let mobile = false;
+// The add-to-plan button needs the app's auth/profile providers; stubbed here.
+vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
 vi.mock('../../hooks/useCharities', () => ({ useCharities: () => ({ charities, summaries: [], loading: false }) }));
 vi.mock('../../auth/useAuth', () => ({ useCommunityMember: () => false }));
 vi.mock('../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));

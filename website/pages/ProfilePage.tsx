@@ -12,6 +12,7 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { useBookmarkState, useProfileState } from '../src/contexts/UserFeaturesContext';
 import { useAuth } from '../src/auth';
@@ -84,6 +85,21 @@ export function ProfilePage() {
   const { isSignedIn, isLoaded, firstName, email } = useAuth();
   const { bookmarks, isLoading: bookmarksLoading, addBookmark, removeBookmark } = useBookmarkState();
   const { profile, isLoading: profileLoading, updateProfile } = useProfileState();
+
+  // The zakat calculator hands its result over as ?zakat=<amount>. Adopt it as the
+  // plan's target only when none is set, so a returning donor's target is never
+  // overwritten; either way drop the param so a refresh doesn't re-apply it.
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const raw = new URLSearchParams(location.search).get('zakat');
+    if (raw == null || !isSignedIn || profileLoading) return;
+    const amount = Math.round(Number(raw));
+    if (!profile?.targetZakatAmount && Number.isFinite(amount) && amount > 0) {
+      void updateProfile({ targetZakatAmount: amount });
+    }
+    navigate(location.pathname, { replace: true });
+  }, [location.search, location.pathname, isSignedIn, profileLoading, profile?.targetZakatAmount, updateProfile, navigate]);
   const { summaries, loading: charitiesLoading } = useCharities();
   // Family sync (add-side only): adding a charity here also adds it to every
   // shared plan. Removal stays explicit per plan — see onRemoveCharity.
@@ -544,7 +560,7 @@ export function ProfilePage() {
                 write-only: donations could be added but never reviewed,
                 corrected, or deleted — a typo'd amount was permanent. */}
             {donations.length > 0 && (
-              <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+              <div data-tour="giving-history" className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                 <h2 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Donation history
                 </h2>

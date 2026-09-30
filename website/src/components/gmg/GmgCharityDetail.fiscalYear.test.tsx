@@ -23,6 +23,8 @@ import GmgCharityDetail from './GmgCharityDetail';
 
 // Suppress sub-components with their own context/auth deps and the real
 // charities-index fetch, matching the pattern in GmgCharityDetail.similar.test.tsx.
+// The add-to-plan button needs the app's auth/profile providers; stubbed here.
+vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
 vi.mock('./useIsMobile', () => ({ useIsMobile: () => false }));

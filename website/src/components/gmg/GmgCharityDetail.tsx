@@ -46,6 +46,8 @@ import { RightForYou } from './sections/RightForYou';
 import { HowItCompares } from './sections/HowItCompares';
 import { SectionRail, type RailSection } from './SectionRail';
 import { CitedText, SourceList, collectCitations } from './CitedText';
+import { AddToGivingButton } from '../AddToGivingButton';
+import { ClientOnly } from '../ClientOnly';
 
 const usd = (n: number | null): string => {
   if (n == null) return '—';
@@ -370,6 +372,9 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                   Visit website ↗
                 </a>
               )}
+              <ClientOnly>
+                <AddToGivingButton charityEin={c.ein} charityName={c.name} size="lg" />
+              </ClientOnly>
               <Link
                 to={`/compare/?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}

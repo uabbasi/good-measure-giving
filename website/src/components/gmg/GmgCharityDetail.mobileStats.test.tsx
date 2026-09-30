@@ -19,6 +19,8 @@ import GmgCharityDetail from './GmgCharityDetail';
 
 let mobile = false;
 
+// The add-to-plan button needs the app's auth/profile providers; stubbed here.
+vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
 vi.mock('./useIsMobile', () => ({ useIsMobile: () => mobile }));
