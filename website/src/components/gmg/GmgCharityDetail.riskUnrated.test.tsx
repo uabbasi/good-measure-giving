@@ -15,8 +15,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import GmgCharityDetail from './GmgCharityDetail';
 
-// The add-to-plan button needs the app's auth/profile providers; stubbed here.
-vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
+// The add-to-plan button needs the app's auth/bookmark providers; stubbed here.
+vi.mock('../BookmarkButton', () => ({ BookmarkButton: () => null }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
 vi.mock('./useIsMobile', () => ({ useIsMobile: () => false }));

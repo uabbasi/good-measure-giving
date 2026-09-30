@@ -34,7 +34,7 @@ const SOFTCAP_THRESHOLD = 6;
 interface Props {
   charityEin: string;
   charityName?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md';
   /** Optional className for the outer wrapper. */
   className?: string;
 }
@@ -133,7 +133,7 @@ export function AddToGivingButton({ charityEin, charityName, size = 'md', classN
     [updateProfile, doAdd],
   );
 
-  const padding = size === 'sm' ? 'px-2 py-1 text-[11px]' : size === 'lg' ? 'px-4 py-2.5 text-xs' : 'px-2.5 py-1.5 text-xs';
+  const padding = size === 'sm' ? 'px-2 py-1 text-[11px]' : 'px-2.5 py-1.5 text-xs';
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
 
   const label = !isSignedIn

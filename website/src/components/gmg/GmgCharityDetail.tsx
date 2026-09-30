@@ -45,7 +45,7 @@ import { RightForYou } from './sections/RightForYou';
 import { HowItCompares } from './sections/HowItCompares';
 import { SectionRail, type RailSection } from './SectionRail';
 import { CitedText, SourceList, collectCitations } from './CitedText';
-import { AddToGivingButton } from '../AddToGivingButton';
+import { BookmarkButton } from '../BookmarkButton';
 import { ClientOnly } from '../ClientOnly';
 import { usd, usdFull } from './money';
 
@@ -366,7 +366,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 </a>
               )}
               <ClientOnly>
-                <AddToGivingButton charityEin={c.ein} charityName={c.name} size="lg" />
+                <BookmarkButton charityEin={c.ein} charityName={c.name} size="sm" showLabel buttonClassName="border border-slate-400/60" labelClassName="text-xs!" />
               </ClientOnly>
               <Link
                 to={`/compare/?eins=${c.ein}`}

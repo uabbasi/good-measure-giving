@@ -14,8 +14,8 @@ import { GmgCharityDetail } from './GmgCharityDetail';
 
 // Suppress sub-components that have their own context/auth dependencies
 // so we can test the similar-charities block in isolation.
-// The add-to-plan button needs the app's auth/profile providers; stubbed here.
-vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
+// The add-to-plan button needs the app's auth/bookmark providers; stubbed here.
+vi.mock('../BookmarkButton', () => ({ BookmarkButton: () => null }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
 vi.mock('./content', () => ({ GmgFooter: () => null }));
 vi.mock('./useIsMobile', () => ({ useIsMobile: () => false }));

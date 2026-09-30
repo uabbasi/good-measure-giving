@@ -84,7 +84,7 @@ export const WhatTheyDo: React.FC<{
             ['Category', c.category], ['Region', c.region],
             ['Programs', c.programs.join(', ')], ['Populations', c.populations.join(', ')],
             ['Founded', c.founded ? `${c.founded}${c.trackRecordYears ? ` · ${c.trackRecordYears} yrs` : ''}` : ''],
-            ['Wallet', c.wallet], ['Asnaf', c.asnaf || (c.claimsZakat ? 'Claims zakat' : '')],
+            ['Zakat or sadaqah', c.wallet], ['Asnaf', c.asnaf || (c.claimsZakat ? 'Claims zakat' : '')],
             // Quick facts has no sub-label slot, so UNRATED carries its
             // reason inline — a bare "UNRATED" reads as a missing value.
             ['Risk level', isRiskUnrated(c.riskLevel) ? 'UNRATED · INSUFFICIENT DATA' : c.riskLevel],

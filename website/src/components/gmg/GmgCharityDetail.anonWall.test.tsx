@@ -24,8 +24,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { GmgCharityDetail } from './GmgCharityDetail';
 
 const mockMember = vi.fn(() => false);
-// The add-to-plan button needs the app's auth/profile providers; stubbed here.
-vi.mock('../AddToGivingButton', () => ({ AddToGivingButton: () => null }));
+// The add-to-plan button needs the app's auth/bookmark providers; stubbed here.
+vi.mock('../BookmarkButton', () => ({ BookmarkButton: () => null }));
 vi.mock('../../auth/useAuth', () => ({ useCommunityMember: () => mockMember() }));
 vi.mock('../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));

@@ -21,7 +21,7 @@ export const givingPlanTourSteps: DriveStep[] = [
     popover: {
       title: 'Add Charities',
       description:
-        'Use \u201cAdd to giving\u201d on any charity\u2019s page and it lands here. You can also search and add charities directly.',
+        'Tap \u201cAdd to Plan\u201d on any charity\u2019s page and it lands here. You can also search and add charities directly.',
     },
   },
   {
