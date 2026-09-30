@@ -44,7 +44,6 @@ Every pipeline run creates a commit. See `data-pipeline/CLAUDE.md` for details.
 Always use `pilot_charities.txt` as source. Test incrementally: 1 → 5 → 10 → all.
 
 See `data-pipeline/CLAUDE.md` for pipeline details.
-See `website/CLAUDE.md` for frontend details (if exists).
 
 ## Issue Tracking: Linear
 
