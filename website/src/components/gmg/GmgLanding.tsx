@@ -15,17 +15,13 @@ import {
   FONT_MONO,
   FONT_THEME,
 } from './tokens';
-import { Rating, ratingColor } from './rating';
+import { Rating, ratingColor, ratingFromGmgScore } from './rating';
 import { HarveyBall, Bismillah } from './primitives';
 import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity } from './charityAdapter';
 import { CauseAreaMatrix } from '../../../components/CauseAreaMatrix';
-
-const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-const ratingFromAvg = (avg: number): Rating =>
-  avg >= 4.5 ? 'Strong' : avg >= 3.5 ? 'Good' : avg >= 2.5 ? 'Moderate' : avg >= 1.5 ? 'Fair' : 'Weak';
 
 export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
@@ -50,9 +46,9 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   );
   const count = sorted.length;
   const featured = useMemo(() => (sorted.length ? adaptCharity(sorted[0]) : null), [sorted]);
-  const featuredOverall: Rating | null = featured
-    ? ratingFromAvg((RANK[featured.impact.overall] + RANK[featured.alignment.overall]) / 2)
-    : null;
+  // Same grade the browse table and charity page show: from the GMG score itself,
+  // which includes risk (an average of Impact and Alignment would not).
+  const featuredOverall: Rating | null = featured ? ratingFromGmgScore(featured.amalScore) : null;
 
   // Data for the interactive cause-area map (needs pillar scores).
   const insightsData = useMemo(

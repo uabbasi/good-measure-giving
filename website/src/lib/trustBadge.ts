@@ -1,3 +1,5 @@
+import type { Rating } from '../components/gmg/rating';
+
 // Builders for the SEO "link engine": self-contained, copy-paste HTML snippets
 // that rated charities (and peers) can paste onto their own sites to link back
 // to Good Measure Giving with descriptive, dofollow anchor text.
@@ -28,8 +30,8 @@ const SERIF = "Georgia, 'Times New Roman', serif";
 export interface BadgeCharity {
   ein: string;
   name: string;
-  /** GMG Score = impact + alignment − risk (0–100). NOT Charity Navigator's rating. */
-  score: number;
+  /** GMG grade (Strong / Good / Moderate / Fair / Weak), as shown on the charity's page. NOT Charity Navigator's rating. */
+  rating: Rating;
 }
 
 /** Trailing-slash charity URL — matches our canonical/sitemap convention. */
@@ -37,7 +39,7 @@ export const charityUrl = (ein: string): string => `${SITE_URL}/charity/${ein}/`
 
 /**
  * The embeddable trust badge: an inline-styled <a> that shows
- * "Independently rated by Good Measure Giving" plus the charity's GMG score,
+ * "Independently rated by Good Measure Giving" plus the charity's GMG rating word,
  * linking (dofollow) to that charity's detail page. Self-contained, no external
  * CSS. Returned as a single trimmed HTML string ready to paste.
  */
@@ -51,8 +53,8 @@ export function buildTrustBadgeSnippet(charity: BadgeCharity): string {
     <span style="font-size:14px;font-weight:700;color:${c.ink};">Good Measure Giving</span>
   </span>
   <span style="display:flex;flex-direction:column;align-items:flex-end;margin-left:auto;padding-left:10px;border-left:1px solid ${c.rule};">
-    <span style="font-size:19px;font-weight:700;color:${c.sage};">${charity.score}<span style="font-size:11px;font-weight:400;color:${c.sub2};">/100</span></span>
-    <span style="font-size:9px;color:${c.sub2};letter-spacing:.06em;text-transform:uppercase;">GMG Score</span>
+    <span style="font-size:17px;font-weight:700;color:${c.sage};">${charity.rating}</span>
+    <span style="font-size:9px;color:${c.sub2};letter-spacing:.06em;text-transform:uppercase;">GMG rating</span>
   </span>
 </a>`;
 }

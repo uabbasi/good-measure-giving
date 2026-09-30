@@ -16,7 +16,7 @@ describe('buildTrustBadgeSnippet', () => {
   const snippet = buildTrustBadgeSnippet({
     ein: '41-2046295',
     name: 'The Citizens Foundation USA',
-    score: 87,
+    rating: 'Strong',
   });
 
   it('links dofollow (no rel="nofollow") to the charity detail page', () => {
@@ -24,8 +24,9 @@ describe('buildTrustBadgeSnippet', () => {
     expect(snippet).not.toContain('nofollow');
   });
 
-  it('surfaces the GMG score and the rated-by line', () => {
-    expect(snippet).toContain('87');
+  it('surfaces the GMG rating word (never a number) and the rated-by line', () => {
+    expect(snippet).toContain('Strong');
+    expect(snippet).not.toContain('/100');
     expect(snippet).toContain('Independently rated by');
     expect(snippet).toContain('Good Measure Giving');
   });

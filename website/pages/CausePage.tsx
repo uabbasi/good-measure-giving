@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { charityPath, paths } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
+import { ratingFromGmgScore } from '../src/components/gmg/rating';
 import {
   GmgContentFrame,
   Breadcrumb,
@@ -89,7 +90,7 @@ export const CausePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       p={p}
                       to={charityPath(c.ein)}
                       title={c.name}
-                      meta={c.amalScore != null ? `${c.amalScore}/100` : undefined}
+                      meta={c.amalScore != null ? ratingFromGmgScore(c.amalScore) : undefined}
                     />
                   ))}
                 </CardGrid>

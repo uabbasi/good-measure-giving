@@ -26,11 +26,11 @@ import {
 } from '../src/lib/trustBadge';
 
 // A real, high-scoring charity used purely as the worked example so the badge
-// preview links somewhere live. Partners swap the EIN + score for their own.
+// preview links somewhere live. Partners swap the EIN + grade for their own.
 const EXAMPLE_CHARITY: BadgeCharity = {
   ein: '41-2046295',
   name: 'The Citizens Foundation USA',
-  score: 87,
+  rating: 'Strong',
 };
 
 // Small copy-to-clipboard control, palette-styled.
@@ -142,7 +142,7 @@ export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
             <Section ctx={ctx} title="The trust badge">
               <P p={p} muted>
-                Paste this badge onto your site. It shows your GMG score and links back to your full evaluation. Here's
+                Paste this badge onto your site. It shows your GMG rating and links back to your full evaluation. Here's
                 how it looks for{' '}
                 <ALink p={p} to={charityPath(EXAMPLE_CHARITY.ein)}>
                   {EXAMPLE_CHARITY.name}
@@ -170,9 +170,9 @@ export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <div style={{ marginTop: 14 }}>
                 <Callout p={p} tone="info">
                   <strong>Using it on your own page?</strong> Swap two things for your charity: the URL's EIN (
-                  <code style={{ fontFamily: FONT_MONO }}>{EXAMPLE_CHARITY.ein}</code>) and the score number (
-                  <code style={{ fontFamily: FONT_MONO }}>{EXAMPLE_CHARITY.score}</code>). Both appear on your evaluation
-                  page. Not sure of your numbers?{' '}
+                  <code style={{ fontFamily: FONT_MONO }}>{EXAMPLE_CHARITY.ein}</code>) and the rating word (
+                  <code style={{ fontFamily: FONT_MONO }}>{EXAMPLE_CHARITY.rating}</code>). Both appear on your evaluation
+                  page. Not sure of your rating?{' '}
                   <a href="mailto:hello@goodmeasuregiving.org" style={{ color: p.accent, fontWeight: 500 }}>
                     Email us
                   </a>{' '}
