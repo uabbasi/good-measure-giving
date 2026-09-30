@@ -50,7 +50,7 @@ const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
       color: p.pos,
     }}
   >
-    Accepts Zakat
+    Accepts zakat
   </span>
 );
 
@@ -195,7 +195,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                           p={p}
                           to={charityPath(c.ein)}
                           title={c.name}
-                          meta={isZakatEligible(c) ? 'Accepts Zakat' : undefined}
+                          meta={isZakatEligible(c) ? 'Accepts zakat' : undefined}
                         />
                       ))}
                     </CardGrid>

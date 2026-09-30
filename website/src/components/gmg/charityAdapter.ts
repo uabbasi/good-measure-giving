@@ -169,7 +169,7 @@ const titleCase = (s: string): string =>
 
 const walletLabel = (tag: string | undefined): string => {
   const t = (tag || '').toUpperCase();
-  if (t.includes('ZAKAT')) return 'Accepts Zakat';
+  if (t.includes('ZAKAT')) return 'Accepts zakat';
   if (t.includes('SADAQAH')) return 'Sadaqah';
   return 'Sadaqah';
 };

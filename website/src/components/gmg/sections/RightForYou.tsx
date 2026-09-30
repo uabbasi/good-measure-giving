@@ -1,5 +1,5 @@
-// "Is it right for you?" — zakat verification (score_details.zakat: pass/
-// fail, asnaf category, quoted evidence) is public; it is a hard fact, not a
+// "Is it right for you?" — the zakat claim (score_details.zakat: accepts/
+// sadaqah, asnaf category, quoted evidence) is public; it is a hard fact, not a
 // narrative judgment. Everything else on this page is rich_narrative-only
 // and sits behind the community gate, one gate per coherent rn block:
 // `donor_fit_matrix`, `ideal_donor_profile` (best-for/ideal-for/considerations/
@@ -56,9 +56,9 @@ export const RightForYou: React.FC<{
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-          <Kicker p={p}>Zakat verification</Kicker>
+          <Kicker p={p}>Zakat: what the charity says</Kicker>
           <Tag tone={c.claimsZakat ? 'accent' : 'muted'} p={p}>
-            {c.claimsZakat ? 'Pass' : 'Sadaqah'}
+            {c.claimsZakat ? 'Accepts zakat' : 'Sadaqah'}
           </Tag>
         </div>
         {c.zakatEvidence && (
@@ -66,6 +66,9 @@ export const RightForYou: React.FC<{
             &ldquo;{c.zakatEvidence}&rdquo;
           </p>
         )}
+        <p style={{ fontSize: 12, color: p.sub, lineHeight: 1.5, margin: '10px 0 0' }}>
+          The charity's own public statement, not a ruling. Ask your scholar about your situation.
+        </p>
         {c.asnaf && (
           <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             <Tag tone="accent" p={p}>

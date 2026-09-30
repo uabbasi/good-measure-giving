@@ -56,7 +56,7 @@ describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation
     expect(html).toContain('International Rescue Committee');
     expect(html).toContain('Doctors Without Borders');
     expect(html).toContain('Humanitarian Relief'); // cause
-    expect(html).toContain('Accepts Zakat'); // wallet
+    expect(html).toContain('Accepts zakat'); // wallet
 
     // One prompt, in place of the evaluative rows.
     expect(html).toContain('Full comparison');

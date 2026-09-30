@@ -93,7 +93,7 @@ describe('GmgCharityDetail — signed out', () => {
     expect(container.querySelector('h1')?.textContent).toBe('International Rescue Committee');
     expect(container.textContent).toContain('EIN 13-5660870');
     expect(container.textContent).toContain('Humanitarian Relief');
-    expect(container.textContent).toContain('Accepts Zakat');
+    expect(container.textContent).toContain('Accepts zakat');
     expect(container.textContent).toContain('Fuqara');
   });
 

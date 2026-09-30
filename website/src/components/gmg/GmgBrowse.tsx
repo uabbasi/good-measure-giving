@@ -691,7 +691,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 </th>
                 {/* Cause then Wallet (wallet is filter-only, not sortable) */}
                 <SortableTh col={COLS[0]} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
-                <th style={{ padding: '10px 6px', width: 90 }} title="Zakat-eligible (the charity publicly accepts zakat) or Sadaqah.">
+                <th style={{ padding: '10px 6px', width: 90 }} title="Accepts zakat (the charity says so publicly) or Sadaqah.">
                   Wallet<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
                 </th>
                 {COLS.slice(1).map((col) => (

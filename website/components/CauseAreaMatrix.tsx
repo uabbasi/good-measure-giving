@@ -468,7 +468,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           <div className="flex flex-wrap justify-center gap-4 pt-4 border-t" style={{ borderColor: p.rule }}>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ background: p.accent }}></div>
-              <span className="text-xs" style={{ color: p.sub }}>Accepts Zakat</span>
+              <span className="text-xs" style={{ color: p.sub }}>Accepts zakat</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ background: p.sub2 }}></div>
