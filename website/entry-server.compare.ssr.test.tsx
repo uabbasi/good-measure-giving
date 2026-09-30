@@ -48,7 +48,7 @@ const renderBareCompare = (eins: string[]): Promise<string> =>
     ...eins.map((ein) => ({ queryKey: ['charity', ein], data: loadRaw(ein) })),
   ]);
 
-describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation', () => {
+describe('GmgCompare SSR — anonymous visitors get identity and the browse-level signals, not the evaluation', () => {
   it('shows which charities are being compared, and a sign-in prompt instead of the analysis', async () => {
     const html = await renderCompare([IRC_EIN, DWB_EIN]);
 
@@ -58,7 +58,12 @@ describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation
     expect(html).toContain('Humanitarian Relief'); // cause
     expect(html).toContain('Accepts zakat'); // wallet
 
-    // One prompt, in place of the evaluative rows.
+    // The same six signals /browse already shows everyone.
+    for (const label of ['GMG rating', 'Finances', 'Governance', 'Donor fit', 'Size', 'Program efficiency']) {
+      expect(html).toContain(label);
+    }
+
+    // One prompt, in place of the richer rows.
     expect(html).toContain('Full comparison');
     expect(html).toContain('sign in to see them');
   }, 20000);
@@ -68,9 +73,6 @@ describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation
 
     // Row labels — their presence would mean the gated block rendered at all.
     for (const label of [
-      'GMG rating',
-      'Donor fit',
-      'Program efficiency',
       'Reserves',
       'Cost / beneficiary',
       'Best for',
@@ -104,7 +106,7 @@ describe('GmgCompare SSR — anonymous visitors get identity, not the evaluation
     expect(html).toContain('International Rescue Committee');
     expect(html).toContain('Full comparison');
 
-    for (const label of ['GMG rating', 'Cost / beneficiary', 'Best for', 'CRITERION BY CRITERION']) {
+    for (const label of ['Reserves', 'Cost / beneficiary', 'Best for', 'CRITERION BY CRITERION']) {
       expect(html).not.toContain(label);
     }
   }, 20000);

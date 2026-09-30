@@ -80,7 +80,7 @@ export const RightForYou: React.FC<{
 
       {facts.length > 0 && (
         <div style={{ marginBottom: 20 }}>
-          <GatedBlock label="Donor fit" p={p}>
+          <GatedBlock label="Who it suits" p={p}>
             <div
               style={{
                 display: 'grid',

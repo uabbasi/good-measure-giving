@@ -63,7 +63,7 @@ export const computeAnalysisAreas = (c: GmgCharity): string[] => {
     || !!dfm.geographicFocus
     || !!dfm.zakatStatus
     || dfm.zakatAsnafServed.length > 0;
-  if (hasDonorFit) areas.push('Donor fit');
+  if (hasDonorFit) areas.push('Who it suits');
 
   const hasFitNotes =
     !!c.bestForSummary || c.idealFor.length > 0 || c.considerations.length > 0 || c.notIdealFor.length > 0;
