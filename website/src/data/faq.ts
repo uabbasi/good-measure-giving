@@ -137,7 +137,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     category: 'zakat',
     q: "Why is a high-scoring charity classified as \u2018Sadaqah\u2019 instead of \u2018Zakat\u2019?",
-    a: "The GMG Score measures overall strength across impact and alignment, while the wallet label is a narrower routing cue about what the charity publicly says on its website. A medical research organization or civil rights group might score very high and still not publicly accept Zakat. This doesn\u2019t make it less worthy \u2014 it just means you should generally use Sadaqah funds unless the charity itself provides a Zakat pathway you are comfortable with."
+    a: "The GMG Score measures overall strength across impact and alignment, while the zakat-or-sadaqah label is a narrower routing cue about what the charity publicly says on its website. A medical research organization or civil rights group might score very high and still not publicly accept Zakat. This doesn\u2019t make it less worthy \u2014 it just means you should generally use Sadaqah funds unless the charity itself provides a Zakat pathway you are comfortable with."
   },
   {
     category: 'zakat',

@@ -52,14 +52,14 @@ describe('GmgCharityDetail stat strip', () => {
   it('drops cells with no figure on a phone', () => {
     const text = renderAt(true);
 
-    expect(text).not.toContain('Cost / benef.');
+    expect(text).not.toContain('Cost per person');
     expect(text).not.toContain('not reported');
   });
 
   it('keeps every cell with a figure on a phone', () => {
     const text = renderAt(true);
 
-    expect(text).toContain('Program ratio');
+    expect(text).toContain('Program spending');
     expect(text).toContain('88%');
     expect(text).toContain('Revenue');
   });
@@ -67,7 +67,7 @@ describe('GmgCharityDetail stat strip', () => {
   it('keeps the full set on desktop, blanks included', () => {
     const text = renderAt(false);
 
-    expect(text).toContain('Cost / benef.');
+    expect(text).toContain('Cost per person');
     expect(text).toContain('not reported');
   });
 });

@@ -13,18 +13,8 @@ import { GatedBlock } from '../GatedBlock';
 import { Kicker } from '../primitives';
 import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
+import { usd } from '../money';
 
-const usd = (n: number | null): string => {
-  if (n == null) return '—';
-  const compact = Math.abs(n) >= 1_000_000;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: compact ? 'compact' : 'standard',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: compact ? 1 : 0,
-  }).format(n);
-};
 
 const RISK_TONE: Record<string, { fg: keyof GmgPalette; bg: keyof GmgPalette }> = {
   high: { fg: 'neg', bg: 'negBg' },

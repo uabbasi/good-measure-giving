@@ -109,7 +109,7 @@ export const BrowseFacets: React.FC<{
   const walletOptions: FacetOption[] = useMemo(() => {
     const allCount = applyFacets(rows, { ...state, wallet: 'all' }).length;
     return [
-      { key: 'all', label: 'All', ariaLabel: `Wallet: All ${allCount}`, count: allCount, selected: state.wallet === 'all' },
+      { key: 'all', label: 'All', ariaLabel: `Any type: All ${allCount}`, count: allCount, selected: state.wallet === 'all' },
       { key: 'zakat', label: 'Zakat', count: applyFacets(rows, { ...state, wallet: 'zakat' }).length, selected: state.wallet === 'zakat' },
       { key: 'sadaqah', label: 'Sadaqah', count: applyFacets(rows, { ...state, wallet: 'sadaqah' }).length, selected: state.wallet === 'sadaqah' },
     ];
@@ -213,7 +213,7 @@ export const BrowseFacets: React.FC<{
 
       {/* Row 2: always-visible facets */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-        <FacetGroup label="Wallet" p={p} pill={pill} options={walletOptions} onSelect={(v) => dispatch({ type: 'wallet', value: v as WalletFilter })} />
+        <FacetGroup label="Zakat or sadaqah" p={p} pill={pill} options={walletOptions} onSelect={(v) => dispatch({ type: 'wallet', value: v as WalletFilter })} />
         <FacetGroup label="Size" p={p} pill={pill} options={sizeOptions} onSelect={toggle('size')} />
         <FacetGroup label="Evidence" p={p} pill={pill} options={evidenceOptions} onSelect={toggle('evidence')} />
         <FacetGroup label="Scope" p={p} pill={pill} options={scopeOptions} onSelect={(v) => dispatch({ type: 'scope', value: v as Scope })} />

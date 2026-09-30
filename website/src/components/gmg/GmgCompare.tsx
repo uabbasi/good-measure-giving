@@ -24,18 +24,8 @@ import { useIsMobile } from './useIsMobile';
 import { useCommunityMember } from '../../auth/useAuth';
 import { SignInButton } from '../../auth/SignInButton';
 import { adaptCharity, GmgCharity } from './charityAdapter';
+import { usd, usdCompact } from './money';
 
-const usd = (n: number | null): string =>
-  n == null ? '—' : `$${Math.round(n).toLocaleString()}`;
-
-// Compact annual revenue ($851K / $3.0M / $1.5B) — matches the /browse Size column.
-const fmtSize = (n: number | null): string => {
-  if (n == null) return '—';
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
-  return `$${Math.round(n)}`;
-};
 
 // Module-scope table pieces — kept out of the render body so they retain a
 // stable identity across renders (no remount of the table as queries resolve).
@@ -258,7 +248,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
             <Row {...rowProps} label="Governance" render={(s) => <RatingMini rating={s.risk} p={p} />} />
             <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
-            <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{fmtSize(s.totalRevenue)}</span>} />
+            <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usdCompact(s.totalRevenue)}</span>} />
             <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
 
             {!isMember && (

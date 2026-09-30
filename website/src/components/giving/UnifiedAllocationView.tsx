@@ -615,7 +615,7 @@ export function UnifiedAllocationView({
                     : (isDark ? 'text-slate-500 border-slate-700 hover:text-slate-400 hover:bg-slate-800' : 'text-slate-400 border-slate-200 hover:text-slate-600 hover:bg-slate-50')
                 }`}
               >
-                {zakatLens ? 'Showing zakat-eligible only' : 'Hide sadaqah'}
+                {zakatLens ? 'Showing zakat charities only' : 'Zakat charities only'}
               </button>
               {totalIntended > 0 && (
                 <span className={`text-[11px] font-medium px-2.5 py-1 rounded-md border ${
@@ -625,7 +625,7 @@ export function UnifiedAllocationView({
                     ? (isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-500 border-blue-200 bg-blue-50')
                     : (isDark ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-amber-600 border-amber-200 bg-amber-50')
                 }`}>
-                  {unallocated === 0 ? `${fmt(totalIntended)} planned` : unallocated < 0 ? `${fmt(Math.abs(unallocated))} over` : `${fmt(unallocated)} to plan`}
+                  {unallocated === 0 ? `${fmt(totalIntended)} planned` : unallocated < 0 ? `${fmt(Math.abs(unallocated))} over-allocated` : `${fmt(unallocated)} left to allocate`}
                 </span>
               )}
             </div>

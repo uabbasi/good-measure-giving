@@ -6,7 +6,6 @@ import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackCharityView, trackDonateClick, trackOutboundClick } from '../../utils/analytics';
 import { charityPath } from '../../lib/paths';
-import { EDITION } from '../../config/siteVersion';
 import { useCharities } from '../../hooks/useCharities';
 import {
   selectSimilarCharities,
@@ -48,25 +47,9 @@ import { SectionRail, type RailSection } from './SectionRail';
 import { CitedText, SourceList, collectCitations } from './CitedText';
 import { AddToGivingButton } from '../AddToGivingButton';
 import { ClientOnly } from '../ClientOnly';
+import { usd, usdFull } from './money';
 
-const usd = (n: number | null): string => {
-  if (n == null) return '—';
-  const compact = Math.abs(n) >= 1_000_000;
-  // For currency, leaving maximumFractionDigits at 1 forces the default
-  // minimumFractionDigits (2) down to 1, so whole-dollar figures render as
-  // "$851,150.0". Pin the minimum to 0 and only allow a decimal for the
-  // compact "$1.5M" form.
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: compact ? 'compact' : 'standard',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: compact ? 1 : 0,
-  }).format(n);
-};
 
-const usdFull = (n: number | null): string =>
-  n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
 // The six donor-question sections, in spine order — shared between the
 // section list below and the SectionRail so the two can never drift apart.
@@ -262,8 +245,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   const { fyDated } = dataVintage(c);
 
   const statCells: [string, string, string][] = [
-    ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
-    ['Program ratio', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expense'],
+    ['Cost per person', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per beneficiary' : 'not reported'],
+    ['Program spending', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expenses'],
     ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—', 'working capital'],
     ['Revenue', usd(c.totalRevenue), c.fiscalYear ? `FY${c.fiscalYear}${fyDated ? ' · dated' : ''}` : 'IRS 990'],
     ['Track record', c.trackRecordYears != null ? `${c.trackRecordYears} yr` : '—', c.founded ? `est. ${c.founded}` : ''],
@@ -300,8 +283,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           letterSpacing: '0.06em',
         }}
       >
-        <span>EDITION {EDITION}</span>
-        {c.updatedOn && <span>· UPDATED {c.updatedOn}</span>}
+        {c.updatedOn && <span>CHARITY DATA UPDATED {c.updatedOn}</span>}
       </div>
 
       <Bismillah p={p} />
@@ -418,11 +400,11 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 </span>
                 {c.recommendationCue && (
                   <span style={{ color: p.sub }}>
-                    <Kicker p={p}>Fit</Kicker> {c.recommendationCue}
+                    <Kicker p={p}>Our take</Kicker> {c.recommendationCue}
                   </span>
                 )}
                 <span style={{ color: p.sub }}>
-                  <Kicker p={p}>Wallet</Kicker> {c.wallet}
+                  <Kicker p={p}>Zakat or sadaqah</Kicker> {c.wallet}
                 </span>
               </div>
             </div>
@@ -472,7 +454,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
           {/* Methodology details */}
           <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-            <Kicker p={p}>Methodology details · edition {EDITION}</Kicker>
+            <Kicker p={p}>Methodology details</Kicker>
             {c.strengths.length > 0 && (
               <div style={{ marginTop: 8, marginBottom: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg2 }}>
                 <Kicker p={p}>How we evaluate</Kicker>
@@ -589,11 +571,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           </ul>
         </section>
       )}
-
-      <footer style={{ padding: `14px ${padX}px`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
-        <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} · EDITION {EDITION}</span>
-        <span>HARVEY-BALL MOTIF</span>
-      </footer>
 
       </div>
 

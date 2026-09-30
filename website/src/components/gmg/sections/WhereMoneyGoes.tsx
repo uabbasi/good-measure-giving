@@ -37,25 +37,9 @@ import { Kicker, Stacked } from '../primitives';
 import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
 import { expenseSplit } from './expenseSplit';
+import { usd, usdFull } from '../money';
 
-const usd = (n: number | null): string => {
-  if (n == null) return '—';
-  const compact = Math.abs(n) >= 1_000_000;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: compact ? 'compact' : 'standard',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: compact ? 1 : 0,
-  }).format(n);
-};
 
-// Full, non-compacted dollar figures — distinct from the compact `usd` above
-// (used for the grant totals). Only ever called on an already-guarded,
-// non-null value: see `figures` below, which omits a row entirely rather
-// than calling this with null.
-const usdFull = (n: number): string =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
 const pct = (n: number): string => `${Math.round(n * 100)}%`;
 

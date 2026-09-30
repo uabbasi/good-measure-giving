@@ -4,6 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
+import { usdCompact } from './money';
 import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackCharityCardClick, trackSearch } from '../../utils/analytics';
@@ -42,14 +43,6 @@ type SortDir = 'asc' | 'desc';
 
 const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
 
-// Annual revenue → compact money ($85K / $3.0M / $1.5B).
-const fmtMoney = (n: number | null): string => {
-  if (n == null) return '—';
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
-  return `$${Math.round(n)}`;
-};
 
 const titleCaseCause = (s: string): string =>
   s.replace(/[_&]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, (m) => m.toUpperCase());
@@ -597,7 +590,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
                 {/* EIN lives on the detail page; a donor scans by cause and size. */}
                 <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 2 }}>
-                  {titleCaseCause(row.cause)} · {fmtMoney(row.revenue)}
+                  {titleCaseCause(row.cause)} · {usdCompact(row.revenue)}
                 </div>
 
                 {/* One signal line, on the same columns as the header above. */}
@@ -697,8 +690,8 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 </th>
                 {/* Cause then Wallet (wallet is filter-only, not sortable) */}
                 <SortableTh col={COLS[0]} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
-                <th style={{ padding: '10px 6px', width: 90 }} title="Accepts zakat (the charity says so publicly) or Sadaqah.">
-                  Wallet<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
+                <th style={{ padding: '10px 6px', width: 110 }} title="Accepts zakat (the charity says so publicly) or Sadaqah.">
+                  Zakat or sadaqah<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
                 </th>
                 {COLS.slice(1).map((col) => (
                   <SortableTh key={col.key} col={col} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
@@ -755,7 +748,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     <EvidenceCell stage={row.verification} p={p} />
                   </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
-                    {fmtMoney(row.revenue)}
+                    {usdCompact(row.revenue)}
                   </td>
                   <td style={{ padding: '8px 6px', color: p.sub2, fontSize: 14 }}>›</td>
                 </tr>

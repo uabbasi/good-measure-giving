@@ -158,10 +158,10 @@ export function GivingHistoryTable({
           onChange={(e) => setMatchFilter(e.target.value as FilterMatch)}
           className={selectClass}
         >
-          <option value="all">All Match Status</option>
-          <option value="eligible">Match Eligible</option>
-          <option value="submitted">Match Submitted</option>
-          <option value="received">Match Received</option>
+          <option value="all">Any employer match</option>
+          <option value="eligible">Employer match: eligible</option>
+          <option value="submitted">Employer match: submitted</option>
+          <option value="received">Employer match: received</option>
         </select>
 
         <div className="flex-grow" />
@@ -225,7 +225,7 @@ export function GivingHistoryTable({
                 <th className={`text-center py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Type</th>
                 <th className={`text-left py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Source</th>
                 <th className={`text-center py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Receipt</th>
-                <th className={`text-center py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Match</th>
+                <th className={`text-center py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Employer match</th>
                 <th className={`text-right py-3 px-2 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Actions</th>
               </tr>
             </thead>
@@ -264,7 +264,7 @@ export function GivingHistoryTable({
                       }
                     `}>
                       {donation.category}
-                      {donation.zakatYear && ` '${donation.zakatYear.toString().slice(-2)}`}
+                      {donation.zakatYear && ` ${donation.zakatYear}`}
                     </span>
                   </td>
                   <td className={`py-3 px-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -284,9 +284,9 @@ export function GivingHistoryTable({
                           +{formatCurrency(donation.matchAmount || 0)}
                         </span>
                       ) : donation.matchStatus === 'submitted' ? (
-                        <span className="text-amber-500" title="Match submitted">&#9679;</span>
+                        <span className="text-amber-500" title="Employer match submitted">&#9679;</span>
                       ) : (
-                        <span className={isDark ? 'text-slate-500' : 'text-slate-400'} title="Match eligible">&#9675;</span>
+                        <span className={isDark ? 'text-slate-500' : 'text-slate-400'} title="Employer match eligible">&#9675;</span>
                       )
                     ) : (
                       <span className={isDark ? 'text-slate-600' : 'text-slate-400'}>-</span>

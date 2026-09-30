@@ -369,7 +369,7 @@ export function AddDonationModal({
                   type="checkbox"
                   className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                 />
-                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Match eligible</span>
+                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Employer match eligible</span>
               </label>
             </div>
 
@@ -377,7 +377,7 @@ export function AddDonationModal({
             {matchEligible && (
               <div className="grid grid-cols-2 gap-4 pl-6 border-l-2 border-emerald-500/30">
                 <div>
-                  <label className={labelClass}>Match Status</label>
+                  <label className={labelClass}>Employer match status</label>
                   <select
                     {...register('matchStatus')}
                     className={inputClass}
@@ -388,7 +388,7 @@ export function AddDonationModal({
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Match Amount</label>
+                  <label className={labelClass}>Employer match amount</label>
                   <div className="relative">
                     <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>$</span>
                     <input

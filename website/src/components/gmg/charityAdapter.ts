@@ -4,7 +4,7 @@
 
 import { Rating, ratingFromDimension, ratingFromCriterion, ratingFromGmgScore } from './rating';
 import {
-  regionsFromCauseTags, regionLabel, regionKeysFromCauseTags, asnafKeysFromCauseTags,
+  regionsFromCauseTags, regionLabel, regionKeysFromCauseTags, asnafKeysFromCauseTags, ASNAF_TAGS,
 } from './adapters/regions';
 import {
   buildCitationIndex, anchorConcerns, aggregateGrants, buildFinancialSeries,
@@ -167,6 +167,13 @@ const buildDimension = (raw: any, overallScore: unknown, max = 50): GmgDimension
 
 const titleCase = (s: string): string =>
   s.replace(/[_-]+/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+
+// score_details.zakat.asnaf_category arrives as fuqara / fi_sabilillah / ibn_sabil;
+// ASNAF_TAGS holds the glossed names (keys fisabilillah / ibn-sabil).
+const asnafLabel = (raw: string): string => {
+  const k = raw.toLowerCase();
+  return ASNAF_TAGS[k] ?? ASNAF_TAGS[k.replace(/_/g, '-')] ?? ASNAF_TAGS[k.replace(/[_-]/g, '')] ?? titleCase(raw);
+};
 
 const walletLabel = (tag: string | undefined): string => {
   const t = (tag || '').toUpperCase();
@@ -616,7 +623,7 @@ export const adaptCharity = (c: any): GmgCharity => {
     evidenceStage: sig?.evidence_stage ?? null,
     recommendationCue: sig?.recommendation_cue ?? null,
 
-    asnaf: sd?.zakat?.asnaf_category ? titleCase(sd.zakat.asnaf_category) : null,
+    asnaf: sd?.zakat?.asnaf_category ? asnafLabel(sd.zakat.asnaf_category) : null,
     claimsZakat: !!sd?.zakat?.charity_claims_zakat,
     zakatEvidence: (() => {
       const cleaned = stripTags(sd?.zakat?.claim_evidence);

@@ -29,7 +29,7 @@ export const browseTourSteps: DriveStep[] = [
     popover: {
       title: 'Charity Cards',
       description:
-        'Each card shows the <strong>recommendation badge</strong> (our overall assessment), <strong>evidence stage</strong>, and <strong>wallet tag</strong> (whether the charity publicly says it accepts zakat, or should be treated as sadaqah). Click any card for the full evaluation.',
+        'Each card shows the <strong>recommendation badge</strong> (our overall assessment), <strong>evidence stage</strong>, and <strong>zakat-or-sadaqah label</strong> (whether the charity publicly says it accepts zakat, or should be treated as sadaqah). Click any card for the full evaluation.',
     },
   },
 ];
