@@ -52,7 +52,7 @@ Track work in **Linear**, not beads. Beads is frozen: `.beads/` is kept as read-
 history. Read it if you need old context; never write to it (`bd create`, `bd update`,
 `bd close`, `bd remember` are all off-limits).
 
-- Where: workspace "weeklies", team "Onyx", project "GMG", label `gmg`.
+- Where: workspace "weeklies", team "Roshni" (issue prefix ONYX), project "GMG", label `gmg`.
 - Tools: the Linear MCP tools (`mcp__plugin_design_linear__*`; load with ToolSearch "linear").
 - Before starting work: find or create its issue (project GMG, label `gmg`) and set it
   **In Progress**.
