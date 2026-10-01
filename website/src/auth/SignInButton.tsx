@@ -15,6 +15,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { auth, isConfigured } from './firebase';
+import { useDialog } from '../hooks/useDialog';
 import { useAuth } from './useAuth';
 import { trackSignIn, trackSignInError, trackSignInSuccess } from '../utils/analytics';
 
@@ -65,6 +66,9 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
     setShowMenu(false);
     resetAuthState();
   }, [resetAuthState]);
+
+  // Focus trap + focus restore for the sign-in dialog (Escape is handled just below)
+  useDialog(modalRef, showMenu && !isSignedIn, closeModal);
 
   // Close on Escape key (backdrop click handled inline)
   useEffect(() => {
@@ -285,7 +289,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
       className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center"
       onClick={closeModal}
     >
-      <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" onClick={(e) => e.stopPropagation()} className="relative w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] bg-white rounded-2xl shadow-2xl overflow-y-auto overscroll-contain">
+      <div ref={modalRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="signin-modal-title" onClick={(e) => e.stopPropagation()} className="relative w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] bg-white rounded-2xl shadow-2xl overflow-y-auto overscroll-contain">
         {/* Header with logo - only on providers screen */}
         {screen === 'providers' && (
           <div className="px-8 pt-8 pb-6 text-center border-b border-slate-100">

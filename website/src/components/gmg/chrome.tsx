@@ -50,6 +50,10 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  // Which item to focus once the menu opens (set when it was opened from the keyboard).
+  const focusOnOpen = useRef<'first' | 'last' | null>(null);
   const location = useLocation();
 
   // Dismiss the account dropdown on outside-click, Escape, or route change.
@@ -59,7 +63,10 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false);
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        triggerRef.current?.focus();
+      }
     };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
@@ -73,6 +80,33 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     setMenuOpen(false);
     setMobileMenuOpen(false);
   }, [location.pathname]);
+
+  // A menu opened from the keyboard lands on an item, as the menu pattern expects.
+  useEffect(() => {
+    if (!menuOpen || !focusOnOpen.current) return;
+    const items = popupRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
+    if (items && items.length) (focusOnOpen.current === 'last' ? items[items.length - 1] : items[0]).focus();
+    focusOnOpen.current = null;
+  }, [menuOpen]);
+
+  const onTriggerKey = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusOnOpen.current = e.key === 'ArrowDown' ? 'first' : 'last';
+      setMenuOpen(true);
+    }
+  };
+
+  const onPopupKey = (e: React.KeyboardEvent) => {
+    const items = Array.from(popupRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+    const i = items.indexOf(document.activeElement as HTMLElement);
+    const go = (n: number) => { e.preventDefault(); items[(n + items.length) % items.length]?.focus(); };
+    if (e.key === 'ArrowDown') go(i + 1);
+    else if (e.key === 'ArrowUp') go(i - 1);
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(items.length - 1);
+    else if (e.key === 'Tab') setMenuOpen(false);
+  };
 
   const pill: React.CSSProperties = {
     padding: '7px 14px',
@@ -89,16 +123,27 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
   const account = isSignedIn ? (
     <div style={{ position: 'relative' }} ref={menuRef}>
       <button
+        ref={triggerRef}
         type="button"
         style={pill}
-        onClick={() => setMenuOpen((v) => !v)}
+        onClick={(e) => {
+          if (!menuOpen && e.detail === 0) focusOnOpen.current = 'first'; // Enter / Space
+          setMenuOpen((v) => !v);
+        }}
+        onKeyDown={onTriggerKey}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
+        aria-controls={menuOpen ? 'gmg-account-menu' : undefined}
       >
         {firstName || 'Account'} ▾
       </button>
       {menuOpen && (
         <div
+          ref={popupRef}
+          id="gmg-account-menu"
+          role="menu"
+          aria-label="Account"
+          onKeyDown={onPopupKey}
           style={{
             position: 'absolute',
             top: 'calc(100% + 6px)',
@@ -114,6 +159,8 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
         >
           <Link
             to="/profile"
+            role="menuitem"
+            tabIndex={-1}
             onClick={() => setMenuOpen(false)}
             className="tap-link"
             style={{ display: 'flex', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
@@ -122,6 +169,8 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
           </Link>
           <button
             type="button"
+            role="menuitem"
+            tabIndex={-1}
             onClick={() => { setMenuOpen(false); if (auth) signOut(auth).catch(() => {}); }}
             style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, color: p.sub, background: 'none', border: 'none', borderTop: `1px solid ${p.rule}`, cursor: 'pointer' }}
           >
@@ -180,6 +229,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
         type="button"
         aria-label="Menu"
         aria-expanded={mobileMenuOpen}
+        aria-controls="gmg-mobile-nav"
         onClick={() => setMobileMenuOpen((v) => !v)}
         style={{ ...pill, padding: '6px 11px', fontSize: 16, lineHeight: 1 }}
       >
@@ -190,7 +240,7 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     <GmgSignIn p={p} open={signInOpen} onClose={() => setSignInOpen(false)} />
   </header>
   {isMobile && mobileMenuOpen && (
-    <nav style={{ display: 'flex', flexDirection: 'column', background: p.bg, borderBottom: `1px solid ${p.rule}` }}>
+    <nav id="gmg-mobile-nav" aria-label="Site" style={{ display: 'flex', flexDirection: 'column', background: p.bg, borderBottom: `1px solid ${p.rule}` }}>
       {MOBILE_LINKS.map(([label, to]) => (
         <Link
           key={to}

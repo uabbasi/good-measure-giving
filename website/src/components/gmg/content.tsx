@@ -18,6 +18,7 @@ import { GmgNav } from './chrome';
 import { GmgLogo } from './primitives';
 import { paths } from '../../lib/paths';
 import { useIsMobile } from './useIsMobile';
+import { useOptionalLandingTheme } from '../../../contexts/LandingThemeContext';
 
 // Resolve the motif font CSS vars (mirrors ChangelogPage / GmgChromeFrame).
 export function useMotifFontVars(): { ft: FontTheme; fontVars: React.CSSProperties } {
@@ -398,6 +399,27 @@ export const CtaLink: React.FC<{ p: GmgPalette; to: string; children: React.Reac
   </Link>
 );
 
+// Light/dark switch, in the footer. It is the only theme control the site has.
+const ThemeToggle: React.FC<{ p: GmgPalette }> = ({ p }) => {
+  const theme = useOptionalLandingTheme();
+  if (!theme) return null;
+  const { isDark, toggleTheme } = theme;
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      onClick={toggleTheme}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', padding: 0, color: p.sub2, fontSize: 12, fontFamily: 'inherit', cursor: 'pointer' }}
+    >
+      <span>Dark mode</span>
+      <span aria-hidden="true" style={{ position: 'relative', display: 'inline-block', width: 30, height: 16, borderRadius: 99, background: isDark ? p.accent : p.rule2 }}>
+        <span style={{ position: 'absolute', top: 2, left: isDark ? 16 : 2, width: 12, height: 12, borderRadius: 99, background: p.bg, transition: 'left 0.15s ease-out' }} />
+      </span>
+    </button>
+  );
+};
+
 // Motif footer — the tail chrome the full-bleed pages never had. Compact link
 // columns + tagline, palette-driven.
 export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, isMobile }) => {
@@ -494,6 +516,7 @@ export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, i
             Privacy & analytics preferences
           </Link>
           <Link to="/terms/" className="tap-link" style={{ color: p.sub2, textDecoration: 'none' }}>Terms</Link>
+          <ThemeToggle p={p} />
         </span>
       </div>
     </footer>

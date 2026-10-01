@@ -1,5 +1,6 @@
 import { usdFull } from '../../utils/money';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { AnimatePresence, m } from 'motion/react';
 import { Calculator, X } from 'lucide-react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
@@ -64,6 +65,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
     resetForm();
   }
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(dialogRef, isOpen, handleClose);
+
   const inputClass = `w-full px-3 py-2 rounded-lg border text-base ${
     isDark
       ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
@@ -92,6 +96,11 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
           />
           {/* Panel */}
           <m.div
+            ref={dialogRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="zakat-estimator-title"
             className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border shadow-xl ${
               isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
             }`}
@@ -105,7 +114,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calculator className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                  <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
+                  <h2 id="zakat-estimator-title" className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
                 </div>
                 <button
                   onClick={handleClose}

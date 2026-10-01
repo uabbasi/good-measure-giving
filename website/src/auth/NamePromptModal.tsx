@@ -3,7 +3,8 @@
  * Listens for 'gmg:needs-name' custom event (fired by Apple/redirect sign-in flows).
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useDialog } from '../hooks/useDialog';
 import { updateProfile } from 'firebase/auth';
 import { auth } from './firebase';
 
@@ -13,6 +14,7 @@ export const NamePromptModal: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const dismiss = useCallback(() => {
     setVisible(false);
@@ -47,6 +49,8 @@ export const NamePromptModal: React.FC = () => {
     }
   };
 
+  useDialog(dialogRef, visible, dismiss);
+
   if (!visible) return null;
 
   return (
@@ -55,11 +59,16 @@ export const NamePromptModal: React.FC = () => {
       onClick={dismiss}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="name-prompt-title"
         onClick={(e) => e.stopPropagation()}
         className="w-[calc(100%-2rem)] max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
         <div className="px-6 pt-6 pb-4 text-center">
-          <h2 className="text-lg font-semibold text-slate-900 mb-1">
+          <h2 id="name-prompt-title" className="text-lg font-semibold text-slate-900 mb-1">
             What should we call you?
           </h2>
           <p className="text-sm text-slate-500">

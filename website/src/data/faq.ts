@@ -26,7 +26,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     category: 'general',
     q: "Can I request a charity to be evaluated?",
-    a: "Yes! Use the \u2018Suggest a Charity\u2019 option in our feedback form, available in the footer or on the browse page. Include the organization\u2019s name and EIN if available. You can also email us at hello@goodmeasuregiving.org. Priority is given to registered 501(c)(3) organizations serving Muslim communities."
+    a: "Yes! Email us at hello@goodmeasuregiving.org with the organization\u2019s name and EIN if you have it. Priority is given to registered 501(c)(3) organizations serving Muslim communities."
   },
   {
     category: 'general',
@@ -169,12 +169,12 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     category: 'data',
     q: "What if I think an evaluation is wrong?",
-    a: "We welcome feedback. Use the Report Issue button on any charity page to flag specific errors, or the feedback button to share general concerns. You can also email us at hello@goodmeasuregiving.org with specifics. We\u2019ll review the data and update our evaluation if warranted. Our goal is accuracy, not defending our initial assessments."
+    a: "We welcome feedback. Email us at hello@goodmeasuregiving.org with the charity\u2019s name and what looks wrong, or any general concern. We\u2019ll review the data and update our evaluation if warranted. Our goal is accuracy, not defending our initial assessments."
   },
   {
     category: 'data',
     q: "What if I represent a charity that\u2019s been evaluated?",
-    a: "We welcome organization feedback. Use the \u2018Tell us more\u2019 link on your charity\u2019s page or the Report Issue button to share corrections, context, or updated information. Our process: we receive your submission, review it against our data sources, and update the evaluation when warranted. Organization submissions may be reviewed before publication."
+    a: "We welcome organization feedback. Email hello@goodmeasuregiving.org with corrections, context, or updated information. Our process: we receive your submission, review it against our data sources, and update the evaluation when warranted. Organization submissions may be reviewed before publication."
   },
   {
     category: 'data',

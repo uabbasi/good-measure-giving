@@ -3,7 +3,8 @@
  * Uses React Hook Form + Zod for validation, Motion for animations
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -185,13 +186,8 @@ export function AddDonationModal({
     focus:outline-none focus:ring-1 focus:ring-emerald-500
   `;
 
-  // Escape closes the dialog, as a modal should.
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(dialogRef, isOpen, onClose);
 
   const labelClass = `block text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
 
@@ -221,6 +217,8 @@ export function AddDonationModal({
 
       {/* Modal */}
       <m.div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby="donation-modal-title"

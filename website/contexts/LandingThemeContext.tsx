@@ -45,6 +45,9 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
   );
 };
 
+// For chrome that should still render (minus the control) where no provider is mounted.
+export const useOptionalLandingTheme = () => useContext(ThemeContext);
+
 export const useLandingTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {

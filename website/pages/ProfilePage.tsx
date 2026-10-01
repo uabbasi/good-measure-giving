@@ -63,6 +63,12 @@ function TabButton({
 }) {
   return (
     <button
+      type="button"
+      role="tab"
+      id={`profile-tab-${id}`}
+      aria-selected={isActive}
+      aria-controls={`profile-panel-${id}`}
+      tabIndex={isActive ? 0 : -1}
       onClick={onClick}
       className={`
         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
@@ -374,7 +380,25 @@ export function ProfilePage() {
 
         {/* Tab Navigation (M5): one unified "Your Giving" tab covers the
             former Overview + History surfaces. In-Kind stays separate. */}
-        <div className={`flex gap-1 p-1 rounded-xl mb-6 ${isDark ? 'bg-slate-900' : 'bg-slate-100'}`}>
+        <div
+          role="tablist"
+          aria-label="Giving views"
+          onKeyDown={(e) => {
+            const order: TabId[] = ['giving', 'in-kind'];
+            const i = order.indexOf(activeTab);
+            let next: TabId | null = null;
+            if (e.key === 'ArrowRight') next = order[(i + 1) % order.length];
+            else if (e.key === 'ArrowLeft') next = order[(i - 1 + order.length) % order.length];
+            else if (e.key === 'Home') next = order[0];
+            else if (e.key === 'End') next = order[order.length - 1];
+            if (next) {
+              e.preventDefault();
+              setActiveTab(next);
+              document.getElementById(`profile-tab-${next}`)?.focus();
+            }
+          }}
+          className={`flex gap-1 p-1 rounded-xl mb-6 ${isDark ? 'bg-slate-900' : 'bg-slate-100'}`}
+        >
           <TabButton
             id="giving"
             label="Your Giving"
@@ -395,7 +419,7 @@ export function ProfilePage() {
 
         {/* Tab Content */}
         {activeTab === 'giving' && (
-          <div className="space-y-6">
+          <div role="tabpanel" id="profile-panel-giving" aria-labelledby="profile-tab-giving" tabIndex={0} className="space-y-6">
             <PlanSwitcher selected={selectedPlan} onSelect={setSelectedPlan} />
             {selectedPlan !== null ? (
               inSession ? (
@@ -584,7 +608,7 @@ export function ProfilePage() {
         )}
 
         {activeTab === 'in-kind' && (
-          <div className="space-y-6">
+          <div role="tabpanel" id="profile-panel-in-kind" aria-labelledby="profile-tab-in-kind" tabIndex={0} className="space-y-6">
             {/* Summary Card */}
             <InKindSummaryCard
               summary={getInKindYearSummary(new Date().getFullYear())}
