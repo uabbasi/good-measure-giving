@@ -110,10 +110,10 @@ describe('GmgBrowse mobile scan list', () => {
     const header = screen.getByText('GMG', { selector: 'span' }).parentElement as HTMLElement;
     const headings = Array.from(header.children).map((c) => c.textContent);
 
-    expect(headings).toEqual(['GMG', 'Fin', 'Gov', 'Fit', 'Prog', 'Compare']);
+    expect(headings).toEqual(['GMG', 'Fin', 'Risk', 'Fit', 'Prog', 'Compare']);
     // ...and no card repeats them.
     const seen = visibleText(card(container));
-    for (const heading of ['Fin', 'Gov', 'Fit', 'Prog', 'Compare']) {
+    for (const heading of ['Fin', 'Risk', 'Fit', 'Prog', 'Compare']) {
       expect(seen).not.toContain(heading);
     }
   });
@@ -152,7 +152,7 @@ describe('GmgBrowse mobile scan list', () => {
     expect(visibleText(signalRow(container))).not.toContain('Moderate');
     // Still announced, from the hidden spans the helper above strips.
     expect(card(container).textContent).toContain('Finances: Strong');
-    expect(card(container).textContent).toContain('Governance: Moderate');
+    expect(card(container).textContent).toContain('Risk management: Moderate');
     expect(card(container).textContent).toContain('Donor fit: Strong');
   });
 

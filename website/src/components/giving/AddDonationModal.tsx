@@ -185,6 +185,14 @@ export function AddDonationModal({
     focus:outline-none focus:ring-1 focus:ring-emerald-500
   `;
 
+  // Escape closes the dialog, as a modal should.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   const labelClass = `block text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
 
   const fieldError = (name: keyof DonationFormValues) =>
@@ -213,6 +221,9 @@ export function AddDonationModal({
 
       {/* Modal */}
       <m.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="donation-modal-title"
         className={`
           relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl border shadow-xl
           ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}
@@ -226,12 +237,13 @@ export function AddDonationModal({
           {/* Header */}
           <div className={`sticky top-0 px-6 py-4 border-b ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex items-center justify-between">
-              <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 id="donation-modal-title" className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {existingDonation ? 'Edit Donation' : 'Log Donation'}
               </h2>
               <button
                 type="button"
                 onClick={onClose}
+                aria-label="Close"
                 className={`p-1 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
               >
                 <svg className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">

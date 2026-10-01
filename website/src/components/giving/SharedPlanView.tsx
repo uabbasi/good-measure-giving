@@ -113,6 +113,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
           No charities yet. Add one above to start splitting your giving together.
         </p>
       ) : (
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 dark:text-slate-400">
@@ -181,6 +182,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {personalTarget == null && (

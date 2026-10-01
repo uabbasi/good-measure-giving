@@ -267,7 +267,7 @@ export function CategorySplit({
       </div>
 
       <div className={`px-5 py-4 border-t flex items-center justify-between gap-3 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
-        <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+        <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           Total: <span className="font-semibold tabular-nums">{total}%</span>
         </div>
         <div className="flex items-center gap-2">

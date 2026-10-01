@@ -101,6 +101,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
       charities: CharityWithPillars[];
       avgImpact: number;
       avgAlignment: number;
+      totalAmal: number;
       totalRevenue: number;
       topCharity: CharityWithPillars | null;
     }> = {};
@@ -114,6 +115,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           charities: [],
           avgImpact: 0,
           avgAlignment: 0,
+          totalAmal: 0,
           totalRevenue: 0,
           topCharity: null,
         };
@@ -121,6 +123,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
       byCause[cat].charities.push(c);
       byCause[cat].avgImpact += c.pillarScores.impact;
       byCause[cat].avgAlignment += c.pillarScores.alignment;
+      byCause[cat].totalAmal += c.amalScore;
       byCause[cat].totalRevenue += c.totalRevenue || 0;
       if (!byCause[cat].topCharity || c.amalScore > byCause[cat].topCharity.amalScore) {
         byCause[cat].topCharity = c;
@@ -137,6 +140,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
         charities: data.charities.sort((a, b) => b.amalScore - a.amalScore),
         avgImpact: data.avgImpact / data.charities.length,
         avgAlignment: data.avgAlignment / data.charities.length,
+        avgAmal: data.totalAmal / data.charities.length,
         totalRevenue: data.totalRevenue,
         topCharity: data.topCharity,
       }))
@@ -437,7 +441,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
                       <div className="font-bold mb-1">{cause.label}</div>
                       <div className="mb-2" style={{ color: p.sub }}>{cause.count} charities evaluated</div>
                       <div className="text-[10px]" style={{ color: p.sub2 }}>
-                        <div>Average rating: {ratingFromGmgScore(cause.avgAlignment + cause.avgImpact)}</div>
+                        <div>Average rating: {ratingFromGmgScore(cause.avgAmal)}</div>
                         <div>Top: {cause.topCharity?.name}{SHOW_AMAL_SCORE && ` (${cause.topCharity?.amalScore})`}</div>
                       </div>
                       <div className="mt-2 text-[10px] font-medium" style={{ color: p.accent }}>Click to explore →</div>

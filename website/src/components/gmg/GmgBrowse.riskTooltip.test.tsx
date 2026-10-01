@@ -43,7 +43,7 @@ vi.mock('../../hooks/useCharities', () => ({
   useCharities: () => ({ charities: [charity], summaries: [charity], loading: false, error: null }),
 }));
 
-describe('GmgBrowse — Governance column tooltip', () => {
+describe('GmgBrowse — Risk management column tooltip', () => {
   it('does not claim to be the full risk assessment', () => {
     const { container } = render(
       <MemoryRouter>
@@ -51,7 +51,7 @@ describe('GmgBrowse — Governance column tooltip', () => {
       </MemoryRouter>,
     );
     const riskHeader = [...container.querySelectorAll('[title]')].find((el) =>
-      el.textContent?.includes('Governance'),
+      el.textContent?.includes('Risk mgmt'),
     );
     expect(riskHeader).toBeTruthy();
     const tip = riskHeader!.getAttribute('title') ?? '';

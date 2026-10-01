@@ -202,7 +202,7 @@ export function ItemPicker({ defaultCondition, onAdd }: ItemPickerProps) {
                 }`}
               >
                 <span className="flex-grow truncate">{guideItem.name}</span>
-                <span className={`text-xs whitespace-nowrap ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                <span className={`text-xs whitespace-nowrap ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   {guideItem.category}
                 </span>
                 <span className={`text-xs font-medium whitespace-nowrap ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>

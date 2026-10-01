@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* `dark:` classes follow the site's theme toggle (a .dark class on <html>), not the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Tailwind 4 theme extensions */
 @theme {
   --font-sans: 'Geist', 'Inter', system-ui, sans-serif;

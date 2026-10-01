@@ -143,7 +143,7 @@ export function InKindHistoryTable({
                 <svg
                   className={`w-4 h-4 flex-shrink-0 transition-transform ${
                     expandedId === donation.id ? 'rotate-90' : ''
-                  } ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
+                  } ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -156,11 +156,11 @@ export function InKindHistoryTable({
                     <span className={`font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {donation.recipientName}
                     </span>
-                    <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                    <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                       {formatDate(donation.date)}
                     </span>
                   </div>
-                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     {donation.items.length} item{donation.items.length !== 1 ? 's' : ''}
                     {donation.notes && ` · ${donation.notes}`}
                   </div>
@@ -223,7 +223,7 @@ export function InKindHistoryTable({
                 <div className={`px-4 pb-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
                   <table className="w-full text-sm mt-2">
                     <thead>
-                      <tr className={isDark ? 'text-slate-500' : 'text-slate-400'}>
+                      <tr className={isDark ? 'text-slate-400' : 'text-slate-500'}>
                         <th className="text-left py-1 font-medium text-xs">Item</th>
                         <th className="text-left py-1 font-medium text-xs">Category</th>
                         <th className="text-center py-1 font-medium text-xs">Condition</th>
@@ -241,7 +241,7 @@ export function InKindHistoryTable({
                               <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`} title="Manual value">*</span>
                             )}
                           </td>
-                          <td className={`py-1.5 text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{item.category}</td>
+                          <td className={`py-1.5 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.category}</td>
                           <td className="py-1.5 text-center">
                             <span className={`text-xs px-1.5 py-0.5 rounded ${
                               item.condition === 'excellent' ? 'bg-emerald-500/20 text-emerald-500' :

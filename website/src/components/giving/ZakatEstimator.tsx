@@ -232,7 +232,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                         </span>
                       </div>
                     ) : (
-                      <p className={`text-sm pt-2 border-t ${isDark ? 'text-slate-500 border-slate-700' : 'text-slate-400 border-slate-200'}`}>
+                      <p className={`text-sm pt-2 border-t ${isDark ? 'text-slate-400 border-slate-700' : 'text-slate-500 border-slate-200'}`}>
                         Below nisab threshold ({formatUsd(NISAB_USD)}). No zakat due.
                       </p>
                     )}
@@ -265,7 +265,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
               )}
               <button
                 onClick={handleClose}
-                className={`w-full px-4 py-2 text-sm transition-colors ${isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`w-full px-4 py-2 text-sm transition-colors ${isDark ? 'text-slate-400 hover:text-slate-400' : 'text-slate-500 hover:text-slate-500'}`}
               >
                 Enter my own amount
               </button>

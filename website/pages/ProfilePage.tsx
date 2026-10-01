@@ -95,10 +95,13 @@ export function ProfilePage() {
     const raw = new URLSearchParams(location.search).get('zakat');
     if (raw == null || !isSignedIn || profileLoading) return;
     const amount = Math.round(Number(raw));
-    if (!profile?.targetZakatAmount && Number.isFinite(amount) && amount > 0) {
-      void updateProfile({ targetZakatAmount: amount });
+    const consume = () => navigate(location.pathname, { replace: true });
+    if (profile?.targetZakatAmount || !Number.isFinite(amount) || amount <= 0) {
+      consume();
+      return;
     }
-    navigate(location.pathname, { replace: true });
+    // Keep the param if the write fails, so a refresh retries instead of losing it.
+    updateProfile({ targetZakatAmount: amount }).then(consume, (err) => console.error('Could not save zakat target:', err));
   }, [location.search, location.pathname, isSignedIn, profileLoading, profile?.targetZakatAmount, updateProfile, navigate]);
   const { summaries, loading: charitiesLoading } = useCharities();
   // Family sync (add-side only): adding a charity here also adds it to every

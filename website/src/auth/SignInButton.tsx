@@ -471,7 +471,7 @@ export const SignInButton: React.FC<SignInButtonProps> = ({
           onClick={() => setShowMenu(!showMenu)}
           className={className}
         >
-          See Full Evaluations — Free
+          {children ?? 'See Full Evaluations — Free'}
         </button>
         {signInModal}
       </div>

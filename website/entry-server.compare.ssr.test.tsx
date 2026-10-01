@@ -58,8 +58,8 @@ describe('GmgCompare SSR — anonymous visitors get identity and the browse-leve
     expect(html).toContain('Humanitarian Relief'); // cause
     expect(html).toContain('Accepts zakat'); // wallet
 
-    // The same six signals /browse already shows everyone.
-    for (const label of ['GMG rating', 'Finances', 'Governance', 'Donor fit', 'Size', 'Program efficiency']) {
+    // The same signals /browse already shows everyone.
+    for (const label of ['GMG rating', 'Finances', 'Risk management', 'Donor fit', 'Evidence', 'Size', 'Program efficiency']) {
       expect(html).toContain(label);
     }
 

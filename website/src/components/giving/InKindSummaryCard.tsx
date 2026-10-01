@@ -82,7 +82,7 @@ export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) 
                     <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{cat.category}</span>
                     <span className={`font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {formatCurrency(cat.total)}
-                      <span className={`ml-1 text-xs font-normal ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <span className={`ml-1 text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         ({cat.itemCount} item{cat.itemCount !== 1 ? 's' : ''})
                       </span>
                     </span>

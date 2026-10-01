@@ -152,7 +152,7 @@ export function StarterPlan({ target, charities, bookmarkedEins, onAccepted }: S
         >
           {saving ? 'Saving...' : 'Start with this plan'}
         </button>
-        <p className={`text-xs text-center mt-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+        <p className={`text-xs text-center mt-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           You can customize amounts and charities anytime
         </p>
       </div>

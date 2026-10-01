@@ -130,7 +130,7 @@ export function CategoryProgressCard(props: CategoryProgressCardProps) {
             </span>
           ))}
           {tags.length > 3 && (
-            <span className={`text-xs px-2 py-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+            <span className={`text-xs px-2 py-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               +{tags.length - 3}
             </span>
           )}

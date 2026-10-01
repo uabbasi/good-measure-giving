@@ -286,7 +286,7 @@ export function GivingHistoryTable({
                       ) : donation.matchStatus === 'submitted' ? (
                         <span className="text-amber-500" title="Employer match submitted">&#9679;</span>
                       ) : (
-                        <span className={isDark ? 'text-slate-500' : 'text-slate-400'} title="Employer match eligible">&#9675;</span>
+                        <span className={isDark ? 'text-slate-400' : 'text-slate-500'} title="Employer match eligible">&#9675;</span>
                       )
                     ) : (
                       <span className={isDark ? 'text-slate-600' : 'text-slate-400'}>-</span>

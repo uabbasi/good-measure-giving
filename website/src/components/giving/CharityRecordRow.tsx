@@ -182,7 +182,7 @@ export function CharityRecordRow({
         isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'
       } focus-within:border-emerald-500 transition-colors`}
     >
-      <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+      <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
         $
       </span>
       <input
@@ -221,7 +221,7 @@ export function CharityRecordRow({
             className="flex items-center gap-2 justify-between"
           >
             <span className="flex items-center gap-2 min-w-0">
-              <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>{dateStr}</span>
+              <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>{dateStr}</span>
               <span
                 className={`shrink-0 text-[9.5px] font-semibold uppercase tracking-wide px-1.5 py-[1px] rounded-md border ${
                   h.category === 'zakat'
@@ -321,7 +321,7 @@ export function CharityRecordRow({
                 {givenCell}
                 <ChevronRight
                   className={`w-3 h-3 shrink-0 transition-transform ${expanded ? 'rotate-90' : ''} ${
-                    isDark ? 'text-slate-500' : 'text-slate-400'
+                    isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}
                 />
               </button>
@@ -345,7 +345,7 @@ export function CharityRecordRow({
                 >
                   <X
                     className={`w-3.5 h-3.5 ${
-                      isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                      isDark ? 'text-slate-400 hover:text-red-400' : 'text-slate-500 hover:text-red-500'
                     }`}
                   />
                 </button>
@@ -405,7 +405,7 @@ export function CharityRecordRow({
             >
               <X
                 className={`w-3.5 h-3.5 ${
-                  isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                  isDark ? 'text-slate-400 hover:text-red-400' : 'text-slate-500 hover:text-red-500'
                 }`}
               />
             </button>

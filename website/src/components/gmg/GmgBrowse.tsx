@@ -38,6 +38,14 @@ import {
 } from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
+
+// Compare two signal ratings; a missing one sorts last whichever way the column runs
+// (the caller multiplies the result by `dir`, so a missing value returns +/-dir to
+// cancel that out).
+const cmpSignal = (x: Rating | null, y: Rating | null, dir: number): number => {
+  if (x == null || y == null) return x == null ? (y == null ? 0 : dir) : -dir;
+  return RANK[x] - RANK[y];
+};
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'programPct' | 'evidence' | 'size';
 type SortDir = 'asc' | 'desc';
 
@@ -233,7 +241,7 @@ const COLS: Col[] = [
   // size) and LOW risk on its own page. Said explicitly rather than making
   // the two numbers agree, since browse's lightweight index doesn't carry
   // the full risk register to agree WITH — see bd for the real fix.
-  { key: 'risk', label: 'Governance', tip: 'Governance signals: board, policies and transparency. Strong = healthiest. Not the full risk assessment, since missing governance data can lower it even when no red flags are found. The charity\'s own page has the complete, named risk assessment.', width: 120 },
+  { key: 'risk', label: 'Risk mgmt', tip: 'Risk management: red flags found in the risk review plus board and policy basics. Strong = best managed. Not the full risk assessment, since missing governance data can lower it even when no red flags are found; the charity\'s own page has the complete, named risk assessment.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
   { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
   { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },
@@ -401,13 +409,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           v = a.amalScore - b.amalScore;
           break;
         case 'finances':
-          v = (a.financialHealth ? RANK[a.financialHealth] : 0) - (b.financialHealth ? RANK[b.financialHealth] : 0);
+          v = cmpSignal(a.financialHealth, b.financialHealth, dir);
           break;
         case 'risk':
-          v = (a.risk ? RANK[a.risk] : 0) - (b.risk ? RANK[b.risk] : 0);
+          v = cmpSignal(a.risk, b.risk, dir);
           break;
         case 'donorFit':
-          v = (a.donorFit ? RANK[a.donorFit] : 0) - (b.donorFit ? RANK[b.donorFit] : 0);
+          v = cmpSignal(a.donorFit, b.donorFit, dir);
           break;
         case 'programPct':
           v = (a.programPct ?? -1) - (b.programPct ?? -1);
@@ -547,7 +555,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               borderBottom: `1px solid ${p.rule2}`,
             }}
           >
-            {(['GMG', 'Fin', 'Gov', 'Fit'] as const).map((label) => (
+            {(['GMG', 'Fin', 'Risk', 'Fit'] as const).map((label) => (
               <span key={label} style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, textAlign: 'center' }}>
                 {label}
               </span>
@@ -563,7 +571,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             </span>
           </div>
           <div style={{ padding: '6px 14px 8px', fontSize: 11, lineHeight: 1.5, color: p.sub }}>
-            Fin = finances · Gov = governance · Fit = donor fit · Prog = program spending
+            Fin = finances · Risk = risk management · Fit = donor fit · Prog = program spending
           </div>
 
           {rows.map((row, i) => {
@@ -628,7 +636,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 <div style={{ display: 'grid', gridTemplateColumns: SIGNAL_COLS, gap: 10, alignItems: 'center', marginTop: 9 }}>
                   <SignalBall label="GMG" rating={row.overall} p={p} />
                   <SignalBall label="Finances" rating={row.financialHealth} p={p} />
-                  <SignalBall label="Governance" rating={row.risk} p={p} />
+                  <SignalBall label="Risk management" rating={row.risk} p={p} />
                   <SignalBall label="Donor fit" rating={row.donorFit} p={p} />
                   <span
                     data-program-pct

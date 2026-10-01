@@ -274,7 +274,7 @@ export function AddInKindModal({
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <tr className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         <th className="text-left py-1 font-medium">#</th>
                         <th className="text-left py-1 font-medium">Item</th>
                         <th className="text-center py-1 font-medium w-20">Cond.</th>

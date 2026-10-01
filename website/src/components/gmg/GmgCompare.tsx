@@ -213,7 +213,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       )}
 
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ borderCollapse: 'collapse', fontSize: 12, minWidth: labelW + subjects.length * colW }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: labelW + subjects.length * colW }}>
           <thead>
             <tr style={{ borderBottom: sectionBorder }}>
               <th style={{ padding: '14px', textAlign: 'left', width: labelW, minWidth: labelW, position: 'sticky', left: 0, background: p.bg, zIndex: 2 }}>
@@ -243,11 +243,12 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 Wallet and cause are already tags in each column header. */}
             <Row {...rowProps} label="Founded" render={(s) => <span style={{ color: p.sub }}>{s.founded ?? '—'}{s.trackRecordYears ? ` · ${s.trackRecordYears} yrs` : ''}</span>} />
 
-            {/* The same six signals /browse already publishes to everyone. */}
+            {/* The same signals /browse already publishes to everyone. */}
             <Row {...rowProps} label="GMG rating" render={(s) => <RatingMini rating={s.overall ?? undefined} p={p} />} />
             <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
-            <Row {...rowProps} label="Governance" render={(s) => <RatingMini rating={s.risk} p={p} />} />
+            <Row {...rowProps} label="Risk management" render={(s) => <RatingMini rating={s.risk} p={p} />} />
             <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
+            <Row {...rowProps} label="Evidence" render={(s) => <span style={{ color: p.fg }}>{s.evidenceStage ?? '—'}</span>} />
             <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usdCompact(s.totalRevenue)}</span>} />
             <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
 

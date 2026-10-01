@@ -49,7 +49,7 @@ export const JoinPlanPage: React.FC = () => {
   // dead". Say so, and offer the way forward.
   if (state === 'notfound') {
     return (
-      <div className="min-h-screen max-w-2xl mx-auto px-4 py-12">
+      <div className="min-h-[60vh] max-w-2xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-semibold mb-2">This invite link isn't valid</h1>
         <p className="mb-8" style={{ color: pal.sub }}>
           It may have been revoked, replaced by a newer link, or mistyped. Ask
@@ -66,7 +66,7 @@ export const JoinPlanPage: React.FC = () => {
   }
   if (state === 'loading' || !plan) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ color: pal.sub }}>
+      <div className="min-h-[60vh] flex items-center justify-center" style={{ color: pal.sub }}>
         Loading…
       </div>
     );
@@ -85,7 +85,7 @@ export const JoinPlanPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen max-w-2xl mx-auto px-4 py-12">
+    <div className="min-h-[60vh] max-w-2xl mx-auto px-4 py-12">
       <p className="text-sm uppercase tracking-wide" style={{ color: pal.accent2 }}>You're invited</p>
       <h1 className="text-3xl font-semibold mb-2">The {plan.name} is planning their giving</h1>
       <p className="mb-8" style={{ color: pal.sub }}>Here's how they're splitting it. Join to add your own giving.</p>
