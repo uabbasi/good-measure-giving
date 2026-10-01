@@ -246,7 +246,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             {/* The same signals /browse already publishes to everyone. */}
             <Row {...rowProps} label="GMG rating" render={(s) => <RatingMini rating={s.overall ?? undefined} p={p} />} />
             <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
-            <Row {...rowProps} label="Risk management" render={(s) => <RatingMini rating={s.risk} p={p} />} />
+            <Row {...rowProps} label="Governance" render={(s) => <RatingMini rating={s.risk} p={p} />} />
             <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
             <Row {...rowProps} label="Evidence" render={(s) => <span style={{ color: p.fg }}>{s.evidenceStage ?? '—'}</span>} />
             <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usdCompact(s.totalRevenue)}</span>} />

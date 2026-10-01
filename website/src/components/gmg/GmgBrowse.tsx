@@ -241,7 +241,7 @@ const COLS: Col[] = [
   // size) and LOW risk on its own page. Said explicitly rather than making
   // the two numbers agree, since browse's lightweight index doesn't carry
   // the full risk register to agree WITH — see bd for the real fix.
-  { key: 'risk', label: 'Risk mgmt', tip: 'Risk management: red flags found in the risk review plus board and policy basics. Strong = best managed. Not the full risk assessment, since missing governance data can lower it even when no red flags are found; the charity\'s own page has the complete, named risk assessment.', width: 120 },
+  { key: 'risk', label: 'Governance', tip: 'Governance: board and policy basics plus any red flags from the risk review. Strong = healthiest. Not the full risk assessment, since missing governance data can lower it even when no red flags are found; the charity\'s own page has the complete, named risk assessment.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
   { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
   { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },
@@ -555,7 +555,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               borderBottom: `1px solid ${p.rule2}`,
             }}
           >
-            {(['GMG', 'Fin', 'Risk', 'Fit'] as const).map((label) => (
+            {(['GMG', 'Fin', 'Gov', 'Fit'] as const).map((label) => (
               <span key={label} style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, textAlign: 'center' }}>
                 {label}
               </span>
@@ -571,7 +571,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             </span>
           </div>
           <div style={{ padding: '6px 14px 8px', fontSize: 11, lineHeight: 1.5, color: p.sub }}>
-            Fin = finances · Risk = risk management · Fit = donor fit · Prog = program spending
+            Fin = finances · Gov = governance · Fit = donor fit · Prog = program spending
           </div>
 
           {rows.map((row, i) => {
@@ -636,7 +636,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                 <div style={{ display: 'grid', gridTemplateColumns: SIGNAL_COLS, gap: 10, alignItems: 'center', marginTop: 9 }}>
                   <SignalBall label="GMG" rating={row.overall} p={p} />
                   <SignalBall label="Finances" rating={row.financialHealth} p={p} />
-                  <SignalBall label="Risk management" rating={row.risk} p={p} />
+                  <SignalBall label="Governance" rating={row.risk} p={p} />
                   <SignalBall label="Donor fit" rating={row.donorFit} p={p} />
                   <span
                     data-program-pct
