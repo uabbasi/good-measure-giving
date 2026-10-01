@@ -13,6 +13,7 @@
  * Keep the rendering dumb — all behavior is pushed up to the container.
  */
 
+import { usdFull } from '../../utils/money';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
@@ -54,11 +55,6 @@ interface CharityRecordRowProps {
   history?: CharityRecordHistoryEntry[];
 }
 
-/** Currency format: compact $1.2k when >= $1000, else `$n`. */
-function fmt(n: number): string {
-  if (n >= 1000) return `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
-  return `$${n}`;
-}
 
 /** Status pill content: label + color classes. */
 function statusPillClasses(status: AssignmentStatus, isDark: boolean): {
@@ -243,7 +239,7 @@ export function CharityRecordRow({
                 {h.receiptReceived ? 'Receipt' : 'No receipt'}
               </span>
             </span>
-            <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{fmt(h.amount)}</span>
+            <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{usdFull(h.amount)}</span>
           </li>
         );
       })}
@@ -272,7 +268,7 @@ export function CharityRecordRow({
       : undefined;
     const givenCell = charity.given > 0 ? (
       <span className={isDark ? 'text-emerald-400 font-semibold' : 'text-emerald-700 font-semibold'}>
-        {fmt(charity.given)}
+        {usdFull(charity.given)}
       </span>
     ) : (
       <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
@@ -426,11 +422,11 @@ export function CharityRecordRow({
             <span>
               Given{' '}
               <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
-                {fmt(charity.given || 0)}
+                {usdFull(charity.given || 0)}
               </span>
               {charity.intended > 0 && (
                 <>
-                  {' '}· of {fmt(charity.intended)}
+                  {' '}· of {usdFull(charity.intended)}
                 </>
               )}
             </span>
@@ -442,11 +438,11 @@ export function CharityRecordRow({
           <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Given{' '}
             <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
-              {fmt(charity.given || 0)}
+              {usdFull(charity.given || 0)}
             </span>
             {charity.intended > 0 && (
               <>
-                {' '}· of {fmt(charity.intended)}
+                {' '}· of {usdFull(charity.intended)}
               </>
             )}
           </div>

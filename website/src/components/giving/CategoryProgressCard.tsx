@@ -3,6 +3,7 @@
  * Supports both new bucket-based and legacy category-based interfaces
  */
 
+import { usdFull } from '../../utils/money';
 import React from 'react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import type { GivingBucket } from '../../../types';
@@ -63,15 +64,6 @@ export function CategoryProgressCard(props: CategoryProgressCardProps) {
   const progressPercent = targetAmount > 0 ? Math.min(100, (actualAmount / targetAmount) * 100) : 0;
   const isComplete = actualAmount >= targetAmount && targetAmount > 0;
   const isOverTarget = actualAmount > targetAmount && targetAmount > 0;
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   // Use bucket color or a default
   const bucketColor = color || '#10b981';
@@ -142,19 +134,19 @@ export function CategoryProgressCard(props: CategoryProgressCardProps) {
         <div>
           <p className={isDark ? 'text-slate-500' : 'text-slate-500'}>Target</p>
           <p className={`font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {formatCurrency(targetAmount)}
+            {usdFull(targetAmount)}
           </p>
         </div>
         <div>
           <p className={isDark ? 'text-slate-500' : 'text-slate-500'}>Given</p>
           <p className={`font-medium ${isOverTarget ? 'text-emerald-500' : isDark ? 'text-white' : 'text-slate-900'}`}>
-            {formatCurrency(actualAmount)}
+            {usdFull(actualAmount)}
           </p>
         </div>
         <div>
           <p className={isDark ? 'text-slate-500' : 'text-slate-500'}>Remaining</p>
           <p className={`font-medium ${remainingAmount === 0 ? 'text-emerald-500' : isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            {formatCurrency(remainingAmount)}
+            {usdFull(remainingAmount)}
           </p>
         </div>
       </div>

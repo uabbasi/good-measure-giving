@@ -8,6 +8,7 @@
  * absorbs the remainder.
  */
 
+import { usdFull } from '../../utils/money';
 import { useCallback, useMemo, useState } from 'react';
 import { m } from 'motion/react';
 import { writeBatch, doc, Timestamp } from 'firebase/firestore';
@@ -62,9 +63,6 @@ export const DEFAULT_SPLIT_CATEGORIES: SplitCategory[] = [
   },
 ];
 
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-}
 
 /**
  * Rebalance so percentages sum to exactly 100.
@@ -245,7 +243,7 @@ export function CategorySplit({
                     {pct}%
                   </div>
                   <div className={`text-xs tabular-nums ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    = {formatUsd(dollars)} of {formatUsd(target)}
+                    = {usdFull(dollars)} of {usdFull(target)}
                   </div>
                 </div>
               </div>

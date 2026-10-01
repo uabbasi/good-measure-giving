@@ -47,7 +47,7 @@ import { SectionRail, type RailSection } from './SectionRail';
 import { CitedText, SourceList, collectCitations } from './CitedText';
 import { BookmarkButton } from '../BookmarkButton';
 import { ClientOnly } from '../ClientOnly';
-import { usd, usdFull } from './money';
+import { usd, usdFull } from '../../utils/money';
 
 
 

@@ -2,6 +2,7 @@
 // (/zakat-calculator/:asset). Motif-only: renders its own GmgNav + footer via the
 // content kit. Calculation logic + hooks are unchanged from the legacy version.
 
+import { usdExact } from '../src/utils/money';
 import React, { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { zakatCalculatorPath, paths } from '../src/lib/paths';
@@ -120,11 +121,11 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                 <ResultCard
                   p={p}
                   rows={[
-                    { label: 'Nisab threshold (2026)', value: `$${nisab.toLocaleString()}` },
-                    { label: 'Net zakatable wealth', value: `$${estimate.netZakatable.toLocaleString()}` },
+                    { label: 'Nisab threshold (2026)', value: usdExact(nisab) },
+                    { label: 'Net zakatable wealth', value: usdExact(estimate.netZakatable) },
                   ]}
                   resultLabel="Zakat owed (2.5%)"
-                  result={estimate.isAboveNisab ? `$${estimate.zakatAmount.toLocaleString()}` : 'Below nisab — no zakat owed'}
+                  result={estimate.isAboveNisab ? usdExact(estimate.zakatAmount) : 'Below nisab — no zakat owed'}
                 />
               </div>
 

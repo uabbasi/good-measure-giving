@@ -3,6 +3,7 @@
  * for in-kind (non-cash) donations
  */
 
+import { usdFull } from '../../utils/money';
 import React from 'react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import type { InKindYearSummary } from '../../hooks/useInKindDonations';
@@ -15,15 +16,6 @@ interface InKindSummaryCardProps {
 
 export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) {
   const { isDark } = useLandingTheme();
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   if (summary.donationCount === 0) return null;
 
@@ -38,7 +30,7 @@ export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) 
         <div>
           <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Total Value</p>
           <p className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            {formatCurrency(summary.totalValue)}
+            {usdFull(summary.totalValue)}
           </p>
         </div>
         <div>
@@ -81,7 +73,7 @@ export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) 
                   <div className="flex items-center justify-between text-sm mb-0.5">
                     <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>{cat.category}</span>
                     <span className={`font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                      {formatCurrency(cat.total)}
+                      {usdFull(cat.total)}
                       <span className={`ml-1 text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         ({cat.itemCount} item{cat.itemCount !== 1 ? 's' : ''})
                       </span>
@@ -111,7 +103,7 @@ export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) 
               <div key={r.name} className="flex items-center justify-between text-sm">
                 <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>{r.name}</span>
                 <span className={`font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                  {formatCurrency(r.total)}
+                  {usdFull(r.total)}
                 </span>
               </div>
             ))}

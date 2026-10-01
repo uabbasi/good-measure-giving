@@ -1,3 +1,4 @@
+import { usdFull } from '../../utils/money';
 import { useState, useMemo, useCallback } from 'react';
 import { m } from 'motion/react';
 import { Sparkles, Check } from 'lucide-react';
@@ -16,9 +17,6 @@ interface StarterPlanProps {
   onAccepted: () => void;
 }
 
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-}
 
 export function StarterPlan({ target, charities, bookmarkedEins, onAccepted }: StarterPlanProps) {
   const { isDark } = useLandingTheme();
@@ -132,7 +130,7 @@ export function StarterPlan({ target, charities, bookmarkedEins, onAccepted }: S
           <h3 className={`font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Starter Plan</h3>
         </div>
         <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-          A suggested allocation of {formatUsd(target)} across top-scoring charities
+          A suggested allocation of {usdFull(target)} across top-scoring charities
         </p>
       </div>
 
@@ -176,7 +174,7 @@ function GroupRow({ group, isDark, delay }: { group: StarterGroup; isDark: boole
           </span>
         </div>
         <span className={`text-sm font-medium tabular-nums ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-          {formatUsd(group.subtotal)}
+          {usdFull(group.subtotal)}
         </span>
       </div>
       <div className="space-y-1 ml-[18px]">
@@ -186,7 +184,7 @@ function GroupRow({ group, isDark, delay }: { group: StarterGroup; isDark: boole
               {alloc.name}
             </span>
             <span className={`text-sm tabular-nums flex-shrink-0 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              {formatUsd(alloc.amount)}
+              {usdFull(alloc.amount)}
             </span>
           </div>
         ))}

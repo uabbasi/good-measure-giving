@@ -7,6 +7,7 @@
  * Adding/editing/removing items goes through the thin-sync `useSharedPlan` hook.
  */
 
+import { usdFull } from '../../utils/money';
 import React, { useMemo, useState, useEffect } from 'react';
 import { useSharedPlan } from '../../hooks/useSharedPlan';
 import { useProfile } from '../../hooks/useProfile';
@@ -166,7 +167,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
                 </td>
                 {personalTarget != null && (
                   <td className="py-2 text-slate-700 dark:text-slate-200">
-                    ${(shares[item.id] || 0).toLocaleString()}
+                    {usdFull(shares[item.id] || 0)}
                   </td>
                 )}
                 <td className="py-2 text-right">

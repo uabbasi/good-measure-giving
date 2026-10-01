@@ -3,6 +3,7 @@
  * Expandable rows showing individual items within each donation
  */
 
+import { usdExact, usdCents } from '../../utils/money';
 import React, { useState, useMemo } from 'react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { parseLocalDate } from '../../utils/date';
@@ -41,15 +42,6 @@ export function InKindHistoryTable({
   const totalValue = useMemo(() => {
     return filteredDonations.reduce((sum, d) => sum + d.totalValue, 0);
   }, [filteredDonations]);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
 
   const formatDate = (dateStr: string) => {
     return parseLocalDate(dateStr).toLocaleDateString('en-US', {
@@ -107,7 +99,7 @@ export function InKindHistoryTable({
       {/* Summary */}
       <div className={`flex flex-wrap items-center gap-x-6 gap-y-2 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
         <span>{filteredDonations.length} donation{filteredDonations.length !== 1 ? 's' : ''}</span>
-        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{formatCurrency(totalValue)}</strong></span>
+        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{usdExact(totalValue)}</strong></span>
       </div>
 
       {/* Table */}
@@ -167,7 +159,7 @@ export function InKindHistoryTable({
                 </div>
 
                 <div className={`text-right font-medium whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {formatCurrency(donation.totalValue)}
+                  {usdExact(donation.totalValue)}
                 </div>
 
                 {/* Actions */}
@@ -253,8 +245,8 @@ export function InKindHistoryTable({
                             </span>
                           </td>
                           <td className={`py-1.5 text-center ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{item.quantity}</td>
-                          <td className={`py-1.5 text-right ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>${item.unitValue.toFixed(2)}</td>
-                          <td className={`py-1.5 text-right font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>${item.totalValue.toFixed(2)}</td>
+                          <td className={`py-1.5 text-right ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{usdCents(item.unitValue)}</td>
+                          <td className={`py-1.5 text-right font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>{usdCents(item.totalValue)}</td>
                         </tr>
                       ))}
                     </tbody>

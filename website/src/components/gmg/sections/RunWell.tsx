@@ -13,7 +13,7 @@ import { GatedBlock } from '../GatedBlock';
 import { Kicker } from '../primitives';
 import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
-import { usd } from '../money';
+import { usd, count } from '../../../utils/money';
 
 
 const RISK_TONE: Record<string, { fg: keyof GmgPalette; bg: keyof GmgPalette }> = {
@@ -40,7 +40,7 @@ export const RunWell: React.FC<{
 
   const facts: { label: string; value: React.ReactNode }[] = [];
   if (cap.ceoName) facts.push({ label: 'CEO', value: cap.ceoName });
-  if (cap.boardSize != null) facts.push({ label: 'Board size', value: cap.boardSize.toLocaleString() });
+  if (cap.boardSize != null) facts.push({ label: 'Board size', value: count(cap.boardSize) });
   if (cap.independentBoardPct != null) {
     facts.push({ label: 'Independent board', value: `${Math.round(cap.independentBoardPct * 100)}%` });
   }
@@ -50,9 +50,9 @@ export const RunWell: React.FC<{
   if (cap.hasFinancialAudit != null) {
     facts.push({ label: 'Independent financial audit', value: cap.hasFinancialAudit ? 'Yes' : 'No' });
   }
-  if (cap.employeesCount != null) facts.push({ label: 'Employees', value: cap.employeesCount.toLocaleString() });
-  if (cap.volunteersCount != null) facts.push({ label: 'Volunteers', value: cap.volunteersCount.toLocaleString() });
-  if (cap.programsCount != null) facts.push({ label: 'Programs', value: cap.programsCount.toLocaleString() });
+  if (cap.employeesCount != null) facts.push({ label: 'Employees', value: count(cap.employeesCount) });
+  if (cap.volunteersCount != null) facts.push({ label: 'Volunteers', value: count(cap.volunteersCount) });
+  if (cap.programsCount != null) facts.push({ label: 'Programs', value: count(cap.programsCount) });
   if (cap.geographicReach) facts.push({ label: 'Geographic reach', value: cap.geographicReach });
 
   const hasCapacity = facts.length > 0 || hasCeoComp;

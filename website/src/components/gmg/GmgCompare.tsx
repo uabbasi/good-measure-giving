@@ -24,7 +24,7 @@ import { useIsMobile } from './useIsMobile';
 import { useCommunityMember } from '../../auth/useAuth';
 import { SignInButton } from '../../auth/SignInButton';
 import { adaptCharity, GmgCharity } from './charityAdapter';
-import { usd, usdCompact } from './money';
+import { usd, usdCompact } from '../../utils/money';
 
 
 // Module-scope table pieces — kept out of the render body so they retain a

@@ -5,6 +5,7 @@
  * Flow: Set recipient + date + default condition → rapid-fire item search → inline edits
  */
 
+import { usdCents } from '../../utils/money';
 import React, { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
@@ -319,7 +320,7 @@ export function AddInKindModal({
                     {items.length > 0 ? (
                       <>
                         <strong className={`text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          ${totalValue.toFixed(2)}
+                          {usdCents(totalValue)}
                         </strong>
                         <span className="ml-2">
                           {totalItems} item{totalItems !== 1 ? 's' : ''}
@@ -496,7 +497,7 @@ function ItemRow({
       </td>
       <td className={`${cellClass} text-right`}>
         <span className={`text-xs font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          ${item.totalValue.toFixed(2)}
+          {usdCents(item.totalValue)}
         </span>
       </td>
       <td className={cellClass}>

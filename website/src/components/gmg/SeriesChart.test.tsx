@@ -112,8 +112,8 @@ describe('SeriesChart', () => {
     expect(label).toMatch(/Expenses not reported/);
     // The series that did report should still carry real figures, not have
     // "not reported" bleed over from the null one.
-    expect(label).toMatch(/Revenue 1K in 2023/);
-    expect(label).toMatch(/Net assets 600 in 2023/);
+    expect(label).toMatch(/Revenue \$1K in 2023/);
+    expect(label).toMatch(/Net assets \$600 in 2023/);
   });
 
   it('labels the last reported point of each series with its actual value', () => {

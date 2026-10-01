@@ -4,7 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
-import { usdCompact } from './money';
+import { usdCompact } from '../../utils/money';
 import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackCharityCardClick, trackSearch } from '../../utils/analytics';

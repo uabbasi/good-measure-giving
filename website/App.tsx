@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'r
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LazyMotion, domAnimation } from 'motion/react';
-import { ThemeProvider } from './contexts/ThemeContext';
 import { LandingThemeProvider, useLandingTheme } from './contexts/LandingThemeContext';
 import { UserFeaturesProvider } from './src/contexts/UserFeaturesContext';
 const CharityDetailsPage = lazy(() => import('./pages/CharityDetailsPage').then(m => ({ default: m.CharityDetailsPage })));
@@ -58,16 +57,12 @@ export const AppProviders: React.FC<{ queryClient: QueryClient; children: React.
 }) => (
   <QueryClientProvider client={queryClient}>
     <LazyMotion features={domAnimation} strict>
-      <ThemeProvider>
-        <LandingThemeProvider>
-          <UserFeaturesProvider>{children}</UserFeaturesProvider>
-        </LandingThemeProvider>
-      </ThemeProvider>
+      <LandingThemeProvider>
+        <UserFeaturesProvider>{children}</UserFeaturesProvider>
+      </LandingThemeProvider>
     </LazyMotion>
   </QueryClientProvider>
 );
-
-// T009-T011: Removed ThirdBucket theme switching - single Amal theme only
 
 export const AppContent: React.FC = () => {
   const location = useLocation();

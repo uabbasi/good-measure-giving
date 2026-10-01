@@ -37,7 +37,7 @@ import { Kicker, Stacked } from '../primitives';
 import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
 import { expenseSplit } from './expenseSplit';
-import { usd, usdFull } from '../money';
+import { usd, usdFull } from '../../../utils/money';
 
 
 

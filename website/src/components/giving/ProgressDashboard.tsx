@@ -17,7 +17,7 @@ import { charityPath } from '../../lib/paths';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { useProfileState } from '../../contexts/UserFeaturesContext';
 import { useCharities } from '../../hooks/useCharities';
-import { formatCurrency } from '../../utils/formatters';
+import { usdFull } from '../../utils/money';
 import { offPlanDonationTotal } from '../../utils/offPlanGiving';
 import type { CharityBucketAssignment, GivingHistoryEntry } from '../../../types';
 
@@ -153,18 +153,18 @@ export function ProgressDashboard({ onRequestSetTarget, donations = [] }: Progre
       >
         <StatCard
           label="Target"
-          value={formatCurrency(target)}
+          value={usdFull(target)}
           isDark={isDark}
           testId="dash-target"
         />
         <StatCard
           label="Allocated"
-          value={formatCurrency(stats.allocated)}
+          value={usdFull(stats.allocated)}
           sub={
             overAllocated
-              ? `over by ${formatCurrency(stats.allocated - target)}`
+              ? `over by ${usdFull(stats.allocated - target)}`
               : underAllocated
-              ? `${formatCurrency(target - stats.allocated)} unallocated`
+              ? `${usdFull(target - stats.allocated)} unallocated`
               : undefined
           }
           subTone={overAllocated ? 'warning' : 'muted'}
@@ -173,13 +173,13 @@ export function ProgressDashboard({ onRequestSetTarget, donations = [] }: Progre
         />
         <StatCard
           label="Given"
-          value={formatCurrency(stats.given)}
+          value={usdFull(stats.given)}
           isDark={isDark}
           testId="dash-given"
         />
         <StatCard
           label="Remaining"
-          value={isComplete ? '$0' : formatCurrency(stats.remaining)}
+          value={isComplete ? '$0' : usdFull(stats.remaining)}
           sub={isComplete ? 'complete' : undefined}
           subTone={isComplete ? 'success' : 'muted'}
           isDark={isDark}

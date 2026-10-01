@@ -2,6 +2,7 @@
  * Table component for displaying giving history
  */
 
+import { usdExact } from '../../utils/money';
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
@@ -90,16 +91,6 @@ export function GivingHistoryTable({
   // Show cents only when there are cents. This is the ledger a donor checks
   // against a receipt, so $88.25 must not render as "$88" — but whole-dollar
   // donations shouldn't gain a noisy ".00" either.
-  const formatCurrency = (amount: number) => {
-    const hasCents = Math.round(amount * 100) % 100 !== 0;
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: hasCents ? 2 : 0,
-      maximumFractionDigits: hasCents ? 2 : 0,
-    }).format(amount);
-  };
-
   const formatDate = (dateStr: string) => {
     return parseLocalDate(dateStr).toLocaleDateString('en-US', {
       month: 'short',
@@ -186,9 +177,9 @@ export function GivingHistoryTable({
       {/* Summary */}
       <div className={`flex flex-wrap items-center gap-x-6 gap-y-2 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
         <span>{filteredDonations.length} donations</span>
-        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{formatCurrency(totals.amount)}</strong></span>
+        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{usdExact(totals.amount)}</strong></span>
         {totals.matched > 0 && (
-          <span>Matched: <strong className="text-emerald-500">{formatCurrency(totals.matched)}</strong></span>
+          <span>Matched: <strong className="text-emerald-500">{usdExact(totals.matched)}</strong></span>
         )}
       </div>
 
@@ -251,7 +242,7 @@ export function GivingHistoryTable({
                     )}
                   </td>
                   <td className={`py-3 px-2 text-right font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {formatCurrency(donation.amount)}
+                    {usdExact(donation.amount)}
                   </td>
                   <td className="py-3 px-2 text-center">
                     <span className={`
@@ -280,8 +271,8 @@ export function GivingHistoryTable({
                   <td className="py-3 px-2 text-center">
                     {donation.matchEligible ? (
                       donation.matchStatus === 'received' ? (
-                        <span className="text-emerald-500" title={`Matched: ${formatCurrency(donation.matchAmount || 0)}`}>
-                          +{formatCurrency(donation.matchAmount || 0)}
+                        <span className="text-emerald-500" title={`Matched: ${usdExact(donation.matchAmount || 0)}`}>
+                          +{usdExact(donation.matchAmount || 0)}
                         </span>
                       ) : donation.matchStatus === 'submitted' ? (
                         <span className="text-amber-500" title="Employer match submitted">&#9679;</span>

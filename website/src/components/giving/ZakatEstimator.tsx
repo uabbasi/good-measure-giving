@@ -1,3 +1,4 @@
+import { usdFull } from '../../utils/money';
 import { useState, useMemo } from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { Calculator, X } from 'lucide-react';
@@ -17,9 +18,6 @@ function parseAmount(value: string): number {
   return parseMoneyInput(value);
 }
 
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-}
 
 export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: ZakatEstimatorProps) {
   const { isDark } = useLandingTheme();
@@ -211,29 +209,29 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                   <div className="space-y-2">
                     <div className={`flex justify-between text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                       <span>Total assets</span>
-                      <span className="tabular-nums">{formatUsd(estimate.totalAssets)}</span>
+                      <span className="tabular-nums">{usdFull(estimate.totalAssets)}</span>
                     </div>
                     {estimate.totalLiabilities > 0 && (
                       <div className={`flex justify-between text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         <span>Less debts</span>
-                        <span className="tabular-nums">−{formatUsd(estimate.totalLiabilities)}</span>
+                        <span className="tabular-nums">−{usdFull(estimate.totalLiabilities)}</span>
                       </div>
                     )}
                     <div className={`flex justify-between text-sm pt-1 border-t ${isDark ? 'text-slate-300 border-slate-700' : 'text-slate-600 border-slate-200'}`}>
                       <span>Net zakatable</span>
-                      <span className="tabular-nums">{formatUsd(estimate.netZakatable)}</span>
+                      <span className="tabular-nums">{usdFull(estimate.netZakatable)}</span>
                     </div>
 
                     {estimate.isAboveNisab ? (
                       <div className={`flex justify-between items-baseline pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                         <span className={`text-sm font-medium ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>Zakat due (2.5%)</span>
                         <span className={`text-xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                          {formatUsd(estimate.zakatAmount)}
+                          {usdFull(estimate.zakatAmount)}
                         </span>
                       </div>
                     ) : (
                       <p className={`text-sm pt-2 border-t ${isDark ? 'text-slate-400 border-slate-700' : 'text-slate-500 border-slate-200'}`}>
-                        Below nisab threshold ({formatUsd(NISAB_USD)}). No zakat due.
+                        Below nisab threshold ({usdFull(NISAB_USD)}). No zakat due.
                       </p>
                     )}
                   </div>
@@ -248,7 +246,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                   onClick={() => handleUse(estimate.zakatAmount)}
                   className="w-full px-4 py-2.5 rounded-lg font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                 >
-                  Use this amount ({formatUsd(estimate.zakatAmount)})
+                  Use this amount ({usdFull(estimate.zakatAmount)})
                 </button>
               )}
               {lastYearZakat != null && lastYearZakat > 0 && (
@@ -260,7 +258,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  Use last year's amount ({formatUsd(lastYearZakat)})
+                  Use last year's amount ({usdFull(lastYearZakat)})
                 </button>
               )}
               <button

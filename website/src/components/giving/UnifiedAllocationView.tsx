@@ -16,6 +16,7 @@
  * Pure status transitions live in ../../utils/recordStatus.ts.
  */
 
+import { usdFull } from '../../utils/money';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
@@ -98,10 +99,6 @@ type RowCharity = {
 // Helpers
 // --------------------------------------------------------------------------
 
-function fmt(n: number): string {
-  if (n >= 1000) return `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
-  return `$${n}`;
-}
 function isZakatEligible(walletTag: string | null): boolean {
   return getWalletType(walletTag) === 'zakat';
 }
@@ -602,9 +599,9 @@ export function UnifiedAllocationView({
                 />
               </div>
               <span className={`text-xs font-medium tabular-nums ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                <span className="text-emerald-500 font-semibold">{fmt(totalGiven)}</span>
+                <span className="text-emerald-500 font-semibold">{usdFull(totalGiven)}</span>
                 <span className="opacity-50 mx-1">/</span>
-                {fmt(targetNum)}
+                {usdFull(targetNum)}
               </span>
               <button
                 onClick={() => setZakatLens(z => !z)}
@@ -625,7 +622,7 @@ export function UnifiedAllocationView({
                     ? (isDark ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-blue-500 border-blue-200 bg-blue-50')
                     : (isDark ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' : 'text-amber-600 border-amber-200 bg-amber-50')
                 }`}>
-                  {unallocated === 0 ? `${fmt(totalIntended)} planned` : unallocated < 0 ? `${fmt(Math.abs(unallocated))} over-allocated` : `${fmt(unallocated)} left to allocate`}
+                  {unallocated === 0 ? `${usdFull(totalIntended)} planned` : unallocated < 0 ? `${usdFull(Math.abs(unallocated))} over-allocated` : `${usdFull(unallocated)} left to allocate`}
                 </span>
               )}
             </div>
