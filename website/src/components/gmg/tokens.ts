@@ -53,7 +53,7 @@ export interface GmgPalette {
 }
 
 const light: GmgPalette = {
-  bg: '#f4efde',
+  bg: '#fcf9f0',
   bg2: '#ede6cf',
   bg3: '#e5dcbf',
   fg: '#13160e',
@@ -67,7 +67,7 @@ const light: GmgPalette = {
   warnBg: '#efe4b8',
   danger: '#9c4a3a',
   chip: '#1f2218',
-  chipFg: '#f4efde',
+  chipFg: '#fcf9f0',
   card: '#ebe4cc',
   pos: '#3a6b34',
   posBg: '#dde9cf',
@@ -85,11 +85,12 @@ const light: GmgPalette = {
 // not a surface at all, just a 1px outline, and reported as not being able to
 // see where the cards were. Dark now steps dL* 7.1, light stays at 3.1.
 //
-// Light is NOT matched to it on purpose: there the card is darker than its
-// ground, so deepening it pushes muted text the wrong way. Light `sub` and `sub2`
-// (and `accent2`, `warn`, `caution`) were darkened to 4.5:1 or better on the page,
-// card and bg2 so small text passes; `sub2` still reaches only ~4.2:1 on bg3, the
-// darkest light surface, which carries no body text.
+// Light now matches it. The light card is darker than its ground, so deepening the
+// card would push muted text the wrong way; instead the GROUND was lightened
+// (#f4efde -> #fcf9f0), which takes the page-to-card step from dL* 3.9 to 7.4 (dark:
+// 7.1) and lifts every text pair rather than lowering it. Light `sub` and `sub2`
+// (and `accent2`, `warn`, `caution`) clear 4.5:1 on the page, card and bg2; `sub2`
+// still reaches only ~4.2:1 on bg3, the darkest light surface, which carries no body text.
 const dark: GmgPalette = {
   bg: '#13140e',
   bg2: '#20231a',

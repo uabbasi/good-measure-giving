@@ -136,14 +136,21 @@ describe('surface ramp — can you see where a card is', () => {
 
   it('keeps light small text at 4.5:1 on the page, bg2 and the card', () => {
     // Light sub2 was 2.45-2.9:1 (under the bar on every light surface) and is now
-    // darkened to pass. Light surfaces are still NOT deepened to match dark: the
-    // card is darker than its ground there, so a deeper card would erode this.
+    // darkened to pass. The light surface step was matched to dark by lightening the
+    // GROUND, not by darkening the card, so this holds.
     for (const surface of [light.bg, light.bg2, light.card]) {
       for (const tone of [light.sub, light.sub2, light.accent2, light.warn, light.caution]) {
         expect(contrast(tone, surface)).toBeGreaterThanOrEqual(4.5);
       }
     }
     expect(contrast(light.warn, light.warnBg)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('gives light cards the same visible step from the page as dark cards', () => {
+    // Dark steps dL* 7.1 from page to card; light was 3.9 and read as barely a surface.
+    const step = (p: { bg: string; card: string }) => Math.abs(lightness(p.bg) - lightness(p.card));
+    expect(step(light)).toBeGreaterThanOrEqual(6.5);
+    expect(step(light)).toBeGreaterThanOrEqual(step(dark) - 1);
     expect(contrast(light.caution, light.cautionBg)).toBeGreaterThanOrEqual(4.5);
   });
 });

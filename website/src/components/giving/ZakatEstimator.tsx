@@ -107,7 +107,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calculator className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                  <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
+                  <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
                 </div>
                 <button
                   onClick={handleClose}

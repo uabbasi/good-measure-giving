@@ -222,7 +222,7 @@ export function ProgressDashboard({ onRequestSetTarget, donations = [] }: Progre
           }`}
         >
           <div
-            className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-[width] duration-500"
+            className="h-full bg-emerald-500 transition-[width] duration-500"
             style={{ width: `${progressRatio}%` }}
           />
         </div>
@@ -268,8 +268,8 @@ export function ProgressDashboard({ onRequestSetTarget, donations = [] }: Progre
           data-testid="dash-complete-banner"
           className={`px-5 py-3 border-t font-merriweather text-sm text-center ${
             isDark
-              ? 'border-emerald-900/60 bg-gradient-to-r from-emerald-900/40 via-emerald-800/30 to-emerald-900/40 text-emerald-200'
-              : 'border-emerald-200 bg-gradient-to-r from-emerald-50 via-emerald-100/60 to-emerald-50 text-emerald-800'
+              ? 'border-emerald-900/60 bg-emerald-900/30 text-emerald-200'
+              : 'border-emerald-200 bg-emerald-50 text-emerald-800'
           }`}
         >
           You&apos;ve completed your zakat for this year <span aria-hidden="true">✓</span>
@@ -317,7 +317,7 @@ function StatCard({ label, value, sub, subTone = 'muted', isDark, testId }: Stat
         {label}
       </div>
       <div
-        className={`mt-1 text-2xl font-semibold tabular-nums ${
+        className={`mt-1 text-2xl font-merriweather font-normal tabular-nums ${
           isDark ? 'text-white' : 'text-slate-900'
         }`}
       >

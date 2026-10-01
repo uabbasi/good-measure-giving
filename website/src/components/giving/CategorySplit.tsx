@@ -211,7 +211,7 @@ export function CategorySplit({
       className={`rounded-xl border overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
     >
       <div className={`px-5 py-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
-        <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+        <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
           How would you like to split your giving?
         </h2>
         <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>

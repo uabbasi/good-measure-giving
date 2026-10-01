@@ -115,7 +115,8 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
           <Link
             to="/profile"
             onClick={() => setMenuOpen(false)}
-            style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
+            className="tap-link"
+            style={{ display: 'flex', padding: '10px 14px', fontSize: 13, color: p.fg, textDecoration: 'none' }}
           >
             Your giving
           </Link>
@@ -143,14 +144,14 @@ export const GmgNav: React.FC<{ p: GmgPalette; isMobile: boolean; active?: strin
     style={{
       display: 'flex',
       alignItems: 'center',
-      gap: isMobile ? 12 : 20,
+      gap: isMobile ? 8 : 20,
       flexWrap: 'wrap',
       padding: `12px ${isMobile ? 16 : 24}px`,
       background: p.bg,
       borderBottom: `1px solid ${p.rule}`,
     }}
   >
-    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+    <Link to="/" className="tap-link" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
       <GmgLogo p={p} size={isMobile ? 26 : 30} />
       <Tag tone="warn" p={p}>Beta</Tag>
     </Link>

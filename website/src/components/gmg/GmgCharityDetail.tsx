@@ -341,6 +341,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
                 <a
+                  className="tap-link"
                   href={c.donateUrl}
                   onClick={(event) => trackDonateClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
@@ -352,6 +353,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               )}
               {c.website && c.website !== c.donateUrl && (
                 <a
+                  className="tap-link"
                   href={c.website}
                   onClick={(event) => trackOutboundClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
@@ -374,6 +376,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 <BookmarkButton charityEin={c.ein} charityName={c.name} size="sm" showLabel buttonClassName="border border-slate-400/60" labelClassName="text-xs!" />
               </ClientOnly>
               <Link
+                className="tap-link"
                 to={`/compare/?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >

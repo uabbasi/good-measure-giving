@@ -33,7 +33,7 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
     document.documentElement.classList.toggle('dark', isDark);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isDark ? '#13140e' : '#f4efde');
+    if (meta) meta.setAttribute('content', isDark ? '#13140e' : '#fcf9f0');
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(prev => !prev);

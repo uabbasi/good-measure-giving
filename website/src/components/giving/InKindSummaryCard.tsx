@@ -29,7 +29,7 @@ export function InKindSummaryCard({ summary, taxYear }: InKindSummaryCardProps) 
 
   return (
     <div className={`rounded-xl border p-5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-      <h3 className={`text-sm font-semibold mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+      <h3 className={`text-sm font-merriweather font-normal mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
         {taxYear} In-Kind Summary
       </h3>
 

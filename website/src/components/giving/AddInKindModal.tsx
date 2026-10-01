@@ -179,7 +179,7 @@ export function AddInKindModal({
               {/* ── Header: Recipient + Date + Condition ── */}
               <div className={`flex-shrink-0 px-5 py-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {existingDonation ? 'Edit In-Kind Donation' : 'Log In-Kind Donation'}
                   </h2>
                   <button

@@ -59,7 +59,7 @@ export function BookmarkButton({
   };
 
   const labelledButtonClasses = {
-    sm: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[40px]',
+    sm: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[44px]',
     md: 'inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px]',
     lg: 'inline-flex items-center gap-2 px-3.5 py-2.5 min-h-[48px]',
   };

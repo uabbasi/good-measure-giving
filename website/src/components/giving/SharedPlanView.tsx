@@ -69,7 +69,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{plan.name}</h2>
+        <h2 className="text-2xl font-merriweather font-normal text-slate-900 dark:text-white">{plan.name}</h2>
         <span className="text-sm text-slate-500 dark:text-slate-400">
           {members.length} member{members.length === 1 ? '' : 's'}
         </span>

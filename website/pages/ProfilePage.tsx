@@ -327,7 +327,7 @@ export function ProfilePage() {
               d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <h1 className={`text-2xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h1 className={`text-2xl font-merriweather font-normal mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Your Giving Dashboard
           </h1>
           <p className={`text-lg mb-8 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -349,7 +349,7 @@ export function ProfilePage() {
               {firstName ? firstName[0].toUpperCase() : email?.[0]?.toUpperCase() || '?'}
             </div>
             <div className="flex-grow">
-              <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h1 className={`text-xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {firstName || 'Welcome'}
               </h1>
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -534,25 +534,25 @@ export function ProfilePage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Donations</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {donations.filter(d => d.zakatYear === zakatYear || parseLocalDate(d.date).getFullYear() === zakatYear).length}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Saved</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {bookmarks.length}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Categories</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {new Set((profile?.charityBucketAssignments || []).map(a => a.bucketId)).size}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Progress</p>
-                  <p className={`text-2xl font-bold text-emerald-500`}>
+                  <p className={`text-2xl font-merriweather font-normal text-emerald-500`}>
                     {overallProgress.progressPercent}%
                   </p>
                 </div>
@@ -564,7 +564,7 @@ export function ProfilePage() {
                 corrected, or deleted — a typo'd amount was permanent. */}
             {donations.length > 0 && (
               <div data-tour="giving-history" className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                <h2 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h2 className={`text-lg font-merriweather font-normal mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Donation history
                 </h2>
                 <GivingHistoryTable
@@ -594,7 +594,7 @@ export function ProfilePage() {
             {/* History Table */}
             <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   In-Kind Donations
                 </h2>
                 <button

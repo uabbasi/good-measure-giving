@@ -221,7 +221,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </th>
               {subjects.map((s) => (
                 <th key={s.ein} style={{ padding: '14px', textAlign: 'left', verticalAlign: 'top', borderLeft: sectionBorder, minWidth: colW }}>
-                  <Link to={charityPath(s.ein)} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={charityPath(s.ein)} className="tap-link" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, lineHeight: 1.05, letterSpacing: ft.displayTracking }}>{s.name}</div>
                   </Link>
                   <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
@@ -292,7 +292,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             )}
 
             <Row {...rowProps} label="" render={(s) => (
-              <Link to={charityPath(s.ein)} style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
+              <Link to={charityPath(s.ein)} className="tap-link" style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
             )} />
           </tbody>
         </table>

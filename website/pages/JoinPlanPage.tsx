@@ -50,7 +50,7 @@ export const JoinPlanPage: React.FC = () => {
   if (state === 'notfound') {
     return (
       <div className="min-h-[60vh] max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-semibold mb-2">This invite link isn't valid</h1>
+        <h1 className="text-3xl font-merriweather font-normal mb-2">This invite link isn't valid</h1>
         <p className="mb-8" style={{ color: pal.sub }}>
           It may have been revoked, replaced by a newer link, or mistyped. Ask
           whoever invited you to send a fresh one.
@@ -87,7 +87,7 @@ export const JoinPlanPage: React.FC = () => {
   return (
     <div className="min-h-[60vh] max-w-2xl mx-auto px-4 py-12">
       <p className="text-sm uppercase tracking-wide" style={{ color: pal.accent2 }}>You're invited</p>
-      <h1 className="text-3xl font-semibold mb-2">The {plan.name} is planning their giving</h1>
+      <h1 className="text-3xl font-merriweather font-normal mb-2">The {plan.name} is planning their giving</h1>
       <p className="mb-8" style={{ color: pal.sub }}>Here's how they're splitting it. Join to add your own giving.</p>
 
       <ul className="divide-y mb-8" style={{ borderColor: pal.rule }}>

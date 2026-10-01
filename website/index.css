@@ -13,7 +13,7 @@
      emerald classes. Re-point those scales at the site's bone/charcoal and sage
      (src/components/gmg/tokens.ts) so they match the public pages in both themes.
      slate-50 = light page, slate-950 = dark page, slate-900 = dark card. */
-  --color-slate-50: #f4efde;
+  --color-slate-50: #fcf9f0;
   --color-slate-100: #ede6cf;
   --color-slate-200: #dfdac7;
   --color-slate-300: #c9c2a8;
@@ -35,7 +35,12 @@
   --color-emerald-800: #244622;
   --color-emerald-900: #1b351a;
   --color-emerald-950: #12240f;
-  --color-white: #fbf8ef;
+  /* Corner radii match the public pages (6-8px cards); rounded-full pills are untouched. */
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 10px;
+  --color-white: #ebe4cc; /* legacy bg-white cards = the motif card colour (darker than the ground, like the public pages) */
 }
 
 @keyframes slide-in-right {
@@ -147,4 +152,31 @@ textarea {
 /* Remove default focus outline when using focus-visible */
 *:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Touch targets: 44px minimum on phones and touch screens. :where() keeps the specificity at
+   zero so any component class or inline style still wins. Standalone links opt in with
+   .tap-link; links inside running text are exempt. */
+@media (max-width: 767px), (pointer: coarse) {
+  :where(button, select, textarea, [role="button"], input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])) {
+    min-height: 44px;
+  }
+  :where(button, [role="button"]) {
+    min-width: 44px;
+  }
+  :where(summary) {
+    padding-block: 13px;
+  }
+  .tap-link {
+    display: inline-flex !important;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* external source links in tables, lists and definition lists */
+  :where(td, li, dd) > a[target="_blank"] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }

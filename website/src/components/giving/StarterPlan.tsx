@@ -129,7 +129,7 @@ export function StarterPlan({ target, charities, bookmarkedEins, onAccepted }: S
       <div className={`px-5 py-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
         <div className="flex items-center gap-2 mb-1">
           <Sparkles className={`w-4 h-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Starter Plan</h3>
+          <h3 className={`font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Starter Plan</h3>
         </div>
         <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           A suggested allocation of {formatUsd(target)} across top-scoring charities

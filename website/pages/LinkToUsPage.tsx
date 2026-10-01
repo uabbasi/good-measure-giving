@@ -224,7 +224,8 @@ export const LinkToUsPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       <a
                         href={asset.src}
                         download
-                        style={{ display: 'inline-block', marginTop: 4, fontSize: 14, color: p.accent, fontWeight: 500 }}
+                        className="tap-link"
+                        style={{ marginTop: 4, fontSize: 14, color: p.accent, fontWeight: 500 }}
                       >
                         {asset.cta}
                       </a>

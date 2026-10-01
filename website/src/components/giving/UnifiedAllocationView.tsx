@@ -562,15 +562,15 @@ export function UnifiedAllocationView({
   // Render
   // --------------------------------------------------------------------
   return (
-    <div className={`rounded-xl border overflow-hidden text-sm shadow-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
+    <div className={`rounded-xl border overflow-hidden text-sm ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
       {/* Header bar */}
-      <div className={`flex flex-col gap-2 px-3 py-2.5 border-b sm:flex-row sm:items-center sm:justify-between ${isDark ? 'border-slate-700 bg-gradient-to-r from-slate-800/50 to-slate-900' : 'border-slate-200 bg-gradient-to-r from-slate-50 to-white'}`}>
+      <div className={`flex flex-col gap-2 px-3 py-2.5 border-b sm:flex-row sm:items-center sm:justify-between ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
           <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'}`}>
               <span className={`text-[10px] font-bold tracking-wide ${isDark ? 'text-emerald-500' : 'text-emerald-600'}`}>ZAKAT</span>
             </div>
-            <div data-tour="giving-target" className={`flex items-center border rounded-lg px-3 py-1.5 shadow-sm ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div data-tour="giving-target" className={`flex items-center border rounded-lg px-3 py-1.5 ${isDark ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-200'}`}>
               <span className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>$</span>
               <input
                 ref={targetInputRef}
@@ -597,7 +597,7 @@ export function UnifiedAllocationView({
             <div className="flex items-center gap-3 flex-wrap">
               <div className={`h-2 w-28 rounded-full overflow-hidden shadow-inner ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}>
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all rounded-full"
+                  className="h-full bg-emerald-500 transition-all rounded-full"
                   style={{ width: `${Math.min(100, Math.round((totalGiven / targetNum) * 100))}%` }}
                 />
               </div>
@@ -691,7 +691,7 @@ export function UnifiedAllocationView({
                 onChange={e => setCharitySearchQuery(e.target.value)}
                 placeholder="Search charities to add..."
                 autoFocus
-                className={`w-full pl-9 pr-3 py-2 text-base rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'}`}
+                className={`w-full pl-9 pr-3 py-2 text-base rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400'}`}
                 aria-label="Search charities"
               />
               <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
@@ -733,7 +733,7 @@ export function UnifiedAllocationView({
               onChange={e => setCustomCategoryName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') addCustomCategory(customCategoryName); }}
               placeholder="Type a custom category name..."
-              className={`flex-1 text-base px-3 py-2 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'}`}
+              className={`flex-1 text-base px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${isDark ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-emerald-400'}`}
               aria-label="Custom category name"
             />
             <button
@@ -769,7 +769,7 @@ export function UnifiedAllocationView({
                             ? (isDark ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-600')
                             : cnt === 0
                             ? (isDark ? 'border-slate-800 text-slate-700 cursor-not-allowed' : 'border-slate-100 text-slate-300 cursor-not-allowed')
-                            : (isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 shadow-sm')
+                            : (isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800')
                         }`}
                       >
                         {tag.label}
@@ -887,7 +887,7 @@ function SearchResults({
           await onAddCharity(customId, query.trim(), '');
           setRecentlyAdded(prev => new Set(prev).add(customId));
         }}
-        className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+        className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
       >
         + Add
       </button>
@@ -895,7 +895,7 @@ function SearchResults({
   );
 
   return (
-    <div className={`max-h-64 overflow-y-auto rounded-lg border shadow-sm ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
+    <div className={`max-h-64 overflow-y-auto rounded-lg border ${isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
       {results.map((c: any, i: number) => {
         const alreadyAdded = bookmarkedEins.has(c.ein) || recentlyAdded.has(c.ein);
         return (
@@ -925,7 +925,7 @@ function SearchResults({
                     await onAddCharity(c.ein, c.name, bucketId);
                     setRecentlyAdded(prev => new Set(prev).add(c.ein));
                   }}
-                  className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold shadow-sm ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
+                  className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold ${isDark ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-emerald-500 text-white hover:bg-emerald-600'}`}
                 >
                   + Add
                 </button>

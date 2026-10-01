@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
-import { GmgContentFrame, ContentHero, Em, CtaLink, ALink } from '../src/components/gmg/content';
+import { Link } from 'react-router-dom';
+import { GmgContentFrame, ContentHero, Em, CtaLink } from '../src/components/gmg/content';
 
 export const NotFoundPage: React.FC = () => {
   const { isDark } = useLandingTheme();
@@ -16,7 +17,7 @@ export const NotFoundPage: React.FC = () => {
           />
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 24 }}>
             <CtaLink p={ctx.p} to="/browse/">Browse charities</CtaLink>
-            <ALink p={ctx.p} to="/">Go home</ALink>
+            <Link to="/" className="tap-link" style={{ color: ctx.p.accent, textDecoration: 'none', fontWeight: 500 }}>Go home</Link>
           </div>
         </>
       )}

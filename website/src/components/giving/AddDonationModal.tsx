@@ -237,7 +237,7 @@ export function AddDonationModal({
           {/* Header */}
           <div className={`sticky top-0 px-6 py-4 border-b ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex items-center justify-between">
-              <h2 id="donation-modal-title" className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 id="donation-modal-title" className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {existingDonation ? 'Edit Donation' : 'Log Donation'}
               </h2>
               <button

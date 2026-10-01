@@ -242,7 +242,7 @@ export function GivingHistoryTable({
                     {donation.charityEin ? (
                       <Link
                         to={charityPath(donation.charityEin)}
-                        className="hover:underline text-emerald-600"
+                        className="tap-link hover:underline text-emerald-600"
                       >
                         {donation.charityName}
                       </Link>

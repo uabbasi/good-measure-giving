@@ -203,7 +203,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                 )}
 
                 <Section ctx={ctx}>
-                  <ALink p={p} to="/browse/">
+                  <ALink p={p} to="/browse/" standalone>
                     Browse all evaluated charities →
                   </ALink>
                 </Section>

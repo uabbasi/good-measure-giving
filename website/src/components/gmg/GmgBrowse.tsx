@@ -600,7 +600,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <Link
                     to={hrefFor(row.ein)}
                     onClick={(e) => { e.stopPropagation(); trackRowClick(row, i); }}
-                    style={{ display: 'block', textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
+                    style={{ display: 'flex', alignItems: 'center', minHeight: 44, textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
                   >
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, lineHeight: 1.15, letterSpacing: ft.displayTracking }}>
                       {row.name}
@@ -651,7 +651,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     aria-checked={isSelected}
                     aria-label={`Select ${row.name} to compare`}
                     onClick={(e) => { e.stopPropagation(); toggleSelect(row.ein); }}
-                    style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 13, margin: -13 }}
+                    style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 15, margin: -15 }}
                   >
                     <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${isSelected ? p.accent : p.rule2}`, background: isSelected ? p.accent : 'transparent', display: 'inline-block' }} />
                   </button>

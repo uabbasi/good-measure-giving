@@ -148,7 +148,8 @@ export const TrustTheNumbers: React.FC<{
                         href={row.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                        className="tap-link"
+                        style={{ color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
                       >
                         {row.sourceName} ↗
                       </a>
@@ -172,7 +173,8 @@ export const TrustTheNumbers: React.FC<{
                         href={row.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                        className="tap-link"
+                        style={{ color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
                       >
                         {row.sourceName} ↗
                       </a>
@@ -208,7 +210,8 @@ export const TrustTheNumbers: React.FC<{
                 href={c.bbb.reviewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                className="tap-link"
+                style={{ marginTop: 8, fontSize: 12, color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
               >
                 Read the BBB review ↗
               </a>
@@ -227,7 +230,8 @@ export const TrustTheNumbers: React.FC<{
                 href={c.awards[a.urlKey] as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                className="tap-link"
+                style={{ fontSize: 12, color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
               >
                 {c.awards[a.key] ? `${a.name}: ${c.awards[a.key]}` : a.name} ↗
               </a>
