@@ -24,7 +24,7 @@ test('calculator hub renders seeded hero text synchronously', () => {
   const html = renderToStaticMarkup(
     <QueryClientProvider client={qc}>
       <LandingThemeProvider>
-        <MemoryRouter><ZakatCalculatorHubPage /></MemoryRouter>
+        <MemoryRouter><ZakatCalculatorHubPage isDark={false} /></MemoryRouter>
       </LandingThemeProvider>
     </QueryClientProvider>
   );
