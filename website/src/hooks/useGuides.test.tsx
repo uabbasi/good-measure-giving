@@ -21,7 +21,7 @@ test('GuidesIndexPage renders seeded guides synchronously (SSR)', () => {
   const html = renderToStaticMarkup(
     <QueryClientProvider client={qc}>
       <LandingThemeProvider>
-        <MemoryRouter><GuidesIndexPage /></MemoryRouter>
+        <MemoryRouter><GuidesIndexPage isDark={false} /></MemoryRouter>
       </LandingThemeProvider>
     </QueryClientProvider>
   );
