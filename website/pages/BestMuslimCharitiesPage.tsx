@@ -19,6 +19,7 @@ import {
 } from '../src/components/gmg/content';
 import { FONT_DISPLAY, FONT_MONO } from '../src/components/gmg/tokens';
 import type { GmgPalette } from '../src/components/gmg/tokens';
+import { ratingFromGmgScore } from '../src/components/gmg/rating';
 import { filterMuslimCharities, type HubCharity } from '../scripts/lib/muslim-hub';
 import hubData from '../data/best-muslim-charities.json';
 
@@ -49,7 +50,7 @@ const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
       color: p.pos,
     }}
   >
-    Accepts Zakat
+    Accepts zakat
   </span>
 );
 
@@ -99,7 +100,7 @@ const RankedRow: React.FC<{ p: GmgPalette; rank: number; c: HubCharity }> = ({ p
           fontVariantNumeric: 'tabular-nums',
         }}
       >
-        {c.amalScore}/100
+        {ratingFromGmgScore(c.amalScore as number)}
       </span>
     </Link>
   </li>
@@ -174,7 +175,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                           p={p}
                           to={charityPath(c.ein)}
                           title={`${TOP_N + i + 1}. ${c.name}`}
-                          meta={isZakatEligible(c) ? `Accepts Zakat · ${c.amalScore}/100` : `${c.amalScore}/100`}
+                          meta={isZakatEligible(c) ? `Accepts zakat · ${ratingFromGmgScore(c.amalScore as number)}` : ratingFromGmgScore(c.amalScore as number)}
                         />
                       ))}
                     </CardGrid>
@@ -194,7 +195,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                           p={p}
                           to={charityPath(c.ein)}
                           title={c.name}
-                          meta={isZakatEligible(c) ? 'Accepts Zakat' : undefined}
+                          meta={isZakatEligible(c) ? 'Accepts zakat' : undefined}
                         />
                       ))}
                     </CardGrid>
@@ -202,7 +203,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                 )}
 
                 <Section ctx={ctx}>
-                  <ALink p={p} to="/browse/">
+                  <ALink p={p} to="/browse/" standalone>
                     Browse all evaluated charities →
                   </ALink>
                 </Section>

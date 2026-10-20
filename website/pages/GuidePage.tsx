@@ -128,7 +128,9 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       key={rc}
                       to={causePath(rc)}
                       style={{
-                        display: 'inline-block',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        minHeight: 44,
                         padding: '6px 14px',
                         borderRadius: 99,
                         border: `1px solid ${p.rule2}`,

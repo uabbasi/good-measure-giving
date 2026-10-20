@@ -7,6 +7,7 @@
 // And negative net assets are real for indebted charities, so the scale must
 // include zero and draw a baseline rather than clamping.
 
+import { usdCompact } from '../../utils/money';
 import React from 'react';
 import type { FinancialYear } from './adapters/financialSeries';
 import { GmgPalette, FONT_MONO } from './tokens';
@@ -19,18 +20,6 @@ const SERIES: { key: Key; label: string }[] = [
   { key: 'netAssets', label: 'Net assets' },
 ];
 
-const compact = (n: number): string => {
-  const abs = Math.abs(n);
-  if (abs >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
-  if (abs >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
-  if (abs >= 1e3) return `${Math.round(n / 1e3)}K`;
-  return `${Math.round(n)}`;
-};
-
-// Dollar-formatted compact figure for on-chart labels — `compact` alone (used
-// in the aria-label above) is unitless by design, but a label sitting next to
-// a plotted line needs the $ to read as a magnitude rather than a bare number.
-const money = (n: number): string => (n < 0 ? `-$${compact(-n)}` : `$${compact(n)}`);
 
 export const SeriesChart: React.FC<{
   series: FinancialYear[];
@@ -95,7 +84,7 @@ export const SeriesChart: React.FC<{
   const years = series.map((r) => r.year);
   const label = `Financial series ${years[0]} to ${years[years.length - 1]}: ${SERIES.map(({ key, label: l }) => {
     const last = lastReported(key);
-    return last ? `${l} ${compact(last.v)} in ${last.year}` : `${l} not reported`;
+    return last ? `${l} ${usdCompact(last.v)} in ${last.year}` : `${l} not reported`;
   }).join('; ')}`;
 
   return (
@@ -103,7 +92,7 @@ export const SeriesChart: React.FC<{
       {/* Axis scale, in plain figures — without it, three series sharing one
           linear axis read as flat lines with no sense of magnitude. */}
       <div style={{ fontSize: 10, color: p.sub2, marginBottom: 4, fontFamily: FONT_MONO }}>
-        Scale {money(min)} – {money(max)}
+        Scale {usdCompact(min)} – {usdCompact(max)}
       </div>
       <div style={{ position: 'relative', width: '100%', height }}>
         <svg
@@ -170,7 +159,7 @@ export const SeriesChart: React.FC<{
                   whiteSpace: 'nowrap',
                 }}
               >
-                {money(lp.v)}
+                {usdCompact(lp.v)}
               </span>
             );
           })}

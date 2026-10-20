@@ -5,7 +5,9 @@
  * Flow: Set recipient + date + default condition → rapid-fire item search → inline edits
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { usdCents } from '../../utils/money';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { AnimatePresence, m } from 'motion/react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { ItemPicker } from './ItemPicker';
@@ -143,6 +145,9 @@ export function AddInKindModal({
     focus:outline-none focus:ring-1 focus:ring-emerald-500
   `;
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(dialogRef, isOpen, onClose);
+
   const labelClass = `block text-xs font-medium mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`;
 
   return (
@@ -166,6 +171,11 @@ export function AddInKindModal({
 
           {/* Modal */}
           <m.div
+            ref={dialogRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="inkind-modal-title"
             className={`
               relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-xl border shadow-xl
               ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}
@@ -179,12 +189,13 @@ export function AddInKindModal({
               {/* ── Header: Recipient + Date + Condition ── */}
               <div className={`flex-shrink-0 px-5 py-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h2 id="inkind-modal-title" className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {existingDonation ? 'Edit In-Kind Donation' : 'Log In-Kind Donation'}
                   </h2>
                   <button
                     type="button"
                     onClick={onClose}
+                    aria-label="Close"
                     className={`p-1 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
                   >
                     <svg className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -274,7 +285,7 @@ export function AddInKindModal({
                 ) : (
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <tr className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         <th className="text-left py-1 font-medium">#</th>
                         <th className="text-left py-1 font-medium">Item</th>
                         <th className="text-center py-1 font-medium w-20">Cond.</th>
@@ -319,7 +330,7 @@ export function AddInKindModal({
                     {items.length > 0 ? (
                       <>
                         <strong className={`text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          ${totalValue.toFixed(2)}
+                          {usdCents(totalValue)}
                         </strong>
                         <span className="ml-2">
                           {totalItems} item{totalItems !== 1 ? 's' : ''}
@@ -496,7 +507,7 @@ function ItemRow({
       </td>
       <td className={`${cellClass} text-right`}>
         <span className={`text-xs font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          ${item.totalValue.toFixed(2)}
+          {usdCents(item.totalValue)}
         </span>
       </td>
       <td className={cellClass}>

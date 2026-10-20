@@ -24,23 +24,13 @@ import { useIsMobile } from './useIsMobile';
 import { useCommunityMember } from '../../auth/useAuth';
 import { SignInButton } from '../../auth/SignInButton';
 import { adaptCharity, GmgCharity } from './charityAdapter';
+import { usd, usdCompact } from '../../utils/money';
 
-const usd = (n: number | null): string =>
-  n == null ? '—' : `$${Math.round(n).toLocaleString()}`;
-
-// Compact annual revenue ($851K / $3.0M / $1.5B) — matches the /browse Size column.
-const fmtSize = (n: number | null): string => {
-  if (n == null) return '—';
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
-  return `$${Math.round(n)}`;
-};
 
 // Module-scope table pieces — kept out of the render body so they retain a
 // stable identity across renders (no remount of the table as queries resolve).
 
-const RatingMini: React.FC<{ rating?: Rating; p: GmgPalette }> = ({ rating, p }) =>
+const RatingMini: React.FC<{ rating?: Rating | null; p: GmgPalette }> = ({ rating, p }) =>
   rating ? (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
       <HarveyBall rating={rating} p={p} size={13} />
@@ -223,7 +213,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
       )}
 
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ borderCollapse: 'collapse', fontSize: 12, minWidth: labelW + subjects.length * colW }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: labelW + subjects.length * colW }}>
           <thead>
             <tr style={{ borderBottom: sectionBorder }}>
               <th style={{ padding: '14px', textAlign: 'left', width: labelW, minWidth: labelW, position: 'sticky', left: 0, background: p.bg, zIndex: 2 }}>
@@ -231,7 +221,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </th>
               {subjects.map((s) => (
                 <th key={s.ein} style={{ padding: '14px', textAlign: 'left', verticalAlign: 'top', borderLeft: sectionBorder, minWidth: colW }}>
-                  <Link to={charityPath(s.ein)} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={charityPath(s.ein)} className="tap-link" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 20, lineHeight: 1.05, letterSpacing: ft.displayTracking }}>{s.name}</div>
                   </Link>
                   <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
@@ -243,18 +233,24 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             </tr>
           </thead>
           <tbody>
-            {/* Identity only for signed-out visitors. This route loads the FULL
-                per-charity files, so every evaluative row below is the same
-                member-only content the detail page gates — including
-                `bestForSummary`, which is rich_narrative.ideal_donor_profile
-                rendered verbatim. Leaving it ungated let anyone read a complete
-                evaluation by ticking two boxes on /browse, which routed straight
-                around the detail page's sign-in wall. Nothing is lost by gating
-                it: prerender only emits the empty /compare/, so the ?eins= state
-                has no crawlable content to forfeit. */}
-            <Row {...rowProps} label="Wallet" render={(s) => <Tag tone={s.wallet.toLowerCase().includes('zakat') ? 'accent' : 'muted'} p={p}>{s.wallet}</Tag>} />
-            <Row {...rowProps} label="Cause" render={(s) => <span style={{ color: p.sub }}>{s.category}</span>} />
+            {/* Signed-out visitors get identity plus the same six signals /browse
+                already publishes to everyone. This route loads the FULL per-charity
+                files, so everything richer (reserves, cost per beneficiary, the
+                per-criterion breakdown, and `bestForSummary`, which is
+                rich_narrative.ideal_donor_profile verbatim) stays member-only:
+                leaving it open would let anyone read a complete evaluation by
+                ticking two boxes on /browse, around the detail page's sign-in wall.
+                Wallet and cause are already tags in each column header. */}
             <Row {...rowProps} label="Founded" render={(s) => <span style={{ color: p.sub }}>{s.founded ?? '—'}{s.trackRecordYears ? ` · ${s.trackRecordYears} yrs` : ''}</span>} />
+
+            {/* The same signals /browse already publishes to everyone. */}
+            <Row {...rowProps} label="GMG rating" render={(s) => <RatingMini rating={s.overall ?? undefined} p={p} />} />
+            <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
+            <Row {...rowProps} label="Governance" render={(s) => <RatingMini rating={s.risk} p={p} />} />
+            <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
+            <Row {...rowProps} label="Evidence" render={(s) => <span style={{ color: p.fg }}>{s.evidenceStage ?? '—'}</span>} />
+            <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usdCompact(s.totalRevenue)}</span>} />
+            <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
 
             {!isMember && (
               <tr>
@@ -267,8 +263,8 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                       Full comparison
                     </span>
                     <span style={{ fontSize: 12.5, color: p.sub, flex: '1 1 260px' }}>
-                      Ratings, financials and the per-criterion breakdown for these{' '}
-                      {subjects.length} charities are free — sign in to see them.
+                      The reserves, cost per beneficiary, per-criterion breakdown and who each of these{' '}
+                      {subjects.length} charities suits are free — sign in to see them.
                     </span>
                     <SignInButton variant="button" />
                   </div>
@@ -278,12 +274,6 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
             {isMember && (
               <>
-                <Row {...rowProps} label="GMG rating" render={(s) => <RatingMini rating={s.overall ?? undefined} p={p} />} />
-                <Row {...rowProps} label="Finances" render={(s) => <RatingMini rating={s.financialHealth} p={p} />} />
-                <Row {...rowProps} label="Risk" render={(s) => <RatingMini rating={s.risk} p={p} />} />
-                <Row {...rowProps} label="Donor fit" render={(s) => <RatingMini rating={s.donorFit} p={p} />} />
-                <Row {...rowProps} label="Size" kicker="annual revenue" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{fmtSize(s.totalRevenue)}</span>} />
-                <Row {...rowProps} label="Program efficiency" kicker="% to programs" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.programRatioPct != null ? `${s.programRatioPct}%` : '—'}</span>} />
                 <Row {...rowProps} label="Reserves" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{s.reserveMonths != null ? `${s.reserveMonths} mo` : '—'}</span>} />
                 <Row {...rowProps} label="Cost / beneficiary" render={(s) => <span style={{ fontFamily: FONT_MONO, color: p.fg }}>{usd(s.costPerBeneficiary)}</span>} />
 
@@ -302,7 +292,7 @@ export const GmgCompare: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             )}
 
             <Row {...rowProps} label="" render={(s) => (
-              <Link to={charityPath(s.ein)} style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
+              <Link to={charityPath(s.ein)} className="tap-link" style={{ fontSize: 12, color: p.accent, textDecoration: 'none' }}>Open evaluation →</Link>
             )} />
           </tbody>
         </table>

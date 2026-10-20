@@ -68,8 +68,8 @@ describe('BrowseFacets', () => {
 
   it('shows counts beside each value', () => {
     render(<Harness />);
-    expect(within(groupFor('Wallet')).getByRole('button', { name: zakatPill })).toBeInTheDocument();
-    expect(within(groupFor('Wallet')).getByRole('button', { name: sadaqahPill })).toBeInTheDocument();
+    expect(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: zakatPill })).toBeInTheDocument();
+    expect(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: sadaqahPill })).toBeInTheDocument();
     expect(within(groupFor('Scope')).getByRole('button', { name: muslimLedPill })).toBeInTheDocument();
   });
 
@@ -118,7 +118,7 @@ describe('BrowseFacets', () => {
     render(<Harness />);
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
 
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: zakatPill }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: zakatPill }));
 
     expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
 
@@ -163,9 +163,9 @@ describe('BrowseFacets', () => {
   it('marks selected pills with aria-pressed', () => {
     const initial: FacetState = { ...INITIAL_FACET_STATE, wallet: 'zakat' };
     render(<Harness initial={initial} />);
-    const wallet = groupFor('Wallet');
+    const wallet = groupFor('Zakat or sadaqah');
     expect(within(wallet).getByRole('button', { name: zakatPill })).toHaveAttribute('aria-pressed', 'true');
-    expect(within(wallet).getByRole('button', { name: `Wallet: All ${TOTAL}` })).toHaveAttribute('aria-pressed', 'false');
+    expect(within(wallet).getByRole('button', { name: `Any type: All ${TOTAL}` })).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('keeps the expander closed by default on mobile even when an inner facet is already active, but still shows the count', () => {

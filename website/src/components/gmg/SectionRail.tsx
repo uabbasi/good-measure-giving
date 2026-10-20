@@ -56,7 +56,7 @@ export const SectionRail: React.FC<{
     textTransform: 'uppercase',
     color: active === s.id ? p.fg : p.sub2,
     textDecoration: 'none',
-    padding: isMobile ? '6px 10px' : '5px 0',
+    padding: isMobile ? '16px 12px' : '5px 0',
     borderLeft: isMobile ? 'none' : `2px solid ${active === s.id ? p.accent : 'transparent'}`,
     paddingLeft: 10,
     whiteSpace: 'nowrap',
@@ -84,7 +84,7 @@ export const SectionRail: React.FC<{
             overflowX: 'auto',
             background: p.bg2,
             borderBottom: `1px solid ${p.rule}`,
-            padding: '6px 8px',
+            padding: '0 8px',
           }}
         >
           {sections.map((s) => (

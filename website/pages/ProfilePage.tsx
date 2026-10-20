@@ -12,6 +12,7 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLandingTheme } from '../contexts/LandingThemeContext';
 import { useBookmarkState, useProfileState } from '../src/contexts/UserFeaturesContext';
 import { useAuth } from '../src/auth';
@@ -62,6 +63,12 @@ function TabButton({
 }) {
   return (
     <button
+      type="button"
+      role="tab"
+      id={`profile-tab-${id}`}
+      aria-selected={isActive}
+      aria-controls={`profile-panel-${id}`}
+      tabIndex={isActive ? 0 : -1}
       onClick={onClick}
       className={`
         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
@@ -84,6 +91,24 @@ export function ProfilePage() {
   const { isSignedIn, isLoaded, firstName, email } = useAuth();
   const { bookmarks, isLoading: bookmarksLoading, addBookmark, removeBookmark } = useBookmarkState();
   const { profile, isLoading: profileLoading, updateProfile } = useProfileState();
+
+  // The zakat calculator hands its result over as ?zakat=<amount>. Adopt it as the
+  // plan's target only when none is set, so a returning donor's target is never
+  // overwritten; either way drop the param so a refresh doesn't re-apply it.
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const raw = new URLSearchParams(location.search).get('zakat');
+    if (raw == null || !isSignedIn || profileLoading) return;
+    const amount = Math.round(Number(raw));
+    const consume = () => navigate(location.pathname, { replace: true });
+    if (profile?.targetZakatAmount || !Number.isFinite(amount) || amount <= 0) {
+      consume();
+      return;
+    }
+    // Keep the param if the write fails, so a refresh retries instead of losing it.
+    updateProfile({ targetZakatAmount: amount }).then(consume, (err) => console.error('Could not save zakat target:', err));
+  }, [location.search, location.pathname, isSignedIn, profileLoading, profile?.targetZakatAmount, updateProfile, navigate]);
   const { summaries, loading: charitiesLoading } = useCharities();
   // Family sync (add-side only): adding a charity here also adds it to every
   // shared plan. Removal stays explicit per plan — see onRemoveCharity.
@@ -308,7 +333,7 @@ export function ProfilePage() {
               d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <h1 className={`text-2xl font-semibold mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h1 className={`text-2xl font-merriweather font-normal mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Your Giving Dashboard
           </h1>
           <p className={`text-lg mb-8 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -330,7 +355,7 @@ export function ProfilePage() {
               {firstName ? firstName[0].toUpperCase() : email?.[0]?.toUpperCase() || '?'}
             </div>
             <div className="flex-grow">
-              <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h1 className={`text-xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {firstName || 'Welcome'}
               </h1>
               <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -355,7 +380,25 @@ export function ProfilePage() {
 
         {/* Tab Navigation (M5): one unified "Your Giving" tab covers the
             former Overview + History surfaces. In-Kind stays separate. */}
-        <div className={`flex gap-1 p-1 rounded-xl mb-6 ${isDark ? 'bg-slate-900' : 'bg-slate-100'}`}>
+        <div
+          role="tablist"
+          aria-label="Giving views"
+          onKeyDown={(e) => {
+            const order: TabId[] = ['giving', 'in-kind'];
+            const i = order.indexOf(activeTab);
+            let next: TabId | null = null;
+            if (e.key === 'ArrowRight') next = order[(i + 1) % order.length];
+            else if (e.key === 'ArrowLeft') next = order[(i - 1 + order.length) % order.length];
+            else if (e.key === 'Home') next = order[0];
+            else if (e.key === 'End') next = order[order.length - 1];
+            if (next) {
+              e.preventDefault();
+              setActiveTab(next);
+              document.getElementById(`profile-tab-${next}`)?.focus();
+            }
+          }}
+          className={`flex gap-1 p-1 rounded-xl mb-6 ${isDark ? 'bg-slate-900' : 'bg-slate-100'}`}
+        >
           <TabButton
             id="giving"
             label="Your Giving"
@@ -376,7 +419,7 @@ export function ProfilePage() {
 
         {/* Tab Content */}
         {activeTab === 'giving' && (
-          <div className="space-y-6">
+          <div role="tabpanel" id="profile-panel-giving" aria-labelledby="profile-tab-giving" tabIndex={0} className="space-y-6">
             <PlanSwitcher selected={selectedPlan} onSelect={setSelectedPlan} />
             {selectedPlan !== null ? (
               inSession ? (
@@ -515,25 +558,25 @@ export function ProfilePage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Donations</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {donations.filter(d => d.zakatYear === zakatYear || parseLocalDate(d.date).getFullYear() === zakatYear).length}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Saved</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {bookmarks.length}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Categories</p>
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <p className={`text-2xl font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {new Set((profile?.charityBucketAssignments || []).map(a => a.bucketId)).size}
                   </p>
                 </div>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
                   <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>Progress</p>
-                  <p className={`text-2xl font-bold text-emerald-500`}>
+                  <p className={`text-2xl font-merriweather font-normal text-emerald-500`}>
                     {overallProgress.progressPercent}%
                   </p>
                 </div>
@@ -544,8 +587,8 @@ export function ProfilePage() {
                 write-only: donations could be added but never reviewed,
                 corrected, or deleted — a typo'd amount was permanent. */}
             {donations.length > 0 && (
-              <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                <h2 className={`text-lg font-semibold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <div data-tour="giving-history" className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <h2 className={`text-lg font-merriweather font-normal mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Donation history
                 </h2>
                 <GivingHistoryTable
@@ -565,7 +608,7 @@ export function ProfilePage() {
         )}
 
         {activeTab === 'in-kind' && (
-          <div className="space-y-6">
+          <div role="tabpanel" id="profile-panel-in-kind" aria-labelledby="profile-tab-in-kind" tabIndex={0} className="space-y-6">
             {/* Summary Card */}
             <InKindSummaryCard
               summary={getInKindYearSummary(new Date().getFullYear())}
@@ -575,7 +618,7 @@ export function ProfilePage() {
             {/* History Table */}
             <div className={`rounded-xl border p-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   In-Kind Donations
                 </h2>
                 <button

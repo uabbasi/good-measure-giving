@@ -15,17 +15,13 @@ import {
   FONT_MONO,
   FONT_THEME,
 } from './tokens';
-import { Rating, ratingColor } from './rating';
+import { Rating, ratingColor, ratingFromGmgScore } from './rating';
 import { HarveyBall, Bismillah } from './primitives';
 import { GmgNav } from './chrome';
 import { GmgFooter } from './content';
 import { useIsMobile } from './useIsMobile';
 import { adaptCharity } from './charityAdapter';
 import { CauseAreaMatrix } from '../../../components/CauseAreaMatrix';
-
-const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
-const ratingFromAvg = (avg: number): Rating =>
-  avg >= 4.5 ? 'Strong' : avg >= 3.5 ? 'Good' : avg >= 2.5 ? 'Moderate' : avg >= 1.5 ? 'Fair' : 'Weak';
 
 export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const p = gmgPalette(isDark);
@@ -50,9 +46,9 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   );
   const count = sorted.length;
   const featured = useMemo(() => (sorted.length ? adaptCharity(sorted[0]) : null), [sorted]);
-  const featuredOverall: Rating | null = featured
-    ? ratingFromAvg((RANK[featured.impact.overall] + RANK[featured.alignment.overall]) / 2)
-    : null;
+  // Same grade the browse table and charity page show: from the GMG score itself,
+  // which includes risk (an average of Impact and Alignment would not).
+  const featuredOverall: Rating | null = featured ? ratingFromGmgScore(featured.amalScore) : null;
 
   // Data for the interactive cause-area map (needs pillar scores).
   const insightsData = useMemo(
@@ -86,8 +82,8 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
     },
     {
       Icon: Moon,
-      title: 'Zakat, checked',
-      body: 'We verify which charities are eligible for your zakat, and show you the reasoning behind it.',
+      title: 'Zakat, in their words',
+      body: 'We show which charities say publicly that they accept zakat, quote the page that says so, and leave the ruling to you and your scholar.',
     },
   ];
 
@@ -107,7 +103,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           </h1>
           <p style={{ fontSize: isMobile ? 16 : 18, lineHeight: 1.6, color: p.sub, margin: '24px auto 0', maxWidth: 580 }}>
             Choosing a charity shouldn't be a leap of faith. We do the homework on Muslim charities —
-            their honesty with money, their real impact, and their zakat eligibility — so you can give
+            their honesty with money, their real impact, and whether they accept zakat — so you can give
             with peace of mind.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 32 }}>
@@ -182,7 +178,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               <span style={{ fontSize: 13.5, color: ratingColor(featuredOverall, p), fontWeight: 500 }}>{featuredOverall} overall</span>
             </div>
             <div style={{ marginTop: 22 }}>
-              <Link onClick={() => trackCharityCardClick(featured.ein, featured.name, sorted[0].tier ?? 'baseline', 0)} to={charityPath(featured.ein)} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
+              <Link className="tap-link" onClick={() => trackCharityCardClick(featured.ein, featured.name, sorted[0].tier ?? 'baseline', 0)} to={charityPath(featured.ein)} style={{ fontSize: 15, color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
                 Read the review →
               </Link>
             </div>

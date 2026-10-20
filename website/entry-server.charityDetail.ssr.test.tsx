@@ -104,7 +104,7 @@ describe('GmgCharityDetail SSR (entry-server, real charity data) — anonymous b
     expect(html).toMatch(/<h1[^>]*>International Rescue Committee<\/h1>/);
     expect(html).toContain('EIN 13-5660870');
     expect(html).toContain('Humanitarian Relief'); // primary category
-    expect(html).toContain('Accepts Zakat'); // wallet/zakat status
+    expect(html).toContain('Accepts zakat'); // wallet/zakat status
     expect(html).toContain('Fuqara'); // asnaf tag
 
     // 1b. The baseline tier itself. This is what makes the page worth

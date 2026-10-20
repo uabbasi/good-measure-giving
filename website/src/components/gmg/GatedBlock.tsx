@@ -17,16 +17,17 @@ export const GatedBlock: React.FC<{
 }> = ({ label, p, children }) => (
   <CommunityGate
     fallback={
+      // One quiet line, not a boxed prompt with its own button: a charity page has
+      // about ten of these, and the closing sign-in panel is the one real ask.
       <div
         style={{
-          border: `1px dashed ${p.rule2}`,
-          borderRadius: 6,
-          padding: '14px 16px',
-          background: p.bg2,
           display: 'flex',
           flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: 12,
+          alignItems: 'baseline',
+          gap: '4px 14px',
+          padding: '10px 0',
+          borderTop: `1px solid ${p.rule}`,
+          borderBottom: `1px solid ${p.rule}`,
         }}
       >
         <span
@@ -35,15 +36,17 @@ export const GatedBlock: React.FC<{
             fontSize: 10,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: p.sub2,
+            color: p.sub,
           }}
         >
           {label}
         </span>
-        <span style={{ fontSize: 12.5, color: p.sub, flex: '1 1 240px' }}>
-          Sign in to see this — it's free.
+        <span style={{ fontSize: 13, color: p.sub }}>Sign in to see this — it's free.</span>
+        <span style={{ display: 'inline-block', fontSize: 13, color: p.accent }}>
+          <SignInButton variant="custom" className="cursor-pointer font-medium underline underline-offset-4 decoration-1">
+            Sign in
+          </SignInButton>
         </span>
-        <SignInButton variant="button" />
       </div>
     }
   >

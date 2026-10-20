@@ -227,7 +227,6 @@ export const GmgSignIn: React.FC<{
     color: p.fg,
     fontSize: 16,
     fontFamily: FONT_TEXT,
-    outline: 'none',
   };
 
   const errorBox = error ? (

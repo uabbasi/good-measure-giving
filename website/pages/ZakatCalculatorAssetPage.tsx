@@ -2,6 +2,7 @@
 // (/zakat-calculator/:asset). Motif-only: renders its own GmgNav + footer via the
 // content kit. Calculation logic + hooks are unchanged from the legacy version.
 
+import { usdExact } from '../src/utils/money';
 import React, { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { zakatCalculatorPath, paths } from '../src/lib/paths';
@@ -120,19 +121,19 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                 <ResultCard
                   p={p}
                   rows={[
-                    { label: 'Nisab threshold (2026)', value: `$${nisab.toLocaleString()}` },
-                    { label: 'Net zakatable wealth', value: `$${estimate.netZakatable.toLocaleString()}` },
+                    { label: 'Nisab threshold (2026)', value: usdExact(nisab) },
+                    { label: 'Net zakatable wealth', value: usdExact(estimate.netZakatable) },
                   ]}
                   resultLabel="Zakat owed (2.5%)"
-                  result={estimate.isAboveNisab ? `$${estimate.zakatAmount.toLocaleString()}` : 'Below nisab — no zakat owed'}
+                  result={estimate.isAboveNisab ? usdExact(estimate.zakatAmount) : 'Below nisab — no zakat owed'}
                 />
               </div>
 
               {estimate.isAboveNisab && estimate.zakatAmount > 0 && (
                 <div style={{ marginTop: 20, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                  <CtaLink p={p} to="/browse/?zakat=eligible">See zakat-eligible charities →</CtaLink>
+                  <CtaLink p={p} to="/browse/?wallet=zakat">See charities that accept zakat →</CtaLink>
                   <Link
-                    to="/profile"
+                    to={`/profile/?zakat=${Math.round(estimate.zakatAmount)}`}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -146,7 +147,7 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                       textDecoration: 'none',
                     }}
                   >
-                    Save this plan
+                    Set as my zakat target
                   </Link>
                 </div>
               )}
@@ -193,7 +194,9 @@ export const ZakatCalculatorAssetPage: React.FC<{ isDark: boolean }> = ({ isDark
                     key={s}
                     to={zakatCalculatorPath(s)}
                     style={{
-                      display: 'inline-block',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      minHeight: 44,
                       padding: '6px 14px',
                       borderRadius: 99,
                       border: `1px solid ${p.rule2}`,

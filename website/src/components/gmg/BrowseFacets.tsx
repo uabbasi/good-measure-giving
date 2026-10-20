@@ -38,17 +38,40 @@ interface FacetOption {
 
 // Module-scope so identity is stable across renders (see the note in
 // GmgBrowse.tsx about leaf components remounting and dropping input focus).
+// On a touch screen the button itself is a transparent 44px box and the chip is drawn
+// inside it, so the chips stay compact while the target meets the touch minimum; each
+// group becomes one horizontally scrolling strip instead of a tall wrapping block.
+const TOUCH_HIT: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
+  minHeight: 44,
+  padding: '0 2px',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+};
+
 const FacetGroup: React.FC<{
   label: string;
   p: GmgPalette;
   options: FacetOption[];
   pill: (active: boolean) => React.CSSProperties;
   onSelect: (key: string) => void;
-}> = ({ label, p, options, pill, onSelect }) => {
+  touch?: boolean;
+}> = ({ label, p, options, pill, onSelect, touch }) => {
   if (options.length === 0) return null;
   return (
-    <span role="group" aria-label={label} style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-      <Kicker p={p}>{label}</Kicker>
+    <span
+      role="group"
+      aria-label={label}
+      style={
+        touch
+          ? { display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'nowrap', overflowX: 'auto', maxWidth: '100%', scrollbarWidth: 'none' }
+          : { display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }
+      }
+    >
+      {touch ? <span style={{ flexShrink: 0 }}><Kicker p={p}>{label}</Kicker></span> : <Kicker p={p}>{label}</Kicker>}
       {options.map((opt) => (
         <button
           key={opt.key}
@@ -56,9 +79,9 @@ const FacetGroup: React.FC<{
           aria-pressed={opt.selected}
           aria-label={opt.ariaLabel}
           onClick={() => onSelect(opt.key)}
-          style={pill(opt.selected)}
+          style={touch ? TOUCH_HIT : pill(opt.selected)}
         >
-          {opt.label} {opt.count}
+          {touch ? <span style={pill(opt.selected)}>{opt.label} {opt.count}</span> : <>{opt.label} {opt.count}</>}
         </button>
       ))}
     </span>
@@ -87,16 +110,15 @@ export const BrowseFacets: React.FC<{
     color: p.fg,
     fontFamily: FONT_TEXT,
     fontSize: 16,
-    outline: 'none',
   };
 
   // Verbatim from the old FilterPills.
   const pill = (active: boolean): React.CSSProperties => ({
-    padding: '3px 9px',
+    padding: isMobile ? '5px 11px' : '3px 9px',
     borderRadius: 99,
     cursor: 'pointer',
     fontFamily: FONT_MONO,
-    fontSize: 9.5,
+    fontSize: isMobile ? 11 : 9.5,
     letterSpacing: '0.06em',
     textTransform: 'uppercase',
     border: `1px solid ${active ? p.chip : p.rule}`,
@@ -109,7 +131,7 @@ export const BrowseFacets: React.FC<{
   const walletOptions: FacetOption[] = useMemo(() => {
     const allCount = applyFacets(rows, { ...state, wallet: 'all' }).length;
     return [
-      { key: 'all', label: 'All', ariaLabel: `Wallet: All ${allCount}`, count: allCount, selected: state.wallet === 'all' },
+      { key: 'all', label: 'All', ariaLabel: `Any type: All ${allCount}`, count: allCount, selected: state.wallet === 'all' },
       { key: 'zakat', label: 'Zakat', count: applyFacets(rows, { ...state, wallet: 'zakat' }).length, selected: state.wallet === 'zakat' },
       { key: 'sadaqah', label: 'Sadaqah', count: applyFacets(rows, { ...state, wallet: 'sadaqah' }).length, selected: state.wallet === 'sadaqah' },
     ];
@@ -212,11 +234,11 @@ export const BrowseFacets: React.FC<{
       </div>
 
       {/* Row 2: always-visible facets */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-        <FacetGroup label="Wallet" p={p} pill={pill} options={walletOptions} onSelect={(v) => dispatch({ type: 'wallet', value: v as WalletFilter })} />
-        <FacetGroup label="Size" p={p} pill={pill} options={sizeOptions} onSelect={toggle('size')} />
-        <FacetGroup label="Evidence" p={p} pill={pill} options={evidenceOptions} onSelect={toggle('evidence')} />
-        <FacetGroup label="Scope" p={p} pill={pill} options={scopeOptions} onSelect={(v) => dispatch({ type: 'scope', value: v as Scope })} />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? 0 : 10, alignItems: 'center', flexDirection: isMobile ? 'column' : 'row', ...(isMobile ? { alignItems: 'stretch' } : {}) }}>
+        <FacetGroup touch={isMobile} label="Zakat or sadaqah" p={p} pill={pill} options={walletOptions} onSelect={(v) => dispatch({ type: 'wallet', value: v as WalletFilter })} />
+        <FacetGroup touch={isMobile} label="Size" p={p} pill={pill} options={sizeOptions} onSelect={toggle('size')} />
+        <FacetGroup touch={isMobile} label="Evidence" p={p} pill={pill} options={evidenceOptions} onSelect={toggle('evidence')} />
+        <FacetGroup touch={isMobile} label="Scope" p={p} pill={pill} options={scopeOptions} onSelect={(v) => dispatch({ type: 'scope', value: v as Scope })} />
         {showClearAll && (
           <button
             type="button"
@@ -246,15 +268,15 @@ export const BrowseFacets: React.FC<{
           aria-expanded={open}
           aria-controls="gmg-browse-more-filters"
           onClick={() => setOpen((o) => !o)}
-          style={pill(open)}
+          style={isMobile ? TOUCH_HIT : pill(open)}
         >
-          More filters{moreCount > 0 ? ` (${moreCount})` : ''} {open ? '▴' : '▾'}
+          {isMobile ? <span style={pill(open)}>More filters{moreCount > 0 ? ` (${moreCount})` : ''} {open ? '▴' : '▾'}</span> : <>More filters{moreCount > 0 ? ` (${moreCount})` : ''} {open ? '▴' : '▾'}</>}
         </button>
         {open && (
           <div id="gmg-browse-more-filters" style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
-            <FacetGroup label="Cause" p={p} pill={pill} options={causeOptions} onSelect={toggle('cause')} />
-            <FacetGroup label="Where it works" p={p} pill={pill} options={regionOptions} onSelect={toggle('region')} />
-            <FacetGroup label="Zakat asnaf" p={p} pill={pill} options={asnafOptions} onSelect={toggle('asnaf')} />
+            <FacetGroup touch={isMobile} label="Cause" p={p} pill={pill} options={causeOptions} onSelect={toggle('cause')} />
+            <FacetGroup touch={isMobile} label="Where it works" p={p} pill={pill} options={regionOptions} onSelect={toggle('region')} />
+            <FacetGroup touch={isMobile} label="Zakat asnaf" p={p} pill={pill} options={asnafOptions} onSelect={toggle('asnaf')} />
           </div>
         )}
       </div>

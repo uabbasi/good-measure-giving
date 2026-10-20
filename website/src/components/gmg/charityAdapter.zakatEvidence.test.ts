@@ -1,6 +1,6 @@
 // zakatEvidence: score_details.zakat.claim_evidence is rendered verbatim in
 // italics on the detail page as if it were a real quoted source (see
-// RightForYou.tsx's "Zakat verification" block). For 11 of 135 published
+// RightForYou.tsx's zakat-claim block). For 11 of 135 published
 // charities — found via manual QA on Al-Barr Foundation (85-3964369), also
 // present on Doctors Without Borders (13-3433452) — the pipeline's
 // corroboration step writes its own internal failure message into that same

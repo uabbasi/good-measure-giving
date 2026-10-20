@@ -32,13 +32,13 @@ export const PlanSwitcher: React.FC<{
   };
 
   return (
-    <div className="flex items-center gap-2 mb-6 flex-wrap">
-      <button onClick={() => onSelect(null)}
+    <div role="group" aria-label="Plan" className="flex items-center gap-2 mb-6 flex-wrap">
+      <button type="button" aria-pressed={selected === null} onClick={() => onSelect(null)}
         className={`px-3 py-1.5 rounded-full text-sm ${selected === null ? 'bg-emerald-600 text-white' : 'border border-slate-300'}`}>
         My plan
       </button>
       {plans.map(p => (
-        <button key={p.id} onClick={() => onSelect(p.id)}
+        <button key={p.id} type="button" aria-pressed={selected === p.id} onClick={() => onSelect(p.id)}
           className={`px-3 py-1.5 rounded-full text-sm ${selected === p.id ? 'bg-emerald-600 text-white' : 'border border-slate-300'}`}>
           {p.name}
         </button>

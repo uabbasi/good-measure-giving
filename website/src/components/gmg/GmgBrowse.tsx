@@ -4,6 +4,7 @@
 // Sortable by any column; neutral A–Z default. Dense table on desktop, stacked
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
+import { usdCompact } from '../../utils/money';
 import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackCharityCardClick, trackSearch } from '../../utils/analytics';
@@ -37,19 +38,19 @@ import {
 } from './facetState';
 
 const RANK: Record<Rating, number> = { Strong: 5, Good: 4, Moderate: 3, Fair: 2, Weak: 1 };
+
+// Compare two signal ratings; a missing one sorts last whichever way the column runs
+// (the caller multiplies the result by `dir`, so a missing value returns +/-dir to
+// cancel that out).
+const cmpSignal = (x: Rating | null, y: Rating | null, dir: number): number => {
+  if (x == null || y == null) return x == null ? (y == null ? 0 : dir) : -dir;
+  return RANK[x] - RANK[y];
+};
 type SortKey = 'name' | 'cause' | 'overall' | 'finances' | 'risk' | 'donorFit' | 'programPct' | 'evidence' | 'size';
 type SortDir = 'asc' | 'desc';
 
 const ascByDefault = (k: SortKey): boolean => k === 'name' || k === 'cause';
 
-// Annual revenue → compact money ($85K / $3.0M / $1.5B).
-const fmtMoney = (n: number | null): string => {
-  if (n == null) return '—';
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
-  return `$${Math.round(n)}`;
-};
 
 const titleCaseCause = (s: string): string =>
   s.replace(/[_&]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, (m) => m.toUpperCase());
@@ -58,12 +59,15 @@ const titleCaseCause = (s: string): string =>
 // gives them a new identity each render, which remounts the search input (dropping
 // focus on every keystroke). Kept out here so they're stable.
 
-const RatingCell: React.FC<{ rating: Rating; p: GmgPalette; size?: number }> = ({ rating, p, size = 14 }) => (
-  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-    <HarveyBall rating={rating} p={p} size={size} />
-    <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
-  </span>
-);
+const RatingCell: React.FC<{ rating: Rating | null; p: GmgPalette; size?: number }> = ({ rating, p, size = 14 }) =>
+  rating ? (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      <HarveyBall rating={rating} p={p} size={size} />
+      <span style={{ fontSize: 11.5, color: ratingColor(rating, p) }}>{rating}</span>
+    </span>
+  ) : (
+    <span style={{ color: p.sub2 }} title="Not rated: the pipeline had no signal for this charity.">—</span>
+  );
 
 const EVIDENCE_STEPS = 4;
 
@@ -237,7 +241,7 @@ const COLS: Col[] = [
   // size) and LOW risk on its own page. Said explicitly rather than making
   // the two numbers agree, since browse's lightweight index doesn't carry
   // the full risk register to agree WITH — see bd for the real fix.
-  { key: 'risk', label: 'Risk', tip: 'A lighter governance/red-flag signal, not the full risk assessment — missing governance data can lower it even with no red flags found. See the charity\'s own page for the complete, named risk assessment.', width: 120 },
+  { key: 'risk', label: 'Governance', tip: 'Governance: board and policy basics plus any red flags from the risk review. Strong = healthiest. Not the full risk assessment, since missing governance data can lower it even when no red flags are found; the charity\'s own page has the complete, named risk assessment.', width: 120 },
   { key: 'donorFit', label: 'Donor fit', tip: 'Fit for Muslim donors — cause alignment and zakat signals. Strong = best fit.', width: 120 },
   { key: 'programPct', label: 'Program %', tip: 'Share of spending that went to programs in the latest filing. Blank = not reported.', width: 88, align: 'right' },
   { key: 'evidence', label: 'Evidence', tip: 'How well this charity\'s impact claims are evidenced — Verified, Established, Building or Early.', width: 100 },
@@ -254,15 +258,45 @@ const SortableTh: React.FC<{
   const active = sortBy === col.key;
   return (
     <th
-      style={{ padding: '10px 6px', width: col.width, textAlign: col.align ?? 'left', cursor: 'pointer', userSelect: 'none', color: active ? p.fg : undefined }}
-      title={col.tip}
-      onClick={() => onSort(col.key)}
+      style={{ padding: '10px 6px', width: col.width, textAlign: col.align ?? 'left', userSelect: 'none', color: active ? p.fg : undefined }}
       aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
-      {col.label}
-      {col.tip && <span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>}
-      <span style={{ marginLeft: 4, color: active ? p.accent : 'transparent' }}>{sortDir === 'asc' ? '▲' : '▼'}</span>
+      {/* A real button, so the column can be sorted from the keyboard and is
+          announced as a control; the th itself only carries aria-sort. */}
+      <button
+        type="button"
+        onClick={() => onSort(col.key)}
+        title={col.tip}
+        style={{ font: 'inherit', color: 'inherit', letterSpacing: 'inherit', textTransform: 'inherit', textAlign: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+      >
+        {col.label}
+        {col.tip && <span style={{ color: p.sub2, marginLeft: 3 }} aria-hidden="true">ⓘ</span>}
+        <span style={{ marginLeft: 4, color: active ? p.accent : 'transparent' }} aria-hidden="true">{sortDir === 'asc' ? '▲' : '▼'}</span>
+      </button>
     </th>
+  );
+};
+
+
+// Definitions for the table's columns, in the page rather than only in hover
+// tooltips: a touch screen or a keyboard can never open a `title`.
+const ColumnGuide: React.FC<{ p: GmgPalette; padX?: number }> = ({ p, padX = 0 }) => {
+  const items: [string, string][] = [
+    ['Zakat or sadaqah', 'Accepts zakat (the charity says so publicly) or Sadaqah.'],
+    ...COLS.filter((c) => c.tip).map((c): [string, string] => [c.label, c.tip as string]),
+  ];
+  return (
+    <details style={{ padding: `0 ${padX}px`, margin: '0 0 12px', fontSize: 12.5, lineHeight: 1.5, color: p.sub }}>
+      <summary style={{ cursor: 'pointer', color: p.accent, fontWeight: 500 }}>What do these columns mean?</summary>
+      <dl style={{ margin: '10px 0 0', display: 'grid', gridTemplateColumns: 'max-content 1fr', gap: '6px 16px' }}>
+        {items.map(([term, def]) => (
+          <React.Fragment key={term}>
+            <dt style={{ fontWeight: 500, color: p.fg }}>{term}</dt>
+            <dd style={{ margin: 0 }}>{def}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+    </details>
   );
 };
 
@@ -375,13 +409,13 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
           v = a.amalScore - b.amalScore;
           break;
         case 'finances':
-          v = RANK[a.financialHealth] - RANK[b.financialHealth];
+          v = cmpSignal(a.financialHealth, b.financialHealth, dir);
           break;
         case 'risk':
-          v = RANK[a.risk] - RANK[b.risk];
+          v = cmpSignal(a.risk, b.risk, dir);
           break;
         case 'donorFit':
-          v = RANK[a.donorFit] - RANK[b.donorFit];
+          v = cmpSignal(a.donorFit, b.donorFit, dir);
           break;
         case 'programPct':
           v = (a.programPct ?? -1) - (b.programPct ?? -1);
@@ -493,6 +527,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
            Container tap navigates; the name is a real Link so keyboard and
            crawlers both work; compare is a real checkbox. */
         <section style={{ padding: `10px ${padX}px 28px`, display: 'grid', gap: 8 }}>
+          <ColumnGuide p={p} />
           {/* The chevron on each card is the standing "this opens something"
               cue; the press state below is the one that fires on touch.
 
@@ -520,7 +555,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               borderBottom: `1px solid ${p.rule2}`,
             }}
           >
-            {(['GMG', 'Fin', 'Risk', 'Fit'] as const).map((label) => (
+            {(['GMG', 'Fin', 'Gov', 'Fit'] as const).map((label) => (
               <span key={label} style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, textAlign: 'center' }}>
                 {label}
               </span>
@@ -534,6 +569,9 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
             <span style={{ fontFamily: FONT_MONO, fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: p.sub2, justifySelf: 'end' }}>
               Compare
             </span>
+          </div>
+          <div style={{ padding: '6px 14px 8px', fontSize: 11, lineHeight: 1.5, color: p.sub }}>
+            Fin = finances · Gov = governance · Fit = donor fit · Prog = program spending
           </div>
 
           {rows.map((row, i) => {
@@ -562,7 +600,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                   <Link
                     to={hrefFor(row.ein)}
                     onClick={(e) => { e.stopPropagation(); trackRowClick(row, i); }}
-                    style={{ display: 'block', textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
+                    style={{ display: 'flex', alignItems: 'center', minHeight: 44, textDecoration: 'none', color: 'inherit', flex: 1, minWidth: 0 }}
                   >
                     <div style={{ fontFamily: FONT_DISPLAY, fontSize: 19, lineHeight: 1.15, letterSpacing: ft.displayTracking }}>
                       {row.name}
@@ -591,14 +629,14 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
 
                 {/* EIN lives on the detail page; a donor scans by cause and size. */}
                 <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 2 }}>
-                  {titleCaseCause(row.cause)} · {fmtMoney(row.revenue)}
+                  {titleCaseCause(row.cause)} · {usdCompact(row.revenue)}
                 </div>
 
                 {/* One signal line, on the same columns as the header above. */}
                 <div style={{ display: 'grid', gridTemplateColumns: SIGNAL_COLS, gap: 10, alignItems: 'center', marginTop: 9 }}>
                   <SignalBall label="GMG" rating={row.overall} p={p} />
                   <SignalBall label="Finances" rating={row.financialHealth} p={p} />
-                  <SignalBall label="Risk" rating={row.risk} p={p} />
+                  <SignalBall label="Governance" rating={row.risk} p={p} />
                   <SignalBall label="Donor fit" rating={row.donorFit} p={p} />
                   <span
                     data-program-pct
@@ -613,7 +651,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     aria-checked={isSelected}
                     aria-label={`Select ${row.name} to compare`}
                     onClick={(e) => { e.stopPropagation(); toggleSelect(row.ein); }}
-                    style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 13, margin: -13 }}
+                    style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 15, margin: -15 }}
                   >
                     <span style={{ width: 15, height: 15, borderRadius: 4, border: `1px solid ${isSelected ? p.accent : p.rule2}`, background: isSelected ? p.accent : 'transparent', display: 'inline-block' }} />
                   </button>
@@ -665,14 +703,15 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               </div>
             ))}
           </div>
+          <ColumnGuide p={p} />
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 900 }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 2, background: p.bg }}>
               <tr
                 style={{
                   borderBottom: sectionBorder,
-                  color: p.sub2,
+                  color: p.sub,
                   fontFamily: FONT_MONO,
-                  fontSize: 9.5,
+                  fontSize: 10.5,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                   textAlign: 'left',
@@ -680,20 +719,23 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               >
                 <th style={{ padding: '10px 6px', width: 28 }} />
                 <th
-                  style={{ padding: '10px 6px', cursor: 'pointer', userSelect: 'none', color: sortBy === 'name' ? p.fg : undefined }}
-                  onClick={() => onSort('name')}
+                  style={{ padding: '10px 6px', userSelect: 'none', color: sortBy === 'name' ? p.fg : undefined }}
                   aria-sort={sortBy === 'name' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
                 >
-                  Charity / EIN
-                  <span style={{ marginLeft: 4, color: sortBy === 'name' ? p.accent : 'transparent' }}>
-                    {sortDir === 'asc' ? '▲' : '▼'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onSort('name')}
+                    style={{ font: 'inherit', color: 'inherit', letterSpacing: 'inherit', textTransform: 'inherit', textAlign: 'inherit', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                  >
+                    Charity / EIN
+                    <span style={{ marginLeft: 4, color: sortBy === 'name' ? p.accent : 'transparent' }} aria-hidden="true">
+                      {sortDir === 'asc' ? '▲' : '▼'}
+                    </span>
+                  </button>
                 </th>
                 {/* Cause then Wallet (wallet is filter-only, not sortable) */}
                 <SortableTh col={COLS[0]} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
-                <th style={{ padding: '10px 6px', width: 90 }} title="Zakat-eligible (the charity publicly accepts zakat) or Sadaqah.">
-                  Wallet<span style={{ color: p.sub2, marginLeft: 3 }}>ⓘ</span>
-                </th>
+                <th style={{ padding: '10px 6px', width: 110 }}>Zakat or sadaqah</th>
                 {COLS.slice(1).map((col) => (
                   <SortableTh key={col.key} col={col} p={p} sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
                 ))}
@@ -749,7 +791,7 @@ export const GmgBrowse: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     <EvidenceCell stage={row.verification} p={p} />
                   </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right', fontFamily: FONT_MONO, fontSize: 11.5, color: p.fg }}>
-                    {fmtMoney(row.revenue)}
+                    {usdCompact(row.revenue)}
                   </td>
                   <td style={{ padding: '8px 6px', color: p.sub2, fontSize: 14 }}>›</td>
                 </tr>

@@ -155,7 +155,7 @@ describe('Evidence column on desktop', () => {
     // must not share it, or the row says "category" about a scale.
     const { container } = renderBrowse();
     const cell = cellFor(container, '11-1111111');
-    const wallet = within(container).getAllByText(/Accepts Zakat/i)[0];
+    const wallet = within(container.querySelector('tbody') as HTMLElement).getAllByText(/Accepts Zakat/i)[0];
 
     expect(cell.tagName).toBe('SPAN');
     expect(cell.style.borderRadius).toBe('');
