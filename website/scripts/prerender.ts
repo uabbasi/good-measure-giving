@@ -821,6 +821,19 @@ function buildCalculatorAssetMeta(asset: CalculatorAsset): PageMeta {
 
 // ── HTML injection ─────────────────────────────────────────────────────
 
+// Same trailing-slash normalization as the canonical, applied to every page URL
+// inside JSON-LD (breadcrumb items, ItemList entries, `url` fields). Google
+// crawls URLs it finds in structured data; each no-slash one 308-redirects and
+// lands in Search Console's "Page with redirect" report. File URLs (og-share.jpg)
+// and the bare origin are left alone.
+export function serializeJsonLd(block: unknown): string {
+  return JSON.stringify(block, (_key, value) =>
+    typeof value === 'string' && value.startsWith(`${SITE_URL}/`) && !value.endsWith('/') && !/\.\w+$/.test(value)
+      ? `${value}/`
+      : value
+  ).replace(/<\//g, '\\u003c/');
+}
+
 function injectMeta(html: string, meta: PageMeta): string {
   // Replace <title>
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`);
@@ -886,8 +899,7 @@ function injectMeta(html: string, meta: PageMeta): string {
     const blocks = Array.isArray(meta.jsonLd) ? meta.jsonLd : [meta.jsonLd];
     jsonLdTag = blocks
       .map((block) => {
-        const payload = JSON.stringify(block).replace(/<\//g, '\\u003c/');
-        return `\n    <script type="application/ld+json">${payload}</script>`;
+        return `\n    <script type="application/ld+json">${serializeJsonLd(block)}</script>`;
       })
       .join('');
   }
