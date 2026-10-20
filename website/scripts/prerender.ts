@@ -825,13 +825,15 @@ function buildCalculatorAssetMeta(asset: CalculatorAsset): PageMeta {
 // inside JSON-LD (breadcrumb items, ItemList entries, `url` fields). Google
 // crawls URLs it finds in structured data; each no-slash one 308-redirects and
 // lands in Search Console's "Page with redirect" report. File URLs (og-share.jpg)
-// and the bare origin are left alone.
+// and the bare origin are left alone. Also applied to page-meta.json, which
+// RouteMetadata re-injects as JSON-LD after hydration.
+const slashPageUrls = (_key: string, value: unknown) =>
+  typeof value === 'string' && value.startsWith(`${SITE_URL}/`) && !value.endsWith('/') && !/\.\w+$/.test(value)
+    ? `${value}/`
+    : value;
+
 export function serializeJsonLd(block: unknown): string {
-  return JSON.stringify(block, (_key, value) =>
-    typeof value === 'string' && value.startsWith(`${SITE_URL}/`) && !value.endsWith('/') && !/\.\w+$/.test(value)
-      ? `${value}/`
-      : value
-  ).replace(/<\//g, '\\u003c/');
+  return JSON.stringify(block, slashPageUrls).replace(/<\//g, '\\u003c/');
 }
 
 function injectMeta(html: string, meta: PageMeta): string {
@@ -1088,7 +1090,7 @@ async function prerenderPages() {
   const metadataDir = metadataOnly ? path.join(__dirname, '../public') : DIST_DIR;
   const clientMetas = [...metas];
   fs.mkdirSync(metadataDir, { recursive: true });
-  fs.writeFileSync(path.join(metadataDir, 'page-meta.json'), JSON.stringify(Object.fromEntries(clientMetas.map(({ route, ...meta }) => [route, meta]))));
+  fs.writeFileSync(path.join(metadataDir, 'page-meta.json'), JSON.stringify(Object.fromEntries(clientMetas.map(({ route, ...meta }) => [route, meta])), slashPageUrls));
   if (metadataOnly) return;
 
   const redirectCount = writeRedirects(metas);
