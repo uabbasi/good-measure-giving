@@ -134,12 +134,12 @@ describe('surface ramp — can you see where a card is', () => {
     expect(contrast(dark.sub2, dark.bg2)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('does not pretend light was fixed too', () => {
-    // Light is left alone on purpose: its card is darker than its ground, so
-    // deepening it pushes muted text the wrong way, and light sub2 is already
-    // under the bar. Pinned so the asymmetry reads as a decision, and so that
-    // anyone who does fix light sub2 sees this test and can lift the surface.
-    expect(contrast(light.sub2, light.bg2)).toBeLessThan(3);
+  it('keeps light small muted text at 4.5:1 on every light ground', () => {
+    // sub2 carries the card meta line (bg2), page text (bg), chips (transparent
+    // on bg/bg2), the card fill and the selected browse row (bg3).
+    for (const ground of [light.bg, light.bg2, light.bg3, light.card]) {
+      expect(contrast(light.sub2, ground)).toBeGreaterThanOrEqual(4.5);
+    }
   });
 });
 
@@ -154,8 +154,7 @@ describe('mobile list edges', () => {
 
   it('draws the disclosure chevron at the 3:1 floor for a meaningful graphic', () => {
     // On a phone the chevron is the whole affordance — there is no cursor and
-    // no hover behind it. sub2, which the desktop table uses, lands at 2.7:1
-    // on the light card.
+    // no hover behind it.
     expect(contrast(light.sub, light.bg2)).toBeGreaterThanOrEqual(3);
     expect(contrast(dark.sub, dark.bg2)).toBeGreaterThanOrEqual(3);
   });

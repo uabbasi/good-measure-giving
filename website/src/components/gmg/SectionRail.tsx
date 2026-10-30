@@ -13,9 +13,9 @@ export interface RailSection {
   label: string;
 }
 
-// The mobile bar renders 40px tall; 8px more keeps the section heading clear
-// of it rather than flush against it after a jump.
-export const MOBILE_RAIL_OFFSET = 48;
+// The mobile bar renders 45px tall (44px tap targets + 1px border); 8px more
+// keeps the section heading clear of it rather than flush against it after a jump.
+export const MOBILE_RAIL_OFFSET = 53;
 
 export const SectionRail: React.FC<{
   sections: RailSection[];
@@ -49,14 +49,18 @@ export const SectionRail: React.FC<{
   if (sections.length === 0) return null;
 
   const link = (s: RailSection): React.CSSProperties => ({
-    display: 'block',
+    // Phones: the link itself is the 44px touch target, so the bar grows 5px
+    // rather than relying on a hit area that overflows the visible bar.
+    display: isMobile ? 'flex' : 'block',
+    alignItems: 'center',
+    minHeight: isMobile ? 44 : undefined,
     fontFamily: FONT_MONO,
     fontSize: 10,
     letterSpacing: '0.06em',
     textTransform: 'uppercase',
     color: active === s.id ? p.fg : p.sub2,
     textDecoration: 'none',
-    padding: isMobile ? '6px 10px' : '5px 0',
+    padding: isMobile ? '0 10px' : '5px 0',
     borderLeft: isMobile ? 'none' : `2px solid ${active === s.id ? p.accent : 'transparent'}`,
     paddingLeft: 10,
     whiteSpace: 'nowrap',
@@ -84,7 +88,7 @@ export const SectionRail: React.FC<{
             overflowX: 'auto',
             background: p.bg2,
             borderBottom: `1px solid ${p.rule}`,
-            padding: '6px 8px',
+            padding: '0 8px',
           }}
         >
           {sections.map((s) => (

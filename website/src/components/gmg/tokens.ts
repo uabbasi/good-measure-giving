@@ -58,7 +58,9 @@ const light: GmgPalette = {
   bg3: '#e5dcbf',
   fg: '#13160e',
   sub: '#5e6356',
-  sub2: '#8a8e80',
+  // Light sub2 equals sub: bg3 (a selected browse row) is the darkest ground it
+  // sits on, and #5e6356 is the lightest tone in this hue that clears 4.5:1 there.
+  sub2: '#5e6356',
   rule: '#dfdac7',
   rule2: '#c9c2a8',
   accent: '#3d4a30',
@@ -86,10 +88,7 @@ const light: GmgPalette = {
 // see where the cards were. Dark now steps dL* 7.1, light stays at 3.1.
 //
 // Light is NOT matched to it on purpose. There the card is darker than its
-// ground, so deepening it pushes muted text the wrong way — and light `sub2`
-// already sits at 2.69:1 on the card, under the 4.5:1 small text wants. That
-// is a real problem, but it is a pre-existing one, and darkening the surface
-// under it would have made it worse rather than better.
+// ground, so deepening it would push muted text the wrong way.
 const dark: GmgPalette = {
   bg: '#13140e',
   bg2: '#20231a',

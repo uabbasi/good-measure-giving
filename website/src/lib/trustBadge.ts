@@ -17,7 +17,7 @@ const BADGE_COLORS = {
   card: '#ebe4cc',
   ink: '#13160e',
   sub: '#5e6356',
-  sub2: '#8a8e80',
+  sub2: '#5e6356',
   rule: '#dfdac7',
   rule2: '#c9c2a8',
   sage: '#3d4a30',

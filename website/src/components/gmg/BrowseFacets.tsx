@@ -87,7 +87,6 @@ export const BrowseFacets: React.FC<{
     color: p.fg,
     fontFamily: FONT_TEXT,
     fontSize: 16,
-    outline: 'none',
   };
 
   // Verbatim from the old FilterPills.
