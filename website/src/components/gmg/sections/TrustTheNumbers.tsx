@@ -29,8 +29,24 @@ import { GmgPalette, FONT_MONO } from '../tokens';
 import type { GmgCharity } from '../charityAdapter';
 import { dataVintage } from './dataVintage';
 
+const FIELD_LABELS: Record<string, string> = {
+  admin_expenses: 'Administrative expenses',
+  candid_seal: 'Candid transparency seal',
+  charity_navigator_score: 'Charity Navigator score',
+  claims_zakat_eligible: 'Says it accepts zakat',
+  founded_year: 'Year founded',
+  fundraising_expenses: 'Fundraising expenses',
+  has_audited_financials: 'Has audited financial statements',
+  ntee_code: 'Nonprofit category code (NTEE)',
+  program_expense_ratio: 'Share of spending on programs',
+  total_expenses: 'Total expenses',
+  total_revenue: 'Total revenue',
+  transparency_score: 'Charity Navigator transparency score',
+  working_capital_months: 'Months of reserves',
+};
+
 const fieldLabel = (field: string): string =>
-  field.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+  FIELD_LABELS[field] ?? field.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
 
 const AWARD_LINKS: { key: 'cn' | 'candid' | 'bbb'; urlKey: 'cnUrl' | 'candidUrl' | 'bbbUrl'; name: string }[] = [
   { key: 'cn', urlKey: 'cnUrl', name: 'Charity Navigator' },
@@ -132,7 +148,8 @@ export const TrustTheNumbers: React.FC<{
                         href={row.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                        className="tap-link"
+                        style={{ color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
                       >
                         {row.sourceName} ↗
                       </a>
@@ -156,7 +173,8 @@ export const TrustTheNumbers: React.FC<{
                         href={row.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                        className="tap-link"
+                        style={{ color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
                       >
                         {row.sourceName} ↗
                       </a>
@@ -192,7 +210,8 @@ export const TrustTheNumbers: React.FC<{
                 href={c.bbb.reviewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                className="tap-link"
+                style={{ marginTop: 8, fontSize: 12, color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
               >
                 Read the BBB review ↗
               </a>
@@ -211,7 +230,8 @@ export const TrustTheNumbers: React.FC<{
                 href={c.awards[a.urlKey] as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontSize: 12, color: p.sub, borderBottom: `1px solid ${p.rule2}` }}
+                className="tap-link"
+                style={{ fontSize: 12, color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
               >
                 {c.awards[a.key] ? `${a.name}: ${c.awards[a.key]}` : a.name} ↗
               </a>

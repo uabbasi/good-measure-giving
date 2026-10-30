@@ -70,7 +70,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
       {step === 'gather' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Gather the family</h2>
+            <h2 className="text-lg font-merriweather font-normal">Gather the family</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Bring everyone together and invite the people you give with. Once
               they&apos;ve joined, move on to explore charities as a family.
@@ -83,7 +83,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
       {step === 'explore' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Explore together</h2>
+            <h2 className="text-lg font-merriweather font-normal">Explore together</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Browse charities side by side and talk about what matters to your
               family. You can add the ones you choose to your plan in the next
@@ -113,7 +113,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
       {step === 'decide' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Decide as a family</h2>
+            <h2 className="text-lg font-merriweather font-normal">Decide as a family</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Add the charities you explored and set how much weight each one
               carries in your plan.
@@ -126,7 +126,7 @@ export const GivingSession: React.FC<{ planId: string; onExit?: () => void }> = 
       {step === 'recap' && (
         <div className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold">Recap</h2>
+            <h2 className="text-lg font-merriweather font-normal">Recap</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Here&apos;s what your family decided together.
             </p>

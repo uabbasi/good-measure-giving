@@ -5,7 +5,7 @@
 // broken and the suite would stay green.
 
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
@@ -55,7 +55,7 @@ describe('GmgBrowse Evidence column sort', () => {
     const user = userEvent.setup();
     renderBrowse();
 
-    await user.click(screen.getByRole('columnheader', { name: /Evidence/ }));
+    await user.click(within(screen.getByRole('columnheader', { name: /Evidence/ })).getByRole('button'));
 
     const order = screen.getAllByText(/^(Whiskey|Xray|Yankee|Zeta)$/).map((el) => el.textContent);
     expect(order).toEqual(['Yankee', 'Whiskey', 'Zeta', 'Xray']);

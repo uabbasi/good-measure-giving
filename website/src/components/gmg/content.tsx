@@ -18,6 +18,7 @@ import { GmgNav } from './chrome';
 import { GmgLogo } from './primitives';
 import { paths } from '../../lib/paths';
 import { useIsMobile } from './useIsMobile';
+import { useOptionalLandingTheme } from '../../../contexts/LandingThemeContext';
 
 // Resolve the motif font CSS vars (mirrors ChangelogPage / GmgChromeFrame).
 export function useMotifFontVars(): { ft: FontTheme; fontVars: React.CSSProperties } {
@@ -90,7 +91,7 @@ export const Breadcrumb: React.FC<{ p: GmgPalette; trail: { label: string; to?: 
       <span key={c.label}>
         {i > 0 && <span style={{ margin: '0 8px', color: p.rule2 }}>/</span>}
         {c.to ? (
-          <Link to={c.to} style={{ color: p.sub, textDecoration: 'none' }}>
+          <Link to={c.to} className="tap-link" style={{ color: p.sub, textDecoration: 'none' }}>
             {c.label}
           </Link>
         ) : (
@@ -197,8 +198,10 @@ export const H3: React.FC<{ p: GmgPalette; children: React.ReactNode }> = ({ p, 
 );
 
 // Inline accent link (Router Link).
-export const ALink: React.FC<{ p: GmgPalette; to: string; children: React.ReactNode }> = ({ p, to, children }) => (
-  <Link to={to} style={{ color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
+// `standalone` is for a link that sits on its own line rather than inside a sentence: it gets a
+// 44px touch target on phones.
+export const ALink: React.FC<{ p: GmgPalette; to: string; children: React.ReactNode; standalone?: boolean }> = ({ p, to, children, standalone }) => (
+  <Link to={to} className={standalone ? 'tap-link' : undefined} style={{ color: p.accent, textDecoration: 'none', fontWeight: 500 }}>
     {children}
   </Link>
 );
@@ -396,6 +399,27 @@ export const CtaLink: React.FC<{ p: GmgPalette; to: string; children: React.Reac
   </Link>
 );
 
+// Light/dark switch, in the footer. It is the only theme control the site has.
+const ThemeToggle: React.FC<{ p: GmgPalette }> = ({ p }) => {
+  const theme = useOptionalLandingTheme();
+  if (!theme) return null;
+  const { isDark, toggleTheme } = theme;
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      onClick={toggleTheme}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', padding: 0, color: p.sub2, fontSize: 12, fontFamily: 'inherit', cursor: 'pointer' }}
+    >
+      <span>Dark mode</span>
+      <span aria-hidden="true" style={{ position: 'relative', display: 'inline-block', width: 30, height: 16, borderRadius: 99, background: isDark ? p.accent : p.rule2 }}>
+        <span style={{ position: 'absolute', top: 2, left: isDark ? 16 : 2, width: 12, height: 12, borderRadius: 99, background: p.bg, transition: 'left 0.15s ease-out' }} />
+      </span>
+    </button>
+  );
+};
+
 // Motif footer — the tail chrome the full-bleed pages never had. Compact link
 // columns + tagline, palette-driven.
 export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, isMobile }) => {
@@ -460,10 +484,10 @@ export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, i
             >
               {col.heading}
             </div>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 9 }}>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: isMobile ? 0 : 9 }}>
               {col.links.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} style={{ fontSize: 13.5, color: p.sub, textDecoration: 'none' }}>
+                  <Link to={l.to} className="tap-link" style={{ fontSize: 13.5, color: p.sub, textDecoration: 'none' }}>
                     {l.label}
                   </Link>
                 </li>
@@ -488,10 +512,11 @@ export const GmgFooter: React.FC<{ p: GmgPalette; isMobile: boolean }> = ({ p, i
       >
         <span>© {new Date().getUTCFullYear()} Good Measure Giving</span>
         <span style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-          <Link to="/privacy/" style={{ color: p.sub2, textDecoration: 'none' }}>
+          <Link to="/privacy/" className="tap-link" style={{ color: p.sub2, textDecoration: 'none' }}>
             Privacy & analytics preferences
           </Link>
-          <Link to="/terms/" style={{ color: p.sub2, textDecoration: 'none' }}>Terms</Link>
+          <Link to="/terms/" className="tap-link" style={{ color: p.sub2, textDecoration: 'none' }}>Terms</Link>
+          <ThemeToggle p={p} />
         </span>
       </div>
     </footer>

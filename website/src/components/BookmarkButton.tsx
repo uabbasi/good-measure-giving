@@ -5,7 +5,9 @@
  */
 
 import React, { useState } from 'react';
-import { useBookmarkState } from '../contexts/UserFeaturesContext';
+import { useBookmarkState, useProfileState } from '../contexts/UserFeaturesContext';
+import { useSharedPlans } from '../hooks/useSharedPlans';
+import { useCharities } from '../hooks/useCharities';
 import { useAuth } from '../auth';
 import { useLandingTheme } from '../../contexts/LandingThemeContext';
 import { trackBookmark } from '../utils/analytics';
@@ -36,6 +38,9 @@ export function BookmarkButton({
   const { isDark } = useLandingTheme();
   const { isSignedIn } = useAuth();
   const { isBookmarked, toggleBookmark, isLoading } = useBookmarkState();
+  const { profile, updateProfile } = useProfileState();
+  const { hasPlans, addCharityToAllPlans } = useSharedPlans();
+  const { summaries } = useCharities();
   const [isAnimating, setIsAnimating] = useState(false);
   const [showSignInHint, setShowSignInHint] = useState(false);
 
@@ -54,7 +59,7 @@ export function BookmarkButton({
   };
 
   const labelledButtonClasses = {
-    sm: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[40px]',
+    sm: 'inline-flex items-center gap-1.5 px-2.5 py-1.5 min-h-[44px]',
     md: 'inline-flex items-center gap-1.5 px-3 py-2 min-h-[44px]',
     lg: 'inline-flex items-center gap-2 px-3.5 py-2.5 min-h-[48px]',
   };
@@ -76,9 +81,21 @@ export function BookmarkButton({
       await toggleBookmark(charityEin);
       trackBookmark(charityEin, charityName || '', bookmarked ? 'remove' : 'add');
       if (!bookmarked) {
+        // The auto-categorizer ignores an add that carries no cause tags, so fall back
+        // to the index's tags when the caller didn't pass any.
+        const tags = causeTags ?? summaries?.find((s) => s.ein === charityEin)?.causeTags;
         window.dispatchEvent(new CustomEvent('gmg:bookmark-added', {
-          detail: { charityEin, charityName: charityName || 'Charity', causeTags },
+          detail: { charityEin, charityName: charityName || 'Charity', causeTags: tags },
         }));
+        // Add-side sync, as the plan page does: mirror into every shared plan.
+        if (hasPlans) await addCharityToAllPlans(charityEin);
+      } else {
+        // Removing from the plan also drops the plan entry (intended/given), as the
+        // plan page's own remove does; the shared plan is edited there, not here.
+        const assignments = profile?.charityBucketAssignments || [];
+        if (assignments.some((a) => a.charityEin === charityEin)) {
+          await updateProfile({ charityBucketAssignments: assignments.filter((a) => a.charityEin !== charityEin) });
+        }
       }
     } catch (err) {
       console.error('Failed to toggle bookmark:', err);

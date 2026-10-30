@@ -13,6 +13,7 @@
  * Keep the rendering dumb — all behavior is pushed up to the container.
  */
 
+import { usdFull } from '../../utils/money';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../../lib/paths';
@@ -54,11 +55,6 @@ interface CharityRecordRowProps {
   history?: CharityRecordHistoryEntry[];
 }
 
-/** Currency format: compact $1.2k when >= $1000, else `$n`. */
-function fmt(n: number): string {
-  if (n >= 1000) return `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
-  return `$${n}`;
-}
 
 /** Status pill content: label + color classes. */
 function statusPillClasses(status: AssignmentStatus, isDark: boolean): {
@@ -182,7 +178,7 @@ export function CharityRecordRow({
         isDark ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'
       } focus-within:border-emerald-500 transition-colors`}
     >
-      <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+      <span className={`text-[11px] mr-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
         $
       </span>
       <input
@@ -221,7 +217,7 @@ export function CharityRecordRow({
             className="flex items-center gap-2 justify-between"
           >
             <span className="flex items-center gap-2 min-w-0">
-              <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>{dateStr}</span>
+              <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>{dateStr}</span>
               <span
                 className={`shrink-0 text-[9.5px] font-semibold uppercase tracking-wide px-1.5 py-[1px] rounded-md border ${
                   h.category === 'zakat'
@@ -243,7 +239,7 @@ export function CharityRecordRow({
                 {h.receiptReceived ? 'Receipt' : 'No receipt'}
               </span>
             </span>
-            <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{fmt(h.amount)}</span>
+            <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{usdFull(h.amount)}</span>
           </li>
         );
       })}
@@ -272,7 +268,7 @@ export function CharityRecordRow({
       : undefined;
     const givenCell = charity.given > 0 ? (
       <span className={isDark ? 'text-emerald-400 font-semibold' : 'text-emerald-700 font-semibold'}>
-        {fmt(charity.given)}
+        {usdFull(charity.given)}
       </span>
     ) : (
       <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>—</span>
@@ -298,7 +294,7 @@ export function CharityRecordRow({
           <td className="px-2.5 py-1.5">
             <Link
               to={charityPath(charity.ein)}
-              className={`text-[13px] font-medium hover:underline ${
+              className={`tap-link text-[13px] font-medium hover:underline ${
                 isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
               }`}
             >
@@ -321,7 +317,7 @@ export function CharityRecordRow({
                 {givenCell}
                 <ChevronRight
                   className={`w-3 h-3 shrink-0 transition-transform ${expanded ? 'rotate-90' : ''} ${
-                    isDark ? 'text-slate-500' : 'text-slate-400'
+                    isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}
                 />
               </button>
@@ -345,7 +341,7 @@ export function CharityRecordRow({
                 >
                   <X
                     className={`w-3.5 h-3.5 ${
-                      isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                      isDark ? 'text-slate-400 hover:text-red-400' : 'text-slate-500 hover:text-red-500'
                     }`}
                   />
                 </button>
@@ -386,7 +382,7 @@ export function CharityRecordRow({
       <div className="flex items-center justify-between gap-2">
         <Link
           to={charityPath(charity.ein)}
-          className={`min-w-0 truncate text-[13px] font-medium ${
+          className={`tap-link min-w-0 truncate text-[13px] font-medium ${
             isDark ? 'text-slate-200 hover:text-white' : 'text-slate-700 hover:text-slate-900'
           } hover:underline`}
         >
@@ -405,7 +401,7 @@ export function CharityRecordRow({
             >
               <X
                 className={`w-3.5 h-3.5 ${
-                  isDark ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'
+                  isDark ? 'text-slate-400 hover:text-red-400' : 'text-slate-500 hover:text-red-500'
                 }`}
               />
             </button>
@@ -426,11 +422,11 @@ export function CharityRecordRow({
             <span>
               Given{' '}
               <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
-                {fmt(charity.given || 0)}
+                {usdFull(charity.given || 0)}
               </span>
               {charity.intended > 0 && (
                 <>
-                  {' '}· of {fmt(charity.intended)}
+                  {' '}· of {usdFull(charity.intended)}
                 </>
               )}
             </span>
@@ -442,11 +438,11 @@ export function CharityRecordRow({
           <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Given{' '}
             <span className={charity.given > 0 ? 'font-semibold text-emerald-500' : ''}>
-              {fmt(charity.given || 0)}
+              {usdFull(charity.given || 0)}
             </span>
             {charity.intended > 0 && (
               <>
-                {' '}· of {fmt(charity.intended)}
+                {' '}· of {usdFull(charity.intended)}
               </>
             )}
           </div>

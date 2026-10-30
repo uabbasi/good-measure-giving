@@ -691,7 +691,7 @@ export const MethodologyPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
                     p={p}
                     items={[
                       <><strong>All scoring math</strong> — deterministic Python functions</>,
-                      <><strong>Wallet tag assignment</strong> — rule-based on Zakat claims</>,
+                      <><strong>Zakat-or-sadaqah label</strong> — rule-based on Zakat claims</>,
                       <><strong>Risk deductions</strong> — formula-based on red flags</>,
                       <><strong>Tier classification</strong> — threshold-based scoring</>,
                     ]}

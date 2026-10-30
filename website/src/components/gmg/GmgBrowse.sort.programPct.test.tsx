@@ -8,7 +8,7 @@
 // Finding 2 and Task 1's `|| 0` fix.
 
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
@@ -57,7 +57,7 @@ describe('GmgBrowse Program % column sort', () => {
     const user = userEvent.setup();
     renderBrowse();
 
-    await user.click(screen.getByRole('columnheader', { name: /Program %/ }));
+    await user.click(within(screen.getByRole('columnheader', { name: /Program %/ })).getByRole('button'));
 
     const order = screen.getAllByText(/^(Fifty|Zulu|Alpha)$/).map((el) => el.textContent);
     expect(order).toEqual(['Fifty', 'Zulu', 'Alpha']);

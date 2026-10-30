@@ -30,7 +30,7 @@ export const getWalletType = (tag: string | null | undefined): WalletTagType => 
 export const formatWalletTag = (tag: string | undefined): string => {
   const type = getWalletType(tag);
   switch (type) {
-    case 'zakat': return 'Accepts Zakat';
+    case 'zakat': return 'Accepts zakat';
     case 'insufficient': return 'Insufficient Data';
     default: return 'Sadaqah';
   }

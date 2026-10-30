@@ -82,7 +82,8 @@ export const SourceList: React.FC<{ citations: Citation[]; p: GmgPalette }> = ({
                 href={c.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: p.sub, textDecoration: 'none', borderBottom: `1px solid ${p.rule2}` }}
+                className="tap-link"
+                style={{ color: p.sub, textDecoration: 'underline', textDecorationColor: p.rule2, textUnderlineOffset: 3 }}
               >
                 {c.sourceName} ↗
               </a>

@@ -8,6 +8,7 @@
  * absorbs the remainder.
  */
 
+import { usdFull } from '../../utils/money';
 import { useCallback, useMemo, useState } from 'react';
 import { m } from 'motion/react';
 import { writeBatch, doc, Timestamp } from 'firebase/firestore';
@@ -62,9 +63,6 @@ export const DEFAULT_SPLIT_CATEGORIES: SplitCategory[] = [
   },
 ];
 
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-}
 
 /**
  * Rebalance so percentages sum to exactly 100.
@@ -211,7 +209,7 @@ export function CategorySplit({
       className={`rounded-xl border overflow-hidden ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
     >
       <div className={`px-5 py-4 border-b ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
-        <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+        <h2 className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
           How would you like to split your giving?
         </h2>
         <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -245,7 +243,7 @@ export function CategorySplit({
                     {pct}%
                   </div>
                   <div className={`text-xs tabular-nums ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    = {formatUsd(dollars)} of {formatUsd(target)}
+                    = {usdFull(dollars)} of {usdFull(target)}
                   </div>
                 </div>
               </div>
@@ -267,7 +265,7 @@ export function CategorySplit({
       </div>
 
       <div className={`px-5 py-4 border-t flex items-center justify-between gap-3 ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
-        <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+        <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           Total: <span className="font-semibold tabular-nums">{total}%</span>
         </div>
         <div className="flex items-center gap-2">

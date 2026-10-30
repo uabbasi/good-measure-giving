@@ -24,6 +24,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { GmgCharityDetail } from './GmgCharityDetail';
 
 const mockMember = vi.fn(() => false);
+// The add-to-plan button needs the app's auth/bookmark providers; stubbed here.
+vi.mock('../BookmarkButton', () => ({ BookmarkButton: () => null }));
 vi.mock('../../auth/useAuth', () => ({ useCommunityMember: () => mockMember() }));
 vi.mock('../../auth/SignInButton', () => ({ SignInButton: () => <button>Sign in</button> }));
 vi.mock('./chrome', () => ({ GmgNav: () => null }));
@@ -91,7 +93,7 @@ describe('GmgCharityDetail — signed out', () => {
     expect(container.querySelector('h1')?.textContent).toBe('International Rescue Committee');
     expect(container.textContent).toContain('EIN 13-5660870');
     expect(container.textContent).toContain('Humanitarian Relief');
-    expect(container.textContent).toContain('Accepts Zakat');
+    expect(container.textContent).toContain('Accepts zakat');
     expect(container.textContent).toContain('Fuqara');
   });
 

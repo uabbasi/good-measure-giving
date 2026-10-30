@@ -3,6 +3,7 @@
  * Expandable rows showing individual items within each donation
  */
 
+import { usdExact, usdCents } from '../../utils/money';
 import React, { useState, useMemo } from 'react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
 import { parseLocalDate } from '../../utils/date';
@@ -41,15 +42,6 @@ export function InKindHistoryTable({
   const totalValue = useMemo(() => {
     return filteredDonations.reduce((sum, d) => sum + d.totalValue, 0);
   }, [filteredDonations]);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
 
   const formatDate = (dateStr: string) => {
     return parseLocalDate(dateStr).toLocaleDateString('en-US', {
@@ -107,7 +99,7 @@ export function InKindHistoryTable({
       {/* Summary */}
       <div className={`flex flex-wrap items-center gap-x-6 gap-y-2 text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
         <span>{filteredDonations.length} donation{filteredDonations.length !== 1 ? 's' : ''}</span>
-        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{formatCurrency(totalValue)}</strong></span>
+        <span>Total: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{usdExact(totalValue)}</strong></span>
       </div>
 
       {/* Table */}
@@ -143,7 +135,7 @@ export function InKindHistoryTable({
                 <svg
                   className={`w-4 h-4 flex-shrink-0 transition-transform ${
                     expandedId === donation.id ? 'rotate-90' : ''
-                  } ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
+                  } ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -156,18 +148,18 @@ export function InKindHistoryTable({
                     <span className={`font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {donation.recipientName}
                     </span>
-                    <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                    <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                       {formatDate(donation.date)}
                     </span>
                   </div>
-                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     {donation.items.length} item{donation.items.length !== 1 ? 's' : ''}
                     {donation.notes && ` · ${donation.notes}`}
                   </div>
                 </div>
 
                 <div className={`text-right font-medium whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {formatCurrency(donation.totalValue)}
+                  {usdExact(donation.totalValue)}
                 </div>
 
                 {/* Actions */}
@@ -223,7 +215,7 @@ export function InKindHistoryTable({
                 <div className={`px-4 pb-3 border-t ${isDark ? 'border-slate-700' : 'border-slate-100'}`}>
                   <table className="w-full text-sm mt-2">
                     <thead>
-                      <tr className={isDark ? 'text-slate-500' : 'text-slate-400'}>
+                      <tr className={isDark ? 'text-slate-400' : 'text-slate-500'}>
                         <th className="text-left py-1 font-medium text-xs">Item</th>
                         <th className="text-left py-1 font-medium text-xs">Category</th>
                         <th className="text-center py-1 font-medium text-xs">Condition</th>
@@ -241,7 +233,7 @@ export function InKindHistoryTable({
                               <span className={`ml-1 text-xs ${isDark ? 'text-amber-400' : 'text-amber-600'}`} title="Manual value">*</span>
                             )}
                           </td>
-                          <td className={`py-1.5 text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{item.category}</td>
+                          <td className={`py-1.5 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.category}</td>
                           <td className="py-1.5 text-center">
                             <span className={`text-xs px-1.5 py-0.5 rounded ${
                               item.condition === 'excellent' ? 'bg-emerald-500/20 text-emerald-500' :
@@ -253,8 +245,8 @@ export function InKindHistoryTable({
                             </span>
                           </td>
                           <td className={`py-1.5 text-center ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{item.quantity}</td>
-                          <td className={`py-1.5 text-right ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>${item.unitValue.toFixed(2)}</td>
-                          <td className={`py-1.5 text-right font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>${item.totalValue.toFixed(2)}</td>
+                          <td className={`py-1.5 text-right ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{usdCents(item.unitValue)}</td>
+                          <td className={`py-1.5 text-right font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>{usdCents(item.totalValue)}</td>
                         </tr>
                       ))}
                     </tbody>

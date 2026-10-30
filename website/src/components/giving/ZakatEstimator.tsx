@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react';
+import { usdFull } from '../../utils/money';
+import { useState, useMemo, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { AnimatePresence, m } from 'motion/react';
 import { Calculator, X } from 'lucide-react';
 import { useLandingTheme } from '../../../contexts/LandingThemeContext';
@@ -17,9 +19,6 @@ function parseAmount(value: string): number {
   return parseMoneyInput(value);
 }
 
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-}
 
 export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: ZakatEstimatorProps) {
   const { isDark } = useLandingTheme();
@@ -66,6 +65,9 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
     resetForm();
   }
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(dialogRef, isOpen, handleClose);
+
   const inputClass = `w-full px-3 py-2 rounded-lg border text-base ${
     isDark
       ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-500 focus:border-emerald-500'
@@ -94,6 +96,11 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
           />
           {/* Panel */}
           <m.div
+            ref={dialogRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="zakat-estimator-title"
             className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border shadow-xl ${
               isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
             }`}
@@ -107,7 +114,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calculator className={`w-5 h-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                  <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
+                  <h2 id="zakat-estimator-title" className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>Zakat Estimator</h2>
                 </div>
                 <button
                   onClick={handleClose}
@@ -211,29 +218,29 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                   <div className="space-y-2">
                     <div className={`flex justify-between text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                       <span>Total assets</span>
-                      <span className="tabular-nums">{formatUsd(estimate.totalAssets)}</span>
+                      <span className="tabular-nums">{usdFull(estimate.totalAssets)}</span>
                     </div>
                     {estimate.totalLiabilities > 0 && (
                       <div className={`flex justify-between text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         <span>Less debts</span>
-                        <span className="tabular-nums">−{formatUsd(estimate.totalLiabilities)}</span>
+                        <span className="tabular-nums">−{usdFull(estimate.totalLiabilities)}</span>
                       </div>
                     )}
                     <div className={`flex justify-between text-sm pt-1 border-t ${isDark ? 'text-slate-300 border-slate-700' : 'text-slate-600 border-slate-200'}`}>
                       <span>Net zakatable</span>
-                      <span className="tabular-nums">{formatUsd(estimate.netZakatable)}</span>
+                      <span className="tabular-nums">{usdFull(estimate.netZakatable)}</span>
                     </div>
 
                     {estimate.isAboveNisab ? (
                       <div className={`flex justify-between items-baseline pt-2 border-t ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
                         <span className={`text-sm font-medium ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>Zakat due (2.5%)</span>
                         <span className={`text-xl font-bold tabular-nums ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-                          {formatUsd(estimate.zakatAmount)}
+                          {usdFull(estimate.zakatAmount)}
                         </span>
                       </div>
                     ) : (
-                      <p className={`text-sm pt-2 border-t ${isDark ? 'text-slate-500 border-slate-700' : 'text-slate-400 border-slate-200'}`}>
-                        Below nisab threshold ({formatUsd(NISAB_USD)}). No zakat due.
+                      <p className={`text-sm pt-2 border-t ${isDark ? 'text-slate-400 border-slate-700' : 'text-slate-500 border-slate-200'}`}>
+                        Below nisab threshold ({usdFull(NISAB_USD)}). No zakat due.
                       </p>
                     )}
                   </div>
@@ -248,7 +255,7 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                   onClick={() => handleUse(estimate.zakatAmount)}
                   className="w-full px-4 py-2.5 rounded-lg font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
                 >
-                  Use this amount ({formatUsd(estimate.zakatAmount)})
+                  Use this amount ({usdFull(estimate.zakatAmount)})
                 </button>
               )}
               {lastYearZakat != null && lastYearZakat > 0 && (
@@ -260,12 +267,12 @@ export function ZakatEstimator({ isOpen, onClose, onUseAmount, lastYearZakat }: 
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  Use last year's amount ({formatUsd(lastYearZakat)})
+                  Use last year's amount ({usdFull(lastYearZakat)})
                 </button>
               )}
               <button
                 onClick={handleClose}
-                className={`w-full px-4 py-2 text-sm transition-colors ${isDark ? 'text-slate-500 hover:text-slate-400' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`w-full px-4 py-2 text-sm transition-colors ${isDark ? 'text-slate-400 hover:text-slate-400' : 'text-slate-500 hover:text-slate-500'}`}
               >
                 Enter my own amount
               </button>
