@@ -123,6 +123,14 @@ describe('SectionRail jump-target offset', () => {
   it('keeps the offset clear of the bar it compensates for', () => {
     // Pins the relationship rather than the number: an offset shorter than
     // the bar puts the heading straight back underneath it.
-    expect(MOBILE_RAIL_OFFSET).toBeGreaterThan(40);
+    // Bar = 44px links + 1px border.
+    expect(MOBILE_RAIL_OFFSET).toBeGreaterThan(45);
+  });
+
+  it('gives every mobile link a 44px touch target', () => {
+    const { container } = render(<SectionRail sections={sections} p={p} isMobile />);
+    for (const a of container.querySelectorAll('a')) {
+      expect(parseFloat(a.style.minHeight)).toBeGreaterThanOrEqual(44);
+    }
   });
 });
