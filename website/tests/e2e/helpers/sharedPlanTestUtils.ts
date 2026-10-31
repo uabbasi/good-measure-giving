@@ -54,14 +54,13 @@ export async function newUserContext(browser: Browser, errors: string[]) {
     // Force the clipboard share path (no native share sheet in automation).
     // @ts-expect-error remove navigator.share so the panel copies the link instead
     delete navigator.share;
-    // Suppress all first-visit onboarding so overlays don't intercept clicks.
+    // Suppress first-visit overlays so they don't intercept clicks: the analytics consent
+    // banner (fixed to the bottom of the page) and the in-app tips.
     try {
-      localStorage.setItem('gmg_intro_seen_v1', '1');
-      localStorage.setItem('gmg_welcome_tour_shown', 'true');
+      localStorage.setItem('gmg_analytics_consent', 'declined');
       localStorage.setItem('gmg-nux-browse-tip', '1');
       localStorage.setItem('gmg-nux-details-tip', '1');
       localStorage.setItem('gmg-nux-giving-plan-tip', '1');
-      localStorage.setItem('beta-banner-dismissed', '1');
     } catch {
       /* storage unavailable */
     }

@@ -6,15 +6,14 @@ test.describe('Navigation smoke tests', () => {
   test('landing page loads with hero CTA', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Good Measure Giving/);
-    await expect(page.locator('a[href="/browse"]:visible').first()).toBeVisible();
+    await expect(page.locator('a[href="/browse/"]:visible').first()).toBeVisible();
   });
 
-  test('landing page has community CTA section', async ({ page }) => {
+  test('landing page shows the hero and the independence section', async ({ page }) => {
     await page.goto('/');
-    // Wait for the visible hero heading to render (desktop layout)
-    await expect(page.locator('h1:visible').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1:visible').first()).toContainText(/Give with confidence/i, { timeout: 10000 });
     const body = await page.locator('body').textContent();
-    expect(body).toContain('Go deeper on the charities you care about');
+    expect(body).toContain('no charity ever pays to be here');
   });
 
   test('browse page loads with charities', async ({ page }) => {
@@ -30,8 +29,8 @@ test.describe('Navigation smoke tests', () => {
   test('FAQ page loads with categories', async ({ page }) => {
     await page.goto('/faq');
     await expect(page.locator('h1')).toContainText(/frequently asked/i);
-    await expect(page.getByRole('button', { name: 'General' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Zakat & Sadaqah' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Zakat & Sadaqah' })).toBeVisible();
   });
 
   test('FAQ contact CTA has email link', async ({ page }) => {
@@ -56,34 +55,35 @@ test.describe('Navigation smoke tests', () => {
     expect(body!.length).toBeGreaterThan(20);
   });
 
-  test('navbar links work', async ({ page }) => {
+  test('header nav links work', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav');
+    const nav = page.locator('header nav');
     await expect(nav).toBeVisible();
 
-    // Browse link in desktop nav
-    await nav.locator('a[href="/browse"]:visible').click();
-    await expect(page).toHaveURL('/browse');
+    await nav.locator('a[href="/browse/"]').click();
+    await expect(page).toHaveURL(/\/browse\/$/);
 
-    await nav.locator('a[href="/faq"]:visible').click();
-    await expect(page).toHaveURL('/faq');
-
-    await nav.locator('a[href="/about"]:visible').click();
-    await expect(page).toHaveURL('/about');
+    await page.locator('header nav a[href="/about/"]').click();
+    await expect(page).toHaveURL(/\/about\/$/);
   });
 
-  test('footer has contact link', async ({ page }) => {
-    await page.goto('/browse');
+  test('footer links to the main sections', async ({ page }) => {
+    await page.goto('/browse/');
     const footer = page.locator('footer');
-    await expect(footer.locator('a[href="mailto:hello@goodmeasuregiving.org"]')).toBeVisible();
+    for (const href of ['/faq/', '/methodology/', '/privacy/', '/terms/']) {
+      await expect(footer.locator(`a[href="${href}"]`)).toBeVisible();
+    }
   });
 
-  test('footer theme toggle works', async ({ page }) => {
-    await page.goto('/browse');
-    const footer = page.locator('footer');
-    const themeButton = footer.locator('button[aria-label*="mode"]');
-    await expect(themeButton).toBeVisible();
-    await themeButton.click();
-    await expect(page.locator('body')).toBeVisible();
+  test('footer light/dark switch flips and persists the theme', async ({ page }) => {
+    await page.goto('/browse/');
+    await page.getByRole('button', { name: 'Decline analytics' }).click({ timeout: 5000 }).catch(() => {}); // the consent banner covers the footer
+    const toggle = page.locator('footer').getByRole('switch', { name: /dark mode/i });
+    await expect(toggle).toBeVisible();
+    const before = await toggle.getAttribute('aria-checked');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-checked', before === 'true' ? 'false' : 'true');
+    const stored = await page.evaluate(() => localStorage.getItem('gmg-theme'));
+    expect(stored).toBe(before === 'true' ? 'light' : 'dark');
   });
 });

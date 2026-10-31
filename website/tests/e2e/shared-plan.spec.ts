@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-// Revoked/old/nonexistent token → bounced home. Self-contained: a missing plan
-// or token mismatch redirects to `/`, so this needs no auth or seeding.
-test('stale invite token redirects home', async ({ page }) => {
+// Revoked/old/nonexistent token → a clear "not valid" page with a way forward (it used to
+// bounce silently to the homepage, which read as a broken app). Self-contained: a missing plan
+// or token mismatch needs no auth or seeding.
+test('stale invite token explains the link is not valid', async ({ page }) => {
   await page.goto('/plan/join/nonexistent/badtoken');
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { name: /invite link isn't valid/i })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole('link', { name: /browse charities/i })).toBeVisible();
 });
 
 // Public preview must render without authentication and without exposing money.
