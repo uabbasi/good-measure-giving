@@ -14,7 +14,9 @@ test.describe('Unified Record / profile route', () => {
       if (msg.type() === 'error') consoleErrors.push(msg.text());
     });
 
-    await page.goto('/profile');
+    await page.goto('/profile/');
+    // The route is lazy-loaded; wait for the gate heading before reading the page.
+    await expect(page.getByRole('heading', { name: /giving plan/i })).toBeVisible({ timeout: 15_000 });
 
     const body = await page.locator('body').textContent();
     expect(body!.length).toBeGreaterThan(50);

@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
+  // The shared-plan-* specs need the Firebase emulators; run them with `npm run test:e2e:shared`.
+  testIgnore: '**/shared-plan-*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

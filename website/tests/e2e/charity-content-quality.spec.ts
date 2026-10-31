@@ -53,14 +53,15 @@ test.describe('Charity content quality', () => {
       await page.waitForTimeout(3000);
 
       const bodyText = await page.locator('body').textContent();
-      // Rich Muslim-facing charities should carry Zakat/Sadaqah wallet tags.
-      // Rich non-Muslim charities (e.g., UCS) are negative canaries — the Muslim-wallet
-      // pipeline must NOT tag them. Baseline charities may only have cause/archetype badges.
+      // Rich Muslim-facing charities carry the "Accepts zakat" tag. Rich non-Muslim charities
+      // (e.g., UCS) are negative canaries: the zakat pipeline must NOT tag them. Every charity
+      // shows a Zakat-or-sadaqah label, so the site-wide words alone prove nothing.
       if (charity.tier === 'rich') {
         if (charity.muslimFacing) {
-          expect(bodyText).toMatch(/Zakat|Sadaqah/i);
+          expect(bodyText).toMatch(/Accepts zakat/);
         } else {
-          expect(bodyText).not.toMatch(/Zakat|Sadaqah/i);
+          // Case-sensitive: the sources table has a "Says it accepts zakat" row label on every page.
+          expect(bodyText).not.toMatch(/Accepts zakat/);
         }
       } else {
         expect(bodyText!.length).toBeGreaterThan(200);

@@ -11,11 +11,13 @@ test.describe('Progress Dashboard / auth gate (M3)', () => {
     const consoleErrors: string[] = [];
     page.on('pageerror', (err) => consoleErrors.push(err.message));
 
-    const response = await page.goto('/profile');
+    const response = await page.goto('/profile/');
     expect(response).not.toBeNull();
     // Vite serves index.html for all routes; response should be 200.
     expect(response!.status()).toBeLessThan(400);
 
+    // The route is lazy-loaded; wait for the gate heading before reading the page.
+    await expect(page.getByRole('heading', { name: /giving plan/i })).toBeVisible({ timeout: 15_000 });
     const body = await page.locator('body').textContent();
     expect(body!.length).toBeGreaterThan(50);
 

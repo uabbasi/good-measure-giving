@@ -1,34 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-// CharityCard renders two links per charity (mobile + desktop); use :visible.
-const CHARITY_CARD = 'a[href^="/charity/"]:visible';
+// Saving a charity to the plan lives on the charity page now ("Add to Plan").
+test.describe('Add to Plan button', () => {
+  test('signed-out visitors get a sign-in hint instead of a crash', async ({ page }) => {
+    await page.goto('/charity/95-4453134/');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 15_000 });
 
-async function enterPowerMode(page: import('@playwright/test').Page) {
-  await page.goto('/browse');
-  await page.evaluate(() => localStorage.setItem('gmg-browse-style', 'power'));
-  await page.reload();
-  await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
-}
-
-test.describe('Add to giving button', () => {
-  test('anonymous users see a "Sign in to add" action on charity cards', async ({ page }) => {
-    await enterPowerMode(page);
-
-    // The desktop card has the button. On small viewports we may only have
-    // the mobile card (no button), so prefer a wide viewport for this test.
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.reload();
-    await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
-
-    const buttons = page.getByRole('button', { name: /Sign in to add|Add to giving|In your giving/i });
-    // At least one card should show an add-to-giving button
-    const count = await buttons.count();
-    expect(count).toBeGreaterThan(0);
-
-    // Clicking a "Sign in to add" button should NOT navigate away or hard-crash.
-    const first = buttons.first();
-    await first.click();
-    // Still on /browse
-    await expect(page).toHaveURL(/\/browse/);
+    const button = page.getByRole('button', { name: /Add to Giving Plan/i });
+    await expect(button).toBeVisible();
+    await button.click();
+    await expect(page.getByText(/Sign in to save charities/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/charity\/95-4453134/);
   });
 });

@@ -1,73 +1,41 @@
 import { test, expect } from '@playwright/test';
 
-const CHARITY_CARD = 'a[href^="/charity/"]:visible';
+// Browse is one page now: a table on wide screens and cards on phones, both linking to /charity/<ein>/.
+// (The old "guided" / "power" modes are gone.)
+const CHARITY_LINK = 'a[href^="/charity/"]:visible';
+const SEARCH = '#gmg-browse-search';
 
-/** Enter power mode so cards are immediately visible */
-async function enterPowerMode(page: import('@playwright/test').Page) {
-  await page.goto('/browse');
-  await page.evaluate(() => localStorage.setItem('gmg-browse-style', 'power'));
-  await page.reload();
-  await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
+async function openBrowse(page: import('@playwright/test').Page) {
+  await page.goto('/browse/');
+  await expect(page.locator(CHARITY_LINK).first()).toBeVisible({ timeout: 15_000 });
 }
 
 test.describe('Browse sorting and filtering', () => {
-  test('browse page has search input and filter presets', async ({ page }) => {
-    await enterPowerMode(page);
-
-    // Search input is always visible
-    await expect(page.locator('input[type="text"]')).toBeVisible();
-
-    // Preset filter buttons exist
-    const presetButtons = page.locator('button').filter({ hasText: /Palestine|Accepts Zakat|Systemic Change|Direct Relief/i });
-    expect(await presetButtons.count()).toBeGreaterThan(0);
+  test('browse has a search box and filter pills', async ({ page }) => {
+    await openBrowse(page);
+    await expect(page.locator(SEARCH)).toBeVisible();
+    await expect(page.getByRole('button', { name: /^Zakat \d+/ })).toBeVisible();
   });
 
-  test('filtering by preset reduces card count', async ({ page }) => {
-    await enterPowerMode(page);
-
-    const allCards = await page.locator(CHARITY_CARD).count();
-
-    const zakatBtn = page.getByRole('button', { name: /Accepts Zakat/i });
-    if (await zakatBtn.isVisible()) {
-      await zakatBtn.click();
-      await page.waitForTimeout(600);
-      const filteredCards = await page.locator(CHARITY_CARD).count();
-      expect(filteredCards).toBeGreaterThan(0);
-      expect(filteredCards).toBeLessThan(allCards);
-    }
+  test('filtering by Zakat reduces the list', async ({ page }) => {
+    await openBrowse(page);
+    const all = await page.locator('tbody tr').count();
+    await page.getByRole('button', { name: /^Zakat \d+/ }).click();
+    await expect.poll(async () => page.locator('tbody tr').count()).toBeLessThan(all);
   });
 
-  test('search filters persist across scroll', async ({ page }) => {
-    await enterPowerMode(page);
-
-    const searchInput = page.locator('input[type="text"]');
-    await searchInput.fill('relief');
-    await page.waitForTimeout(600);
-
-    const cards = page.locator(CHARITY_CARD);
-    const count = await cards.count();
-    expect(count).toBeGreaterThan(0);
-
-    // Scroll down and verify cards are still filtered
+  test('the search term survives scrolling', async ({ page }) => {
+    await openBrowse(page);
+    await page.locator(SEARCH).fill('relief');
+    await expect.poll(async () => page.locator(CHARITY_LINK).count()).toBeGreaterThan(0);
     await page.evaluate(() => window.scrollBy(0, 500));
-    await page.waitForTimeout(300);
-
-    const searchValue = await searchInput.inputValue();
-    expect(searchValue).toBe('relief');
+    await expect(page.locator(SEARCH)).toHaveValue('relief');
   });
 
-  test('guided paths activate appropriate filters', async ({ page }) => {
-    await page.goto('/browse');
-    await page.evaluate(() => localStorage.removeItem('gmg-browse-style'));
-    await page.reload();
-    await page.waitForTimeout(2000);
-
-    const zakatPath = page.getByRole('button', { name: /Pay My Zakat/i });
-    if (await zakatPath.isVisible()) {
-      await zakatPath.click();
-      await page.waitForTimeout(1000);
-      // Should show charity cards after selecting a guided path
-      await expect(page.locator(CHARITY_CARD).first()).toBeVisible({ timeout: 10000 });
-    }
+  test('column headers are real buttons that sort', async ({ page }) => {
+    await openBrowse(page);
+    const header = page.getByRole('columnheader', { name: /Program %/ });
+    await header.getByRole('button').click();
+    await expect(header).toHaveAttribute('aria-sort', /ascending|descending/);
   });
 });

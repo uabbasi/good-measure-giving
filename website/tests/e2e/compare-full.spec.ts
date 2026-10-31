@@ -8,18 +8,10 @@ const NAME1 = 'Muslim Legal Fund';
 const NAME2 = 'Union of Concerned Scientists';
 const NAME3 = 'ICNA Relief';
 
-const STORAGE_KEY = 'gmg-compare-charities';
-
-/** Set compare localStorage and navigate to /compare */
+/** Compare is URL-driven now: /compare/?eins=a,b,c */
 async function setupCompare(page: import('@playwright/test').Page, eins: string[]) {
-  // Use addInitScript to inject localStorage before React hydrates
-  // (WebKit can lose localStorage between cross-page navigations)
-  await page.addInitScript(({ key, eins }) => {
-    localStorage.setItem(key, JSON.stringify(eins));
-  }, { key: STORAGE_KEY, eins });
-  await page.goto('/compare');
-  // Wait for charity names to render
-  await page.waitForTimeout(5000);
+  await page.goto(`/compare/?eins=${eins.join(',')}`);
+  await expect(page.getByText(NAME1).first()).toBeVisible({ timeout: 15_000 });
 }
 
 test.describe('Compare page functional tests', () => {
@@ -64,21 +56,11 @@ test.describe('Compare page functional tests', () => {
     expect(bodyText).toContain(NAME2);
     expect(bodyText).toContain(NAME3);
 
-    // Click the first remove button (×)
-    const removeButtons = page.locator(
-      'button:has-text("×"), button:has-text("✕"), button:has-text("Remove"), button[aria-label*="remove" i], button[aria-label*="Remove" i]'
-    );
-    const removeCount = await removeButtons.count();
-    if (removeCount > 0) {
-      await removeButtons.first().click();
-      await page.waitForTimeout(1000);
-
-      bodyText = await page.locator('body').textContent();
-      // At least one charity should have been removed — only 2 of the 3 names remain
-      const namesPresent = [NAME1, NAME2, NAME3].filter((n) =>
-        bodyText!.includes(n)
-      );
-      expect(namesPresent.length).toBeLessThanOrEqual(2);
-    }
+    // Dropping one EIN from the URL leaves the other two.
+    await page.goto(`/compare/?eins=${EIN1},${EIN3}`);
+    await expect(page.getByText(NAME3).first()).toBeVisible({ timeout: 15_000 });
+    bodyText = await page.locator('body').textContent();
+    expect(bodyText).toContain(NAME1);
+    expect(bodyText).not.toContain(NAME2);
   });
 });
