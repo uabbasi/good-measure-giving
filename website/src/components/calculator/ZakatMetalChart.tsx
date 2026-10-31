@@ -1,9 +1,8 @@
+import { usdFull, usdCents } from '../../utils/money';
 import React from 'react';
 import type { ChartRow } from '../../utils/zakatChart';
 import { FONT_DISPLAY, FONT_MONO, type GmgPalette } from '../gmg/tokens';
 
-const fmt = (n: number, decimals = 0): string =>
-  n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
 interface ZakatMetalChartProps {
   p: GmgPalette;
@@ -39,8 +38,8 @@ export const ZakatMetalChart: React.FC<ZakatMetalChartProps> = ({ p, title, rows
               }}
             >
               <td style={{ ...cell, paddingLeft: row.isNisab ? 8 : 0 }}>{row.label}</td>
-              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO }}>${fmt(row.value)}</td>
-              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO, paddingRight: row.isNisab ? 8 : 0 }}>${fmt(row.zakat, 2)}</td>
+              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO }}>{usdFull(row.value)}</td>
+              <td style={{ ...cell, textAlign: 'right', fontFamily: FONT_MONO, paddingRight: row.isNisab ? 8 : 0 }}>{usdCents(row.zakat)}</td>
             </tr>
           ))}
         </tbody>

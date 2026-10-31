@@ -7,6 +7,7 @@
  * Adding/editing/removing items goes through the thin-sync `useSharedPlan` hook.
  */
 
+import { usdFull } from '../../utils/money';
 import React, { useMemo, useState, useEffect } from 'react';
 import { useSharedPlan } from '../../hooks/useSharedPlan';
 import { useProfile } from '../../hooks/useProfile';
@@ -69,7 +70,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{plan.name}</h2>
+        <h2 className="text-2xl font-merriweather font-normal text-slate-900 dark:text-white">{plan.name}</h2>
         <span className="text-sm text-slate-500 dark:text-slate-400">
           {members.length} member{members.length === 1 ? '' : 's'}
         </span>
@@ -113,6 +114,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
           No charities yet. Add one above to start splitting your giving together.
         </p>
       ) : (
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 dark:text-slate-400">
@@ -165,7 +167,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
                 </td>
                 {personalTarget != null && (
                   <td className="py-2 text-slate-700 dark:text-slate-200">
-                    ${(shares[item.id] || 0).toLocaleString()}
+                    {usdFull(shares[item.id] || 0)}
                   </td>
                 )}
                 <td className="py-2 text-right">
@@ -181,6 +183,7 @@ export const SharedPlanView: React.FC<{ planId: string }> = ({ planId }) => {
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {personalTarget == null && (

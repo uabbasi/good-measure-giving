@@ -134,12 +134,24 @@ describe('surface ramp — can you see where a card is', () => {
     expect(contrast(dark.sub2, dark.bg2)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('does not pretend light was fixed too', () => {
-    // Light is left alone on purpose: its card is darker than its ground, so
-    // deepening it pushes muted text the wrong way, and light sub2 is already
-    // under the bar. Pinned so the asymmetry reads as a decision, and so that
-    // anyone who does fix light sub2 sees this test and can lift the surface.
-    expect(contrast(light.sub2, light.bg2)).toBeLessThan(3);
+  it('keeps light small text at 4.5:1 on the page, bg2 and the card', () => {
+    // Light sub2 was 2.45-2.9:1 (under the bar on every light surface) and is now
+    // darkened to pass. The light surface step was matched to dark by lightening the
+    // GROUND, not by darkening the card, so this holds.
+    for (const surface of [light.bg, light.bg2, light.card]) {
+      for (const tone of [light.sub, light.sub2, light.accent2, light.warn, light.caution]) {
+        expect(contrast(tone, surface)).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+    expect(contrast(light.warn, light.warnBg)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('gives light cards the same visible step from the page as dark cards', () => {
+    // Dark steps dL* 7.1 from page to card; light was 3.9 and read as barely a surface.
+    const step = (p: { bg: string; card: string }) => Math.abs(lightness(p.bg) - lightness(p.card));
+    expect(step(light)).toBeGreaterThanOrEqual(6.5);
+    expect(step(light)).toBeGreaterThanOrEqual(step(dark) - 1);
+    expect(contrast(light.caution, light.cautionBg)).toBeGreaterThanOrEqual(4.5);
   });
 });
 
@@ -154,8 +166,7 @@ describe('mobile list edges', () => {
 
   it('draws the disclosure chevron at the 3:1 floor for a meaningful graphic', () => {
     // On a phone the chevron is the whole affordance — there is no cursor and
-    // no hover behind it. sub2, which the desktop table uses, lands at 2.7:1
-    // on the light card.
+    // no hover behind it.
     expect(contrast(light.sub, light.bg2)).toBeGreaterThanOrEqual(3);
     expect(contrast(dark.sub, dark.bg2)).toBeGreaterThanOrEqual(3);
   });

@@ -12,6 +12,7 @@
  * colors are inline + palette-driven (gmgPalette) for both light and dark.
  */
 
+import { ratingFromGmgScore } from '../src/components/gmg/rating';
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { charityPath } from '../src/lib/paths';
@@ -100,6 +101,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
       charities: CharityWithPillars[];
       avgImpact: number;
       avgAlignment: number;
+      totalAmal: number;
       totalRevenue: number;
       topCharity: CharityWithPillars | null;
     }> = {};
@@ -113,6 +115,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           charities: [],
           avgImpact: 0,
           avgAlignment: 0,
+          totalAmal: 0,
           totalRevenue: 0,
           topCharity: null,
         };
@@ -120,6 +123,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
       byCause[cat].charities.push(c);
       byCause[cat].avgImpact += c.pillarScores.impact;
       byCause[cat].avgAlignment += c.pillarScores.alignment;
+      byCause[cat].totalAmal += c.amalScore;
       byCause[cat].totalRevenue += c.totalRevenue || 0;
       if (!byCause[cat].topCharity || c.amalScore > byCause[cat].topCharity.amalScore) {
         byCause[cat].topCharity = c;
@@ -136,6 +140,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
         charities: data.charities.sort((a, b) => b.amalScore - a.amalScore),
         avgImpact: data.avgImpact / data.charities.length,
         avgAlignment: data.avgAlignment / data.charities.length,
+        avgAmal: data.totalAmal / data.charities.length,
         totalRevenue: data.totalRevenue,
         topCharity: data.topCharity,
       }))
@@ -436,7 +441,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
                       <div className="font-bold mb-1">{cause.label}</div>
                       <div className="mb-2" style={{ color: p.sub }}>{cause.count} charities evaluated</div>
                       <div className="text-[10px]" style={{ color: p.sub2 }}>
-                        <div>Avg Score: {Math.round((cause.avgAlignment + cause.avgImpact))} / 100</div>
+                        <div>Average rating: {ratingFromGmgScore(cause.avgAmal)}</div>
                         <div>Top: {cause.topCharity?.name}{SHOW_AMAL_SCORE && ` (${cause.topCharity?.amalScore})`}</div>
                       </div>
                       <div className="mt-2 text-[10px] font-medium" style={{ color: p.accent }}>Click to explore →</div>
@@ -453,11 +458,11 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           {/* Axis Labels */}
           <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center" style={{ color: p.sub }}>
             <div className="text-[10px] font-bold uppercase tracking-wider">Alignment →</div>
-            <div className="text-[8px]" style={{ color: p.sub2 }}>Donor Fit</div>
+            <div className="text-[10px]" style={{ color: p.sub }}>Fit for Muslim donors</div>
           </div>
           <div className="absolute -left-[4.5rem] top-1/2 -translate-y-1/2 -rotate-90 text-center whitespace-nowrap" style={{ color: p.sub }}>
             <div className="text-[10px] font-bold uppercase tracking-wider">Impact →</div>
-            <div className="text-[8px]" style={{ color: p.sub2 }}>Effectiveness</div>
+            <div className="text-[10px]" style={{ color: p.sub }}>Effectiveness</div>
           </div>
         </div>
       </div>
@@ -468,7 +473,7 @@ export const CauseAreaMatrix: React.FC<CauseAreaMatrixProps> = ({ charities, hid
           <div className="flex flex-wrap justify-center gap-4 pt-4 border-t" style={{ borderColor: p.rule }}>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ background: p.accent }}></div>
-              <span className="text-xs" style={{ color: p.sub }}>Accepts Zakat</span>
+              <span className="text-xs" style={{ color: p.sub }}>Accepts zakat</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ background: p.sub2 }}></div>

@@ -58,22 +58,22 @@ const noAsnafNotZakat = () => load('charity-04-2535767.json');
 const withZakatConcern = () => load('charity-20-0310701.json');
 
 describe('RightForYou', () => {
-  it('renders zakat verification: Pass tag, quoted evidence, and asnaf category', () => {
+  it('renders the zakat claim: Accepts zakat tag, quoted evidence, and asnaf category', () => {
     const c = richZakat();
     expect(c.claimsZakat).toBe(true);
     expect(c.asnaf).toBeTruthy();
     const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
-    expect(container.textContent).toContain('Pass');
+    expect(container.textContent).toContain('Accepts zakat');
     expect(container.textContent).toContain(c.zakatEvidence);
     expect(container.textContent).toContain(c.asnaf as string);
   });
 
-  it('shows Sadaqah (not Pass) for a charity that does not claim zakat', () => {
+  it('shows Sadaqah (not Accepts zakat) for a charity that does not claim zakat', () => {
     const c = noAsnafNotZakat();
     expect(c.claimsZakat).toBe(false);
     const { container } = render(<RightForYou c={c} p={p} isMobile={false} padX={16} />);
     expect(container.textContent).toContain('Sadaqah');
-    expect(container.textContent).not.toContain('Pass');
+    expect(container.textContent).not.toContain('Accepts zakat');
   });
 
   it('gates the donor-fit matrix, including asnaf served, behind the community gate', () => {

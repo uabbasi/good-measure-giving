@@ -24,7 +24,7 @@ export const InviteFamilyPanel: React.FC<{ planId: string; canManage: boolean }>
   return (
     <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold">Invite family</h3>
+        <h3 className="font-merriweather font-normal">Invite family</h3>
         <button onClick={share} className="px-3 py-1.5 rounded bg-emerald-600 text-white text-sm">
           {copied ? 'Link copied' : 'Invite family'}
         </button>

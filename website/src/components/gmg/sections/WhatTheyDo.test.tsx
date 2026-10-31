@@ -59,7 +59,7 @@ describe('WhatTheyDo Quick facts on a phone', () => {
 
   it('leaves a short value in the compact two-column row', () => {
     const { container } = render(<WhatTheyDo c={longAndShort()} p={p} isMobile padX={16} />);
-    const row = factRow(container, 'Wallet');
+    const row = factRow(container, 'Zakat or sadaqah');
 
     expect(row.style.flexDirection).toBe('row');
     expect((row.lastElementChild as HTMLElement).style.textAlign).toBe('right');

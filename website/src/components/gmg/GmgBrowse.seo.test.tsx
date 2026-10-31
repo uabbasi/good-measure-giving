@@ -70,7 +70,7 @@ vi.mock('../../hooks/useCharities', () => ({
   useCharities: () => ({ charities: allMockCharities, summaries: allMockCharities, loading: false, error: null }),
 }));
 
-// The desktop table also has a "Wallet" column header, so every lookup is
+// The desktop table also has a "Zakat or sadaqah" column header, so every lookup is
 // scoped to the facet bar (found via the search input) before narrowing to
 // a specific <Kicker>-labelled group, same idea as BrowseFacets.test.tsx.
 const facetsSection = (): HTMLElement =>
@@ -107,7 +107,7 @@ describe('GmgBrowse SEO guard', () => {
   it('adds noindex,follow once a facet is selected', async () => {
     const user = userEvent.setup();
     renderBrowse();
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /Zakat/ }));
     const tag = robotsTag();
     expect(tag).not.toBeNull();
     expect(tag).toHaveAttribute('content', 'noindex,follow');
@@ -116,9 +116,9 @@ describe('GmgBrowse SEO guard', () => {
   it('removes it again when facets are cleared', async () => {
     const user = userEvent.setup();
     renderBrowse();
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /Zakat/ }));
     expect(robotsTag()).not.toBeNull();
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /All/ }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /All/ }));
     expect(robotsTag()).toBeNull();
   });
 
@@ -134,7 +134,7 @@ describe('GmgBrowse SEO guard', () => {
     const pushSpy = vi.spyOn(window.history, 'pushState');
     const user = userEvent.setup();
     renderBrowse();
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /Zakat/ }));
 
     // The URL write is debounced (Task 3) — wait for it to fire rather than
     // asserting immediately.
@@ -170,7 +170,7 @@ describe('GmgBrowse SEO guard', () => {
   it('restores facet state from an existing query string on mount', () => {
     window.history.pushState({}, '', '/browse?wallet=zakat');
     renderBrowse();
-    expect(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /Zakat/ })).toHaveAttribute('aria-pressed', 'true');
   });
 
   // The URL sync effect must MERGE facet params into the query string, not
@@ -184,7 +184,7 @@ describe('GmgBrowse SEO guard', () => {
 
     expect(window.location.search).toContain('utm_source=newsletter');
 
-    await user.click(within(groupFor('Wallet')).getByRole('button', { name: /Zakat/ }));
+    await user.click(within(groupFor('Zakat or sadaqah')).getByRole('button', { name: /Zakat/ }));
 
     // The URL write is debounced (Task 3) — wait for it to fire rather than
     // asserting immediately.

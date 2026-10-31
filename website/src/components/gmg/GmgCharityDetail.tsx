@@ -6,7 +6,6 @@ import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackCharityView, trackDonateClick, trackOutboundClick } from '../../utils/analytics';
 import { charityPath } from '../../lib/paths';
-import { EDITION } from '../../config/siteVersion';
 import { useCharities } from '../../hooks/useCharities';
 import {
   selectSimilarCharities,
@@ -21,7 +20,7 @@ import {
   FONT_MONO,
   FONT_THEME,
 } from './tokens';
-import { ratingColor, riskTone } from './rating';
+import { ratingColor, ratingFromGmgScore, riskTone } from './rating';
 import {
   HarveyBall,
   RatingLabel,
@@ -46,25 +45,11 @@ import { RightForYou } from './sections/RightForYou';
 import { HowItCompares } from './sections/HowItCompares';
 import { SectionRail, type RailSection } from './SectionRail';
 import { CitedText, SourceList, collectCitations } from './CitedText';
+import { BookmarkButton } from '../BookmarkButton';
+import { ClientOnly } from '../ClientOnly';
+import { usd, usdFull } from '../../utils/money';
 
-const usd = (n: number | null): string => {
-  if (n == null) return '—';
-  const compact = Math.abs(n) >= 1_000_000;
-  // For currency, leaving maximumFractionDigits at 1 forces the default
-  // minimumFractionDigits (2) down to 1, so whole-dollar figures render as
-  // "$851,150.0". Pin the minimum to 0 and only allow a decimal for the
-  // compact "$1.5M" form.
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    notation: compact ? 'compact' : 'standard',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: compact ? 1 : 0,
-  }).format(n);
-};
 
-const usdFull = (n: number | null): string =>
-  n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
 // The six donor-question sections, in spine order — shared between the
 // section list below and the SectionRail so the two can never drift apart.
@@ -260,8 +245,8 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
   const { fyDated } = dataVintage(c);
 
   const statCells: [string, string, string][] = [
-    ['Cost / benef.', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per person' : 'not reported'],
-    ['Program ratio', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expense'],
+    ['Cost per person', c.costPerBeneficiary != null ? usdFull(c.costPerBeneficiary) : '—', c.costPerBeneficiary != null ? 'per beneficiary' : 'not reported'],
+    ['Program spending', c.programRatioPct != null ? `${c.programRatioPct}%` : '—', 'of expenses'],
     ['Reserves', c.reserveMonths != null ? `${c.reserveMonths} mo` : '—', 'working capital'],
     ['Revenue', usd(c.totalRevenue), c.fiscalYear ? `FY${c.fiscalYear}${fyDated ? ' · dated' : ''}` : 'IRS 990'],
     ['Track record', c.trackRecordYears != null ? `${c.trackRecordYears} yr` : '—', c.founded ? `est. ${c.founded}` : ''],
@@ -298,8 +283,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           letterSpacing: '0.06em',
         }}
       >
-        <span>EDITION {EDITION}</span>
-        {c.updatedOn && <span>· UPDATED {c.updatedOn}</span>}
+        {c.updatedOn && <span>CHARITY DATA UPDATED {c.updatedOn}</span>}
       </div>
 
       <Bismillah p={p} />
@@ -338,9 +322,26 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 <Tag p={p} title={EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage]}>{c.evidenceStage}</Tag>
               )}
             </div>
+            {/* The tags' definitions, in the page: a `title` tooltip never opens on touch.
+                The zakat line sits here too, so the badge is qualified where it is read. */}
+            {(() => {
+              const assessmentNote = c.assessmentLabel ? ASSESSMENT_LABEL_EXPLAINERS[c.assessmentLabel] : undefined;
+              const evidenceNote = c.evidenceStage ? EVIDENCE_STAGE_EXPLAINERS[c.evidenceStage] : undefined;
+              const zakatNote = c.claimsZakat ? "the charity says so publicly; this is not a GMG ruling." : undefined;
+              if (!assessmentNote && !evidenceNote && !zakatNote) return null;
+              const strong = { color: p.fg, fontWeight: 500 } as const;
+              return (
+                <p style={{ fontSize: 12, lineHeight: 1.5, color: p.sub, margin: '12px 0 0', maxWidth: '68ch' }}>
+                  {zakatNote && <><strong style={strong}>Accepts zakat:</strong> {zakatNote}{' '}</>}
+                  {assessmentNote && <><strong style={strong}>{c.assessmentLabel}:</strong> {assessmentNote}{' '}</>}
+                  {evidenceNote && <><strong style={strong}>{c.evidenceStage}:</strong> {evidenceNote}</>}
+                </p>
+              );
+            })()}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
                 <a
+                  className="tap-link"
                   href={c.donateUrl}
                   onClick={(event) => trackDonateClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
@@ -352,6 +353,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
               )}
               {c.website && c.website !== c.donateUrl && (
                 <a
+                  className="tap-link"
                   href={c.website}
                   onClick={(event) => trackOutboundClick(c.ein, c.name, event.currentTarget.href)}
                   target="_blank"
@@ -370,7 +372,11 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                   Visit website ↗
                 </a>
               )}
+              <ClientOnly>
+                <BookmarkButton charityEin={c.ein} charityName={c.name} size="sm" showLabel buttonClassName="border border-slate-400/60" labelClassName="text-xs!" />
+              </ClientOnly>
               <Link
+                className="tap-link"
                 to={`/compare/?eins=${c.ein}`}
                 style={{ padding: '10px 16px', borderRadius: 99, background: 'transparent', border: `1px solid ${p.rule}`, color: p.fg, fontSize: 12, textDecoration: 'none' }}
               >
@@ -413,11 +419,11 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 </span>
                 {c.recommendationCue && (
                   <span style={{ color: p.sub }}>
-                    <Kicker p={p}>Fit</Kicker> {c.recommendationCue}
+                    <Kicker p={p}>Our take</Kicker> {c.recommendationCue}
                   </span>
                 )}
                 <span style={{ color: p.sub }}>
-                  <Kicker p={p}>Wallet</Kicker> {c.wallet}
+                  <Kicker p={p}>Zakat or sadaqah</Kicker> {c.wallet}
                 </span>
               </div>
             </div>
@@ -467,7 +473,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 
           {/* Methodology details */}
           <section style={{ padding: `20px ${padX}px`, borderBottom: sectionBorder }}>
-            <Kicker p={p}>Methodology details · edition {EDITION}</Kicker>
+            <Kicker p={p}>Methodology details</Kicker>
             {c.strengths.length > 0 && (
               <div style={{ marginTop: 8, marginBottom: 14, border: sectionBorder, borderRadius: 6, padding: 16, background: p.bg2 }}>
                 <Kicker p={p}>How we evaluate</Kicker>
@@ -571,13 +577,11 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                   }}
                 >
                   {sc.name}
-                  {/* Score is member-only. This block is ungated so its links stay
-                      crawlable, but a charity's own score is hidden on its own page —
-                      leaving the score here would publish every score anyway, via the
-                      23 peer pages each charity appears on. Links: public. Scores: not. */}
-                  {isMember && sc.amalScore != null && (
-                    <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub2, marginTop: 4 }}>
-                      {sc.amalScore}/100
+                  {/* The GMG score is published as a grade only, never a number, so
+                      showing the grade here leaks nothing the browse table doesn't. */}
+                  {sc.amalScore != null && (
+                    <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color: p.sub, marginTop: 4 }}>
+                      {ratingFromGmgScore(sc.amalScore)}
                     </div>
                   )}
                 </Link>
@@ -586,11 +590,6 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
           </ul>
         </section>
       )}
-
-      <footer style={{ padding: `14px ${padX}px`, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, color: p.sub2, fontSize: 10.5, fontFamily: FONT_MONO, letterSpacing: '0.06em' }}>
-        <span>GOOD MEASURE GIVING · {c.ein && `EIN ${c.ein}`} · EDITION {EDITION}</span>
-        <span>HARVEY-BALL MOTIF</span>
-      </footer>
 
       </div>
 

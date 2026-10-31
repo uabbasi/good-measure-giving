@@ -31,8 +31,9 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
     if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    document.documentElement.classList.toggle('dark', isDark);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isDark ? '#0f172a' : '#f8fafc');
+    if (meta) meta.setAttribute('content', isDark ? '#13140e' : '#fcf9f0');
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(prev => !prev);
@@ -43,6 +44,9 @@ export const LandingThemeProvider: React.FC<{ children: ReactNode }> = ({ childr
     </ThemeContext.Provider>
   );
 };
+
+// For chrome that should still render (minus the control) where no provider is mounted.
+export const useOptionalLandingTheme = () => useContext(ThemeContext);
 
 export const useLandingTheme = () => {
   const context = useContext(ThemeContext);

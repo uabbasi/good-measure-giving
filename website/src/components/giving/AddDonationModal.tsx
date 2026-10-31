@@ -3,7 +3,8 @@
  * Uses React Hook Form + Zod for validation, Motion for animations
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -185,6 +186,9 @@ export function AddDonationModal({
     focus:outline-none focus:ring-1 focus:ring-emerald-500
   `;
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialog(dialogRef, isOpen, onClose);
+
   const labelClass = `block text-sm font-medium mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`;
 
   const fieldError = (name: keyof DonationFormValues) =>
@@ -213,6 +217,11 @@ export function AddDonationModal({
 
       {/* Modal */}
       <m.div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="donation-modal-title"
         className={`
           relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl border shadow-xl
           ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}
@@ -226,12 +235,13 @@ export function AddDonationModal({
           {/* Header */}
           <div className={`sticky top-0 px-6 py-4 border-b ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex items-center justify-between">
-              <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h2 id="donation-modal-title" className={`text-lg font-merriweather font-normal ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {existingDonation ? 'Edit Donation' : 'Log Donation'}
               </h2>
               <button
                 type="button"
                 onClick={onClose}
+                aria-label="Close"
                 className={`p-1 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
               >
                 <svg className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -369,7 +379,7 @@ export function AddDonationModal({
                   type="checkbox"
                   className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                 />
-                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Match eligible</span>
+                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Employer match eligible</span>
               </label>
             </div>
 
@@ -377,7 +387,7 @@ export function AddDonationModal({
             {matchEligible && (
               <div className="grid grid-cols-2 gap-4 pl-6 border-l-2 border-emerald-500/30">
                 <div>
-                  <label className={labelClass}>Match Status</label>
+                  <label className={labelClass}>Employer match status</label>
                   <select
                     {...register('matchStatus')}
                     className={inputClass}
@@ -388,7 +398,7 @@ export function AddDonationModal({
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Match Amount</label>
+                  <label className={labelClass}>Employer match amount</label>
                   <div className="relative">
                     <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>$</span>
                     <input
