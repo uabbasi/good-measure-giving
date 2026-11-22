@@ -47,3 +47,16 @@ describe('buildCharityMeta — no numeric score reaches a public surface', () =>
     expect(leaks).toEqual([]);
   });
 });
+
+describe('search-led review updates', () => {
+  it.each([
+    ['13-3433452', 'Doctors Without Borders USA Review', '83.5%'],
+    ['94-2614101', 'Second Harvest of Silicon Valley Review', 'Santa Clara and San Mateo'],
+    ['75-2882187', 'Amoud Foundation Review', 'financial disclosures'],
+    ['13-5660870', 'Zakat', 'Ramadan only'],
+  ])('answers the leading donor question for %s', (ein, title, description) => {
+    const meta = buildCharityMeta(load(ein));
+    expect(meta.title).toContain(title);
+    expect(meta.description).toContain(description);
+  });
+});

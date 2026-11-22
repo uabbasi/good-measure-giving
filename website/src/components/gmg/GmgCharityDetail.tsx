@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackCharityView, trackDonateClick, trackOutboundClick } from '../../utils/analytics';
+import { charityReviewSummary } from '../../data/charityReviewSummaries';
 import { charityPath } from '../../lib/paths';
 import { useCharities } from '../../hooks/useCharities';
 import {
@@ -190,6 +191,7 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
 }) => {
   const p = gmgPalette(isDark);
   const c = adaptCharity(charity);
+  const review = charityReviewSummary(c.ein, charity?.amalEvaluation?.amal_score);
   useEffect(() => {
     if (c.ein) trackCharityView(c.ein, c.name);
   }, [c.ein, c.name]);
@@ -338,6 +340,12 @@ export const GmgCharityDetail: React.FC<{ charity: any; isDark: boolean }> = ({
                 </p>
               );
             })()}
+            {review && (
+              <p style={{ fontSize: 14, lineHeight: 1.55, maxWidth: '68ch', margin: '12px 0 0', color: p.sub }}>
+                {review.description}{' '}
+                <a href={review.source.url} style={{ color: p.accent }}>{review.source.label}</a>
+              </p>
+            )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
               {c.donateUrl && (
                 <a
