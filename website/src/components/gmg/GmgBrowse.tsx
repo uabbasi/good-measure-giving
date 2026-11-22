@@ -5,6 +5,7 @@
 // cards on mobile. The numeric GMG score lives on each charity's page, not here.
 
 import { usdCompact } from '../../utils/money';
+import { GivingGuideLinks } from './GivingGuideLinks';
 import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { trackCharityCardClick, trackSearch } from '../../utils/analytics';
@@ -218,6 +219,7 @@ const SubHeader: React.FC<{ p: GmgPalette; padX: number; isMobile: boolean; ft: 
     <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: isMobile ? 34 : 46, margin: '4px 0 0', lineHeight: 1, letterSpacing: ft.displayTracking }}>
       Every charity, <em style={{ color: p.accent }}>weighed.</em>
     </h1>
+    <GivingGuideLinks p={p} />
   </section>
 );
 
