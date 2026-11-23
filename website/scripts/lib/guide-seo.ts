@@ -22,6 +22,7 @@ export interface GuideFeaturedCharity {
   ein: string;
   name: string;
   blurb: string;
+  zakatClaimUrl?: string;
 }
 
 export interface GuideSource {
@@ -42,6 +43,7 @@ export interface Guide {
   readingTimeMinutes: number;
   sections: GuideSection[];
   callouts?: GuideCallout[];
+  showZakatComparison?: boolean;
   featuredCharities?: GuideFeaturedCharity[];
   faq: GuideFaqItem[];
   sources?: GuideSource[];

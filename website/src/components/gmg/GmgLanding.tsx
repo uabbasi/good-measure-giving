@@ -2,6 +2,7 @@
 // Calm, plain-language front door for everyday donors. The dense, data-rich
 // treatment lives on the index + detail pages; this page reassures and invites.
 
+import { GivingGuideLinks } from './GivingGuideLinks';
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackHeroCTA, trackCharityCardClick } from '../../utils/analytics';
@@ -122,6 +123,7 @@ export const GmgLanding: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               How it works
             </Link>
           </div>
+          <GivingGuideLinks p={p} centered />
         </div>
       </section>
 

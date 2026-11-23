@@ -3,10 +3,11 @@
 
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { charityPath, causePath, paths } from '../src/lib/paths';
+import { charityPath, causePath, givingGuidePaths, paths } from '../src/lib/paths';
 import {
   GmgContentFrame,
   Breadcrumb,
+  ALink,
   ContentHero,
   Section,
   P,
@@ -17,11 +18,15 @@ import {
   type ContentCtx,
 } from '../src/components/gmg/content';
 import { FONT_MONO } from '../src/components/gmg/tokens';
+import { CharityComparisonTable } from '../src/components/gmg/CharityComparisonTable';
+import { useCharities } from '../src/hooks/useCharities';
 import { useGuide } from '../src/hooks/useGuides';
 
 export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { slug } = useParams<{ slug: string }>();
   const { guide, loading, notFound } = useGuide(slug || '');
+  const { summaries } = useCharities();
+  const showComparison = guide?.showZakatComparison && Boolean(guide.featuredCharities?.length);
 
 
   if (notFound) return <Navigate to="/guides" replace />;
@@ -58,15 +63,38 @@ export const GuidePage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
               {guide.tldr}
             </Callout>
 
+            {showComparison && guide.featuredCharities && (
+              <Section ctx={ctx} title="Compare charities that publicly accept zakat" first>
+                <P p={p}>
+                  Check each charity’s published claim and review before giving.
+                  For a wider comparison, see the <ALink p={p} to={givingGuidePaths.ranked}>ranked guide to U.S. Muslim charities</ALink>.
+                </P>
+                <CharityComparisonTable
+                  p={p}
+                  label="Zakat charity shortlist"
+                  columns={['Who they serve', 'Published zakat claim', 'Evidence stage']}
+                  rows={guide.featuredCharities.map(({ ein, name, blurb, zakatClaimUrl }) => ({
+                    ein,
+                    name,
+                    cells: [
+                      blurb,
+                      zakatClaimUrl ? <a href={zakatClaimUrl} style={{ color: p.accent }}>Read {name}’s claim</a> : 'See full review',
+                      summaries?.find((c) => c.ein === ein)?.ui_signals_v1?.evidence_stage ?? 'See full review',
+                    ],
+                  }))}
+                />
+              </Section>
+            )}
+
             {guide.sections.map((section, i) => (
-              <Section key={i} ctx={ctx} title={section.heading} first={i === 0}>
+              <Section key={i} ctx={ctx} title={section.heading} first={i === 0 && !showComparison}>
                 {section.paragraphs.map((para, j) => (
                   <P key={j} p={p}>{para}</P>
                 ))}
               </Section>
             ))}
 
-            {guide.featuredCharities && guide.featuredCharities.length > 0 && (
+            {!showComparison && guide.featuredCharities && guide.featuredCharities.length > 0 && (
               <Section ctx={ctx} title="Charities featured in this guide">
                 <CardGrid min={260}>
                   {guide.featuredCharities.map((fc) => (

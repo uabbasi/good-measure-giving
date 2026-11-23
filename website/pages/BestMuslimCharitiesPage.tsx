@@ -2,8 +2,7 @@
 // Motif-only (no legacy variant): renders its own GmgNav + footer via the content kit.
 
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { charityPath } from '../src/lib/paths';
+import { charityPath, givingGuidePaths, paths } from '../src/lib/paths';
 import { useCharities } from '../src/hooks/useCharities';
 import {
   GmgContentFrame,
@@ -17,9 +16,8 @@ import {
   FaqList,
   type ContentCtx,
 } from '../src/components/gmg/content';
-import { FONT_DISPLAY, FONT_MONO } from '../src/components/gmg/tokens';
-import type { GmgPalette } from '../src/components/gmg/tokens';
 import { ratingFromGmgScore } from '../src/components/gmg/rating';
+import { CharityComparisonTable } from '../src/components/gmg/CharityComparisonTable';
 import { filterMuslimCharities, type HubCharity } from '../scripts/lib/muslim-hub';
 import hubData from '../data/best-muslim-charities.json';
 
@@ -33,78 +31,6 @@ const COPY = hubData as HubCopy;
 const TOP_N = 20;
 
 const isZakatEligible = (c: HubCharity) => c.walletTag === 'ZAKAT-ELIGIBLE';
-
-// "Accepts Zakat" pill — sage "positive" semantic palette. Label matches the
-// site-wide walletLabel wording used on browse/compare/detail.
-const ZakatPill: React.FC<{ p: GmgPalette }> = ({ p }) => (
-  <span
-    style={{
-      display: 'inline-block',
-      fontFamily: FONT_MONO,
-      fontSize: 10,
-      letterSpacing: '0.06em',
-      textTransform: 'uppercase',
-      padding: '2px 8px',
-      borderRadius: 99,
-      background: p.posBg,
-      color: p.pos,
-    }}
-  >
-    Accepts zakat
-  </span>
-);
-
-// Ranked row for the top-N list — rank numeral + name (+ zakat pill) + score.
-const RankedRow: React.FC<{ p: GmgPalette; rank: number; c: HubCharity }> = ({ p, rank, c }) => (
-  <li>
-    <Link
-      to={charityPath(c.ein)}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        padding: '14px 18px',
-        borderRadius: 12,
-        border: `1px solid ${p.rule}`,
-        background: p.card,
-        textDecoration: 'none',
-        color: p.fg,
-      }}
-    >
-      <span
-        style={{
-          fontFamily: FONT_DISPLAY,
-          fontSize: 20,
-          color: p.sub2,
-          width: 30,
-          flexShrink: 0,
-          textAlign: 'right',
-          fontVariantNumeric: 'tabular-nums',
-        }}
-      >
-        {rank}
-      </span>
-      <span style={{ flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {c.name}
-        </span>
-        {isZakatEligible(c) && <span><ZakatPill p={p} /></span>}
-      </span>
-      <span
-        style={{
-          fontFamily: FONT_MONO,
-          fontSize: 14,
-          fontWeight: 600,
-          color: p.sub,
-          flexShrink: 0,
-          fontVariantNumeric: 'tabular-nums',
-        }}
-      >
-        {ratingFromGmgScore(c.amalScore as number)}
-      </span>
-    </Link>
-  </li>
-);
 
 export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark }) => {
   const { summaries, loading } = useCharities();
@@ -131,6 +57,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
   }, [summaries]);
 
   const topRanked = ranked.slice(0, TOP_N);
+  const summariesByEin = useMemo(() => new Map(summaries?.map((c) => [c.ein, c])), [summaries]);
   const remainingRanked = ranked.slice(TOP_N);
 
   return (
@@ -148,7 +75,7 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
             />
 
             <P p={p}>{COPY.intro}</P>
-            <P p={p}>{COPY.introSecondary}</P>
+            <P p={p}>{COPY.introSecondary} <ALink p={p} to={givingGuidePaths.zakat}>See where to give zakat by cause</ALink>.</P>
 
             {loading ? (
               <P p={p} muted>Loading charities…</P>
@@ -158,11 +85,27 @@ export const BestMuslimCharitiesPage: React.FC<{ isDark: boolean }> = ({ isDark 
                   {topRanked.length === 0 ? (
                     <P p={p} muted>No ranked charities yet.</P>
                   ) : (
-                    <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {topRanked.map((c, i) => (
-                        <RankedRow key={c.ein} p={p} rank={i + 1} c={c} />
-                      ))}
-                    </ol>
+                    <>
+                      <P p={p}>Compare each charity’s work, public zakat claim, and evidence stage. <ALink p={p} to={paths.methodology}>See how we rate charities</ALink>.</P>
+                      <CharityComparisonTable
+                        p={p}
+                        label="Top-rated Muslim charities in the USA"
+                        columns={['Who they serve', 'Public zakat claim', 'Evidence stage', 'GMG rating']}
+                        rows={topRanked.map((c, i) => {
+                          const summary = summariesByEin.get(c.ein);
+                          return {
+                            ein: c.ein,
+                            name: `${i + 1}. ${c.name}`,
+                            cells: [
+                              summary?.headline || summary?.mission || 'See full review',
+                              isZakatEligible(c) ? 'Publicly accepts zakat' : 'No verified claim listed',
+                              summary?.ui_signals_v1?.evidence_stage ?? 'See full review',
+                              ratingFromGmgScore(c.amalScore as number),
+                            ],
+                          };
+                        })}
+                      />
+                    </>
                   )}
                 </Section>
 

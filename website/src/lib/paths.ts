@@ -29,6 +29,11 @@ export const paths = {
   faq: '/faq/',
 } as const;
 
+export const givingGuidePaths = {
+  ranked: '/best-muslim-charities-in-usa/',
+  zakat: guidePath('top-zakat-eligible-charities-2026'),
+} as const;
+
 // Compare a location pathname to a route ignoring a trailing slash. Routes are
 // canonicalized with a trailing slash, but in-app navigation may omit it, so an
 // exact `pathname === '/browse'` check breaks on the canonical `/browse/`. Use

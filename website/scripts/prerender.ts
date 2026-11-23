@@ -1,3 +1,4 @@
+import { charityReviewSummary } from '../src/data/charityReviewSummaries';
 /**
  * Prerender Script
  * Uses SSR (via dist-server/entry-server.js) to render SPA pages and inject SEO meta/OG/JSON-LD tags.
@@ -378,13 +379,14 @@ export function buildCharityMeta(detail: CharityDetail): PageMeta {
         zakatClassification: (detail as unknown as { zakat_classification?: string }).zakat_classification ?? null,
       });
 
-  const title = buildCharityTitle({
+  const review = charityReviewSummary(detail.ein, score);
+  const title = review?.title ?? buildCharityTitle({
     name,
     score: isNewOrg ? null : (score ?? null),
     zakatStatus,
   });
 
-  const description = buildCharityDescription({
+  const description = review?.description ?? buildCharityDescription({
     name,
     score: isNewOrg ? null : (score ?? null),
     zakatStatus,
